@@ -38,7 +38,7 @@
 // pass in state.timer_id object as state
 export function cameraSetter(state = {}, action) {
   switch(action.type) {
-    case ADD_MARKER:
+    case 'ADD_MARKER':
       return {...state};
     default:
       return state;

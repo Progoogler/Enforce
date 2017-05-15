@@ -1,34 +1,53 @@
 import React, { Component } from 'react';
-//import MapView from 'react-native-maps';
-import {
-  View,
-  Stylesheet
-} from 'react-native';
+import { AsyncStorage } from 'react-native';
+
+import { DrawerNavigator } from 'react-navigation';
+import { Provider, connect } from 'react-redux';
+import { createStore } from 'redux';
+
+import cameraReducer, { storageState } from './camera/cameraReducer';
+
+import { CameraApp } from './camera/CameraApp';
+import MapApp from './map/MapApp';
+
+//const store = createStore(cameraReducer);
+
+const AppNavigator = DrawerNavigator({
+  Map: {
+    screen: MapApp,
+  },
+  Camera: {
+    screen: CameraApp,
+  },
+});
 
 export default class App extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
+    this.storageState = {};
+  }
+
+  async componentWillMount() {
+    //this.storageState = await AsyncStorage.getItem('@Quicket:test');
+    this.storageState = await storageState;
+    // bull ----->
+    console.log('hahah', this.storageState, storageState);
+
   }
 
   render() {
+    console.log('storage', this.storageState);
     return (
-      <View>
-        <Text>Hello world</Text>
-      </View>
+      <Provider store={createStore(cameraReducer)}>
+        <AppNavigator/>
+      </Provider>
     );
   }
-}
 
-// <MapView.Animated
-//   ref={ref => { this.animatedMap = ref; }}
-//   style={styles.map}
-//   mapType="hybrid"
-//   showsUserLocation={true}
-//   initialRegion={{
-//     latitude: 37.78926,
-//     longitude: -122.43159,
-//     latitudeDelta: 0.0048,
-//     longitudeDelta: 0.0020
-//   }}>
-//
-// </MapView.Animated>
+  // componentWillUnmount() {
+  //   const stringifiedStore = JSON.stringify(store.getState());
+  //   console.log(stringifiedStore);
+  //   AsyncStorage.setItem('@Quicket:test', stringifiedStore);
+  //   this.unsubscribe();
+  // }
+}

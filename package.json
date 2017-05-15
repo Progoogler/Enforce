@@ -9,15 +9,21 @@
     "flow-stop": "node_modules/.bin/flow stop"
   },
   "dependencies": {
+    "module-resolver": "^1.0.0",
     "react": "15.4.2",
     "react-native": "0.42.3",
-    "react-native-maps": "^0.14.0",
+    "react-native-camera": "^0.8.0",
+    "react-native-maps": "0.13.1",
+    "react-navigation": "^1.0.0-beta.8",
     "react-redux": "^5.0.4",
+    "realm": "^0.14.3",
     "redux": "^3.6.0"
   },
   "devDependencies": {
     "babel-jest": "19.0.0",
     "babel-preset-react-native": "1.9.1",
+    "chai": "^3.5.0",
+    "enzyme": "^2.8.2",
     "flow-bin": "^0.38.0",
     "jest": "19.0.2",
     "react-test-renderer": "15.4.2",
