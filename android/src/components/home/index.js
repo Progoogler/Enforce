@@ -15,6 +15,8 @@ import Header from './Header';
 import MainButtons from './MainButtons';
 import TicketCounter from './TicketCounter';
 
+import { NavigationActions } from'react-navigation';
+
 export default class Home extends Component {
   constructor() {
     super();
@@ -50,23 +52,52 @@ export default class Home extends Component {
     this.realm.objects('Timers').forEach(timerList => {
       if (timerList.list.length >= 1) {
         if (skip) {
-          lists.push(<TouchableHighlight>
-            <View style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              height: 75,
-              borderTopWidth: 2,
-              borderColor: 'black',}}><Text style={styles.timerRowLength}>{ (timerList.list.length > 1) ? timerList.list.length + '\n cars' : '1 \n car' }</Text>
-          <Text style={styles.timerRowTime}>{ this.getTimeLeft(timerList.list[0]) }</Text></View></TouchableHighlight>);
+          lists.push(
+            <TouchableHighlight
+              onPress={(timerList) => this._openTimerListPage(timerList)} >
+              <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                height: 75,
+                borderTopWidth: 2,
+                borderColor: 'black',}}>
+                <Text style={styles.timerRowLength}>
+                  { (timerList.list.length > 1) ? timerList.list.length + '\n cars' : '1 \n car' }
+                </Text>
+                <Text style={styles.timerRowTime}>
+                  { this.getTimeLeft(timerList.list[0]) }
+                </Text>
+              </View>
+            </TouchableHighlight>
+          );
           skip = false;
         } else {
           skip = true;
-          lists.push(<TouchableHighlight><View style={styles.timerRow}><Text style={styles.timerRowLength}>{ (timerList.list.length > 1) ? timerList.list.length + '\n cars' : '1 \n car' }</Text>
-          <Text style={styles.timerRowTime}>{ this.getTimeLeft(timerList.list[0]) }</Text></View></TouchableHighlight>);
+          lists.push(
+            <TouchableHighlight
+              onPress={(timerList) => this._openTimerListPage(timerList)} >
+              <View style={styles.timerRow}>
+                <Text style={styles.timerRowLength}>
+                  { (timerList.list.length > 1) ? timerList.list.length + '\n cars' : '1 \n car' }
+                </Text>
+                <Text style={styles.timerRowTime}>
+                  { this.getTimeLeft(timerList.list[0]) }
+                </Text>
+              </View>
+            </TouchableHighlight>
+          );
         }
       }
     });
     this.setState({timerList: lists});
+  }
+
+  _openTimerListPage(timerList) {
+    const navigateAction = NavigationActions.navigate({
+      routeName: 'TimerList',
+      params: {timers: timerList},
+    });
+    this.props.navigation.dispatch(navigateAction);
   }
 
   getTimeLeft(timer) {
