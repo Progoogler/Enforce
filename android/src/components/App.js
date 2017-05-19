@@ -1,19 +1,26 @@
 import React, { Component } from 'react';
-import { AsyncStorage } from 'react-native';
+//import { AsyncStorage } from 'react-native';
 
 import { DrawerNavigator } from 'react-navigation';
-import { Provider, connect } from 'react-redux';
-import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+//import { createStore } from 'redux';
 
-import cameraReducer, { storageState } from './camera/cameraReducer';
+//import cameraReducer, { storageState } from './camera/cameraReducer';
 
 import { CameraApp } from './camera/CameraApp';
 import MapApp from './map/MapApp';
+import Home from './home/index';
 
+import Realm from 'realm';
+import Schema from '../realm';
 //const store = createStore(cameraReducer);
 
 const AppNavigator = DrawerNavigator({
+  Home: {
+    screen: Home,
+  },
   Map: {
+    // screen: MapApp,
     screen: MapApp,
   },
   Camera: {
@@ -22,32 +29,13 @@ const AppNavigator = DrawerNavigator({
 });
 
 export default class App extends Component {
-  constructor() {
-    super();
-    this.storageState = {};
-  }
-
-  async componentWillMount() {
-    //this.storageState = await AsyncStorage.getItem('@Quicket:test');
-    this.storageState = await storageState;
-    // bull ----->
-    console.log('hahah', this.storageState, storageState);
-
-  }
-
   render() {
-    console.log('storage', this.storageState);
+    //Realm.clearTestState(); // Uncomment to drop/recreate database
+    this.realm = new Realm({schema: Schema});
     return (
-      <Provider store={createStore(cameraReducer)}>
+      // <Provider>
         <AppNavigator/>
-      </Provider>
+      // </Provider>
     );
   }
-
-  // componentWillUnmount() {
-  //   const stringifiedStore = JSON.stringify(store.getState());
-  //   console.log(stringifiedStore);
-  //   AsyncStorage.setItem('@Quicket:test', stringifiedStore);
-  //   this.unsubscribe();
-  // }
 }
