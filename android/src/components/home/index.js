@@ -23,7 +23,6 @@ export default class Home extends Component {
     this.state = {
       timerList: undefined
     };
-    this.ticketCount = 10;
     this.realm = new Realm();
   }
 
@@ -47,14 +46,14 @@ export default class Home extends Component {
   }
 
   renderTimerLists() {
-    const lists = []; console.log(this.realm.objects('Timers'))
+    const lists = [];
     let skip = true;
     this.realm.objects('Timers').forEach(timerList => {
       if (timerList.list.length >= 1) {
         if (skip) {
           lists.push(
             <TouchableHighlight
-              onPress={(timerList) => this._openTimerListPage(timerList)} >
+              onPress={() => this._openTimerListPage(timerList)} >
               <View style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -75,7 +74,7 @@ export default class Home extends Component {
           skip = true;
           lists.push(
             <TouchableHighlight
-              onPress={(timerList) => this._openTimerListPage(timerList)} >
+              onPress={() => this._openTimerListPage(timerList)} >
               <View style={styles.timerRow}>
                 <Text style={styles.timerRowLength}>
                   { (timerList.list.length > 1) ? timerList.list.length + '\n cars' : '1 \n car' }
@@ -93,6 +92,7 @@ export default class Home extends Component {
   }
 
   _openTimerListPage(timerList) {
+    //console.log('list', timerList);
     const navigateAction = NavigationActions.navigate({
       routeName: 'TimerList',
       params: {timers: timerList},

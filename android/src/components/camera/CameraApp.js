@@ -7,7 +7,6 @@ import {
   Text,
   ActivityIndicator
 } from 'react-native';
-import uuidV4 from 'uuid/v4';
 import Camera from 'react-native-camera';
 import MapView from 'react-native-maps';
 import RNFS from 'react-native-fs'; //TODO reinstall debug apk
@@ -23,6 +22,7 @@ export class CameraApp extends Component {
     this.longitude = null;
     this.cameraId = null;
     this.count = 0;
+    this.index = 0;
     this.realm = new Realm();
   }
 
@@ -184,11 +184,12 @@ export class CameraApp extends Component {
   }
 
   savePicture(data) {
+    this.index = (this.index === null) ? 0 : this.index++;
     const context = this;
     console.log(this.realm.objects('Timers'), context.count, context.latitude);
     this.realm.write(() => {
       this.realm.objects('Timers')[context.count]['list'].push({
-        key: uuidV4(),
+        key: contex.index,
         latitude: context.latitude,
         longitude: context.longitude,
         createdAt: new Date() / 1000,

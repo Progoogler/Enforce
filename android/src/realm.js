@@ -2,7 +2,7 @@ class TimerSchema {};
 TimerSchema.schema = {
   name: 'Timer',
   properties: {
-    key: 'string',
+    key: 'int',
     latitude: 'float',
     longitude: 'float',
     timeLength: 'float',

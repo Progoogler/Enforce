@@ -9,7 +9,8 @@ import { Provider } from 'react-redux';
 
 import { CameraApp } from './camera/CameraApp';
 import MapApp from './map/MapApp';
-import Home from './home/index';
+import Home from './home';
+import TimerList from './timerList';
 
 import Realm from 'realm';
 import Schema from '../realm';
@@ -25,6 +26,9 @@ const AppNavigator = DrawerNavigator({
   },
   Camera: {
     screen: CameraApp,
+  },
+  TimerList: {
+    screen: TimerList,
   },
 });
 
