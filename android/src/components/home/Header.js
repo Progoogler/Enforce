@@ -5,20 +5,20 @@ import {
   StyleSheet,
   TouchableHighlight,
   TextInput,
+  Image,
 } from 'react-native';
 import Realm from 'realm';
 
 const styles = StyleSheet.create({
   headerContainer: {
-    flex: .14,
     flexDirection: 'row',
+    backgroundColor: '#3f1ae8',
   },
   headerNavigation: {
     flex: .15,
     height: 60,
-    borderWidth: 2,
-    borderColor: 'black',
     justifyContent: 'center',
+    alignItems: 'center',
   },
   headerNavButton: {
     textAlign: 'center',
@@ -27,15 +27,13 @@ const styles = StyleSheet.create({
     flex: .70,
     height: 60,
     paddingLeft: 20,
-    borderWidth: 2,
-    borderColor: 'red',
+    fontSize: 28,
+    color: 'white',
     textAlignVertical: 'center',
   },
   headerSearchButton: {
     flex: .15,
     height: 60,
-    borderWidth: 2,
-    borderColor: 'black',
     justifyContent: 'center',
   },
   headerSearchIcon: {
@@ -62,13 +60,13 @@ class Header extends Component {
             this.props.navigation.navigate('DrawerOpen');
           }}
           style={styles.headerNavigation} >
-          <Text style={styles.headerNavButton}> * </Text>
+          <Image source={require('../../../../shared/images/menu-icon.jpg')} />
         </TouchableHighlight>
 
         <Text style={styles.headerTitle}>Quicket</Text>
         <TouchableHighlight
           style={styles.headerSearchButton} >
-          <Text style={styles.headerSearchIcon}> o </Text>
+          <Image source={require('../../../../shared/images/search-icon.jpg')} />
         </TouchableHighlight>
       </View>
     );

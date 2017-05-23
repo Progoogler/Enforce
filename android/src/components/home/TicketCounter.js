@@ -9,7 +9,6 @@ import Realm from 'realm';
 
 const styles = StyleSheet.create({
   ticketCountContainer: {
-    flex: .25,
     alignItems: 'center',
     padding: 15,
   },

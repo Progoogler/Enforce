@@ -189,7 +189,7 @@ export class CameraApp extends Component {
     console.log(this.realm.objects('Timers'), context.count, context.latitude);
     this.realm.write(() => {
       this.realm.objects('Timers')[context.count]['list'].push({
-        key: contex.index,
+        key: context.index,
         latitude: context.latitude,
         longitude: context.longitude,
         createdAt: new Date() / 1000,

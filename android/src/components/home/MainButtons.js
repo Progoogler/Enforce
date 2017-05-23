@@ -10,7 +10,6 @@ import Realm from 'realm';
 
 const styles = StyleSheet.create({
   mainButtonsContainer: {
-    flex: .20,
     flexDirection: 'row',
   },
   mapButton: {

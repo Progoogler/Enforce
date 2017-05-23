@@ -126,12 +126,9 @@ export default class Home extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'column',
     alignItems: 'center',
   },
   timerRowsContainer: {
-    flex: .40,
     alignSelf: 'stretch',
     marginTop: 25,
   },

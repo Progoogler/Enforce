@@ -22,8 +22,7 @@ const styles = StyleSheet.create({
   },
   vinButton: {
     alignSelf: 'stretch',
-    borderColor: 'green',
-    borderWidth: 2,
+    backgroundColor: 'green',
     height: 60,
     alignItems: 'center',
     justifyContent: 'center',
@@ -35,21 +34,37 @@ const styles = StyleSheet.create({
   },
   movedButton: {
     flex: .5,
-    borderColor: 'green',
-    borderWidth: 2,
+    backgroundColor: 'red',
     alignItems: 'center',
     justifyContent: 'center',
   },
   ticketedButton: {
     flex: .5,
-    borderColor: 'green',
-    borderWidth: 2,
+    backgroundColor: '#3f1ae8',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  description: {
-    //flex: .2,
+  buttonText: {
+    fontSize: 24,
+    color: 'white',
   },
+  descriptionContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingLeft: 15,
+    paddingRight: 15,
+  },
+  timeContainer: {
+    flexDirection: 'column',
+  },
+  timeLeft: {
+    fontSize: 16,
+  },
+  timeCreatedAt: {
+    color: 'blue',
+    fontSize: 30,
+  }
 });
 
 
@@ -59,43 +74,42 @@ class Row extends Component {
     super();
   }
   render() {
+    console.log('render timer list');
     return (
       <View style={styles.container} >
         <Image
           style={styles.image}
           source={{uri: this.props.mediaUri}} />
 
-        <Text style={styles.description}>{this._getTimeLeft(this.props)}</Text>
-        <Text style={styles.description}>Recorded at {this._getPrettyTimeFormat(this.props.createdAtDate)}</Text>
-        <Text style={styles.description}>{this._getTimeLimitResponse(this.props.timeLength)}</Text>
-
-        <View style={styles.buttonsContainer} >
           <TouchableHighlight
             style={styles.vinButton} >
-            <Text> Get VIN </Text>
+            <Text style={styles.buttonText}> Get VIN </Text>
           </TouchableHighlight>
+
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.timeLeft}>{this._getTimeLeft(this.props)}</Text>
+          <View style={styles.timeContainer}>
+          <Text style={styles.description}>Recorded at</Text>
+          <Text style={styles.timeCreatedAt}>{this._getPrettyTimeFormat(this.props.createdAtDate)}</Text>
+          </View>
+        {/*<Text style={styles.description}>{this._getTimeLimitResponse(this.props.timeLength)}</Text>*/}
+        </View>
+
+        <View style={styles.buttonsContainer} >
           <View style={styles.rowButtonsContainers} >
             <TouchableHighlight
               style={styles.movedButton} >
-              <Text> Moved </Text>
+              <Text style={styles.buttonText}> Moved </Text>
             </TouchableHighlight>
             <TouchableHighlight
               style={styles.ticketedButton}
               onPress={() => this._updateList(this.props.key)}>
-              <Text> Ticketed </Text>
+              <Text style={styles.buttonText}> Ticketed </Text>
             </TouchableHighlight>
           </View>
         </View>
       </View>
     );
-  }
-
-  _getTimeLimitResponse(length) {
-    if (length < 1) {
-      return `${length} minute time limit`;
-    } else {
-      return `${length} hour time limit`;
-    }
   }
 
   _getPrettyTimeFormat(date) {
