@@ -23,7 +23,10 @@ class Footer extends Component {
   render() {
     return (
       <View style={styles.footer}>
-        <Button style={styles.button} title="Finished" />
+        <Button
+          style={styles.button}
+          onPress={() => {}} 
+          title="Finished" />
       </View>
     );
   }

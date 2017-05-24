@@ -60,7 +60,7 @@ class Header extends Component {
             this.props.navigation.navigate('DrawerOpen');
           }}
           style={styles.headerNavigation} >
-          <Image source={require('../../../../shared/images/menu-icon.jpg')} />
+          <Image source={require('../../../../shared/images/menu-icon.png')} />
         </TouchableHighlight>
 
         <Text style={styles.headerTitle}>Quicket</Text>

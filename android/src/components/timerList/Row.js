@@ -99,7 +99,7 @@ class Row extends Component {
           <View style={styles.rowButtonsContainers} >
             <TouchableHighlight
               style={styles.movedButton} >
-              <Text style={styles.buttonText}> Moved </Text>
+              <Text style={styles.buttonText}> Expired </Text>
             </TouchableHighlight>
             <TouchableHighlight
               style={styles.ticketedButton}

@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   View,
-  Button,
   Image,
   Text,
-  ActivityIndicator
+  ActivityIndicator,
+  TouchableHighlight,
 } from 'react-native';
 import Camera from 'react-native-camera';
-import MapView from 'react-native-maps';
-import RNFS from 'react-native-fs'; //TODO reinstall debug apk
+import RNFS from 'react-native-fs';
 import Realm from 'realm';
+
+import Navigation from '../home/Header';
+import SetTimeLimit from './SetTimeLimit';
 
 export class CameraApp extends Component {
   constructor() {
@@ -23,6 +25,7 @@ export class CameraApp extends Component {
     this.cameraId = null;
     this.count = 0;
     this.index = 0;
+    this.timeLimit = 1;
     this.realm = new Realm();
   }
 
@@ -38,15 +41,16 @@ export class CameraApp extends Component {
 
   render() {
     const store = this.context;
-
     return (
       <View style={styles.container} >
-        <View style={{zIndex: 10}} >
+{/*        <View style={{zIndex: 10}} >
           <ActivityIndicator
             animating={this.state.animating}
             style={styles.activity}
             size='large' />
-        </View>
+        </View> */}
+        <Navigation navigation={this.props.navigation} />
+        <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} />
         <View style={styles.cameraContainer} >
           <Camera
             ref={(cam) => {
@@ -54,7 +58,12 @@ export class CameraApp extends Component {
             }}
             style={styles.preview}
             aspect={Camera.constants.Aspect.fill} >
-            <Text style={styles.capture} onPress={() => {
+          </Camera>
+          <View style={styles.footer}>
+            <Image source={require('../../../../shared/images/pin.jpg')} />
+            <TouchableHighlight
+              style={styles.capture}
+              onPress={() => {
               this.takePicture();
               console.log(this.realm.objects('CameraTime'));
               for (let i = 0; i < this.realm.objects('Timers')[0]['list'].length; i++) {
@@ -62,8 +71,11 @@ export class CameraApp extends Component {
               }
               console.log('first list length:', this.realm.objects('Timers')[0]['list'].length);
               console.log('timer count:', this.realm.objects('TimerCount'));
-            }}>[CAPTURE]</Text>
-          </Camera>
+            }} >
+              <View></View>
+            </TouchableHighlight>
+            <Text>undo</Text>
+          </View>
         </View>
       </View>
     );
@@ -194,12 +206,19 @@ export class CameraApp extends Component {
         longitude: context.longitude,
         createdAt: new Date() / 1000,
         createdAtDate: new Date(),
-        timeLength: 1.5, // TEST LENGTH TODO Build Time Length Adjuster/Setter
+        timeLength: context.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
         mediaUri: data.mediaUri,
         mediaPath: data.path,
       });
     });
     this.setState({animating: false});
+  }
+
+  _onUpdateTimeLimit(timeLimit) {
+
+    this.setState({timeLimit});
+    console.log(this.state.timeLimit);
+    this.createNewTimerList();
   }
 }
 
@@ -210,19 +229,21 @@ const styles = StyleSheet.create({
   },
   cameraContainer: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   preview: {
     flex: 1,
     justifyContent: 'flex-end',
-    alignItems: 'center'
+    alignItems: 'center',
+  },
+  footer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   capture: {
-    flex: 0,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    color: '#000',
-    padding: 10,
-    margin: 40
-  }
+    backgroundColor: 'green',
+    borderRadius: 100,
+    padding: 4,
+    margin: 4,
+  },
 });
