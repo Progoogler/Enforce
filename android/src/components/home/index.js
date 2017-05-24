@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
   timerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 75,
+    height: 105,
     borderTopWidth: 2,
     borderBottomWidth: 2,
     borderColor: 'black',

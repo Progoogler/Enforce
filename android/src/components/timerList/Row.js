@@ -34,13 +34,17 @@ const styles = StyleSheet.create({
   },
   movedButton: {
     flex: .5,
-    backgroundColor: 'red',
+    backgroundColor: '#4286f4',
     alignItems: 'center',
     justifyContent: 'center',
   },
+  separator: {
+    borderColor: 'white',
+    borderWidth: .5,
+  },
   ticketedButton: {
     flex: .5,
-    backgroundColor: '#3f1ae8',
+    backgroundColor: '#4286f4',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -62,7 +66,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   timeCreatedAt: {
-    color: 'blue',
+    color: '#4286f4',
     fontSize: 30,
   }
 });
@@ -101,6 +105,7 @@ class Row extends Component {
               style={styles.movedButton} >
               <Text style={styles.buttonText}> Expired </Text>
             </TouchableHighlight>
+            <View style={styles.separator} />
             <TouchableHighlight
               style={styles.ticketedButton}
               onPress={() => this._updateList(this.props.key)}>

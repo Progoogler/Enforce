@@ -11,28 +11,33 @@ import Realm from 'realm';
 const styles = StyleSheet.create({
   mainButtonsContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#4286f4',
   },
   mapButton: {
     flex: .5,
     height: 70,
-    borderWidth: 2,
-    borderColor: 'blue',
     alignItems: 'center',
     justifyContent: 'center',
   },
   mapButtonText: {
-
+    color: 'white',
+    fontSize: 18,
+  },
+  separator: {
+    borderColor: 'white',
+    borderWidth: .5,
+    height: 40,
   },
   cameraButton: {
     flex: .5,
     height: 70,
-    borderWidth: 2,
-    borderColor: 'blue',
     alignItems: 'center',
     justifyContent: 'center',
   },
   cameraButtonText: {
-
+    color: 'white',
+    fontSize: 18,
   }
 });
 
@@ -43,6 +48,7 @@ const MainButtons = (props) => (
       style={styles.mapButton} >
       <Text style={styles.mapButtonText}> Map </Text>
     </TouchableHighlight>
+    <View style={styles.separator} />
     <TouchableHighlight
       onPress={() => props.navigation.navigate('Camera')}
       style={styles.cameraButton} >

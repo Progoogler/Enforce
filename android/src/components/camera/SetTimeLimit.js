@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 50,
+    height: 70,
     backgroundColor: 'grey',
   },
   hourInput: {
@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   timeDesc: {
-    color: 'green',
     fontSize: 18,
     marginRight: 25,
   },
@@ -54,7 +53,7 @@ class SetTimeLimit extends Component {
   }
 
   render() {
-    console.log('TIME LIMIT', this.state.hour)
+    console.log('TIME LIMIT', this.state.hour, this.state.minutes)
     return (
       <View style={styles.container}>
         <TextInput

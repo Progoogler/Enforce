@@ -41,6 +41,7 @@ export class CameraApp extends Component {
 
   render() {
     const store = this.context;
+    console.log('time limit', this.timeLimit)
     return (
       <View style={styles.container} >
 {/*        <View style={{zIndex: 10}} >
@@ -60,7 +61,9 @@ export class CameraApp extends Component {
             aspect={Camera.constants.Aspect.fill} >
           </Camera>
           <View style={styles.footer}>
-            <Image source={require('../../../../shared/images/pin.jpg')} />
+            <Image
+              style={styles.pinIcon}
+              source={require('../../../../shared/images/pin.png')} />
             <TouchableHighlight
               style={styles.capture}
               onPress={() => {
@@ -74,7 +77,9 @@ export class CameraApp extends Component {
             }} >
               <View></View>
             </TouchableHighlight>
-            <Text>undo</Text>
+            <Text
+              style={styles.undo}
+              onPress={this.deletePreviousPicture.bind(this)}>undo</Text>
           </View>
         </View>
       </View>
@@ -169,7 +174,6 @@ export class CameraApp extends Component {
   }
 
   deletePreviousPicture() {
-    // TODO Build a delete button.
     // TODO Updating most recent picture may delay the deletion order
     // removing previous data before the most recent picture has updated to realm.
     const context = this;
@@ -239,11 +243,22 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: 'rgba(52, 52, 52, 0.8)',
+    height: 80,
+  },
+  pinIcon: {
+    marginLeft: 20,
   },
   capture: {
     backgroundColor: 'green',
     borderRadius: 100,
-    padding: 4,
+    padding: 30,
     margin: 4,
   },
+  undo: {
+    color: '#4286f4',
+    marginRight: 20,
+    fontSize: 20,
+  }
 });

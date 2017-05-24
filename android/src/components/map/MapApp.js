@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Realm from 'realm';
-import { connect } from 'react-redux';
+import Navigation from '../home/Header';
 
 export default class MapApp extends Component {
   constructor() {
@@ -51,14 +51,7 @@ export default class MapApp extends Component {
   render() {
     return (
       <View style={styles.container} >
-        <View
-          style={{position: 'absolute', zIndex: 1, top: 0, left: 0, right: 0}} >
-          <Button
-            onPress={() => {
-              console.log('Timers obj', this.realm.objects('Timers').length, this.realm.objects('Timers'));
-            }}
-            title="Increment" />
-        </View>
+        <Navigation navigation={this.props.navigation} />
 
         <ActivityIndicator
           animating={this.state.animating}

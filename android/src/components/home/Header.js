@@ -12,7 +12,7 @@ import Realm from 'realm';
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
-    backgroundColor: '#3f1ae8',
+    backgroundColor: '#4286f4',
   },
   headerNavigation: {
     flex: .15,
@@ -60,9 +60,8 @@ class Header extends Component {
             this.props.navigation.navigate('DrawerOpen');
           }}
           style={styles.headerNavigation} >
-          <Image source={require('../../../../shared/images/menu-icon.png')} />
+          <Image source={require('../../../../shared/images/menu-icon.jpg')} />
         </TouchableHighlight>
-
         <Text style={styles.headerTitle}>Quicket</Text>
         <TouchableHighlight
           style={styles.headerSearchButton} >
