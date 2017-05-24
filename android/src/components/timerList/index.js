@@ -3,12 +3,14 @@ import {
   ListView,
   View,
   StyleSheet,
+  RefreshControl,
 } from 'react-native';
 
 import Title from './Title';
 import Row from './Row';
 import Footer from './Footer';
 import Header from './ListViewHeader';
+import HeaderButtons from './HeaderButtons';
 import Navigation from '../home/Header';
 
 const styles = StyleSheet.create({
@@ -33,11 +35,22 @@ class TimerList extends Component {
     this.list = this.props.navigation.state.params.timers.list;
     this.state = {
       dataSource: ds.cloneWithRows(this.list),
+      refreshing: false,
     };
   }
 
   _updateList(index) {
 
+  }
+
+  _onRefresh() {
+    console.log('something');
+    //this.setState({refreshing: true});
+    this.setState({
+      refreshing: true,
+      dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)
+    });
+    this.setState({refreshing: false});
   }
 
   render() {
@@ -47,6 +60,10 @@ class TimerList extends Component {
         <Navigation navigation={this.props.navigation} />
         <Title limit={this.props.navigation.state.params.timers.list[0].timeLength} />
         <ListView
+          refreshControl={
+            <RefreshControl refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh.bind(this)} />
+          }
           timers={this.props.navigation.state.params.timers.list}
           style={styles.container}
           dataSource={this.state.dataSource}
