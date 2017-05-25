@@ -34,7 +34,7 @@ export default class Home extends Component {
         <TicketCounter />
         <TimersList navigation={this.props.navigation} />
       </View>
-    )
+    );
   }
 
   // renderTimerLists() {
