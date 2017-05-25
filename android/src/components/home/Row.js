@@ -62,15 +62,22 @@ class Row extends Component {
         </TouchableHighlight>
         <TouchableHighlight
           style={styles.button}
-          onPress={()=>{}}>
+          onPress={()=> this._openMapPage(this.props.list)} >
           <Text style={styles.buttonText}>Show Map</Text>
         </TouchableHighlight>
       </View>
     );
   }
 
+  _openMapPage(timerList) {
+    const navigateAction = NavigationActions.navigate({
+      routeName: 'FocusMap',
+      params: {timers: timerList},
+    });
+    this.props.navigation.dispatch(navigateAction);
+  }
+
   _openTimerListPage(timerList) {
-    //console.log('list', timerList);
     const navigateAction = NavigationActions.navigate({
       routeName: 'TimerList',
       params: {timers: timerList},

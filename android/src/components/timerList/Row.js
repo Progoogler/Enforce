@@ -108,6 +108,9 @@ class Row extends Component {
             <View style={styles.separator} />
             <TouchableHighlight
               style={styles.ticketedButton}
+
+              {/* TODO */}
+
               onPress={() => this._updateList(this.props.key)}>
               <Text style={styles.buttonText}> Ticketed </Text>
             </TouchableHighlight>

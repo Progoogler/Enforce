@@ -9,6 +9,7 @@ import { Provider } from 'react-redux';
 
 import { CameraApp } from './camera/CameraApp';
 import MapApp from './map/MapApp';
+import FocusMap from './home/Map';
 import Home from './home';
 import TimerList from './timerList';
 
@@ -23,6 +24,9 @@ const AppNavigator = DrawerNavigator({
   Map: {
     // screen: MapApp,
     screen: MapApp,
+  },
+  FocusMap: {
+    screen: FocusMap,
   },
   Camera: {
     screen: CameraApp,
