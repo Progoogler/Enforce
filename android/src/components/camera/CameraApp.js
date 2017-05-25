@@ -128,6 +128,13 @@ export class CameraApp extends Component {
     if (timerSequence.length > 0) {
       this.count = timerSequence[0].count;
     }
+    // if (countObj === undefined) {
+    //   this.realm.write(() => {
+    //     this.realm.create('TimerCount', {count: 0});
+    //   });
+    // } else {
+    //   this.count = countObj.count;
+    // }
   }
 
   setCameraTime() {

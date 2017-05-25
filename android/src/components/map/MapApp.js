@@ -42,7 +42,7 @@ export default class MapApp extends Component {
         let longitude = parseFloat(position.coords.longitude);
         this._animateToCoord(latitude, longitude);
       }, error => {
-        console.log('Error loading geolocation:', error); //this.retryGeolocation();
+        this.retryGeolocation();
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
     );

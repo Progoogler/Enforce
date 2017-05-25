@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import Realm from 'realm';
 import Row from './Row';
-import insertionSortModified from './insertionSort';
 
 const styles = StyleSheet.create({
   container: {
@@ -23,7 +22,6 @@ class TimersList extends Component {
     this.realm = new Realm();
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.list = this.realm.objects('Timers').filtered('list.createdAt > 0');
-    this.list = insertionSortModified(this.list);
     this.state = {
       dataSource: ds.cloneWithRows(this.list),
       refreshing: false,
@@ -48,6 +46,7 @@ class TimersList extends Component {
   }
 
   _onRefresh() {
+    console.log('something');
     //this.setState({refreshing: true});
     this.setState({
       refreshing: true,

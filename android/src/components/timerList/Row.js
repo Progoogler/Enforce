@@ -118,10 +118,8 @@ class Row extends Component {
   }
 
   _getPrettyTimeFormat(date) {
-    // TODO 8:6 FIX
     let hour = date.getHours();
-    let minutes = date.getMinutes() + '';
-    miuntes = minutes.length === 1 ? '0' + minutes : minutes;
+    let minutes = date.getMinutes();
     let period = (hour < 12) ? 'AM' : 'PM';
     hour = (hour <= 12) ? hour : hour - 12;
     return `${hour}:${minutes} ${period}`;
