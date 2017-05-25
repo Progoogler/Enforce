@@ -9,7 +9,7 @@ TimerSchema.schema = {
     createdAt: 'int',
     createdAtDate: 'date',
     mediaUri: 'string',
-    mediaPath: 'string'
+    mediaPath: 'string',
   }
 }
 
@@ -21,31 +21,20 @@ TimerListSchema.schema = {
   }
 }
 
-class TimerSequenceSchema {};
-TimerSequenceSchema.schema = {
-  name: 'TimerSequence',
+class CameraTimeSchema {};
+CameraTimeSchema.schema = {
+  name: 'CameraTime',
   properties: {
-    timeAccessedAt: 'int',
+    timeAccessedAt: 'int'
+  }
+}
+
+class TimerCountSchema {};
+TimerCountSchema.schema = {
+  name: 'TimerCount',
+  properties: {
     count: 'int'
   }
 }
 
-class TimeLimitSchema {};
-TimeLimitSchema.schema = {
-  name: 'TimeLimit',
-  properties: {
-    float: 'float',
-    hour: 'string',
-    minutes: 'string'
-  }
-}
-
-class TicketedSchema {};
-TicketedSchema.schema = {
-  name: 'Ticketed',
-  properties: {
-    list: {type: 'list', objectType: 'Timer'}
-  }
-}
-
-export default [TimerSchema, TimerListSchema, TimerSequenceSchema, TimeLimitSchema, TicketedSchema];
+export default [{name: 'Dog', properties: {name: 'string'}}, TimerSchema, CameraTimeSchema, TimerListSchema, TimerCountSchema];
