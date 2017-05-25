@@ -6,6 +6,8 @@ import {
   RefreshControl,
 } from 'react-native';
 
+import Realm from 'realm'; // TODO remove
+
 import Title from './Title';
 import Row from './Row';
 import Footer from './Footer';
@@ -30,7 +32,7 @@ const styles = StyleSheet.create({
 class TimerList extends Component {
   constructor(props) {
     super(props);
-    console.log('PROPZ', this.props);
+    this.realm = new Realm(); // TODO REMOVE
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.list = this.props.navigation.state.params.timers;
     this.state = {
@@ -44,8 +46,6 @@ class TimerList extends Component {
   }
 
   _onRefresh() {
-    console.log('something');
-    //this.setState({refreshing: true});
     this.setState({
       refreshing: true,
       dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)
@@ -54,6 +54,7 @@ class TimerList extends Component {
   }
 
   render() {
+        //console.log('TIME LIMIT', this.realm.objects('TimeLimit'))
     //console.log('props', this.props.navigation.state.params.timers.list)
     return (
       <View>

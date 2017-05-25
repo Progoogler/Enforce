@@ -29,7 +29,6 @@ class TimersList extends Component {
   }
 
   render() {
-    console.log('PROPS', this.props)
     return (
       <ListView
         style={styles.container}

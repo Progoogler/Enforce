@@ -46,6 +46,7 @@ const styles = StyleSheet.create({
 class SetTimeLimit extends Component {
   constructor() {
     super();
+    this.realm = new Realm();
     this.state = {
       hour: "1",
       minutes: "00",
@@ -75,6 +76,13 @@ class SetTimeLimit extends Component {
     );
   }
 
+  componentDidMount() {
+    let timeLimit = this.realm.objects('TimeLimit');
+    if (timeLimit.length > 0) {
+      this.setState({hour: timeLimit[0].hour, minutes: timeLimit[0].minutes});
+    }
+  }
+
   _onChangeHour(hour) {
     if (typeof parseInt(hour) !== 'number') {
       //throw error
@@ -100,23 +108,33 @@ class SetTimeLimit extends Component {
   _updateTimeLimit() {
     let minutes = `${parseInt(this.state.minutes) / 60}`;
     let newLimit;
+    let timeLimit = this.realm.objects('TimeLimit');
     if (minutes.length === 1) {
       if (minutes === "1") {
         minutes = "00";
-        this.setState({hour: this.state.hour + 1});
+        this.setState({hour: this.state.hour + 1, minutes});
         newLimit = parseFloat(`${parseInt(this.state.hour)}.${parseInt(minutes)}`);
-        this.props.onUpdateTimeLimit(newLimit);
+        this.realm.write(() => {
+          timeLimit[0].float = newLimit;
+        });
+        this.props.onUpdateTimeLimit();
         return;
       } else if (minutes === "0") {
         newLimit = parseFloat(`${parseInt(this.state.hour)}.${parseInt(minutes)}`);
-        this.props.onUpdateTimeLimit(newLimit);
+        this.realm.write(() => {
+          timeLimit[0].float = newLimit;
+        });
+        this.props.onUpdateTimeLimit();
         return;
       }
     }
     minutes = minutes.slice(1);
     newLimit = this.state.hour + minutes;
     newLimit = parseFloat(newLimit);
-    this.props.onUpdateTimeLimit(newLimit);
+    this.realm.write(() => {
+      timeLimit[0].float = newLimit;
+    });
+    this.props.onUpdateTimeLimit();
   }
 }
 
