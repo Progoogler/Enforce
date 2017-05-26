@@ -32,9 +32,10 @@ export default class App extends Component {
     this.realm = new Realm({schema: Schema});
     // this.realm.write(() => this.realm.create('Ticketed', {list: []})); // For beta testing only TODO remove this
     let timerLists = this.realm.objects('Timers');
-    if (timerLists.length > 0) {
+    if (timerLists.length > 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object
       let i = 0, lastTime;
       while (lastTime === undefined) { // Edge case for empty first object
+        console.log(timerLists[i], timerLists[i].list)
         if (timerLists[i].list.length > 0) lastTime = timerLists[i].list[0].createdAt;
         i++;
       }
@@ -45,7 +46,7 @@ export default class App extends Component {
         //TODO Doesn't wait..
         setTimeout(() => {
           console.log('DELETE')
-          Realm.clearTestState(); // Uncomment to drop/recreate database
+          Realm.clearTestState();
           this.realm = new Realm({schema: Schema});
           this.realm.write(() => this.realm.create('Ticketed', {list: []}));
         }, 2000);

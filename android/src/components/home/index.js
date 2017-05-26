@@ -16,6 +16,7 @@ import { NavigationActions } from'react-navigation';
 export default class Home extends Component {
   constructor() {
     super();
+    this.realm = new Realm();
   }
 
   render() {
@@ -23,7 +24,7 @@ export default class Home extends Component {
       <View style={styles.container} >
         <Header navigation={this.props.navigation} />
         <MainButtons navigation={this.props.navigation} />
-        <TicketCounter />
+        <TicketCounter realm={this.realm}/>
         <TimersList navigation={this.props.navigation} />
       </View>
     );

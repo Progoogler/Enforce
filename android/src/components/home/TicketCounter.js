@@ -25,11 +25,17 @@ const styles = StyleSheet.create({
 
 this.ticketCount = 10;
 
-const TicketCounter = (props) => (
-  <View style={styles.ticketCountContainer} >
-    <Text style={styles.ticketCountNumber}>{ this.ticketCount }</Text>
-    <Text style={styles.ticketCountDescription}>tickets today</Text>
-  </View>
-);
+export default class TicketCounter extends Component {
+  constructor() {
+    super();
+  }
 
-export default TicketCounter;
+  render() {
+    return (
+      <View style={styles.ticketCountContainer} >
+        <Text style={styles.ticketCountNumber}>{ this.props.realm.objects('Ticketed')[0].list.length }</Text>
+        <Text style={styles.ticketCountDescription}>tickets today</Text>
+      </View>
+    );
+  }
+}
