@@ -49,7 +49,6 @@ class TimersList extends Component {
   }
 
   _onRefresh() {
-    //this.setState({refreshing: true});
     this.setState({
       refreshing: true,
       dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)

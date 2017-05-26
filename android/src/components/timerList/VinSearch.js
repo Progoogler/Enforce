@@ -7,6 +7,13 @@ import {
   TouchableHighlight,
 } from 'react-native';
 
+// import RNFS from 'react-native-fs';
+// import watson from 'watson-developer-cloud/visual-recognition/v3';
+// const visual_recognition = watson.visual_recognition({
+//   api_key: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJva3RhLXVzZXItbGFzdE5hbWUiOiJMaSIsInN1YiI6Im9hdXRoLWV4dC1va3RhX0FVVEhOIiwib2t0YS11c2VyLWlkIjoiMDB1ZGtmazh0NFVZaVpsOVcweDciLCJpc3MiOiJFWFBFUklBTiIsIm9rdGEtdXNlci1wcm9kdWN0T3B0aW9ucyI6bnVsbCwiZXhwIjoxNDk1NzczODkwLCJpYXQiOjE0OTU3NDUwOTAsIm9rdGEtdXNlci1maXJzdE5hbWUiOiJBbmR5In0.CfNLPOxFXAejw0lh5Rs-hiwuL45RZgJVKMZsbIufOC0-Td2YP93M0X0oaR9l0sp_YUOeEkCwYIMCtPWp-kyL76w-FsrprsDgGXti-LWpg9yDr06FkL1gmmhsC-HTM1hY5soLdp_bim7JNnEPfhnXhxxPW1LayjgcPuKXmSuEvNpLNtGioXkOUCBUcJP1kVxVIpEehvOGHffKmSBuugwFrzKwym2DNkja3Jl6bWUzwmwD82apZDhopJ2Jr8d24Zo40pLwv926mexENxE8A9A07CUHn80s9vbdp8Gcdu7ueQYFWPJyCtyoMJ3UGESsaXq3crFhSLk0Kl97NaqTkzWQlw',
+//   version: 'v3',
+//   version_date: '2016-05-19'
+// });
 
 export default class VinSearch extends Component {
   constructor() {

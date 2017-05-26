@@ -41,7 +41,6 @@ export class CameraApp extends Component {
 
   render() {
     const store = this.context;
-    console.log('time limit', this.timeLimit)
     return (
       <View style={styles.container} >
 {/*        <View style={{zIndex: 10}} >
@@ -219,9 +218,7 @@ export class CameraApp extends Component {
   }
 
   _onUpdateTimeLimit(timeLimit) {
-
     this.setState({timeLimit});
-    console.log(this.state.timeLimit);
     this.createNewTimerList();
   }
 }

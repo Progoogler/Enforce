@@ -7,43 +7,7 @@ import {
   TextInput,
 } from 'react-native';
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: 70,
-    backgroundColor: 'grey',
-  },
-  hourInput: {
-    width: 25,
-    fontSize: 24,
-    color: 'white',
-  },
-  minutesInput: {
-    width: 40,
-    fontSize: 24,
-    color: 'white',
-  },
-  timeDesc: {
-    fontSize: 18,
-    marginRight: 25,
-  },
-  setButton: {
-    marginLeft: 40,
-    backgroundColor: 'green',
-    borderWidth: 2,
-    borderRadius: 8,
-    borderColor: 'white',
-  },
-  buttonText: {
-    fontSize: 28,
-    color: 'white',
-    padding: 4,
-  }
-});
-
-class SetTimeLimit extends Component {
+export default class SetTimeLimit extends Component {
   constructor() {
     super();
     this.state = {
@@ -120,4 +84,38 @@ class SetTimeLimit extends Component {
   }
 }
 
-export default SetTimeLimit;
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 70,
+    backgroundColor: 'grey',
+  },
+  hourInput: {
+    width: 25,
+    fontSize: 24,
+    color: 'white',
+  },
+  minutesInput: {
+    width: 40,
+    fontSize: 24,
+    color: 'white',
+  },
+  timeDesc: {
+    fontSize: 18,
+    marginRight: 25,
+  },
+  setButton: {
+    marginLeft: 40,
+    backgroundColor: 'green',
+    borderWidth: 2,
+    borderRadius: 8,
+    borderColor: 'white',
+  },
+  buttonText: {
+    fontSize: 28,
+    color: 'white',
+    padding: 4,
+  }
+});

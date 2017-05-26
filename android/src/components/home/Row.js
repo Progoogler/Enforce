@@ -7,41 +7,7 @@ import {
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
 
-const styles = StyleSheet.create({
-  timerRowContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    //alignSelf: 'stretch',
-    alignItems: 'center',
-    borderTopWidth: 1,
-    //marginTop: 25,
-  },
-  timerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 105,
-  },
-  timerRowLength: {
-    fontSize: 20,
-    paddingLeft: 30,
-    textAlign: 'center',
-  },
-  timerRowTime: {
-    paddingLeft: 50,
-  },
-  button: {
-    backgroundColor: '#4286f4',
-    marginRight: 25,
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 5,
-  },
-  buttonText: {
-    color: 'white',
-  }
-});
-
-class Row extends Component {
+export default class Row extends Component {
   constructor() {
     super();
   }
@@ -109,4 +75,36 @@ class Row extends Component {
   }
 }
 
-export default Row;
+const styles = StyleSheet.create({
+  timerRowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    //alignSelf: 'stretch',
+    alignItems: 'center',
+    borderTopWidth: 1,
+    //marginTop: 25,
+  },
+  timerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 105,
+  },
+  timerRowLength: {
+    fontSize: 20,
+    paddingLeft: 30,
+    textAlign: 'center',
+  },
+  timerRowTime: {
+    paddingLeft: 50,
+  },
+  button: {
+    backgroundColor: '#4286f4',
+    marginRight: 25,
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+  },
+  buttonText: {
+    color: 'white',
+  }
+});
