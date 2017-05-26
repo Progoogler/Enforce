@@ -61,9 +61,8 @@ class TimerList extends Component {
           style={styles.container}
           dataSource={this.state.dataSource}
           renderRow={(data) => <Row data={data} updateRows={this.updateRows.bind(this)}/>}
-          renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
-          renderFooter={() => <Footer/>} />
-        <Footer />
+          renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} />
+        {/* }<Footer /> TODO space out the bottom margin of listview and animate "Done"*/}
       </View>
     );
   }
