@@ -5,8 +5,23 @@ import {
   StyleSheet,
   TouchableHighlight,
 } from 'react-native';
-import Realm from 'realm';
 
+
+const MainButtons = (props) => (
+  <View style={styles.mainButtonsContainer}>
+    <TouchableHighlight
+      onPress={() => props.navigation.navigate('Map')}
+      style={styles.mapButton} >
+      <Text style={styles.mapButtonText}> Map </Text>
+    </TouchableHighlight>
+    <View style={styles.separator} />
+    <TouchableHighlight
+      onPress={() => props.navigation.navigate('Camera')}
+      style={styles.cameraButton} >
+      <Text style={styles.cameraButtonText}> Camera </Text>
+    </TouchableHighlight>
+  </View>
+);
 
 const styles = StyleSheet.create({
   mainButtonsContainer: {
@@ -40,21 +55,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
   }
 });
-
-const MainButtons = (props) => (
-  <View style={styles.mainButtonsContainer}>
-    <TouchableHighlight
-      onPress={() => props.navigation.navigate('Map')}
-      style={styles.mapButton} >
-      <Text style={styles.mapButtonText}> Map </Text>
-    </TouchableHighlight>
-    <View style={styles.separator} />
-    <TouchableHighlight
-      onPress={() => props.navigation.navigate('Camera')}
-      style={styles.cameraButton} >
-      <Text style={styles.cameraButtonText}> Camera </Text>
-    </TouchableHighlight>
-  </View>
-);
 
 export default MainButtons;

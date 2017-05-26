@@ -5,13 +5,12 @@ import {
   StyleSheet,
 } from 'react-native';
 import Realm from 'realm';
-
+import { NavigationActions } from'react-navigation';
 import Header from './Header';
 import MainButtons from './MainButtons';
 import TicketCounter from './TicketCounter';
 import TimersList from './ListView';
 
-import { NavigationActions } from'react-navigation';
 
 export default class Home extends Component {
   constructor() {
