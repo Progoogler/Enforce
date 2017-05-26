@@ -223,6 +223,7 @@ export class CameraApp extends Component {
           longitude: this.longitude,
           createdAt: new Date() / 1000,
           createdAtDate: new Date(),
+          ticketedAtDate: new Date(),
           timeLength: this.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
           mediaUri: data.mediaUri,
           mediaPath: data.path,
@@ -237,6 +238,7 @@ export class CameraApp extends Component {
           longitude: this.longitude,
           createdAt: new Date() / 1000,
           createdAtDate: new Date(),
+          ticketedAtDate: new Date(),
           timeLength: this.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
           mediaUri: data.mediaUri,
           mediaPath: data.path,

@@ -52,6 +52,7 @@ export default class Row extends Component {
   _uponTicketed(timer) {
     console.log('timer this.props', timer);
     this.props.realm.write(() => {
+      timer.ticketedAtDate = new Date();
       this.props.realm.objects('Ticketed')[0]['list'].push(timer);
       this.props.realm.objects('Timers')[timer.index]['list'].shift();
     });

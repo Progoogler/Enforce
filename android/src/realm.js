@@ -8,8 +8,10 @@ TimerSchema.schema = {
     timeLength: 'float',
     createdAt: 'int',
     createdAtDate: 'date',
+    tickedAtDate: 'date',
     mediaUri: 'string',
-    mediaPath: 'string'
+    mediaPath: 'string',
+    description: 'string'
   }
 }
 
