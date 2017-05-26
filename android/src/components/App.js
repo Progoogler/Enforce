@@ -25,11 +25,11 @@ const AppNavigator = DrawerNavigator({
     // screen: MapApp,
     screen: MapApp,
   },
-  FocusMap: {
-    screen: FocusMap,
-  },
   Camera: {
     screen: CameraApp,
+  },
+  FocusMap: {
+    screen: FocusMap,
   },
   TimerList: {
     screen: TimerList,

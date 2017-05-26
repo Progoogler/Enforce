@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Realm from 'realm';
-import Navigation from '../home/Header';
+import Navigation from './Header';
 
 export default class Map extends Component {
   constructor() {

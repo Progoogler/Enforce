@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 
 import Title from './Title';
+import VinSearch from './VinSearch';
 import Row from './Row';
 import Footer from './Footer';
 import Header from './ListViewHeader';
@@ -59,6 +60,7 @@ class TimerList extends Component {
       <View>
         <Navigation navigation={this.props.navigation} />
         <Title limit={this.props.navigation.state.params.timers[0].timeLength} />
+        <VinSearch />
         <ListView
           refreshControl={
             <RefreshControl refreshing={this.state.refreshing}

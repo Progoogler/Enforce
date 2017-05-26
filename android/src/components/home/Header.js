@@ -13,6 +13,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     backgroundColor: '#4286f4',
+    zIndex: 10,
   },
   headerNavigation: {
     flex: .15,
