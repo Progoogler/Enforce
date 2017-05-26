@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   timerRowTime: {
-    paddingLeft: 50,
+    paddingLeft: 35,
   },
   button: {
     backgroundColor: '#4286f4',
