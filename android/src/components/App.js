@@ -34,8 +34,7 @@ export default class App extends Component {
     let timerLists = this.realm.objects('Timers');
     if (timerLists.length > 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object
       let i = 0, lastTime;
-      while (lastTime === undefined) { // Edge case for empty first object
-        console.log(timerLists[i], timerLists[i].list)
+      while (lastTime === undefined && timerLists[i + 1]) { // Edge case for empty first object
         if (timerLists[i].list.length > 0) lastTime = timerLists[i].list[0].createdAt;
         i++;
       }
