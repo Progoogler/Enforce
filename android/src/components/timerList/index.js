@@ -11,7 +11,6 @@ import VinSearch from './VinSearch';
 import Row from './Row';
 import Footer from './Footer';
 import Header from './ListViewHeader';
-// mport HeaderButtons from './HeaderButtons'; PULL TO REFRESH
 import Navigation from '../home/Header';
 
 const styles = StyleSheet.create({

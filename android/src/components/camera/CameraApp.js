@@ -41,6 +41,7 @@ export class CameraApp extends Component {
 
   render() {
     const store = this.context;
+    console.log('time limit', this.timeLimit)
     return (
       <View style={styles.container} >
 {/*        <View style={{zIndex: 10}} >
@@ -67,12 +68,12 @@ export class CameraApp extends Component {
               style={styles.capture}
               onPress={() => {
               this.takePicture();
-              console.log(this.realm.objects('CameraTime'));
+              console.log('SEQUENCE', this.realm.objects('TimerSequence'));
               for (let i = 0; i < this.realm.objects('Timers')[0]['list'].length; i++) {
                 console.log(this.realm.objects('Timers')[0]['list'][i]);
               }
               console.log('first list length:', this.realm.objects('Timers')[0]['list'].length);
-              console.log('timer count:', this.realm.objects('TimerCount'));
+              console.log('timer count:', this.realm.objects('TimerSequence')[0].count);
             }} >
               <View></View>
             </TouchableHighlight>
@@ -83,7 +84,7 @@ export class CameraApp extends Component {
         </View>
       </View>
     );
-  }
+}
 
   componentWillMount() {
     const context = this;
@@ -102,8 +103,8 @@ export class CameraApp extends Component {
       distanceFilter: 1
     };
     this.cameraId = navigator.geolocation.watchPosition(success, error, options);
-    this.setTimerCount();
     this.setCameraTime();
+    this._setTimeLimit();
   }
 
   componentWillUnmount() {
@@ -111,44 +112,55 @@ export class CameraApp extends Component {
   }
 
   setTimerCount(inc = '') {
-    let countObj = this.realm.objects('TimerCount')[0];
-    if (inc) {
-      let currentCount = countObj.count;
+    let timerSequence = this.realm.objects('TimerSequence');
+    if (timerSequence.length === 0) {
       this.realm.write(() => {
-        countObj.count = currentCount + 1
+        this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1000, count: 0});
       });
-      this.count = currentCount + 1;
+    }
+    if (inc) {
+      this.realm.write(() => {
+        timerSequence[0].count = timerSequence[0].count++;
+      });
+      this.count++;
       return;
     }
-
-    if (countObj === undefined) {
-      this.realm.write(() => {
-        this.realm.create('TimerCount', {count: 0});
-      });
-    } else {
-      this.count = countObj.count;
+    if (timerSequence.length > 0) {
+      this.count = timerSequence[0].count;
     }
   }
 
   setCameraTime() {
-    let cameraTime = this.realm.objects('CameraTime')[0];
-    if (cameraTime === undefined) {
-      this.createNewTimerList();
-      this.realm.write(() => {
-        this.realm.create('CameraTime', {timeAccessedAt: new Date() / 1000});
-      });
-    } else {
-      let timeSince = (new Date() / 1000) - cameraTime.timeAccessedAt;
-      if (timeSince >= 900) {
-        let cameraAccessTime = this.realm.objects('CameraTime')[0];
-        this.realm.write(() => {
-          cameraAccessTime.timeAccessedAt = new Date() / 1000;
-        });
-        this.createNewTimerList();
-        this.setTimerCount('increment');
+    let timerSequence = this.realm.objects('TimerSequence'); console.log('TIMER SEQ', timerSequence);
+      if (timerSequence.length === 0) {
+       this.createNewTimerList();
+       this.realm.write(() => {
+         this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1000, count: 0});
+       });
       } else {
-        setTimeout(this.setCameraTime.bind(this), (900 - timeSince) * 1000);
+       let timeSince = (new Date() / 1000) - timerSequence[0].timeAccessedAt;
+       if (timeSince >= 900) {
+         this.realm.write(() => {
+           timerSequence[0].timeAccessedAt = new Date() / 1000;
+         });
+         this.setTimerCount('increment');
+         this.createNewTimerList();
+         return;
+       } else {
+         setTimeout(this.setCameraTime.bind(this), (900 - timeSince) * 1000);
+       }
+       this.setTimerCount();
       }
+    }
+
+  _setTimeLimit() {
+    let timeLimit = this.realm.objects('TimeLimit');
+    if (timeLimit.length > 0) {
+      this.timeLimit = timeLimit[0].float;
+    } else {
+      this.realm.write(() => {
+        this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
+      });
     }
   }
 
@@ -217,12 +229,19 @@ export class CameraApp extends Component {
     this.setState({animating: false});
   }
 
-  _onUpdateTimeLimit(timeLimit) {
-    this.setState({timeLimit});
+  _onUpdateTimeLimit() {
+    console.log('TIME LIMIT UPDATES')
+    let timeLimit = this.realm.objects('TimeLimit');
+    let timerSequence = this.realm.objects('TimerSequence');
+    console.log('TIMER SEQ COUNT', timerSequence);
+    this.timeLimit = timeLimit[0].float;
+    this.realm.write(() => {
+      timerSequence[0].count = timerSequence[0].count + 1;
+    });
+    this.setTimerCount('increment');
     this.createNewTimerList();
   }
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
