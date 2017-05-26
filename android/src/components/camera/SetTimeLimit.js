@@ -17,6 +17,7 @@ export default class SetTimeLimit extends Component {
   }
 
   render() {
+    console.log('SET TIME', this.props.realm.objects('TimeLimit'))
     console.log('TIME LIMIT', this.state.hour, this.state.minutes)
     return (
       <View style={styles.container}>
@@ -37,6 +38,16 @@ export default class SetTimeLimit extends Component {
         </TouchableHighlight>
       </View>
     );
+  }
+
+  componentDidMount() {
+    if (this.props.realm.objects('TimeLimit')) {
+      let history = this.props.realm.objects('TimeLimit')[0];
+      this.setState({
+        hour: history.hour,
+        minutes: history.minutes
+      });
+    }
   }
 
   _onChangeHour(hour) {
@@ -62,6 +73,7 @@ export default class SetTimeLimit extends Component {
   }
 
   _updateTimeLimit() {
+    let timeLimit = this.props.realm.objects('TimeLimit')[0];
     let minutes = `${parseInt(this.state.minutes) / 60}`;
     let newLimit;
     if (minutes.length === 1) {
@@ -69,17 +81,33 @@ export default class SetTimeLimit extends Component {
         minutes = "00";
         this.setState({hour: this.state.hour + 1});
         newLimit = parseFloat(`${parseInt(this.state.hour)}.${parseInt(minutes)}`);
+        this.props.realm.write(() => {
+          timeLimit.hour = this.state.hour;
+          timeLimit.minutes = minutes;
+          timeLimit.float = newLimit;
+        })
         this.props.onUpdateTimeLimit(newLimit);
         return;
       } else if (minutes === "0") {
         newLimit = parseFloat(`${parseInt(this.state.hour)}.${parseInt(minutes)}`);
+        this.props.realm.write(() => {
+          timeLimit.hour = this.state.hour;
+          timeLimit.minutes = "00";
+          timeLimit.float = newLimit;
+        });
         this.props.onUpdateTimeLimit(newLimit);
+        this.setState({minutes: "00"});
         return;
       }
     }
     minutes = minutes.slice(1);
     newLimit = this.state.hour + minutes;
     newLimit = parseFloat(newLimit);
+    this.props.realm.write(() => {
+      timeLimit.hour = this.state.hour;
+      timeLimit.minutes = "00";
+      timeLimit.float = newLimit;
+    });
     this.props.onUpdateTimeLimit(newLimit);
   }
 }

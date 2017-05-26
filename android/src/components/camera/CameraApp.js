@@ -42,6 +42,7 @@ export class CameraApp extends Component {
   render() {
     const store = this.context;
     console.log('time limit', this.timeLimit)
+              console.log('LOG', this.realm.objects('Timers')[0])
     return (
       <View style={styles.container} >
 {/*        <View style={{zIndex: 10}} >
@@ -51,7 +52,7 @@ export class CameraApp extends Component {
             size='large' />
         </View> */}
         <Navigation navigation={this.props.navigation} />
-        <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} />
+        <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} realm={this.realm} />
         <View style={styles.cameraContainer} >
           <Camera
             ref={(cam) => {
@@ -211,12 +212,12 @@ export class CameraApp extends Component {
   }
 
   savePicture(data) {
-    this.index = (this.index === null) ? 0 : this.index++;
+    //this.index = (this.index === null) ? 0 : this.index++; // TODO REMOVE
     const context = this;
     console.log(this.realm.objects('Timers'), context.count, context.latitude);
     this.realm.write(() => {
       this.realm.objects('Timers')[context.count]['list'].push({
-        key: context.index,
+        index: context.count,
         latitude: context.latitude,
         longitude: context.longitude,
         createdAt: new Date() / 1000,

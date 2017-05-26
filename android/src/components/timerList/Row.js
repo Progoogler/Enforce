@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
+import Realm from 'realm';
+
 export default class Row extends Component {
   constructor() {
     super();
@@ -19,12 +21,12 @@ export default class Row extends Component {
       <View style={styles.container} >
         <Image
           style={styles.image}
-          source={{uri: this.props.mediaUri}} />
+          source={{uri: this.props.data.mediaUri}} />
         <View style={styles.descriptionContainer}>
-          <Text style={styles.timeLeft}>{this._getTimeLeft(this.props)}</Text>
+          <Text style={styles.timeLeft}>{this._getTimeLeft(this.props.data)}</Text>
           <View style={styles.timeContainer}>
           <Text style={styles.description}>Recorded at</Text>
-          <Text style={styles.timeCreatedAt}>{this._getPrettyTimeFormat(this.props.createdAtDate)}</Text>
+          <Text style={styles.timeCreatedAt}>{this._getPrettyTimeFormat(this.props.data.createdAtDate)}</Text>
           </View>
         </View>
         <View style={styles.buttonsContainer} >
@@ -36,7 +38,7 @@ export default class Row extends Component {
             <View style={styles.separator} />
             <TouchableHighlight
               style={styles.rowButton}
-              onPress={() => this._updateList(this.props.key)}>
+              onPress={() => this._uponTicketed(this.props.data)}>
               <Text style={styles.buttonText}> Ticketed </Text>
             </TouchableHighlight>
           </View>
@@ -48,6 +50,19 @@ export default class Row extends Component {
   _onVinRequest() {
     let options = {
     }
+  }
+
+  _uponTicketed(timer) {
+    console.log('timer this.props', timer);
+    this.realm = new Realm();
+    //let ticketList = this.realm.objects('Ticketed')[0].list;
+    //console.log(ticketList);
+    this.realm.write(() => {
+      this.realm.objects('Ticketed')[0]['list'].push(timer);
+      this.realm.objects('Timers')[timer.index]['list'].shift();
+    });
+    this.props.updateRows();
+    console.log(this.realm.objects('Ticketed'), this.realm.objects('Timers'));
   }
 
   _getPrettyTimeFormat(date) {

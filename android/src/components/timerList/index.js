@@ -10,7 +10,6 @@ import Title from './Title';
 import VinSearch from './VinSearch';
 import Row from './Row';
 import Footer from './Footer';
-import Header from './ListViewHeader';
 import Navigation from '../home/Header';
 
 const styles = StyleSheet.create({
@@ -43,21 +42,25 @@ class TimerList extends Component {
     this.setState({refreshing: false});
   }
 
+  updateRows() {
+    this.setState({dataSource: this.state.dataSource.cloneWithRows(this.list)});
+  }
+
   render() {
     return (
       <View>
         <Navigation navigation={this.props.navigation} />
-        <Title limit={this.props.navigation.state.params.timers[0].timeLength} />
+        <Title limit={this.props.navigation.state.params.timers[0] ? this.props.navigation.state.params.timers[0].timeLength : ""} />
         <VinSearch />
         <ListView
           refreshControl={
             <RefreshControl refreshing={this.state.refreshing}
             onRefresh={this._onRefresh.bind(this)} />
           }
-          timers={this.props.navigation.state.params.timers}
+          //timers={this.props.navigation.state.params.timers}
           style={styles.container}
           dataSource={this.state.dataSource}
-          renderRow={(data) => <Row {...data} />}
+          renderRow={(data) => <Row data={data} updateRows={this.updateRows.bind(this)}/>}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
           renderFooter={() => <Footer/>} />
         <Footer />
