@@ -26,6 +26,7 @@ export default function insertionSortModified(arr) {
               aux[j+1] = temp;
           }
    let res = {};
+   aux.reverse();
    for (let i = 0; i < aux.length; i++) {
      res[i + ''] = aux[i];
    }
