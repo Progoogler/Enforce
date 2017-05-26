@@ -13,12 +13,14 @@ import Realm from 'realm';
 
 import Navigation from '../home/Header';
 import SetTimeLimit from './SetTimeLimit';
+import LocationInput from './LocationInput';
 
 export class CameraApp extends Component {
   constructor() {
     super();
     this.state = {
       animating: false,
+      modalVisible: false,
     };
     this.latitude = null;
     this.longitude = null;
@@ -40,18 +42,19 @@ export class CameraApp extends Component {
 
   render() {
     const store = this.context;
-    console.log('time limit', this.timeLimit)
-              console.log('LOG', this.realm.objects('Timers')[0])
+
     return (
       <View style={styles.container} >
-{/*        <View style={{zIndex: 10}} >
+{/*     <View style={{zIndex: 10}} >
           <ActivityIndicator
             animating={this.state.animating}
             style={styles.activity}
             size='large' />
         </View> */}
+        <LocationInput visibility={this.state.modalVisible} setModalVisible={this.setModalVisible.bind(this)}/>
         <Navigation navigation={this.props.navigation} />
         <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} realm={this.realm} />
+
         <View style={styles.cameraContainer} >
           <Camera
             ref={(cam) => {
@@ -61,19 +64,16 @@ export class CameraApp extends Component {
             aspect={Camera.constants.Aspect.fill} >
           </Camera>
           <View style={styles.footer}>
-            <Image
-              style={styles.pinIcon}
-              source={require('../../../../shared/images/pin.png')} />
+            <TouchableHighlight
+              onPress={() => this.setModalVisible()} >
+              <Image
+                style={styles.pinIcon}
+                source={require('../../../../shared/images/pin.png')} />
+            </TouchableHighlight>
             <TouchableHighlight
               style={styles.capture}
               onPress={() => {
               this.takePicture();
-              console.log('SEQUENCE', this.realm.objects('TimerSequence'));
-              for (let i = 0; i < this.realm.objects('Timers')[0]['list'].length; i++) {
-                console.log(this.realm.objects('Timers')[0]['list'][i]);
-              }
-              console.log('first list length:', this.realm.objects('Timers')[0]['list'].length);
-              console.log('timer count:', this.realm.objects('TimerSequence')[0].count);
             }} >
               <View></View>
             </TouchableHighlight>
@@ -109,6 +109,10 @@ export class CameraApp extends Component {
 
   componentWillUnmount() {
     navigator.geolocation.clearWatch(this.cameraId);
+  }
+
+  setModalVisible() {
+    this.setState({modalVisible: !this.state.modalVisible});
   }
 
   setTimerCount(inc = '') {
@@ -177,9 +181,7 @@ export class CameraApp extends Component {
     //options.location = ...
     this.camera.capture({metadata: options})
       .then((data) => {
-        console.log('save picture')
         context.savePicture(data);
-        console.log(data)
       })
       .catch(err => console.error(err));
   }
@@ -212,7 +214,6 @@ export class CameraApp extends Component {
 
   savePicture(data) {
     const context = this;
-    console.log(this.realm.objects('Timers'), context.count, context.latitude);
     this.realm.write(() => {
       this.realm.objects('Timers')[context.count]['list'].push({
         index: context.count,
@@ -229,10 +230,8 @@ export class CameraApp extends Component {
   }
 
   _onUpdateTimeLimit() {
-    console.log('TIME LIMIT UPDATES')
     let timeLimit = this.realm.objects('TimeLimit');
     let timerSequence = this.realm.objects('TimerSequence');
-    console.log('TIMER SEQ COUNT', timerSequence);
     this.timeLimit = timeLimit[0].float;
     this.realm.write(() => {
       timerSequence[0].count = timerSequence[0].count + 1;
@@ -244,7 +243,7 @@ export class CameraApp extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column',
   },
   cameraContainer: {
     flex: 1,
