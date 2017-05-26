@@ -17,8 +17,6 @@ export default class LocationInput extends Component {
     }
   }
 
-
-
   render() {
     return (
       <Modal animationType={"slide"}
