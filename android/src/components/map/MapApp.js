@@ -8,7 +8,9 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import Realm from 'realm';
+
 import Navigation from '../home/Header';
+import LocationModal from './LocationModal';
 
 export default class MapApp extends Component {
   constructor() {
@@ -18,6 +20,7 @@ export default class MapApp extends Component {
     // });
     this.state = {
       animating: true,
+      modalVisible: false,
     };
     this.animatedMap = undefined;
     this.latitude = undefined;
@@ -35,6 +38,7 @@ export default class MapApp extends Component {
   };
 
   componentDidMount() {
+    if (this.props.navigation.state.params) this.setModalVisible();
     navigator.geolocation.getCurrentPosition(
       position => {
         let latitude = parseFloat(position.coords.latitude);
@@ -51,6 +55,10 @@ export default class MapApp extends Component {
     return (
       <View style={styles.container} >
         <Navigation navigation={this.props.navigation} />
+        <LocationModal
+          visibility={this.state.modalVisible}
+          navigation={this.props.navigation}
+          data={this.props.navigation.state.params ? this.props.navigation.state.params.timers : null}/>
 
         <ActivityIndicator
           animating={this.state.animating}
@@ -97,7 +105,6 @@ export default class MapApp extends Component {
           />);
         });
       });
-      console.log('markers array', markers)
     } else {
       let arr = this.props.navigation.state.params.timers;
       arr.forEach(timer => {
@@ -107,6 +114,10 @@ export default class MapApp extends Component {
       });
     }
     return markers;
+  }
+
+  setModalVisible() {
+    this.setState({modalVisible: !this.state.modalVisible});
   }
 }
 
