@@ -5,6 +5,7 @@ import {
   StyleSheet,
   RefreshControl,
 } from 'react-native';
+import Realm from 'realm';
 
 import Title from './Title';
 import VinSearch from './VinSearch';
@@ -32,6 +33,7 @@ class TimerList extends Component {
       dataSource: ds.cloneWithRows(this.list),
       refreshing: false,
     };
+    this.realm = new Realm();
   }
 
   _onRefresh() {
@@ -60,7 +62,7 @@ class TimerList extends Component {
           //timers={this.props.navigation.state.params.timers}
           style={styles.container}
           dataSource={this.state.dataSource}
-          renderRow={(data) => <Row data={data} updateRows={this.updateRows.bind(this)}/>}
+          renderRow={(data) => <Row data={data} updateRows={this.updateRows.bind(this)} realm={this.realm}/>}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} />
         {/* }<Footer /> TODO space out the bottom margin of listview and animate "Done"*/}
       </View>

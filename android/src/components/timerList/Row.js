@@ -7,7 +7,6 @@ import {
   TouchableHighlight,
 } from 'react-native';
 
-import Realm from 'realm';
 
 export default class Row extends Component {
   constructor() {
@@ -52,15 +51,12 @@ export default class Row extends Component {
 
   _uponTicketed(timer) {
     console.log('timer this.props', timer);
-    this.realm = new Realm();
-    //let ticketList = this.realm.objects('Ticketed')[0].list;
-    //console.log(ticketList);
-    this.realm.write(() => {
-      this.realm.objects('Ticketed')[0]['list'].push(timer);
-      this.realm.objects('Timers')[timer.index]['list'].shift();
+    this.props.realm.write(() => {
+      this.props.realm.objects('Ticketed')[0]['list'].push(timer);
+      this.props.realm.objects('Timers')[timer.index]['list'].shift();
     });
     this.props.updateRows();
-    console.log(this.realm.objects('Ticketed'), this.realm.objects('Timers'));
+    console.log(this.props.realm.objects('Ticketed'), this.props.realm.objects('Timers'));
   }
 
   _getPrettyTimeFormat(date) {
