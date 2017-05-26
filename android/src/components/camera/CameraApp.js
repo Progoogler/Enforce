@@ -27,6 +27,7 @@ export class CameraApp extends Component {
     this.cameraId = null;
     this.count = 0;
     this.timeLimit = 1;
+    this.description = "";
     this.realm = new Realm();
   }
 
@@ -51,7 +52,7 @@ export class CameraApp extends Component {
             style={styles.activity}
             size='large' />
         </View> */}
-        <LocationInput visibility={this.state.modalVisible} setModalVisible={this.setModalVisible.bind(this)}/>
+        <LocationInput visibility={this.state.modalVisible} setModalVisible={this.setModalVisible.bind(this)} description={this.description}/>
         <Navigation navigation={this.props.navigation} />
         <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} realm={this.realm} />
 
@@ -111,8 +112,9 @@ export class CameraApp extends Component {
     navigator.geolocation.clearWatch(this.cameraId);
   }
 
-  setModalVisible() {
+  setModalVisible(desc) {
     this.setState({modalVisible: !this.state.modalVisible});
+    this.description = desc;
   }
 
   setTimerCount(inc = '') {
@@ -213,19 +215,37 @@ export class CameraApp extends Component {
   }
 
   savePicture(data) {
-    const context = this;
-    this.realm.write(() => {
-      this.realm.objects('Timers')[context.count]['list'].push({
-        index: context.count,
-        latitude: context.latitude,
-        longitude: context.longitude,
-        createdAt: new Date() / 1000,
-        createdAtDate: new Date(),
-        timeLength: context.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
-        mediaUri: data.mediaUri,
-        mediaPath: data.path,
+    if (this.description.length === 0) {
+      this.realm.write(() => {
+        this.realm.objects('Timers')[this.count]['list'].push({
+          index: this.count,
+          latitude: this.latitude,
+          longitude: this.longitude,
+          createdAt: new Date() / 1000,
+          createdAtDate: new Date(),
+          timeLength: this.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
+          mediaUri: data.mediaUri,
+          mediaPath: data.path,
+          description: "",
+        });
       });
-    });
+    } else {
+      this.realm.write(() => {
+        this.realm.objects('Timers')[this.count]['list'].push({
+          index: this.count,
+          latitude: this.latitude,
+          longitude: this.longitude,
+          createdAt: new Date() / 1000,
+          createdAtDate: new Date(),
+          timeLength: this.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
+          mediaUri: data.mediaUri,
+          mediaPath: data.path,
+          description: this.description,
+        });
+      });
+      this.description = "";
+    }
+        console.log(this.realm.objects('Timers'))
     this.setState({animating: false});
   }
 
