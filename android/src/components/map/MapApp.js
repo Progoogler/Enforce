@@ -22,7 +22,6 @@ export default class MapApp extends Component {
     this.animatedMap = undefined;
     this.latitude = undefined;
     this.longitude = undefined;
-    this.markers = [];
     this.realm = new Realm();
   }
   static navigationOptions = {
@@ -88,24 +87,28 @@ export default class MapApp extends Component {
   }
 
   getMarkers() {
-    const context = this;
     const markers = [];
-    this.realm.objects('Timers').forEach(timerList => {
-      timerList.list.forEach(list => {
-        markers.push(<MapView.Marker
-          coordinate={{latitude: list.latitude, longitude: list.longitude}}
-        />);
+
+    if (!this.props.navigation.state.params) {
+      this.realm.objects('Timers').forEach(timerList => {
+        timerList.list.forEach(list => {
+          markers.push(<MapView.Marker
+            coordinate={{latitude: list.latitude, longitude: list.longitude}}
+          />);
+        });
       });
-    });
-    console.log('markers array', markers)
-    //setTimeout(() => { this.animatedMap._component.fitToSuppliedMarkers(markers, true) }, 5000);
+      console.log('markers array', markers)
+    } else {
+      let arr = this.props.navigation.state.params.timers;
+      arr.forEach(timer => {
+         markers.push(<MapView.Marker
+           coordinate={{latitude: timer.latitude, longitude: timer.longitude}} />
+         );
+      });
+    }
     return markers;
   }
 }
-
-// export default connect(state => {
-//   return state;
-// }, null)(MapApp);
 
 const styles = StyleSheet.create({
   icon: {

@@ -71,7 +71,7 @@ class Row extends Component {
 
   _openMapPage(timerList) {
     const navigateAction = NavigationActions.navigate({
-      routeName: 'FocusMap',
+      routeName: 'Map',
       params: {timers: timerList},
     });
     this.props.navigation.dispatch(navigateAction);

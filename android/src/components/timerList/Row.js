@@ -140,6 +140,8 @@ const styles = StyleSheet.create({
   rowButtonsContainers: {
     flex: 1,
     flexDirection: 'row',
+    borderBottomWidth: 2,
+    borderColor: 'white',
     height: 60,
   },
   rowButton: {

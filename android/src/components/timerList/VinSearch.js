@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     height: 40,
   },
   designator: {
-    fontSize: 18
+    fontSize: 18,
   },
   inputButton: {
     borderWidth: 2,
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
   },
   inputButtonText: {
     color: 'white',
+    fontSize: 16,
     padding: 4,
   },
   responseView: {
