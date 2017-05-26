@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableHighlight,
   TextInput,
+  Keyboard,
 } from 'react-native';
 
 export default class SetTimeLimit extends Component {
@@ -76,6 +77,7 @@ export default class SetTimeLimit extends Component {
     let timeLimit = this.props.realm.objects('TimeLimit')[0];
     let minutes = `${parseInt(this.state.minutes) / 60}`;
     let newLimit;
+    Keyboard.dismiss();
     if (minutes.length === 1) {
       if (minutes === "1") {
         minutes = "00";
