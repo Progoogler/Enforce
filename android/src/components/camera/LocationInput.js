@@ -22,14 +22,14 @@ export default class LocationInput extends Component {
   render() {
     return (
       <Modal animationType={"slide"}
-        transparent={false}
+        transparent={true}
         visible={this.props.visibility}
-        onRequestClose={() => this.props.setModalVisible()} >
+        onRequestClose={() => this.props.setModalVisible(this.state.text)} >
         <View style={styles.container} >
           <View style={styles.containerBorder} >
             <View style={styles.buttonContainer}>
               <Button
-                onPress={() => this.props.setModalVisible()}
+                onPress={() => this.props.setModalVisible(this.state.text)}
                 title="X" />
             </View>
             <Text style={styles.title}>Location Details:</Text>
@@ -57,6 +57,7 @@ export default class LocationInput extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#4286f4',
+    marginTop: 60,
   },
   containerBorder: {
     backgroundColor: 'white',
