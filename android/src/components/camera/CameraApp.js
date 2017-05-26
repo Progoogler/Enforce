@@ -24,7 +24,6 @@ export class CameraApp extends Component {
     this.longitude = null;
     this.cameraId = null;
     this.count = 0;
-    this.index = 0;
     this.timeLimit = 1;
     this.realm = new Realm();
   }
@@ -212,7 +211,6 @@ export class CameraApp extends Component {
   }
 
   savePicture(data) {
-    //this.index = (this.index === null) ? 0 : this.index++; // TODO REMOVE
     const context = this;
     console.log(this.realm.objects('Timers'), context.count, context.latitude);
     this.realm.write(() => {
