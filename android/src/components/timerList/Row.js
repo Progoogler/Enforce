@@ -4,9 +4,7 @@ import {
   Text,
   Image,
   StyleSheet,
-  TextInput,
   TouchableHighlight,
-  ActivityIndicator,
 } from 'react-native';
 
 import Realm from 'realm';
@@ -25,8 +23,8 @@ export default class Row extends Component {
         <View style={styles.descriptionContainer}>
           <Text style={styles.timeLeft}>{this._getTimeLeft(this.props.data)}</Text>
           <View style={styles.timeContainer}>
-          <Text style={styles.description}>Recorded at</Text>
-          <Text style={styles.timeCreatedAt}>{this._getPrettyTimeFormat(this.props.data.createdAtDate)}</Text>
+            <Text style={styles.description}>Recorded at</Text>
+            <Text style={styles.timeCreatedAt}>{this._getPrettyTimeFormat(this.props.data.createdAtDate)}</Text>
           </View>
         </View>
         <View style={styles.buttonsContainer} >
@@ -68,7 +66,7 @@ export default class Row extends Component {
   _getPrettyTimeFormat(date) {
     let hour = date.getHours();
     let minutes = date.getMinutes() + '';
-    miuntes = minutes.length === 1 ? '0' + minutes : minutes;
+    minutes = minutes.length === 1 ? '0' + minutes : minutes;
     let period = (hour < 12) ? 'AM' : 'PM';
     hour = (hour <= 12) ? hour : hour - 12;
     return `${hour}:${minutes} ${period}`;
