@@ -51,13 +51,18 @@ export default class Row extends Component {
 
   _uponTicketed(timer) {
     console.log('timer this.props', timer);
-    this.props.realm.write(() => {
-      timer.ticketedAtDate = new Date();
-      this.props.realm.objects('Ticketed')[0]['list'].push(timer);
-      this.props.realm.objects('Timers')[timer.index]['list'].shift();
-    });
-    this.props.updateRows();
-    console.log(this.props.realm.objects('Ticketed'), this.props.realm.objects('Timers'));
+    let now = new Date();
+    if (now - timer.createdAtDate >= timer.timeLength * 60 * 60 * 1000) {
+      this.props.realm.write(() => {
+        timer.ticketedAtDate = now;
+        this.props.realm.objects('Ticketed')[0]['list'].push(timer);
+        this.props.realm.objects('Timers')[timer.index]['list'].shift();
+      });
+      this.props.updateRows();
+      console.log(this.props.realm.objects('Ticketed'), this.props.realm.objects('Timers'));
+    } else {
+      this.props.throwWarning(timer);
+    }
   }
 
   _getPrettyTimeFormat(date) {
