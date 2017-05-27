@@ -7,6 +7,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import Realm from 'realm';
+import RNFS from 'react-native-fs';
 import Row from './Row';
 import insertionSortModified from './insertionSort';
 
@@ -34,7 +35,7 @@ class TimersList extends Component {
   }
 
   render() {
-    console.log('PROPS', this.props)
+    console.log('list', this.list)
     return (
       <ListView
         enableEmptySections={true}
@@ -48,10 +49,44 @@ class TimersList extends Component {
         timers={this.list}
         style={styles.container}
         dataSource={this.state.dataSource}
-        renderRow={(data) => <Row {...data} navigation={this.props.navigation}/>}
+        renderRow={(data) => <Row {...data} navigation={this.props.navigation} deleteRow={this.deleteRow.bind(this)}/>}
         renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
       />
     );
+  }
+
+  deleteRow(timers) {
+    console.log('DEL' ,timers)
+
+    timers.forEach((timer, idx) => {
+      RNFS.unlink(timer.mediaPath)
+      .then(() => {
+        console.log('FILE DELETED');
+        // RNFS.exists(timer.mediaUri)
+        // .then(() => {
+        //   console.log('PICTURE REMOVED');
+        //   this.realm.write(() => {
+        //     this.realm.de
+        //     this.realm.delete(timer[idx]['list'][sidx]);
+        //   });
+        // });
+      });
+    });
+
+    console.log('before loop', this.list)
+    for (let timerObj in this.list) {
+      if (this.list[timerObj].list === timers) {
+        this.list[timerObj].list = {};
+      }
+    }
+    console.log('after loop', this.list);
+
+    setTimeout(() => {
+      this.realm.write(() => {
+        this.realm.delete(timers);
+      });
+      this._onRefresh();
+    }, 2000);
   }
 
   _onRefresh() {

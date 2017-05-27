@@ -19,6 +19,7 @@ export default class Row extends Component {
   }
 
   render() {
+    if (this.props.list.length < 1) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
     return (
           <ScrollView
             style={styles.innerScroll}
@@ -44,7 +45,7 @@ export default class Row extends Component {
               </TouchableHighlight>
               <TouchableHighlight
                 style={styles.delete}
-                onPress={() => {}} >
+                onPress={() => {this.props.deleteRow(this.props.list)}} >
                 <Image source={require('../../../../shared/images/bin.jpg')} />
               </TouchableHighlight>
             </View>
@@ -92,6 +93,7 @@ export default class Row extends Component {
   }
 
   getTimeLeft(timer) {
+    if (!timer) return;
     let timeLength = timer.timeLength * 60 * 60;
     let timeStart = timer.createdAt;
     let timeSince = (new Date() / 1000) - timeStart;
