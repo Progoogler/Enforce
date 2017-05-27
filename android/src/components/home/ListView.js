@@ -37,6 +37,9 @@ class TimersList extends Component {
     console.log('PROPS', this.props)
     return (
       <ListView
+        enableEmptySections={true}
+        // In next release empty section headers will be rendered.
+        // Until then, leave this property alone to mitigate the warning msg.
         style={styles.container}
         refreshControl={
           <RefreshControl refreshing={this.state.refreshing}
