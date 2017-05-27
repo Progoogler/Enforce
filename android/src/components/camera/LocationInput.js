@@ -27,7 +27,7 @@ export default class LocationInput extends Component {
           <View style={styles.containerBorder} >
             <View style={styles.buttonContainer}>
               <Button
-                onPress={() => this.props.setModalVisible(this.state.text)}
+                onPress={() => this.props.setModalVisible("")}
                 title="X" />
             </View>
             <Text style={styles.title}>Location Details:</Text>
@@ -42,7 +42,7 @@ export default class LocationInput extends Component {
             </View>
             <TouchableHighlight
               style={styles.doneButton}
-              onPress={()=>{}} >
+              onPress={() => {this.props.setModalVisible(this.state.text)}} >
               <Text style={styles.doneText}>Done</Text>
             </TouchableHighlight>
           </View>
