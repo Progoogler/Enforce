@@ -10,7 +10,6 @@ import {
 import Realm from 'realm';
 
 import Navigation from '../home/Header';
-import LocationModal from './LocationModal';
 import LocationDetailsView from './LocationDetailsView';
 
 export default class MapApp extends Component {
