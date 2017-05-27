@@ -58,6 +58,12 @@ export default class Row extends Component {
     let timeLeft = timeLength - timeSince;
     let value = '';
     if (timeLeft < 0) {
+      styles.timerRowTime = {
+        paddingLeft: 35,
+        color: 'green',
+        fontWeight: 'bold',
+        fontSize: 20,
+      }
       return value = 'Time is up!';
     } else if (timeLeft < 60) {
       return value = 'less than a minute remaining';
@@ -79,10 +85,8 @@ const styles = StyleSheet.create({
   timerRowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    //alignSelf: 'stretch',
     alignItems: 'center',
     borderTopWidth: 1,
-    //marginTop: 25,
   },
   timerRow: {
     flexDirection: 'row',
