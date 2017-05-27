@@ -29,7 +29,8 @@ export default class Row extends Component {
         <View style={styles.buttonsContainer} >
           <View style={styles.rowButtonsContainers} >
             <TouchableHighlight
-              style={styles.rowButton} >
+              style={styles.rowButton}
+              onPress={() => this.props.expiredFunc(this.props.data)} >
               <Text style={styles.buttonText}> Expired </Text>
             </TouchableHighlight>
             <View style={styles.separator} />
@@ -50,7 +51,6 @@ export default class Row extends Component {
   }
 
   _uponTicketed(timer) {
-    console.log('timer this.props', timer);
     let now = new Date();
     if (now - timer.createdAtDate >= timer.timeLength * 60 * 60 * 1000) {
       this.props.realm.write(() => {

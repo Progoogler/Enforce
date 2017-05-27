@@ -57,7 +57,10 @@ class TimerList extends Component {
       let timeElapsed = (new Date() - timer.createdAtDate) / 1000 / 60;
       this.timer = timer;
       this.warning = `${(timeElapsed / 60 + '')[0] !== '0' ? (timeElapsed / 60 + '')[0] + ' hour and ' : ''}  ${Math.floor(timeElapsed % 60)} minutes`;
+      this.setState({warningVisibility: !this.state.warningVisibility});
+      return;
     }
+    this.timer = null;
     this.setState({warningVisibility: !this.state.warningVisibility});
   }
 
@@ -66,6 +69,15 @@ class TimerList extends Component {
       this.timer.ticketedAtDate = new Date();
       this.realm.objects('Ticketed')[0]['list'].push(this.timer);
       this.realm.objects('Timers')[this.timer.index]['list'].shift();
+    });
+    this.timer = null;
+    this.updateRows();
+  }
+
+  expiredFunc(timer) {
+    this.realm.write(() => {
+      this.realm.objects('Expired')[0]['list'].push(timer);
+      this.realm.objects('Timers')[timer.index]['list'].shift();
     });
     this.updateRows();
   }
@@ -85,7 +97,11 @@ class TimerList extends Component {
           //timers={this.props.navigation.state.params.timers}
           style={styles.container}
           dataSource={this.state.dataSource}
-          renderRow={(data) => <Row data={data} updateRows={this.updateRows.bind(this)} realm={this.realm} throwWarning={this.throwWarning.bind(this)}/>}
+          renderRow={(data) => <Row data={data}
+                                    updateRows={this.updateRows.bind(this)}
+                                    realm={this.realm}
+                                    throwWarning={this.throwWarning.bind(this)}
+                                    expiredFunc={this.expiredFunc.bind(this)}/>}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} />
         {/* }<Footer /> TODO space out the bottom margin of listview and animate "Done"*/}
       </View>

@@ -23,6 +23,9 @@ class TimersList extends Component {
     this.realm = new Realm();
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
+
+    // TODO Fix the case where list.length === 1 : does not appear in listview
+
     this.list = insertionSortModified(this.list);
     this.state = {
       dataSource: ds.cloneWithRows(this.list),

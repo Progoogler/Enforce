@@ -29,8 +29,11 @@ export default class App extends Component {
   render() {
     console.log('RENDERS');
     // Realm.clearTestState(); // Uncomment to drop/recreate database
-    this.realm = new Realm({schema: Schema});
-    // this.realm.write(() => this.realm.create('Ticketed', {list: []})); // For beta testing only TODO remove this
+     this.realm = new Realm({schema: Schema});
+    // this.realm.write(() => {
+    //   this.realm.create('Ticketed', {list: []});
+    //   this.realm.create('Expired', {list: []});
+    //}); // For beta testing only TODO remove this
     let timerLists = this.realm.objects('Timers');
     if (timerLists.length > 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object
       let i = 0, lastTime;
@@ -47,7 +50,10 @@ export default class App extends Component {
           console.log('DELETE')
           Realm.clearTestState();
           this.realm = new Realm({schema: Schema});
-          this.realm.write(() => this.realm.create('Ticketed', {list: []}));
+          this.realm.write(() => {
+            this.realm.create('Ticketed', {list: []});
+            this.realm.create('Expired', {list: []});
+          });
         }, 2000);
       }
     }

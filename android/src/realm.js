@@ -8,7 +8,7 @@ TimerSchema.schema = {
     timeLength: 'float',
     createdAt: 'int',
     createdAtDate: 'date',
-    tickedAtDate: 'date',
+    ticketedAtDate: 'date',
     mediaUri: 'string',
     mediaPath: 'string',
     description: 'string'
@@ -50,4 +50,12 @@ TicketedSchema.schema = {
   }
 }
 
-export default [TimerSchema, TimerListSchema, TimerSequenceSchema, TimeLimitSchema, TicketedSchema];
+class ExpiredSchema {};
+ExpiredSchema.schema = {
+  name: 'Expired',
+  properties: {
+    list: {type: 'list', objectType: 'Timer'}
+  }
+}
+
+export default [TimerSchema, TimerListSchema, TimerSequenceSchema, TimeLimitSchema, TicketedSchema, ExpiredSchema];
