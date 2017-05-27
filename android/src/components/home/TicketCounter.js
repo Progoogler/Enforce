@@ -21,11 +21,12 @@ const styles = StyleSheet.create({
   },
 });
 
+let length = 0;
 
 const TicketCounter = (props) => (
   <View style={styles.ticketCountContainer} >
-    <Text style={styles.ticketCountNumber}>{ props.realm.objects('Ticketed')[0].list.length }</Text>
-    <Text style={styles.ticketCountDescription}>tickets today</Text>
+    <Text style={styles.ticketCountNumber}>{ length = props.realm.objects('Ticketed')[0].list.length }</Text>
+    <Text style={styles.ticketCountDescription}>{length === 1 ? 'ticket' : 'tickets'} today</Text>
   </View>
 );
 
