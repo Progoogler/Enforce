@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
+  ScrollView,
+  Dimensions,
   TouchableHighlight,
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
@@ -13,26 +16,63 @@ export default class Row extends Component {
   }
 
   render() {
+    const {height, width} = Dimensions.get('window');
+    styles.innerContainer = {
+      flexDirection: 'row',
+      alignItems: 'center',
+      //justifyContent: 'space-between',
+      width: width + 65,
+      borderTopWidth: .5,
+    }
+    styles.button = {
+      backgroundColor: '#4286f4',
+      borderWidth: 1,
+      borderRadius: 5,
+      padding: 5,
+    }
+    styles.timerRow = {
+      flexDirection: 'row',
+      alignItems: 'center',
+      height: 105,
+      width: width - 95,
+    }
+
     return (
-      <View style={styles.timerRowContainer}>
-        <TouchableHighlight
-          onPress={() => this._openTimerListPage(this.props.list)} >
-          <View style={styles.timerRow}>
-            <Text style={styles.timerRowLength}>
-              { (this.props.list.length > 1) ? this.props.list.length + '\n cars' : '1 \n car' }
-            </Text>
-            <Text style={styles.timerRowTime}>
-              { this.getTimeLeft(this.props.list[0]) }
-            </Text>
-          </View>
-        </TouchableHighlight>
-        <TouchableHighlight
-          style={styles.button}
-          onPress={()=> this._openMapPage(this.props.list)} >
-          <Text style={styles.buttonText}>Show Map</Text>
-        </TouchableHighlight>
-      </View>
+
+            <ScrollView
+              horizontal={true}
+              directionalLockEnabled={true}
+              style={styles.innerScroll} >
+              <View style={styles.innerContainer} >
+                <TouchableHighlight
+                  onPress={() => this._openTimerListPage(this.props.list)} >
+                  <View style={styles.timerRow}>
+                    <Text style={styles.timerRowLength}>
+                      { (this.props.list.length > 1) ? this.props.list.length + '\n cars' : '1 \n car' }
+                    </Text>
+                    <Text style={styles.timerRowTime}>
+                      { this.getTimeLeft(this.props.list[0]) }
+                    </Text>
+                  </View>
+                </TouchableHighlight>
+                <TouchableHighlight
+                  style={styles.button}
+                  onPress={() => this._openMapPage(this.props.list)} >
+                  <Text style={styles.buttonText}>Show Map</Text>
+                </TouchableHighlight>
+                <TouchableHighlight
+                  style={styles.delete}
+                  onPress={() => {}} >
+                  <Image source={require('../../../../shared/images/bin.jpg')} />
+                </TouchableHighlight>
+              </View>
+            </ScrollView>
+
     );
+  }
+
+  componentWillMount() {
+
   }
 
   _openMapPage(timerList) {
@@ -76,17 +116,22 @@ export default class Row extends Component {
 }
 
 const styles = StyleSheet.create({
-  timerRowContainer: {
+  // timerRowContainer: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   borderTopWidth: 1,
+  // },
+
+  //   container: {
+  //   //flex: 1,
+  //   //flexDirection: 'row'
+  // },
+  innerScroll: {
+    flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderTopWidth: 1,
   },
-  timerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 105,
-  },
+
   timerRowLength: {
     fontSize: 20,
     paddingLeft: 30,
@@ -95,14 +140,11 @@ const styles = StyleSheet.create({
   timerRowTime: {
     paddingLeft: 35,
   },
-  button: {
-    backgroundColor: '#4286f4',
-    marginRight: 25,
-    borderWidth: 1,
-    borderRadius: 5,
-    padding: 5,
-  },
   buttonText: {
     color: 'white',
+  },
+  delete: {
+    position: 'absolute',
+    right: 0,
   }
 });
