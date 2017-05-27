@@ -26,6 +26,7 @@ export default class Row extends Component {
             <Text style={styles.timeCreatedAt}>{this._getPrettyTimeFormat(this.props.data.createdAtDate)}</Text>
           </View>
         </View>
+        <Text style={styles.location}>{this.props.data.description.length > 0 ? `@ ${this.props.data.description}` : ''}</Text>
         <View style={styles.buttonsContainer} >
           <View style={styles.rowButtonsContainers} >
             <TouchableHighlight
@@ -81,6 +82,11 @@ export default class Row extends Component {
     let timeLeft = timeLength - timeSince;
     let value = '';
     if (timeLeft < 0) {
+      styles.timeLeft = {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'green',
+      }
       return value = 'Time is up!';
     } else if (timeLeft < 60) {
       return value = 'less than a minute remaining';
@@ -138,17 +144,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingLeft: 15,
-    paddingRight: 15,
+    padding: 15,
   },
   timeContainer: {
     flexDirection: 'column',
   },
   timeLeft: {
-    fontSize: 16,
+    fontSize: 18,
   },
   timeCreatedAt: {
     color: '#4286f4',
     fontSize: 30,
+  },
+  location: {
+    fontSize: 18,
+    marginTop: -10,
+    paddingLeft: 15,
+    paddingRight: 15,
+    paddingBottom: 4,
   },
 });
