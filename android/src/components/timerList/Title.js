@@ -38,7 +38,7 @@ class Title extends Component {
       length = length * 60;
       return `${length}  Minute`;
     } else {
-      return `${length}  Hour`;
+      return `${parseFloat(length.toFixed(1))}  Hour`;
     }
   }
 
