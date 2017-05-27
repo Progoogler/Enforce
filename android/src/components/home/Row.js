@@ -13,14 +13,50 @@ import { NavigationActions } from'react-navigation';
 export default class Row extends Component {
   constructor() {
     super();
+    this.state = {
+      mounted: false,
+    }
   }
 
   render() {
+    return (
+          <ScrollView
+            style={styles.innerScroll}
+            horizontal={true}
+            directionalLockEnabled={true}
+            showsHorizontalScrollIndicator={false} >
+            <View style={styles.innerContainer} >
+              <TouchableHighlight
+                onPress={() => this._openTimerListPage(this.props.list)} >
+                <View style={styles.timerRow}>
+                  <Text style={styles.timerRowLength}>
+                    { (this.props.list.length > 1) ? this.props.list.length + '\n cars' : '1 \n car' }
+                  </Text>
+                  <Text style={styles.timerRowTime}>
+                    { this.getTimeLeft(this.props.list[0]) }
+                  </Text>
+                </View>
+              </TouchableHighlight>
+              <TouchableHighlight
+                style={styles.button}
+                onPress={() => this._openMapPage(this.props.list)} >
+                <Text style={styles.buttonText}>Show Map</Text>
+              </TouchableHighlight>
+              <TouchableHighlight
+                style={styles.delete}
+                onPress={() => {}} >
+                <Image source={require('../../../../shared/images/bin.jpg')} />
+              </TouchableHighlight>
+            </View>
+          </ScrollView>
+    );
+  }
+
+  componentDidMount() {
     const {height, width} = Dimensions.get('window');
     styles.innerContainer = {
       flexDirection: 'row',
       alignItems: 'center',
-      //justifyContent: 'space-between',
       width: width + 65,
       borderTopWidth: .5,
     }
@@ -36,43 +72,7 @@ export default class Row extends Component {
       height: 105,
       width: width - 95,
     }
-
-    return (
-
-            <ScrollView
-              horizontal={true}
-              directionalLockEnabled={true}
-              style={styles.innerScroll} >
-              <View style={styles.innerContainer} >
-                <TouchableHighlight
-                  onPress={() => this._openTimerListPage(this.props.list)} >
-                  <View style={styles.timerRow}>
-                    <Text style={styles.timerRowLength}>
-                      { (this.props.list.length > 1) ? this.props.list.length + '\n cars' : '1 \n car' }
-                    </Text>
-                    <Text style={styles.timerRowTime}>
-                      { this.getTimeLeft(this.props.list[0]) }
-                    </Text>
-                  </View>
-                </TouchableHighlight>
-                <TouchableHighlight
-                  style={styles.button}
-                  onPress={() => this._openMapPage(this.props.list)} >
-                  <Text style={styles.buttonText}>Show Map</Text>
-                </TouchableHighlight>
-                <TouchableHighlight
-                  style={styles.delete}
-                  onPress={() => {}} >
-                  <Image source={require('../../../../shared/images/bin.jpg')} />
-                </TouchableHighlight>
-              </View>
-            </ScrollView>
-
-    );
-  }
-
-  componentWillMount() {
-
+    this.setState({mounted: true});
   }
 
   _openMapPage(timerList) {
