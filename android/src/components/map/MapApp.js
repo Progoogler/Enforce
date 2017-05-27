@@ -106,14 +106,16 @@ export default class MapApp extends Component {
         timerList.list.forEach(list => {
           markers.push(<MapView.Marker
             coordinate={{latitude: list.latitude, longitude: list.longitude}}
-          />);
+            key={list.createdAt} />
+          );
         });
       });
     } else {
       let arr = this.props.navigation.state.params.timers;
       arr.forEach(timer => {
          markers.push(<MapView.Marker
-           coordinate={{latitude: timer.latitude, longitude: timer.longitude}} />
+           coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
+           key={timer.createdAt} />
          );
       });
     }
