@@ -38,7 +38,7 @@ export default class Row extends Component {
   _openMapPage(timerList) {
     const navigateAction = NavigationActions.navigate({
       routeName: 'Map',
-      params: {timers: timerList},
+      params: {timers: timerList, navigation: this.props.navigation},
     });
     this.props.navigation.dispatch(navigateAction);
   }

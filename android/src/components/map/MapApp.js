@@ -11,6 +11,7 @@ import Realm from 'realm';
 
 import Navigation from '../home/Header';
 import LocationModal from './LocationModal';
+import LocationDetailsView from './LocationDetailsView';
 
 export default class MapApp extends Component {
   constructor() {
@@ -51,14 +52,18 @@ export default class MapApp extends Component {
     );
   }
 
+  getLocationDetails() {
+    if (this.props.navigation.state.params) {
+      return (<LocationDetailsView navigation={this.props.navigation}/>);
+    }
+  }
+
   render() {
     return (
       <View style={styles.container} >
         <Navigation navigation={this.props.navigation} />
-        <LocationModal
-          visibility={this.state.modalVisible}
-          navigation={this.props.navigation}
-          data={this.props.navigation.state.params ? this.props.navigation.state.params.timers : null}/>
+
+        {this.getLocationDetails()}
 
         <ActivityIndicator
           animating={this.state.animating}
