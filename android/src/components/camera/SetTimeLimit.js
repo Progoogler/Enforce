@@ -44,6 +44,7 @@ export default class SetTimeLimit extends Component {
   componentDidMount() {
     if (this.props.realm.objects('TimeLimit')) {
       let history = this.props.realm.objects('TimeLimit')[0];
+      console.log('history', history)
       this.setState({
         hour: history.hour,
         minutes: history.minutes
@@ -75,25 +76,26 @@ export default class SetTimeLimit extends Component {
 
   _updateTimeLimit() {
     let timeLimit = this.props.realm.objects('TimeLimit')[0];
-    let minutes = `${parseInt(this.state.minutes) / 60}`;
+    let decimalMinutes = `${parseInt(this.state.minutes) / 60}`;
     let newLimit;
+    let minutes;
     Keyboard.dismiss();
-    if (minutes.length === 1) {
-      if (minutes === "1") {
+    if (decimalMinutes.length === 1) {
+      if (decimalMinutes === "1") {
         minutes = "00";
         this.setState({hour: this.state.hour + 1});
-        newLimit = parseFloat(`${parseInt(this.state.hour)}.${parseInt(minutes)}`);
+        newLimit = parseFloat(`${parseInt(this.state.hour)}.0`);
         this.props.realm.write(() => {
-          timeLimit.hour = this.state.hour;
+          timeLimit.hour = this.state.hour === undefined ? "0" : this.state.hour;
           timeLimit.minutes = minutes;
           timeLimit.float = newLimit;
         })
         this.props.onUpdateTimeLimit(newLimit);
         return;
-      } else if (minutes === "0") {
-        newLimit = parseFloat(`${parseInt(this.state.hour)}.${parseInt(minutes)}`);
+      } else if (decimalMinutes === "0") {
+        newLimit = parseFloat(`${parseInt(this.state.hour)}.0`);
         this.props.realm.write(() => {
-          timeLimit.hour = this.state.hour;
+          timeLimit.hour = this.state.hour === undefined ? "0" : this.state.hour;
           timeLimit.minutes = "00";
           timeLimit.float = newLimit;
         });
@@ -102,12 +104,12 @@ export default class SetTimeLimit extends Component {
         return;
       }
     }
-    minutes = minutes.slice(1);
-    newLimit = this.state.hour + minutes;
+    decimalMinutes = decimalMinutes.slice(1);
+    newLimit = this.state.hour + decimalMinutes;
     newLimit = parseFloat(newLimit);
     this.props.realm.write(() => {
-      timeLimit.hour = this.state.hour;
-      timeLimit.minutes = "00";
+      timeLimit.hour = this.state.hour === undefined ? "0" : this.state.hour;
+      timeLimit.minutes = this.state.minutes === undefined ? "00" : this.state.minutes;
       timeLimit.float = newLimit;
     });
     this.props.onUpdateTimeLimit(newLimit);
