@@ -58,13 +58,7 @@ export default class Row extends Component {
     let timeLeft = timeLength - timeSince;
     let value = '';
     if (timeLeft < 0) {
-      styles.timerRowTime = {
-        paddingLeft: 35,
-        color: 'green',
-        fontWeight: 'bold',
-        fontSize: 20,
-      }
-      return value = 'Time is up!';
+      return value = <Text style={{fontSize: 20, fontWeight: 'bold', color: 'green'}}>Time is up!</Text>;
     } else if (timeLeft < 60) {
       return value = 'less than a minute remaining';
     } else if (timeLeft < 3600) {
@@ -76,7 +70,7 @@ export default class Row extends Component {
     } else if (timeLeft > 10800 && timeLeft < 14400) {
       return value = '3 hours ' + Math.floor((timeLeft - 14400) / 60) + ' minutes remaining';
     } else {
-      return value = 'Time is unknown.';
+      return value = Math.floor(timeLeft / 60 / 60) + ' hours remaining..';
     }
   }
 }
