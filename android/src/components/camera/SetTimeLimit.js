@@ -24,11 +24,15 @@ export default class SetTimeLimit extends Component {
       <View style={styles.container}>
         <TextInput
           style={styles.hourInput}
+          keyboardType={'numeric'}
+          maxLength={1}
           onChangeText={(hour) => this._onChangeHour(hour)}
           value={this.state.hour} />
         <Text style={styles.timeDesc}>Hr</Text>
         <TextInput
           style={styles.minutesInput}
+          keyboardType={'numeric'}
+          maxLength={2}
           onChangeText={(minutes) => this._onChangeMinutes(minutes)}
           value={this.state.minutes} />
         <Text style={styles.timeDesc}>Min</Text>
@@ -54,24 +58,21 @@ export default class SetTimeLimit extends Component {
   }
 
   _onChangeHour(hour) {
-    if (typeof parseInt(hour) !== 'number') {
-      //throw error
-    }
-    if (hour.length > 1) {
-      //throw error
+    let nan = /[^0-9]/.test(hour);
+    if ((isNaN(parseInt(hour)) && hour !== '') || nan) {
+      this.setState({hour: '1'});
+      return;
     }
     this.setState({hour});
   }
 
-  _onChangeMinutes(minutes) {
-    if (typeof parseInt(minutes) !== 'number') {
-      //throw error
+  _onChangeMinutes(minutes) { console.log('minutes', minutes)
+    let nan = /[^0-9]/.test(minutes);
+    let int = parseInt(minutes)
+    if ((isNaN(int) && minutes !== '') || int > 60 || nan) {
+      this.setState({minutes: '00'});
+      return;
     }
-    if (minutes.length > 2) {
-      //throw error
-    }// else if (minutes.length === 1) {
-    //   minutes = "0" + minutes;
-    // }
     this.setState({minutes});
   }
 
