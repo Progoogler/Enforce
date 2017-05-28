@@ -58,4 +58,13 @@ ExpiredSchema.schema = {
   }
 }
 
-export default [TimerSchema, TimerListSchema, TimerSequenceSchema, TimeLimitSchema, TicketedSchema, ExpiredSchema];
+class CoordinatesSchema {};
+CoordinatesSchema.schema = {
+  name: 'Coordinates',
+  properties: {
+    latitude: 'float',
+    longitude: 'float'
+  }
+}
+
+export default [TimerSchema, TimerListSchema, TimerSequenceSchema, TimeLimitSchema, TicketedSchema, ExpiredSchema, CoordinatesSchema];
