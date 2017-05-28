@@ -94,9 +94,9 @@ export default class Row extends Component {
     } else if (timeLeft > 7200 && timeLeft < 10800) {
       return value = '2 hours ' + Math.floor((timeLeft - 7200) / 60) + ' minutes remaining';
     } else if (timeLeft > 10800 && timeLeft < 14400) {
-      return value = '3 hours ' + Math.floor((timeLeft - 14400) / 60) + ' minutes remaining';
+      return value = '3 hours ' + Math.floor((timeLeft - 10800) / 60) + ' minutes remaining';
     } else {
-      return value = Math.floor(timeLeft / 60 / 60) + ' hours remaining..';
+      return value = 'Over ' + Math.floor(timeLeft / 60 / 60) + ' hours remaining...';
     }
   }
 }
