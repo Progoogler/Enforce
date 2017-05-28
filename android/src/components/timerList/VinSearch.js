@@ -70,6 +70,7 @@ export default class VinSearch extends Component {
         { /* TODO set up integration account with Experian/AutoCheck */ }
         <TouchableHighlight
           style={styles.inputButton}
+          underlayColor='#4286f4'
           onPress={()=>{}} >
           <Text style={styles.inputButtonText}>Search VIN</Text>
         </TouchableHighlight>

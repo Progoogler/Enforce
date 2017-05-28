@@ -35,6 +35,7 @@ export default class Header extends Component {
     return (
       <View style={styles.headerContainer} >
         <TouchableHighlight
+          underlayColor='#4286f4'
           onPress={ () => {
             this.props.navigation.navigate('DrawerOpen');
           }}
