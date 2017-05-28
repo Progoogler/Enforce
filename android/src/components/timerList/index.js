@@ -14,18 +14,8 @@ import Footer from './Footer';
 import Navigation from '../home/Header';
 import Warning from './Warning';
 
-const styles = StyleSheet.create({
-  container: {
 
-  },
-  separator: {
-    flex: 1,
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: '#8E8E8E',
-  },
-});
-
-class TimerList extends Component {
+export default class TimerList extends Component {
   constructor(props) {
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -39,6 +29,33 @@ class TimerList extends Component {
     this.timer = null;
     this.realm = new Realm();
   }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <Navigation navigation={this.props.navigation} />
+        <Title limit={this.props.navigation.state.params.timers[0] ? this.props.navigation.state.params.timers[0].timeLength : ""} />
+        <Warning throwWarning={this.throwWarning.bind(this)} timeElapsed={this.warning} visibility={this.state.warningVisibility} forceTicket={this.forceTicket.bind(this)}/>
+        <VinSearch />
+        <ListView
+          refreshControl={
+            <RefreshControl refreshing={this.state.refreshing}
+            onRefresh={this._onRefresh.bind(this)} />
+          }
+          //timers={this.props.navigation.state.params.timers}
+          style={styles.container}
+          dataSource={this.state.dataSource}
+          renderRow={(data) => <Row data={data}
+                                    updateRows={this.updateRows.bind(this)}
+                                    realm={this.realm}
+                                    throwWarning={this.throwWarning.bind(this)}
+                                    expiredFunc={this.expiredFunc.bind(this)}/>}
+          renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} />
+        {/* }<Footer /> TODO space out the bottom margin of listview and animate "Done"*/}
+      </View>
+    );
+  }
+
 
   _onRefresh() {
     this.setState({
@@ -81,32 +98,16 @@ class TimerList extends Component {
     });
     this.updateRows();
   }
-
-  render() {
-    return (
-      <View>
-        <Navigation navigation={this.props.navigation} />
-        <Title limit={this.props.navigation.state.params.timers[0] ? this.props.navigation.state.params.timers[0].timeLength : ""} />
-        <Warning throwWarning={this.throwWarning.bind(this)} timeElapsed={this.warning} visibility={this.state.warningVisibility} forceTicket={this.forceTicket.bind(this)}/>
-        <VinSearch />
-        <ListView
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh.bind(this)} />
-          }
-          //timers={this.props.navigation.state.params.timers}
-          style={styles.container}
-          dataSource={this.state.dataSource}
-          renderRow={(data) => <Row data={data}
-                                    updateRows={this.updateRows.bind(this)}
-                                    realm={this.realm}
-                                    throwWarning={this.throwWarning.bind(this)}
-                                    expiredFunc={this.expiredFunc.bind(this)}/>}
-          renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} />
-        {/* }<Footer /> TODO space out the bottom margin of listview and animate "Done"*/}
-      </View>
-    );
-  }
 }
 
-export default TimerList;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  separator: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: '#8E8E8E',
+  },
+});
