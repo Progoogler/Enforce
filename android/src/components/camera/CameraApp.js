@@ -35,8 +35,8 @@ export class CameraApp extends Component {
     drawerLabel: 'Camera',
     drawerIcon: ({ tintColor }) => (
       <Image
-        source={require('../parked_logo_72x72.png')}
-        style={[styles.icon, {tintColor: tintColor}]}
+        source={require('../../../../shared/images/camera-blue.jpg')}
+        style={[styles.icon]}
       />
     )
   };
@@ -296,5 +296,5 @@ const styles = StyleSheet.create({
     color: '#4286f4',
     marginRight: 20,
     fontSize: 20,
-  }
+  },
 });

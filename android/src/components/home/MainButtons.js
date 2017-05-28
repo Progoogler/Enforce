@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   TouchableHighlight,
 } from 'react-native';
@@ -12,13 +13,13 @@ const MainButtons = (props) => (
     <TouchableHighlight
       onPress={() => props.navigation.navigate('Map')}
       style={styles.mapButton} >
-      <Text style={styles.mapButtonText}> Map </Text>
+      <Image source={require('../../../../shared/images/white-pin.png')} />
     </TouchableHighlight>
     <View style={styles.separator} />
     <TouchableHighlight
       onPress={() => props.navigation.navigate('Camera')}
       style={styles.cameraButton} >
-      <Text style={styles.cameraButtonText}> Camera </Text>
+      <Image source={require('../../../../shared/images/camera.png')} />
     </TouchableHighlight>
   </View>
 );

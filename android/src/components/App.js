@@ -1,39 +1,49 @@
 import React, { Component } from 'react';
-import { DrawerNavigator } from 'react-navigation';
+import { DrawerNavigator, DrawerItems } from 'react-navigation';
 import { Provider } from 'react-redux';
 import RNFS from 'react-native-fs';
 import { CameraApp } from './camera/CameraApp';
 import MapApp from './map/MapApp';
 import Home from './home';
 import TimerList from './timerList';
+import ComingSoon from './ComingSoon';
 import Realm from 'realm';
 import Schema from '../realm';
 
 
 const AppNavigator = DrawerNavigator({
   Home: {
-    screen: Home,
+    screen: Home
   },
   Map: {
-    screen: MapApp,
+    screen: MapApp
   },
   Camera: {
-    screen: CameraApp,
+    screen: CameraApp
   },
-  TimerList: {
-    screen: TimerList,
+  Timers: {
+    screen: TimerList
   },
+  "VIN Search": {
+    screen: ComingSoon
+  },
+  Metrics: {
+    screen: ComingSoon
+  },
+  FAQS: {
+    screen: ComingSoon
+  }
 });
 
 export default class App extends Component {
   render() {
     console.log('RENDERS');
-    // Realm.clearTestState(); // Uncomment to drop/recreate database
+    //Realm.clearTestState(); // Uncomment to drop/recreate database
      this.realm = new Realm({schema: Schema});
-    // this.realm.write(() => {
-    //   this.realm.create('Ticketed', {list: []});
-    //   this.realm.create('Expired', {list: []});
-    // }); // For beta testing only TODO remove this
+    //this.realm.write(() => {
+    //  this.realm.create('Ticketed', {list: []});
+    //  this.realm.create('Expired', {list: []});
+    //}); // For beta testing only TODO remove this
     let timerLists = this.realm.objects('Timers');
     if (timerLists.length > 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object
       let i = 0, lastTime;

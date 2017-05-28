@@ -31,7 +31,7 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFSPackage(),
             new RealmReactPackage(),
             new RCTCameraPackage(),
-          new MapsPackage()
+            new MapsPackage()
       );
     }
   };
