@@ -41,6 +41,7 @@ export default class Row extends Component {
               </TouchableHighlight>
               <TouchableHighlight
                 style={styles.button}
+                underlayColor='#0099ff'
                 onPress={() => this._openMapPage(this.props.list)} >
                 <Text style={styles.buttonText}>Show Map</Text>
               </TouchableHighlight>
