@@ -34,6 +34,7 @@ export default class SetTimeLimit extends Component {
         <Text style={styles.timeDesc}>Min</Text>
         <TouchableHighlight
           style={styles.setButton}
+          underlayColor="green"
           onPress={this._updateTimeLimit.bind(this)} >
           <Text style={styles.buttonText}>Set Limit</Text>
         </TouchableHighlight>

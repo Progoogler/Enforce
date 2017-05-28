@@ -42,6 +42,7 @@ export default class LocationInput extends Component {
             </View>
             <TouchableHighlight
               style={styles.doneButton}
+              underlayColor="green"
               onPress={() => {this.props.setModalVisible(this.state.text)}} >
               <Text style={styles.doneText}>Done</Text>
             </TouchableHighlight>

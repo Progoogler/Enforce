@@ -67,6 +67,7 @@ export class CameraApp extends Component {
           </Camera>
           <View style={styles.footer}>
             <TouchableHighlight
+              underlayColor="grey"
               onPress={() => this.setModalVisible()} >
               <Image
                 style={styles.pinIcon}

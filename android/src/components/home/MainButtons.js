@@ -12,11 +12,13 @@ const MainButtons = (props) => (
   <View style={styles.mainButtonsContainer}>
     <TouchableHighlight
       onPress={() => props.navigation.navigate('Map')}
+      underlayColor="#4286f4"
       style={styles.mapButton} >
       <Image source={require('../../../../shared/images/white-pin.png')} />
     </TouchableHighlight>
     <View style={styles.separator} />
     <TouchableHighlight
+      underlayColor="#4286f4"
       onPress={() => props.navigation.navigate('Camera')}
       style={styles.cameraButton} >
       <Image source={require('../../../../shared/images/camera.png')} />

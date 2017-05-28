@@ -60,6 +60,7 @@ export default class App extends Component {
       let now = new Date() / 1000;
       if (now - lastTime > 28800) { // Reset DB after 8 hours of activity
         this._loopDeletion(timerLists)
+        console.log('deletion')
         //TODO Doesn't wait..
         setTimeout(() => {
           console.log('DELETE')
@@ -70,7 +71,7 @@ export default class App extends Component {
             this.realm.create('Ticketed', {list: []});
             this.realm.create('Expired', {list: []});
           });
-        }, 2000);
+        }, 1000);
       }
     }
 
