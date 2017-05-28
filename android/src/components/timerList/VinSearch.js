@@ -62,6 +62,7 @@ export default class VinSearch extends Component {
           onChangeText={(text) => this.setState({text})}
           maxLength={7}
           autoCapitalize={'characters'}
+          keyboardType={'numeric'}
           placeHolder={'1ABC234'}
           autoCorrect={false}
           underlineColorAndroid={'transparent'}

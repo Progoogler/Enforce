@@ -31,12 +31,14 @@ export default class Row extends Component {
           <View style={styles.rowButtonsContainers} >
             <TouchableHighlight
               style={styles.rowButton}
+              underlayColor='#0099ff'
               onPress={() => this.props.expiredFunc(this.props.data)} >
               <Text style={styles.buttonText}> Expired </Text>
             </TouchableHighlight>
             <View style={styles.separator} />
             <TouchableHighlight
               style={styles.rowButton}
+              underlayColor='#0099ff'
               onPress={() => this._uponTicketed(this.props.data)}>
               <Text style={styles.buttonText}> Ticketed </Text>
             </TouchableHighlight>
