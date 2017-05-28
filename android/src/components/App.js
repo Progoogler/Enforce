@@ -67,7 +67,7 @@ export default class App extends Component {
           Realm.clearTestState();
           this.realm = new Realm({schema: Schema});
           this.realm.write(() => {
-            this.realm.create('Coordinates');
+            this.realm.create('Coordinates', {latitude: 0, longitude: 0});
             this.realm.create('Ticketed', {list: []});
             this.realm.create('Expired', {list: []});
           });
