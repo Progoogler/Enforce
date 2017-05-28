@@ -44,6 +44,7 @@ export default class LocationDetailsView extends Component {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#4286f4',
+    alignSelf: 'stretch',
     zIndex: 10,
   },
   containerBorder: {
