@@ -28,7 +28,8 @@ export default class Row extends Component {
             showsHorizontalScrollIndicator={false} >
             <View style={styles.innerContainer} >
               <TouchableHighlight
-                onPress={() => this._openTimerListPage(this.props.list)} >
+                onPress={() => this._openTimerListPage(this.props.list)}
+                underlayColor="white" >
                 <View style={styles.timerRow}>
                   <Text style={styles.timerRowLength}>
                     { (this.props.list.length > 1) ? this.props.list.length + '\n cars' : '1 \n car' }
