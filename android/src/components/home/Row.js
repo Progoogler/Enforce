@@ -86,7 +86,7 @@ export default class Row extends Component {
 
   _openTimerListPage(timerList) {
     const navigateAction = NavigationActions.navigate({
-      routeName: 'TimerList',
+      routeName: 'Timers',
       params: {timers: timerList},
     });
     this.props.navigation.dispatch(navigateAction);
