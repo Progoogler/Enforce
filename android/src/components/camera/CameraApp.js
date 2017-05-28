@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   TouchableHighlight,
 } from 'react-native';
+import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import Camera from 'react-native-camera';
 import RNFS from 'react-native-fs';
 import Realm from 'realm';
@@ -116,10 +117,19 @@ export class CameraApp extends Component {
     };
 
     //this.cameraId =
-
-    navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
-    this.setCameraTime();
-    this._setTimeLimit();
+console.log(LocationServicesDialogBox);
+    LocationServicesDialogBox.checkLocationServicesIsEnabled({
+        message: "<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
+        ok: "YES",
+        cancel: "NO"
+    }).then(() => {
+      navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
+      this.setCameraTime();
+      this._setTimeLimit();
+    }).catch(() => {
+      this.setCameraTime();
+      this._setTimeLimit();
+    })
   }
 
   // componentWillUnmount() {
