@@ -44,12 +44,8 @@ export default class MapApp extends Component {
           this.realm.objects('Coordinates')[0].longitude = longitude;
         });
       }, error => {
-        let latitude = this.realm.objects('Coordinates')[0].latitude;
-        let longitude = this.realm.objects('Coordinates')[0].longitude;
-        console.log('realm lat', latitude);
-        if (latitude) {
-          this._animateToCoord(latitude, longitude);
-        }
+        // Cannot animate to coordinates with previous latlng w/o location provider.
+        // Possible solution is to swap out <MapView.Animated /> w/ initial region set to prev latlng.
         console.log('Error loading geolocation:', error); //TODO Save and Get location units from Realm
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
@@ -98,7 +94,6 @@ export default class MapApp extends Component {
   }
 
   _animateToCoord(lat, long) {
-    console.log('ANIMATE')
       this.animatedMap._component.animateToCoordinate({
         latitude: lat,
         longitude: long,
