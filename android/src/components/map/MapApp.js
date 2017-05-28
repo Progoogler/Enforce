@@ -15,16 +15,11 @@ import LocationDetailsView from './LocationDetailsView';
 export default class MapApp extends Component {
   constructor() {
     super();
-    // this.realm = new Realm({
-    //   schema: [{name: 'Dog', properties: {name: 'string'}}, TimerSchema, CameraTimeSchema, TimerListSchema, TimerCountSchema]
-    // });
     this.state = {
       animating: true,
       modalVisible: false,
     };
     this.animatedMap = undefined;
-    this.latitude = undefined;
-    this.longitude = undefined;
     this.realm = new Realm();
   }
   static navigationOptions = {
@@ -44,11 +39,27 @@ export default class MapApp extends Component {
         let latitude = parseFloat(position.coords.latitude);
         let longitude = parseFloat(position.coords.longitude);
         this._animateToCoord(latitude, longitude);
+        this.realm.write(() => {
+          this.realm.objects('Coordinates')[0].latitude = latitude;
+          this.realm.objects('Coordinates')[0].longitude = longitude;
+        });
       }, error => {
+        let latitude = this.realm.objects('Coordinates')[0].latitude;
+        let longitude = this.realm.objects('Coordinates')[0].longitude;
+        console.log('realm lat', latitude);
+        if (latitude) {
+          this._animateToCoord(latitude, longitude);
+        }
         console.log('Error loading geolocation:', error); //TODO Save and Get location units from Realm
       },
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
     );
+  }
+
+  componentWillUnmount() {
+    if (this.state.modalVisible) {
+      this.setState({modalVisible: false});
+    }
   }
 
   getLocationDetails() {
@@ -87,6 +98,7 @@ export default class MapApp extends Component {
   }
 
   _animateToCoord(lat, long) {
+    console.log('ANIMATE')
       this.animatedMap._component.animateToCoordinate({
         latitude: lat,
         longitude: long,

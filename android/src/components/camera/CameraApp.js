@@ -25,6 +25,7 @@ export class CameraApp extends Component {
     this.latitude = null;
     this.longitude = null;
     this.cameraId = null;
+    this.firstCapture = true;
     this.count = 0;
     this.timeLimit = 1;
     this.description = "";
@@ -88,29 +89,41 @@ export class CameraApp extends Component {
 }
 
   componentWillMount() {
-    const context = this;
-    function success(position) {
-      context.latitude = position.coords.latitude;
-      context.longitude = position.coords.longitude;
-      console.log(context.latitude, context.longitude);
+    this.success = (position) => {
+      this.latitude = position.coords.latitude;
+      this.longitude = position.coords.longitude;
+      console.log(this.latitude, this.longitude);
+      this.realm.write(() => {
+        this.realm.objects('Coordinates')[0].latitude = this.latitude;
+        this.realm.objects('Coordinates')[0].longitude = this.longitude;
+      });
     }
-    function error(err) {
+    this.error = (err) => {
+      let realmCoords = this.realm.objects('Coordinates')[0];
+      console.log('COORDS', realmCoords);
+      if (realmCoords.latitude) {
+        this.latitude = realmCoords.latitude;
+        this.longitude = realmCoords.longitude;
+      }
       console.warn('ERROR(' + err.code + '): ' + err.message);
     }
-    let options = {
+    this.options = {
       enableHighAccuracy: true,
-      timeout: 5000,
+      timeout: 20000,
       maximumAge: 10000,
       distanceFilter: 1
     };
-    this.cameraId = navigator.geolocation.watchPosition(success, error, options);
+
+    //this.cameraId =
+
+    navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
     this.setCameraTime();
     this._setTimeLimit();
   }
 
-  componentWillUnmount() {
-    navigator.geolocation.clearWatch(this.cameraId);
-  }
+  // componentWillUnmount() {
+  //   navigator.geolocation.clearWatch(this.cameraId);
+  // }
 
   setModalVisible(desc) {
     this.setState({modalVisible: !this.state.modalVisible});
@@ -178,11 +191,19 @@ export class CameraApp extends Component {
 
   takePicture() {
     this.setState({animating: true});
+    navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
     const options = {};
     const context = this;
     //options.location = ...
     this.camera.capture({metadata: options})
       .then((data) => {
+        if (context.firstCapture) {
+          setTimeout(() => {
+            context.savePicture(data);
+          }, 2000);
+          context.firstCapture = false;
+          return;
+        }
         context.savePicture(data);
       })
       .catch(err => console.error(err));
