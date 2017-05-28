@@ -30,6 +30,7 @@ export class CameraApp extends Component {
     this.count = 0;
     this.timeLimit = 1;
     this.description = "";
+    this.locationService = false;
     this.realm = new Realm();
   }
 
@@ -99,6 +100,7 @@ export class CameraApp extends Component {
         this.realm.objects('Coordinates')[0].latitude = this.latitude;
         this.realm.objects('Coordinates')[0].longitude = this.longitude;
       });
+      this.locationService = true;
     }
     this.error = (err) => {
       let realmCoords = this.realm.objects('Coordinates')[0];
@@ -116,12 +118,10 @@ export class CameraApp extends Component {
       distanceFilter: 1
     };
 
-    //this.cameraId =
-console.log(LocationServicesDialogBox);
     LocationServicesDialogBox.checkLocationServicesIsEnabled({
-        message: "<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
+        message: "<h2>Turn On Location ?</h2>Quicket wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
         ok: "YES",
-        cancel: "NO"
+        cancel: "Continue without"
     }).then(() => {
       navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
       this.setCameraTime();
@@ -129,12 +129,8 @@ console.log(LocationServicesDialogBox);
     }).catch(() => {
       this.setCameraTime();
       this._setTimeLimit();
-    })
+    });
   }
-
-  // componentWillUnmount() {
-  //   navigator.geolocation.clearWatch(this.cameraId);
-  // }
 
   setModalVisible(desc) {
     this.setState({modalVisible: !this.state.modalVisible});
@@ -142,56 +138,37 @@ console.log(LocationServicesDialogBox);
   }
 
   setTimerCount(inc = '') {
-    let timerSequence = this.realm.objects('TimerSequence');
-    if (timerSequence.length === 0) {
-      this.realm.write(() => {
-        this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1000, count: 0});
-      });
-    }
+    let timerSequence = this.realm.objects('TimerSequence')[0];
     if (inc) {
       this.realm.write(() => {
-        timerSequence[0].count = timerSequence[0].count++;
+        timerSequence.count = timerSequence.count++;
       });
       this.count++;
       return;
     }
-    if (timerSequence.length > 0) {
-      this.count = timerSequence[0].count;
-    }
+    this.count = timerSequence.count;
   }
 
   setCameraTime() {
-    let timerSequence = this.realm.objects('TimerSequence'); console.log('TIMER SEQ', timerSequence);
-      if (timerSequence.length === 0) {
-       this.createNewTimerList();
-       this.realm.write(() => {
-         this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1000, count: 0});
-       });
-      } else {
-       let timeSince = (new Date() / 1000) - timerSequence[0].timeAccessedAt;
-       if (timeSince >= 900) {
-         this.realm.write(() => {
-           timerSequence[0].timeAccessedAt = new Date() / 1000;
-         });
-         this.setTimerCount('increment');
-         this.createNewTimerList();
-         return;
-       } else {
-         setTimeout(this.setCameraTime.bind(this), (900 - timeSince) * 1000);
-       }
-       this.setTimerCount();
-      }
+    let timerSequence = this.realm.objects('TimerSequence')[0]; console.log('TIMER SEQ', timerSequence);
+    let timeSince = (new Date() / 1000) - timerSequence.timeAccessedAt;
+    this.createNewTimerList();
+    if (timeSince >= 900) {
+      this.realm.write(() => {
+         timerSequence.timeAccessedAt = new Date() / 1000;
+      });
+      this.setTimerCount('increment');
+      this.createNewTimerList();
+      return;
+    } else {
+      setTimeout(this.setCameraTime.bind(this), (900 - timeSince) * 1000);
     }
+    this.setTimerCount();
+  }
 
   _setTimeLimit() {
-    let timeLimit = this.realm.objects('TimeLimit');
-    if (timeLimit.length > 0) {
-      this.timeLimit = timeLimit[0].float;
-    } else {
-      this.realm.write(() => {
-        this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
-      });
-    }
+    let timeLimit = this.realm.objects('TimeLimit')[0];
+    this.timeLimit = timeLimit.float;
   }
 
   createNewTimerList() {
@@ -202,7 +179,7 @@ console.log(LocationServicesDialogBox);
 
   takePicture() {
     this.setState({animating: true});
-    navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
+    if (this.locationService) navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
     const options = {};
     const context = this;
     //options.location = ...
@@ -279,16 +256,14 @@ console.log(LocationServicesDialogBox);
       });
       this.description = "";
     }
-        console.log(this.realm.objects('Timers'))
     this.setState({animating: false});
   }
 
   _onUpdateTimeLimit() {
-    let timeLimit = this.realm.objects('TimeLimit');
-    let timerSequence = this.realm.objects('TimerSequence');
-    this.timeLimit = timeLimit[0].float;
+    let timerSequence = this.realm.objects('TimerSequence')[0];
+    this.timeLimit = this.realm.objects('TimeLimit')[0].float;
     this.realm.write(() => {
-      timerSequence[0].count = timerSequence[0].count + 1;
+      timerSequence.count = timerSequence.count + 1;
     });
     this.setTimerCount('increment');
     this.createNewTimerList();
