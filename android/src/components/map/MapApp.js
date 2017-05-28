@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView from 'react-native-maps';
 import {
   View,
   StyleSheet,
@@ -57,26 +57,6 @@ export default class MapApp extends Component {
     }
   }
 
-  mapStyle = [
-  {
-    "featureType": "poi.business",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.park",
-    "elementType": "labels.text",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  }
-];
-
   render() {
     return (
       <View style={styles.container} >
@@ -94,8 +74,6 @@ export default class MapApp extends Component {
           style={styles.map}
           mapType="hybrid"
           showsUserLocation={true}
-          provider={PROVIDER_GOOGLE}
-          customMapStyle={this.mapStyle}
           initialRegion={{
             latitude: 37.78926,
             longitude: -122.43159,
