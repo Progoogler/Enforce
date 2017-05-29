@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     flex: .70,
     height: 60,
     paddingLeft: 30,
-    fontSize: 28,
+    fontSize: 35,
     color: 'white',
     textAlignVertical: 'center',
   },
