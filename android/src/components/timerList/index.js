@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   ListView,
   View,
+  Image,
   StyleSheet,
   RefreshControl,
 } from 'react-native';
@@ -29,6 +30,15 @@ export default class TimerList extends Component {
     this.timer = null;
     this.realm = new Realm();
   }
+  static navigationOptions = {
+    drawerLabel: 'Timers',
+    drawerIcon: () => (
+      <Image
+        source={require('../../../../shared/images/clock-icon.png')}
+        style={[styles.icon]}
+      />
+    )
+  };
 
   render() {
     return (
