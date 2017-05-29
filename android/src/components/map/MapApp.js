@@ -23,6 +23,7 @@ export default class MapApp extends Component {
       modalVisible: false,
       showError: false,
     };
+    this.animated = false;
     this.animatedMap = undefined;
     this.realm = new Realm();
   }
@@ -46,7 +47,7 @@ export default class MapApp extends Component {
       navigator.geolocation.getCurrentPosition(
         position => {
           let latitude = parseFloat(position.coords.latitude);
-          let longitude = parseFloat(position.coords.longitude);
+          let longitude = parseFloat(position.coords.longitude); console.log('GEO', latitude)
           this._animateToCoord(latitude, longitude);
           this.realm.write(() => {
             this.realm.objects('Coordinates')[0].latitude = latitude;
@@ -69,6 +70,10 @@ export default class MapApp extends Component {
   componentWillUnmount() {
     if (this.state.modalVisible) {
       this.setState({modalVisible: false});
+    }
+    if (this.props.navigation.state.params) {
+      // Remove params for fresh state when main Map Button is pressed
+      this.props.navigation.state.params = undefined;
     }
   }
 
@@ -110,11 +115,15 @@ export default class MapApp extends Component {
   }
 
   _animateToCoord(lat, long) {
+    console.log('ANIMATE', lat)
       this.animatedMap._component.animateToCoordinate({
         latitude: lat,
         longitude: long,
       }, 1500);
-      this.setState({animating: false});
+      if (!this.animated) {
+        this.animated = true;
+        this.setState({animating: false});
+      }
     }
 
   setMarkers() {
@@ -123,28 +132,58 @@ export default class MapApp extends Component {
 
   getMarkers() {
     const markers = [];
-
+    let lat, long, aux;
+    let soonest = Number.POSITIVE_INFINITY;
     if (!this.props.navigation.state.params) {
+      let lists = this.realm.objects('Timers');
+      let i = 0;
       this.realm.objects('Timers').forEach(timerList => {
         if (timerList.list.length > 0) {
+          aux = timerList.list[0].createdAt + (timerList.list[0].timeLength * 60 * 60);
+          if (aux < soonest) {
+            soonest = aux;
+            lat = timerList.list[0].latitude !== 0 ? timerList.list[0].latitude : lat;
+            long = timerList.list[0].longitude !== 0 ? timerList.list[0].longitude : long;
+          }
           markers.push(
             <MapView.Marker
               coordinate={{latitude: timerList.list[0].latitude, longitude: timerList.list[0].longitude}}
               image={require('../../../../shared/images/pin-orange.png')}
               key={timerList.list[0].createdAt} >
-              <CustomCallout timer={timerList.list[0]} />
+              <CustomCallout timer={timerList.list[0]} title="1st" />
             </MapView.Marker>
           );
         }
+        if (lists[i+1] === undefined) {
+          if (lat > 0) {
+            setTimeout(() => {
+              this._animateToCoord(lat, long);
+            }, 1500);
+          }
+        }
+        i++;
       });
     } else {
       let arr = this.props.navigation.state.params.timers;
+      markers.push(<MapView.Marker
+          coordinate={{latitude: arr[0].latitude, longitude: arr[0].longitude}}
+          image={require('../../../../shared/images/pin-orange.png')}
+          key={arr[0].createdAtDate} >
+          <CustomCallout timer={arr[0]} title="1st" />
+        </MapView.Marker>
+      );
       arr.forEach(timer => {
          markers.push(<MapView.Marker
            coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
+           image={require('../../../../shared/images/pin-orange.png')}
            key={timer.createdAt} />
          );
       });
+      if (arr[0].latitude > 0) {
+        setTimeout(() => {
+          this._animateToCoord(arr[0].latitude, arr[0].longitude);
+        }, 1500);
+      }
     }
     return markers;
   }
