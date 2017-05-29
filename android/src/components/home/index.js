@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  Image,
   StyleSheet,
 } from 'react-native';
 import Realm from 'realm';
@@ -18,12 +19,22 @@ export default class Home extends Component {
     this.realm = new Realm();
   }
 
+  static navigationOptions = {
+    drawerLabel: 'Home',
+    drawerIcon: () => (
+      <Image
+        source={require('../../../../shared/images/clock-icon.png')}
+        style={[styles.icon]}
+      />
+    )
+  };
+
   render() {
     return (
       <View style={styles.container} >
         <Header navigation={this.props.navigation} />
         <MainButtons navigation={this.props.navigation} />
-        <TicketCounter realm={this.realm}/>
+        <TicketCounter realm={this.realm} />
         <TimersList navigation={this.props.navigation} />
       </View>
     );
