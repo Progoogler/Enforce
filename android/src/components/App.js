@@ -9,7 +9,6 @@ import TimerList from './timerList';
 import VINSearch from './search';
 import Metrics from './metrics';
 import FAQs from './faq';
-import ComingSoon from './ComingSoon';
 import Realm from 'realm';
 import Schema from '../realm';
 
@@ -64,7 +63,7 @@ export default class App extends Component {
       let context = this;
       let now = new Date() / 1000;
       if (now - lastTime > 28800) { // Reset DB after 8 hours of activity
-        this._loopDeletion(timerLists)
+        this._loopDeletion(timerLists).bind(this);
         console.log('deletion')
         //TODO Doesn't wait..
         setTimeout(() => {
