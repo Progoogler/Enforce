@@ -9,7 +9,7 @@ export default class MyCalloutView extends Component {
   render() {
     return (
       <View style={ this._checkTimedUp(this.props.timer) ? styles.green : styles.blue }>
-        <Text>{ this.timeUp ? 'Expires at ' + this._getExpiration(this.props.timer) : 'Ready'}</Text>
+        <Text style={{color: 'white'}}>{ this._checkTimedUp(this.props.timer) ? 'Ready' : 'Expires at ' + this._getExpiration(this.props.timer) }</Text>
       </View>
     );
   }
@@ -27,6 +27,7 @@ export default class MyCalloutView extends Component {
 
   _getExpiration(timer) {
     let date = new Date((timer.createdAt * 1000) + (timer.timeLength * 60 * 60 * 1000));
+    console.log(date, timer);
     let hour = date.getHours();
     let minutes = date.getMinutes() + '';
     minutes = minutes.length === 1 ? '0' + minutes : minutes;
@@ -41,13 +42,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#4286f4',
     marginBottom: 150,
     borderRadius: 50,
-    padding: 2,
+    padding: 4,
   },
   green: {
     backgroundColor: 'green',
     marginBottom: 150,
     borderRadius: 50,
-    padding: 2,
+    padding: 4,
   }
 });
 
