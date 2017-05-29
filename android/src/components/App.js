@@ -6,6 +6,9 @@ import { CameraApp } from './camera/CameraApp';
 import MapApp from './map/MapApp';
 import Home from './home';
 import TimerList from './timerList';
+import VINSearch from './search';
+import Metrics from './metrics';
+import FAQs from './faq';
 import ComingSoon from './ComingSoon';
 import Realm from 'realm';
 import Schema from '../realm';
@@ -21,17 +24,17 @@ const AppNavigator = DrawerNavigator({
   Camera: {
     screen: CameraApp
   },
-  Timers: {
+  Timers: { //Cannot navigate to page w/o passing params
     screen: TimerList
   },
   "VIN Search": {
-    screen: ComingSoon
+    screen: VINSearch
   },
   Metrics: {
-    screen: ComingSoon
+    screen: Metrics
   },
-  FAQS: {
-    screen: ComingSoon
+  FAQs: {
+    screen: FAQs
   }
 });
 
