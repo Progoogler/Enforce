@@ -12,6 +12,7 @@ import LocationServicesDialogBox from "react-native-android-location-services-di
 
 import Navigation from '../home/Header';
 import LocationDetailsView from './LocationDetailsView';
+import CustomCallout from './CustomCallout';
 import ErrorMessage from './ErrorMessage';
 
 export default class MapApp extends Component {
@@ -96,9 +97,9 @@ export default class MapApp extends Component {
           showsUserLocation={true}
           initialRegion={{
             latitude: this.realm.objects('Coordinates')[0].latitude ? this.realm.objects('Coordinates')[0].latitude : 37.78926,
-            longitude: this.realm.objects('Coordinates')[0].latitude ? this.realm.objects('Coordinates')[0].latitude : -122.43159,
-            latitudeDelta: 0.0048,
-            longitudeDelta: 0.0020,
+            longitude: this.realm.objects('Coordinates')[0].longitude ? this.realm.objects('Coordinates')[0].longitude : -122.43159,
+            latitudeDelta: 0.0108,
+            longitudeDelta: 0.0060,
           }} >
             { this.getMarkers() }
         </MapView.Animated>
@@ -125,12 +126,16 @@ export default class MapApp extends Component {
 
     if (!this.props.navigation.state.params) {
       this.realm.objects('Timers').forEach(timerList => {
-        timerList.list.forEach(list => {
-          markers.push(<MapView.Marker
-            coordinate={{latitude: list.latitude, longitude: list.longitude}}
-            key={list.createdAt} />
+        if (timerList.list.length > 0) {
+          markers.push(
+            <MapView.Marker
+              coordinate={{latitude: timerList.list[0].latitude, longitude: timerList.list[0].longitude}}
+              image={require('../../../../shared/images/pin-orange.png')}
+              key={timerList.list[0].createdAt} >
+              <CustomCallout timer={timerList.list[0]} />
+            </MapView.Marker>
           );
-        });
+        }
       });
     } else {
       let arr = this.props.navigation.state.params.timers;
