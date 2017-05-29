@@ -13,7 +13,7 @@ export default class VINSearch extends Component {
     drawerLabel: 'VIN Search',
     drawerIcon: () => (
       <Image
-        source={require('../../../../shared/images/search-icon.jpg')}
+        source={require('../../../../shared/images/search-icon.png')}
         style={[styles.icon]}
       />
     )

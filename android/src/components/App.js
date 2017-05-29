@@ -7,6 +7,7 @@ import MapApp from './map/MapApp';
 import Home from './home';
 import TimerList from './timerList';
 import VINSearch from './search';
+import History from './history';
 import Metrics from './metrics';
 import FAQs from './faq';
 import Realm from 'realm';
@@ -28,6 +29,9 @@ const AppNavigator = DrawerNavigator({
   },
   "VIN Search": {
     screen: VINSearch
+  },
+  History: {
+    screen: History
   },
   Metrics: {
     screen: Metrics
