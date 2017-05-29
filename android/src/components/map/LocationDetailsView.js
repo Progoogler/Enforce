@@ -13,7 +13,7 @@ export default class LocationDetailsView extends Component {
     }
   }
 
-  render() { console.log('MODAL PROPS', this.props)
+  render() {
     return (
       <View style={styles.container} >
         <View style={styles.containerBorder} >
@@ -54,6 +54,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    fontWeight: 'bold',    
     marginLeft: 15,
     marginTop: 5,
   },
