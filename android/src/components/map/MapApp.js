@@ -30,7 +30,7 @@ export default class MapApp extends Component {
     drawerLabel: 'Map',
     drawerIcon: ({ tintColor }) => (
       <Image
-        source={require('../../../../shared/images/blue-pin.jpg')}
+        source={require('../../../../shared/images/blue-pin.png')}
         style={[styles.icon]}
       />
     )

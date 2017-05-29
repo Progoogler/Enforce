@@ -34,6 +34,7 @@ export default class Header extends Component {
   render() {
     return (
       <View style={styles.headerContainer} >
+        <Text style={styles.headerTitle}>Enforce</Text>
         <TouchableHighlight
           underlayColor='#4286f4'
           onPress={ () => {
@@ -42,7 +43,7 @@ export default class Header extends Component {
           style={styles.headerNavigation} >
           <Image source={require('../../../../shared/images/menu-icon.jpg')} />
         </TouchableHighlight>
-        <Text style={styles.headerTitle}>Quicket</Text>
+
       </View>
     );
   }
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     flex: .70,
     height: 60,
-    paddingLeft: 20,
+    paddingLeft: 30,
     fontSize: 28,
     color: 'white',
     textAlignVertical: 'center',
