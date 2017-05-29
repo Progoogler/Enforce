@@ -38,7 +38,7 @@ export class CameraApp extends Component {
     drawerLabel: 'Camera',
     drawerIcon: ({ tintColor }) => (
       <Image
-        source={require('../../../../shared/images/camera-blue.jpg')}
+        source={require('../../../../shared/images/camera-blue.png')}
         style={[styles.icon]}
       />
     )
@@ -125,6 +125,8 @@ export class CameraApp extends Component {
       this.setCameraTime();
       this._setTimeLimit();
     }).catch(() => {
+      this.latitude = 0;
+      this.longitude = 0;
       this.setCameraTime();
       this._setTimeLimit();
     });
