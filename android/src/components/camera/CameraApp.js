@@ -104,11 +104,9 @@ export class CameraApp extends Component {
     }
     this.error = (err) => {
       let realmCoords = this.realm.objects('Coordinates')[0];
-      console.log('COORDS', realmCoords);
-      if (realmCoords) {
-        this.latitude = realmCoords.latitude;
-        this.longitude = realmCoords.longitude;
-      }
+      this.latitude = realmCoords.latitude;
+      this.longitude = realmCoords.longitude;
+      console.log('lat', this.latitude);
       console.warn('ERROR(' + err.code + '): ' + err.message);
     }
     this.options = {
