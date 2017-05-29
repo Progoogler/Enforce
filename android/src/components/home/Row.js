@@ -101,7 +101,7 @@ export default class Row extends Component {
     let timeSince = (new Date() / 1000) - timeStart;
     let timeLeft = timeLength - timeSince;
     let value = '';
-    if (timeLeft < 0) {
+      if (timeLeft < 0) {
       return value = <Text style={{fontSize: 20, fontWeight: 'bold', color: 'green'}}>Time is up!</Text>;
     } else if (timeLeft < 60) {
       return value = 'less than a minute remaining';
