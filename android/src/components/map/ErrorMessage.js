@@ -15,14 +15,6 @@ const ErrorMessage = () => (
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  // container: {
-  //   position: 'absolute',
-  //   bottom: 0,
-  //   justifyContent: 'center',
-  //   alignItems: 'center',
-  //   backgroundColor: 'white',
-  //   zIndex: 10,
-  // },
   message: {
     padding: 18,
     fontSize: 16,
