@@ -294,14 +294,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'rgba(52, 52, 52, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 1)',
     height: 80,
   },
   pinIcon: {
     marginLeft: 20,
   },
   capture: {
-    backgroundColor: 'green',
+    borderWidth: 1,
+    borderColor: 'white',
     borderRadius: 100,
     padding: 30,
     margin: 4,
