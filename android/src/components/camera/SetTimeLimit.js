@@ -8,6 +8,8 @@ import {
   Keyboard,
 } from 'react-native';
 
+import Notification from './Notification';
+
 export default class SetTimeLimit extends Component {
   constructor() {
     super();
@@ -21,21 +23,37 @@ export default class SetTimeLimit extends Component {
     console.log('SET TIME', this.props.realm.objects('TimeLimit'))
     console.log('TIME LIMIT', this.state.hour, this.state.minutes)
     return (
+      <View>
+      {
+        this.props.newTimer ?
+        <View style={styles.notification}>
+          <Notification />
+          <TouchableHighlight
+            style={styles.notificationButton}
+            underlayColor="green"
+            onPress={this._updateTimeLimit.bind(this)} >
+            <Text style={styles.buttonText}>Set Limit</Text>
+          </TouchableHighlight>
+        </View>
+
+        :
+
       <View style={styles.container}>
-        <TextInput
-          style={styles.hourInput}
-          keyboardType={'numeric'}
-          maxLength={1}
-          onChangeText={(hour) => this._onChangeHour(hour)}
-          value={this.state.hour} />
-        <Text style={styles.timeDesc}>Hr</Text>
-        <TextInput
-          style={styles.minutesInput}
-          keyboardType={'numeric'}
-          maxLength={2}
-          onChangeText={(minutes) => this._onChangeMinutes(minutes)}
-          value={this.state.minutes} />
-        <Text style={styles.timeDesc}>Min</Text>
+          <TextInput
+            style={styles.hourInput}
+            keyboardType={'numeric'}
+            maxLength={1}
+            onChangeText={(hour) => this._onChangeHour(hour)}
+            value={this.state.hour} />
+          <Text style={styles.timeDesc}>Hr</Text>
+          <TextInput
+            style={styles.minutesInput}
+            keyboardType={'numeric'}
+            maxLength={2}
+            onChangeText={(minutes) => this._onChangeMinutes(minutes)}
+            value={this.state.minutes} />
+          <Text style={styles.timeDesc}>Min</Text>
+
         <TouchableHighlight
           style={styles.setButton}
           underlayColor="green"
@@ -43,6 +61,8 @@ export default class SetTimeLimit extends Component {
           <Text style={styles.buttonText}>Set Limit</Text>
         </TouchableHighlight>
       </View>
+    }
+    </View>
     );
   }
 
@@ -151,5 +171,21 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: 'white',
     padding: 4,
+  },
+  notification: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 4,
+    borderColor: 'green',
+    height: 74,
+    backgroundColor: 'grey',
+  },
+  notificationButton: {
+    marginLeft: 70,
+    backgroundColor: 'green',
+    borderWidth: 2,
+    borderRadius: 8,
+    borderColor: 'white',
   }
 });

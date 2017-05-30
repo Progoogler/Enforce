@@ -22,6 +22,7 @@ export class CameraApp extends Component {
     this.state = {
       animating: false,
       modalVisible: false,
+      newTimer: false,
     };
     this.latitude = null;
     this.longitude = null;
@@ -57,7 +58,7 @@ export class CameraApp extends Component {
         </View> */}
         <LocationInput visibility={this.state.modalVisible} setModalVisible={this.setModalVisible.bind(this)} description={this.description}/>
         <Navigation navigation={this.props.navigation} />
-        <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} realm={this.realm} />
+        <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} newTimer={this.state.newTimer} realm={this.realm} />
 
         <View style={styles.cameraContainer} >
           <Camera
@@ -171,7 +172,13 @@ export class CameraApp extends Component {
     this.timeLimit = timeLimit.float;
   }
 
+  _showNotification() {
+    this.setState({newTimer: true});
+    setTimeout(() => this.setState({newTimer: false}), 2000);
+  }
+
   createNewTimerList() {
+    this._showNotification();
     this.realm.write(() => {
       this.realm.create('Timers', {list: []});
     });
