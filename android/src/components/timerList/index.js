@@ -14,6 +14,7 @@ import Row from './Row';
 import Footer from './Footer';
 import Navigation from '../home/Header';
 import Warning from './Warning';
+import Done from './Done';
 
 
 export default class TimerList extends Component {
@@ -25,6 +26,7 @@ export default class TimerList extends Component {
       dataSource: ds.cloneWithRows(this.list),
       refreshing: false,
       warningVisibility: false,
+      modalVisible: false,
     };
     this.warning = "";
     this.timer = null;
@@ -62,6 +64,7 @@ export default class TimerList extends Component {
                                     expiredFunc={this.expiredFunc.bind(this)}/>}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} />
         {/* }<Footer /> TODO space out the bottom margin of listview and animate "Done"*/}
+        { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : <View /> }
       </View>
     );
   }
@@ -76,6 +79,11 @@ export default class TimerList extends Component {
   }
 
   updateRows() {
+    console.log('ROWS LIST', this.list.length)
+    if (this.list.length === 0) this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(this.list),
+      modalVisible: true,
+    })
     this.setState({dataSource: this.state.dataSource.cloneWithRows(this.list)});
   }
 

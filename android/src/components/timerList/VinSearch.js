@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   inputButton: {
-    borderWidth: 2,
     borderRadius: 8,
     backgroundColor: 'green',
     alignItems: 'center',

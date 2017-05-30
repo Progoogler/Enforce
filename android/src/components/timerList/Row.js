@@ -62,7 +62,6 @@ export default class Row extends Component {
         this.props.realm.objects('Timers')[timer.index]['list'].shift();
       });
       this.props.updateRows();
-      console.log(this.props.realm.objects('Ticketed'), this.props.realm.objects('Timers'));
     } else {
       this.props.throwWarning(timer);
     }
