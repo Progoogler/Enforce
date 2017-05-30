@@ -141,9 +141,9 @@ export class CameraApp extends Component {
     let timerSequence = this.realm.objects('TimerSequence')[0];
     if (inc) {
       this.realm.write(() => {
-        timerSequence.count = timerSequence.count++;
+        timerSequence.count++;
       });
-      this.count++;
+      if (this.count < timerSequence.count) this.count = timerSequence.count;
       return;
     }
     this.count = timerSequence.count;
