@@ -8,8 +8,11 @@ import {
 export default class MyCalloutView extends Component {
   render() {
     return (
-      <View style={ this._checkTimedUp(this.props.timer) ? styles.green : styles.blue }>
-        <Text style={{color: 'white'}}>{ this._checkTimedUp(this.props.timer) ? 'Ready' : 'Expires at ' + this._getExpiration(this.props.timer) }</Text>
+      <View style={styles.container}>
+        <View style={ this._checkTimedUp(this.props.timer) ? styles.green : styles.blue }>
+          <Text style={styles.message}>{ this._checkTimedUp(this.props.timer) ? 'Ready' : 'Expires at ' + this._getExpiration(this.props.timer) + '\n' + this.props.timer.description}</Text>
+        </View>
+        <View style={ this._checkTimedUp(this.props.timer) ? styles.greenTriangle : styles.blueTriangle } />
       </View>
     );
   }
@@ -27,7 +30,6 @@ export default class MyCalloutView extends Component {
 
   _getExpiration(timer) {
     let date = new Date((timer.createdAt * 1000) + (timer.timeLength * 60 * 60 * 1000));
-    console.log(date, timer);
     let hour = date.getHours();
     let minutes = date.getMinutes() + '';
     minutes = minutes.length === 1 ? '0' + minutes : minutes;
@@ -38,17 +40,60 @@ export default class MyCalloutView extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+  },
   blue: {
+    flex: 1,
+    flexDirection: 'row',
     backgroundColor: '#4286f4',
-    marginBottom: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 50,
-    padding: 4,
+    padding: 6,
   },
   green: {
+    flex: 1,
     backgroundColor: 'green',
-    marginBottom: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
     borderRadius: 50,
-    padding: 4,
+    padding: 6,
+  },
+  message: {
+    textAlign: 'center',
+    color: 'white',
+
+  },
+  blueTriangle: {
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderBottomWidth: 20,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#4286f4',
+    transform: [
+      {rotate: '180deg'}
+    ]
+  },
+  greenTriangle: {
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderBottomWidth: 20,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'green',
+    transform: [
+      {rotate: '180deg'}
+    ]
   }
 });
 

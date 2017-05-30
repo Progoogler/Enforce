@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MapView from 'react-native-maps';
+import MapView, { Marker } from 'react-native-maps';
 import {
   View,
   StyleSheet,
@@ -79,7 +79,12 @@ export default class MapApp extends Component {
 
   getLocationDetails() {
     if (this.props.navigation.state.params) {
-      return (<LocationDetailsView navigation={this.props.navigation}/>);
+      let details = "", i = 0;
+      while (details.length === 0 && i < this.props.navigation.state.params.timers.length) {
+        details = this.props.navigation.state.params.timers[i].description;
+        i++;
+      }
+      if (!details) return (<LocationDetailsView />);
     }
   }
 
@@ -146,12 +151,11 @@ export default class MapApp extends Component {
             long = timerList.list[0].longitude !== 0 ? timerList.list[0].longitude : long;
           }
           markers.push(
-            <MapView.Marker
+            <Marker
               coordinate={{latitude: timerList.list[0].latitude, longitude: timerList.list[0].longitude}}
-              image={require('../../../../shared/images/pin-orange.png')}
               key={timerList.list[0].createdAt} >
               <CustomCallout timer={timerList.list[0]} title="1st" />
-            </MapView.Marker>
+            </Marker>
           );
         }
         if (lists[i+1] === undefined) {
@@ -165,18 +169,20 @@ export default class MapApp extends Component {
       });
     } else {
       let arr = this.props.navigation.state.params.timers;
-      markers.push(<MapView.Marker
+      markers.push(<Marker
           coordinate={{latitude: arr[0].latitude, longitude: arr[0].longitude}}
-          image={require('../../../../shared/images/pin-orange.png')}
+          //image={require('../../../../shared/images/pin-orange.png')}
           key={arr[0].createdAtDate} >
           <CustomCallout timer={arr[0]} title="1st" />
-        </MapView.Marker>
+        </Marker>
       );
       arr.forEach(timer => {
-         markers.push(<MapView.Marker
+         markers.push(<Marker
            coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
-           image={require('../../../../shared/images/pin-orange.png')}
-           key={timer.createdAt} />
+           //image={require('../../../../shared/images/pin-orange.png')}
+           key={timer.createdAt} >
+           <CustomCallout timer={arr[0]} title="1st" />
+          </Marker>
          );
       });
       if (arr[0].latitude > 0) {
