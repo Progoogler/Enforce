@@ -21,6 +21,10 @@ export default class TimerList extends Component {
   constructor(props) {
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    if (!this.props.navigation.state.params) {
+      this.props.navigation.state.params = {};
+      this.props.navigation.state.params.timers = {};
+    }
     this.list = this.props.navigation.state.params.timers;
     this.state = {
       dataSource: ds.cloneWithRows(this.list),
@@ -43,6 +47,7 @@ export default class TimerList extends Component {
   };
 
   render() {
+    console.log(this.list, this.props.navigation.state.params.timers)
     return (
       <View style={styles.container}>
         <Navigation navigation={this.props.navigation} />

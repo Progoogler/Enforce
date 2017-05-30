@@ -23,7 +23,7 @@ export default class Home extends Component {
     drawerLabel: 'Home',
     drawerIcon: () => (
       <Image
-        source={require('../../../../shared/images/clock-icon.png')}
+        source={require('../../../../shared/images/home-icon.png')}
         style={[styles.icon]}
       />
     )

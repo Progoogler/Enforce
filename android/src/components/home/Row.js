@@ -106,7 +106,7 @@ export default class Row extends Component {
     } else if (timeLeft < 60) {
       return value = 'less than a minute remaining';
     } else if (timeLeft < 3600) {
-      return value = Math.floor(timeLeft / 60) + ' minutes remaining';
+      return value = Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining';
     } else if (timeLeft > 3600 && timeLeft < 7200) {
       return value = '1 hour ' + Math.floor((timeLeft - 3600) / 60) + ' minutes remaining';
     } else if (timeLeft > 7200 && timeLeft < 10800) {
