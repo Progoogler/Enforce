@@ -9,6 +9,7 @@
     "flow-stop": "node_modules/.bin/flow stop"
   },
   "dependencies": {
+    "firebase": "^4.0.0",
     "module-resolver": "^1.0.0",
     "react": "15.4.2",
     "react-native": "0.42.3",
