@@ -36,7 +36,7 @@ class Title extends Component {
     if (length === 0 || typeof length === 'string') return '';
     if (length < 1) {
       length = length * 60;
-      return `${length}  Minute`;
+      return `${parseInt(length)}  Minute`;
     } else {
       return `${parseFloat(length.toFixed(1))}  Hour`;
     }
