@@ -26,7 +26,9 @@ export default class Row extends Component {
             <Text style={styles.timeCreatedAt}>{this._getPrettyTimeFormat(this.props.data.createdAtDate)}</Text>
           </View>
         </View>
-        <Text style={styles.location}>{this.props.data.description.length > 0 ? `@ ${this.props.data.description}` : ''}</Text>
+        <View style={styles.locationContainer}>
+          <Text style={styles.location}>{this.props.data.description.length > 0 ? `@ ${this.props.data.description}` : ''}</Text>
+        </View>
         <View style={styles.buttonsContainer} >
           <View style={styles.rowButtonsContainers} >
             <TouchableHighlight
@@ -61,6 +63,9 @@ export default class Row extends Component {
         this.props.realm.objects('Ticketed')[0]['list'].push(timer);
         this.props.realm.objects('Timers')[timer.index]['list'].shift();
       });
+      console.log('ticketing', this.props.Database);
+      this.props.Database.setUserTickets('test', this.props.realm.objects('Ticketed')[0]['list']);
+      console.log('success');
       this.props.updateRows();
     } else {
       this.props.throwWarning(timer);

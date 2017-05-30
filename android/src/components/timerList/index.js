@@ -7,6 +7,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import Realm from 'realm';
+import Database from '../../../../includes/firebase/database';
 
 import Title from './Title';
 import VinSearch from './VinSearch';
@@ -66,7 +67,8 @@ export default class TimerList extends Component {
                                     updateRows={this.updateRows.bind(this)}
                                     realm={this.realm}
                                     throwWarning={this.throwWarning.bind(this)}
-                                    expiredFunc={this.expiredFunc.bind(this)}/>}
+                                    expiredFunc={this.expiredFunc.bind(this)}
+                                    Database={Database} />}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} />
         {/* }<Footer /> TODO space out the bottom margin of listview and animate "Done"*/}
         { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : <View /> }
