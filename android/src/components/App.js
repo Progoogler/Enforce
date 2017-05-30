@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DrawerNavigator, DrawerItems } from 'react-navigation';
+import { DrawerNavigator } from 'react-navigation';
 import { Provider } from 'react-redux';
 import RNFS from 'react-native-fs';
 import { CameraApp } from './camera/CameraApp';
@@ -12,7 +12,9 @@ import Metrics from './metrics';
 import FAQs from './faq';
 import Realm from 'realm';
 import Schema from '../realm';
+import Firebase from '../../../includes/firebase/firebase';
 
+Firebase.initialize();
 
 const AppNavigator = DrawerNavigator({
   Home: {
@@ -41,6 +43,7 @@ const AppNavigator = DrawerNavigator({
   }
 });
 
+
 export default class App extends Component {
   render() {
 
@@ -67,7 +70,7 @@ export default class App extends Component {
       let context = this;
       let now = new Date() / 1000;
       if (now - lastTime > 28800) { // Reset DB after 8 hours of activity
-        this._loopDeletion(timerLists).bind(this);
+        this._loopDeletion(timerLists);
         console.log('deletion')
         //TODO Doesn't wait..
         setTimeout(() => {
@@ -99,9 +102,9 @@ export default class App extends Component {
           RNFS.exists(timer.mediaUri)
           .then(() => {
             console.log('PICTURE REMOVED');
-            context.realm.write(() => {
+            this.realm.write(() => {
               //timerLists[idx]['list'].pop();
-              context.realm.delete(timerLists[idx]['list'][sidx]);
+              this.realm.delete(timerLists[idx]['list'][sidx]);
             });
           });
         });
