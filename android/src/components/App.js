@@ -5,6 +5,7 @@ import RNFS from 'react-native-fs';
 import { CameraApp } from './camera/CameraApp';
 import MapApp from './map/MapApp';
 import Home from './home';
+import Profile from './profile';
 import TimerList from './timerList';
 import VINSearch from './search';
 import History from './history';
@@ -19,6 +20,9 @@ Firebase.initialize();
 const AppNavigator = DrawerNavigator({
   Home: {
     screen: Home
+  },
+  Profile: {
+    screen: Profile
   },
   Map: {
     screen: MapApp
