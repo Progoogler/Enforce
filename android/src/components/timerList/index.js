@@ -93,7 +93,7 @@ export default class TimerList extends Component {
     this.setState({dataSource: this.state.dataSource.cloneWithRows(this.list)});
   }
 
-  throwWarning(timer) { // time in milliseconds
+  throwWarning(timer) { // @param timer in milliseconds
     if (timer) { // Close modal if not calling with time now - timer.createdAtDate,
       let timeElapsed = (new Date() - timer.createdAt) / 1000 / 60;
       this.timer = timer;
@@ -107,10 +107,11 @@ export default class TimerList extends Component {
 
   forceTicket() {
     this.realm.write(() => {
-      this.timer.ticketedAt = new Date();
+      this.timer.ticketedAt = new Date() / 1;
       this.realm.objects('Ticketed')[0]['list'].push(this.timer);
       this.realm.objects('Timers')[this.timer.index]['list'].shift();
     });
+    Database.setUserTickets('test', this.realm.objects('Ticketed')[0]['list']);
     this.timer = null;
     this.updateRows();
   }
