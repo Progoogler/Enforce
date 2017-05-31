@@ -6,6 +6,7 @@ import {
   Text,
   ActivityIndicator,
   TouchableHighlight,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import Camera from 'react-native-camera';
@@ -69,13 +70,13 @@ export class CameraApp extends Component {
             aspect={Camera.constants.Aspect.fill} >
           </Camera>
           <View style={styles.footer}>
-            <TouchableHighlight
+            <TouchableWithoutFeedback
               underlayColor="grey"
               onPress={() => this.setModalVisible()} >
               <Image
                 style={styles.pinIcon}
                 source={require('../../../../shared/images/pin.png')} />
-            </TouchableHighlight>
+            </TouchableWithoutFeedback>
             <TouchableHighlight
               style={styles.capture}
               onPress={() => {
@@ -151,9 +152,9 @@ export class CameraApp extends Component {
   }
 
   setCameraTime() {
+    if (!this.realm.objects('Timers')[0]) this.createNewTimerList();
     let timerSequence = this.realm.objects('TimerSequence')[0]; console.log('TIMER SEQ', timerSequence);
     let timeSince = (new Date() / 1000) - timerSequence.timeAccessedAt;
-    this.createNewTimerList();
     if (timeSince >= 900) {
       this.realm.write(() => {
          timerSequence.timeAccessedAt = new Date() / 1000;
@@ -231,15 +232,15 @@ export class CameraApp extends Component {
   }
 
   savePicture(data) {
+    console.log(this.realm.objects('Timers'), this.count)
     if (this.description.length === 0) {
       this.realm.write(() => {
         this.realm.objects('Timers')[this.count]['list'].push({
           index: this.count,
           latitude: this.latitude,
           longitude: this.longitude,
-          createdAt: new Date() / 1000,
-          createdAtDate: new Date(),
-          ticketedAtDate: new Date(),
+          createdAt: new Date() / 1,
+          ticketedAt: 0,
           timeLength: this.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
           mediaUri: data.mediaUri,
           mediaPath: data.path,
@@ -252,9 +253,8 @@ export class CameraApp extends Component {
           index: this.count,
           latitude: this.latitude,
           longitude: this.longitude,
-          createdAt: new Date() / 1000,
-          createdAtDate: new Date(),
-          ticketedAtDate: new Date(),
+          createdAt: new Date() / 1,
+          ticketedAt: 0,
           timeLength: this.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
           mediaUri: data.mediaUri,
           mediaPath: data.path,
@@ -269,9 +269,6 @@ export class CameraApp extends Component {
   _onUpdateTimeLimit() {
     let timerSequence = this.realm.objects('TimerSequence')[0];
     this.timeLimit = this.realm.objects('TimeLimit')[0].float;
-    this.realm.write(() => {
-      timerSequence.count = timerSequence.count + 1;
-    });
     this.setTimerCount('increment');
     this.createNewTimerList();
   }

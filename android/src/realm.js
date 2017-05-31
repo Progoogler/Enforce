@@ -7,8 +7,7 @@ TimerSchema.schema = {
     longitude: 'float',
     timeLength: 'float',
     createdAt: 'int',
-    createdAtDate: 'date',
-    ticketedAtDate: 'date',
+    ticketedAt: 'int',
     mediaUri: 'string',
     mediaPath: 'string',
     description: 'string'

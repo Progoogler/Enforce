@@ -144,7 +144,7 @@ export default class MapApp extends Component {
       let i = 0;
       this.realm.objects('Timers').forEach(timerList => {
         if (timerList.list.length > 0) {
-          aux = timerList.list[0].createdAt + (timerList.list[0].timeLength * 60 * 60);
+          aux = timerList.list[0].createdAt + (timerList.list[0].timeLength * 60 * 60 * 1000);
           if (aux < soonest) {
             soonest = aux;
             lat = timerList.list[0].latitude !== 0 ? timerList.list[0].latitude : lat;
@@ -172,7 +172,7 @@ export default class MapApp extends Component {
       markers.push(<Marker
           coordinate={{latitude: arr[0].latitude, longitude: arr[0].longitude}}
           //image={require('../../../../shared/images/pin-orange.png')}
-          key={arr[0].createdAtDate} >
+          key={arr[0].createdAt} >
           <CustomCallout timer={arr[0]} title="1st" />
         </Marker>
       );

@@ -23,12 +23,14 @@ export default class Row extends Component {
           <Text style={styles.timeLeft}>{this._getTimeLeft(this.props.data)}</Text>
           <View style={styles.timeContainer}>
             <Text style={styles.description}>Recorded at</Text>
-            <Text style={styles.timeCreatedAt}>{this._getPrettyTimeFormat(this.props.data.createdAtDate)}</Text>
+            <Text style={styles.timeCreatedAt}>{this._getPrettyTimeFormat(this.props.data.createdAt)}</Text>
           </View>
         </View>
+        { this.props.data.description.length > 0 ?
         <View style={styles.locationContainer}>
-          <Text style={styles.location}>{this.props.data.description.length > 0 ? `@ ${this.props.data.description}` : ''}</Text>
+          <Text style={styles.location}>{ `@ ${this.props.data.description}` }</Text>
         </View>
+        : null }
         <View style={styles.buttonsContainer} >
           <View style={styles.rowButtonsContainers} >
             <TouchableHighlight
@@ -57,13 +59,13 @@ export default class Row extends Component {
 
   _uponTicketed(timer) {
     let now = new Date();
-    if (now - timer.createdAtDate >= timer.timeLength * 60 * 60 * 1000) {
+    if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000) {
       this.props.realm.write(() => {
-        timer.ticketedAtDate = now;
+        timer.ticketedAt = now;
         this.props.realm.objects('Ticketed')[0]['list'].push(timer);
         this.props.realm.objects('Timers')[timer.index]['list'].shift();
       });
-      console.log('ticketing', this.props.Database);
+      console.log('ticketing', this.props.realm.objects('Ticketed')[0]['list'])
       this.props.Database.setUserTickets('test', this.props.realm.objects('Ticketed')[0]['list']);
       console.log('success');
       this.props.updateRows();
@@ -72,7 +74,8 @@ export default class Row extends Component {
     }
   }
 
-  _getPrettyTimeFormat(date) {
+  _getPrettyTimeFormat(createdAt) {
+    let date = new Date(createdAt);
     let hour = date.getHours();
     let minutes = date.getMinutes() + '';
     minutes = minutes.length === 1 ? '0' + minutes : minutes;
@@ -82,10 +85,9 @@ export default class Row extends Component {
   }
 
   _getTimeLeft(timer) {
-    let timeLength = timer.timeLength * 60 * 60;
-    let timeStart = timer.createdAt;
-    let timeSince = (new Date() / 1000) - timeStart;
-    let timeLeft = timeLength - timeSince;
+    let timeLength = timer.timeLength * 60 * 60 * 1000;
+    let timeSince = new Date() - timer.createdAt;
+    let timeLeft = (timeLength - timeSince) / 1000;
     let value = '';
     if (timeLeft < 0) {
       return value = <Text style={{fontSize: 20, fontWeight: 'bold', color: 'green'}}>Time is up!</Text>;
@@ -157,11 +159,22 @@ const styles = StyleSheet.create({
     color: '#4286f4',
     fontSize: 30,
   },
+  locationContainer: {
+    position: 'absolute',
+    marginTop: 355,
+    alignSelf: 'center',
+    backgroundColor: '#4286f4',
+    borderRadius: 50,
+    padding: 8,
+  },
   location: {
+    textAlign: 'center',
+    color: 'white',
     fontSize: 18,
     marginTop: -10,
     paddingLeft: 15,
     paddingRight: 15,
     paddingBottom: 4,
+    paddingTop: 4,
   },
 });

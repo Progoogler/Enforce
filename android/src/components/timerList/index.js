@@ -48,7 +48,6 @@ export default class TimerList extends Component {
   };
 
   render() {
-    console.log(this.list, this.props.navigation.state.params.timers)
     return (
       <View style={styles.container}>
         <Navigation navigation={this.props.navigation} />
@@ -96,7 +95,7 @@ export default class TimerList extends Component {
 
   throwWarning(timer) { // time in milliseconds
     if (timer) { // Close modal if not calling with time now - timer.createdAtDate,
-      let timeElapsed = (new Date() - timer.createdAtDate) / 1000 / 60;
+      let timeElapsed = (new Date() - timer.createdAt) / 1000 / 60;
       this.timer = timer;
       this.warning = `${(timeElapsed / 60 + '')[0] !== '0' ? (timeElapsed / 60 + '')[0] + ' hour and ' : ''}  ${Math.floor(timeElapsed % 60)} minutes`;
       this.setState({warningVisibility: !this.state.warningVisibility});
@@ -108,7 +107,7 @@ export default class TimerList extends Component {
 
   forceTicket() {
     this.realm.write(() => {
-      this.timer.ticketedAtDate = new Date();
+      this.timer.ticketedAt = new Date();
       this.realm.objects('Ticketed')[0]['list'].push(this.timer);
       this.realm.objects('Timers')[this.timer.index]['list'].shift();
     });

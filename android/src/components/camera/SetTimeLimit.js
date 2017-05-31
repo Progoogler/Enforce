@@ -6,6 +6,7 @@ import {
   TouchableHighlight,
   TextInput,
   Keyboard,
+  Vibration,
 } from 'react-native';
 
 import Notification from './Notification';
@@ -97,6 +98,7 @@ export default class SetTimeLimit extends Component {
   }
 
   _updateTimeLimit() {
+    //Vibration.vibrate([0, 500], true);
     let timeLimit = this.props.realm.objects('TimeLimit')[0];
     let decimalMinutes = `${parseInt(this.state.minutes) / 60}`;
     let newLimit;

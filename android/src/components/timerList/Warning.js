@@ -28,11 +28,13 @@ export default class Warning extends Component {
             <View style={styles.buttons} >
               <TouchableHighlight
                 style={styles.no}
+                underlayColor='#4286f4'
                 onPress={() => {this.props.throwWarning()}} >
                 <Text style={styles.buttonText}>No</Text>
               </TouchableHighlight>
               <TouchableHighlight
                 style={styles.yes}
+                underlayColor='#4286f4'
                 onPress={() => { this.props.forceTicket(); this.props.throwWarning() }} >
                 <Text style={styles.buttonText}>Yes</Text>
               </TouchableHighlight>
@@ -72,6 +74,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 22,
+    color: 'white',
   },
   no: {
     borderWidth: 2,

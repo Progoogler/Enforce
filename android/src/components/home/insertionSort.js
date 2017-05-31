@@ -11,13 +11,13 @@ export default function insertionSortModified(arr) {
 
               temp = aux[i];
               if (temp.list[0].createdAt === undefined) continue;
-              let tempElapsed = (new Date() / 1000) - temp.list[0].createdAt;
+              let tempElapsed = new Date() - temp.list[0].createdAt;
 
               for(var j=i-1;j>=0;j--) {
                 if (aux[j].list[0].createdAt === undefined) continue;
-                let earlyElapased = (new Date() / 1000) - aux[j].list[0].createdAt;
+                let earlyElapased = new Date() - aux[j].list[0].createdAt;
 
-                if (((temp.list[0].timeLength * 60 * 60) - tempElapsed) > ((aux[j].list[0].timeLength * 60 * 60) - earlyElapased)) {
+                if (((temp.list[0].timeLength * 60 * 60 * 1000) - tempElapsed) > ((aux[j].list[0].timeLength * 60 * 60 * 1000) - earlyElapased)) {
                    aux[j+1] = aux[j];
                 } else {
                   break

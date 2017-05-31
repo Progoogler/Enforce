@@ -96,10 +96,9 @@ export default class Row extends Component {
 
   getTimeLeft(timer) {
     if (!timer) return;
-    let timeLength = timer.timeLength * 60 * 60;
-    let timeStart = timer.createdAt;
-    let timeSince = (new Date() / 1000) - timeStart;
-    let timeLeft = timeLength - timeSince;
+    let timeLength = timer.timeLength * 60 * 60 * 1000;
+    let timeSince = new Date() - timer.createdAt;
+    let timeLeft = (timeLength - timeSince) / 1000;
     let value = '';
       if (timeLeft < 0) {
       return value = <Text style={{fontSize: 20, fontWeight: 'bold', color: 'green'}}>Time is up!</Text>;

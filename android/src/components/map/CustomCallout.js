@@ -10,7 +10,7 @@ export default class MyCalloutView extends Component {
     return (
       <View style={styles.container}>
         <View style={ this._checkTimedUp(this.props.timer) ? styles.green : styles.blue }>
-          <Text style={styles.message}>{ this._checkTimedUp(this.props.timer) ? 'Ready' : 'Expires at ' + this._getExpiration(this.props.timer) + '\n' + this.props.timer.description}</Text>
+          <Text style={styles.message}>{ this._checkTimedUp(this.props.timer) ? 'Ready' : 'Expires at ' + this._getExpiration(this.props.timer) + '\n' + this._prettyMessage(this.props.timer.description)}</Text>
         </View>
         <View style={ this._checkTimedUp(this.props.timer) ? styles.greenTriangle : styles.blueTriangle } />
       </View>
@@ -19,9 +19,8 @@ export default class MyCalloutView extends Component {
 
   _checkTimedUp(timer) {
     let timeLength = timer.timeLength * 60 * 60;
-    let timeStart = timer.createdAt;
-    let timeSince = (new Date() / 1000) - timeStart;
-    let timeLeft = timeLength - timeSince;
+    let timeSince = new Date() - timer.createdAt;
+    let timeLeft = timeLength - (timeSince / 1000);
     if (timeLeft < 0) {
       this.timeUp = true;
       return true;
@@ -29,13 +28,26 @@ export default class MyCalloutView extends Component {
   }
 
   _getExpiration(timer) {
-    let date = new Date((timer.createdAt * 1000) + (timer.timeLength * 60 * 60 * 1000));
+    let date = new Date(timer.createdAt + (timer.timeLength * 60 * 60 * 1000));
     let hour = date.getHours();
     let minutes = date.getMinutes() + '';
     minutes = minutes.length === 1 ? '0' + minutes : minutes;
     let period = (hour < 12) ? 'AM' : 'PM';
     hour = (hour <= 12) ? hour : hour - 12;
     return `${hour}:${minutes} ${period}`;
+  }
+
+  _prettyMessage(string) {
+    if (string.length > 45) {
+      let arr = string.split('');
+      for (let i = 40; i < arr.length; i++) {
+        if (arr[i] === ' ') {
+          arr.splice(i, 0, '\n');
+          return arr.join('');
+        }
+      }
+    }
+    return string;
   }
 }
 
@@ -63,7 +75,7 @@ const styles = StyleSheet.create({
   message: {
     textAlign: 'center',
     color: 'white',
-
+    paddingBottom: 8,
   },
   blueTriangle: {
     width: 0,
