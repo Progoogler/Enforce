@@ -61,6 +61,7 @@ export default class VinSearch extends Component {
           style={styles.textInput}
           onChangeText={(text) => this.setState({text})}
           maxLength={7}
+          fontSize={19}
           autoCapitalize={'characters'}
           keyboardType={'numeric'}
           placeHolder={'1ABC234'}
@@ -90,9 +91,11 @@ const styles = StyleSheet.create({
   textInput: {
     flex: .6,
     height: 40,
+    paddingLeft: 15,
   },
   designator: {
     fontSize: 18,
+    marginBottom: 6,
   },
   inputButton: {
     borderRadius: 8,
