@@ -28,7 +28,7 @@ export default class Row extends Component {
         </View>
         { this.props.data.description.length > 0 ?
         <View style={styles.locationContainer}>
-          <Text style={styles.location}>{ `@ ${this.props.data.description}` }</Text>
+          <Text style={styles.location}>{ `${this.props.data.description}` }</Text>
         </View>
         : null }
         <View style={styles.buttonsContainer} >
@@ -61,7 +61,7 @@ export default class Row extends Component {
     let now = new Date();
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000) {
       this.props.realm.write(() => {
-        timer.ticketedAt = now;
+        timer.ticketedAt = now / 1;
         this.props.realm.objects('Ticketed')[0]['list'].push(timer);
         this.props.realm.objects('Timers')[timer.index]['list'].shift();
       });
@@ -161,19 +161,19 @@ const styles = StyleSheet.create({
   },
   locationContainer: {
     position: 'absolute',
-    marginTop: 355,
+    marginTop: 330,
     alignSelf: 'center',
-    backgroundColor: '#4286f4',
+    backgroundColor: 'white',
     borderRadius: 50,
-    padding: 8,
+    paddingTop: 2,
+    paddingBottom: 2,
   },
   location: {
     textAlign: 'center',
-    color: 'white',
+    color: '#4286f4',
     fontSize: 18,
-    marginTop: -10,
-    paddingLeft: 15,
-    paddingRight: 15,
+    paddingLeft: 8,
+    paddingRight: 8,
     paddingBottom: 4,
     paddingTop: 4,
   },
