@@ -86,7 +86,7 @@ export class CameraApp extends Component {
             </TouchableHighlight>
             <Text
               style={styles.undo}
-              onPress={this.deletePreviousPicture.bind(this)}>undo</Text>
+              onPress={this.deletePreviousPicture.bind(this)}>UNDO</Text>
           </View>
         </View>
       </View>
