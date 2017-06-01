@@ -37,8 +37,9 @@ export default class TimerList extends Component {
     };
     this.warning = "";
     this.timer = null;
-    this.realm = new Realm();
+    this.ticketedCount = 0;
     this.profileId = '';
+    this.realm = new Realm();
   }
   static navigationOptions = {
     drawerLabel: 'Timers',
@@ -78,15 +79,18 @@ export default class TimerList extends Component {
   }
 
   componentWillMount() {
-    this._getUserId();
+    this._getUserInfo();
+    this.ticketCount = this.realm.objects('Ticketed')[0]['list'].length;
   }
 
   componentWillUnmount() {
-    Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
+    if (this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) Database.setUserTickets(this.cityId, this.userId, this.realm.objects('Ticketed')[0]['list']);
   }
 
-  async _getUserId() {
-    //this.profileId = await AsyncStorage.getItem('@Enforce:profileId');
+  async _getUserInfo() {
+    this.cityId = await AsyncStorage.getItem('@Enforce:profileSettings');
+    this.cityId = JSON.parse(this.cityId);
+    this.cityId = this.cityId.city;
     this.userId = await Firebase.getCurrentUser();
     console.log(this.userId)
   }
@@ -105,7 +109,6 @@ export default class TimerList extends Component {
   }
 
   updateRows() {
-    console.log('ROWS LIST', this.list.length)
     if (this.list.length === 0) this.setState({
       dataSource: this.state.dataSource.cloneWithRows(this.list),
       modalVisible: true,
@@ -131,8 +134,7 @@ export default class TimerList extends Component {
       this.realm.objects('Ticketed')[0]['list'].push(this.timer);
       this.realm.objects('Timers')[this.timer.index]['list'].shift();
     });
-    Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
-    console.log('ticket success')
+    //Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
     this.timer = null;
     this.updateRows();
   }
