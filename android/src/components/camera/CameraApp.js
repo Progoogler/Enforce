@@ -154,16 +154,16 @@ export class CameraApp extends Component {
   setCameraTime() {
     if (!this.realm.objects('Timers')[0]) this.createNewTimerList();
     let timerSequence = this.realm.objects('TimerSequence')[0]; console.log('TIMER SEQ', timerSequence);
-    let timeSince = (new Date() / 1000) - timerSequence.timeAccessedAt;
-    if (timeSince >= 900) {
+    let timeSince = new Date() - timerSequence.timeAccessedAt;
+    if (timeSince >= 900000) {
       this.realm.write(() => {
-         timerSequence.timeAccessedAt = new Date() / 1000;
+         timerSequence.timeAccessedAt = new Date() / 1;
       });
       this.setTimerCount('increment');
       this.createNewTimerList();
       return;
     } else {
-      setTimeout(this.setCameraTime.bind(this), (900 - timeSince) * 1000);
+      setTimeout(this.setCameraTime.bind(this), 900000 - timeSince);
     }
     this.setTimerCount();
   }
