@@ -1,7 +1,3 @@
-/**
- * @class Database
- */
-
 import * as firebase from "firebase";
 
 class Database {
@@ -12,13 +8,13 @@ class Database {
      * @param tickets
      * @returns {firebase.Promise<any>|!firebase.Promise.<void>}
      */
-    static setUserTickets(userId, tickets) {
-      console.log('SET USER TICKETS, ID', userId)
+    static setUserTickets(cityId, userId, tickets) {
+
         let date = new Date();
-        let month = date.getMonth();
+        let month = date.getMonth() + 1;
         let day = date.getDate();
         date = `${month}-${day}`;
-        let userTicketPath = `/user/${userId}/${date}`;
+        let userTicketPath = `/${cityId}/${userId}/${date}`;
 
         return firebase.database().ref(userTicketPath).set({
             tickets: tickets
@@ -26,10 +22,10 @@ class Database {
 
     }
 
-    static transferUserData(userId, data) {
-      return firebase.database().ref('/user/').set({
-        userId: data
-      });
+    static transferUserData(cityId, userId, data) {
+      return firebase.database().ref(`/${cityId}/${userId}`).set(
+        data
+      );
     }
 
     /**
@@ -39,7 +35,7 @@ class Database {
      */
     static listenUserTickets(userId, callback) {
         let date = new Date();
-        let month = date.getMonth();
+        let month = date.getMonth() + 1;
         let day = date.getDate();
         date = `${month}-${day}`;
         let userTicketPath = `/user/${userId}/${date}`;
@@ -57,21 +53,15 @@ class Database {
         });
     }
 
-    static getUserTickets(userId) {
-      let userTicketPath = `/user/${userId}/`;
-      let tickets = {};
-
+    static getUserTickets(cityId, userId, callback) {
+      let userTicketPath = `/${cityId}/${userId}/`;
+      let tickets;
       firebase.database().ref(userTicketPath).on('value', (snapshot) => {
 
-          if (snapshot.val()) {
-            tickets = snapshot.val();
-          }
+        tickets = snapshot.val();
+        callback(tickets);
       });
-      console.log('GET USER TICKETS', tickets)
-      return tickets;
-
   }
-
 
 }
 
