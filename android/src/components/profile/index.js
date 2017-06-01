@@ -19,13 +19,15 @@ export default class Profile extends Component {
     this.state = {
       email: '',
       password: '',
-      state: '',
+      city: '',
       emailColor: 'black',
       passwordColor: 'black',
-      stateColor: 'black',
+      cityColor: 'black',
     };
     this.profile = {};
     this.profileId = '';
+    this.createdNewUser = false;
+    this.replacedOldUser = false;
   }
 
   render() {
@@ -60,17 +62,17 @@ export default class Profile extends Component {
             value={this.state.password} />
         </View>
         <View style={styles.row} >
-          <Text style={styles.designator}>State</Text>
+          <Text style={styles.designator}>City</Text>
           <TextInput
-            style={{ borderColor: this.state.stateColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
+            style={{ borderColor: this.state.cityColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
             autoCorrect={false}
-            autoCapitalize={'characters'}
+            autoCapitalize={'words'}
             fontSize={18}
             underlineColorAndroid={'transparent'}
-            onFocus={() => this._onStateFocus()}
-            onBlur={() => this._onStateBlur()}
-            onChangeText={(text) => { this.setState({ state: text })}}
-            value={this.state.state} />
+            onFocus={() => this._onCityFocus()}
+            onBlur={() => this._onCityBlur()}
+            onChangeText={(text) => { this.setState({ city: text })}}
+            value={this.state.city} />
         </View>
         <TouchableHighlight
           style={styles.button}
@@ -86,6 +88,26 @@ export default class Profile extends Component {
     this._getProfileFromAsyncStorage();
   }
 
+  componentWillUnmount() {
+    if (this.createdNewUser) {
+      Firebase.signInUser(this.state.email, this.state.password);
+      setTimeout(() => {
+        let id = Firebase.getCurrentUser();
+        AsyncStorage.setItem('@Enforce:profileId', id);
+      }, 1500);
+      return;
+    }
+    if (this.replacedOldUser) {
+      console.log('unmount data state', this.data);
+      Firebase.signInUser(this.state.email, this.state.password);
+      setTimeout(() => {
+        let newId = Firebase.getCurrentUser();
+        AsyncStorage.setItem('@Enforce:profileId', newId);
+        Database.transferUserData(this.state.city, newId, this.data);
+      }, 1500);
+    }
+  }
+
   async _getProfileFromAsyncStorage() {
     try {
       this.profile = await AsyncStorage.getItem('@Enforce:profileSettings');
@@ -94,15 +116,14 @@ export default class Profile extends Component {
       this.setState({
         email: this.profile.email ? this.profile.email : '',
         password: this.profile.password ? this.profile.password : '',
-        state: this.profile.state ? this.profile.state : '',
+        city: this.profile.city ? this.profile.city : '',
       });
       this.profileId = await AsyncStorage.getItem('@Enforce:profileId');
+      Firebase.signInUser(this.profile.email, this.profile.password);
       console.log('get profile id', this.profileId)
       // Potentially sign in after component mounts for change updates to password
       //
-      //
-      // let id = Firebase.getCurrentUser();
-      // AsyncStorage.setItem('@Enforce:profileId', id);
+      // TODO Delete old database -- not account, but the db
       // this.profileId = '';
     } catch (err) {
       console.warn('Error fetching Profile Settings from AsyncStorage', err);
@@ -113,39 +134,33 @@ export default class Profile extends Component {
     let settings = {
       email: this.state.email,
       password: this.state.password,
-      state: this.state.state,
+      city: this.state.city,
     };
     settings = JSON.stringify(settings);
     if (!this.profileId) { console.log('no profile id')
-      await AsyncStorage.setItem('@Enforce:profileSettings', settings);
-      await Firebase.createNewUser(this.state.email, this.state.password);
-      Firebase.signInUser(this.state.email, this.state.password);
-      setTimeout(() => {
-        let id = Firebase.getCurrentUser();
-        AsyncStorage.setItem('@Enforce:profileId', id);
-      }, 5000);
+      AsyncStorage.setItem('@Enforce:profileSettings', settings);
+      Firebase.createNewUser(this.state.email, this.state.password);
+      this.createdNewUser = true;
       return;
     }
     try {
       console.log('try setting new user')
       if (this.profile.email !== this.state.email || this.profile.password !== this.state.password || this.profile.state !== this.state.state) {
+
+        Database.getUserTickets(this.profile.city, this.profileId, (data) => this.data = data);
+        console.log('get data from db', this.data)
+
+        Firebase.deleteUser();
+
         AsyncStorage.setItem('@Enforce:profileSettings', settings);
         console.log('try set item to asyncStore')
         // create new user, port old data, and delete old db user
-        await Firebase.createNewUser(this.state.email, this.state.password);
+        Firebase.createNewUser(this.state.email, this.state.password);
         console.log('try created new user')
-        let data = await Database.getUserTickets(this.profileId);
-        console.log('get data from db', data)
-        Firebase.deleteUser();
-
-        setTimeout(() => {
-          Firebase.signInUser(this.state.email, this.state.password);
-          let newId = Firebase.getCurrentUser();
-          Database.transferUserData(newId, data);
-        }, 5000);
+        this.replacedOldUser = true;
       }
     } catch (err) {
-      console.warn('Error updating profile setting on AsyncStorage', err);
+      console.warn('Error updating profile setting', err);
     }
   }
 
@@ -178,12 +193,12 @@ export default class Profile extends Component {
     this.setState({passwordColor: 'black'});
   }
 
-  _onStateFocus() {
-    this.setState({stateColor: '#4286f4'});
+  _onCityFocus() {
+    this.setState({cityColor: '#4286f4'});
   }
 
-  _onStateBlur() {
-    this.setState({stateColor: 'black'});
+  _onCityBlur() {
+    this.setState({cityColor: 'black'});
   }
 }
 
