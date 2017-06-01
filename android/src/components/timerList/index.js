@@ -5,9 +5,11 @@ import {
   Image,
   StyleSheet,
   RefreshControl,
+  AsyncStorage,
 } from 'react-native';
 import Realm from 'realm';
 import Database from '../../../../includes/firebase/database';
+import Firebase from '../../../../includes/firebase/firebase';
 
 import Title from './Title';
 import VinSearch from './VinSearch';
@@ -36,6 +38,7 @@ export default class TimerList extends Component {
     this.warning = "";
     this.timer = null;
     this.realm = new Realm();
+    this.profileId = '';
   }
   static navigationOptions = {
     drawerLabel: 'Timers',
@@ -66,8 +69,7 @@ export default class TimerList extends Component {
                                     updateRows={this.updateRows.bind(this)}
                                     realm={this.realm}
                                     throwWarning={this.throwWarning.bind(this)}
-                                    expiredFunc={this.expiredFunc.bind(this)}
-                                    Database={Database} />}
+                                    expiredFunc={this.expiredFunc.bind(this)}/>}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} />
         {/* }<Footer /> TODO space out the bottom margin of listview and animate "Done"*/}
         { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : <View /> }
@@ -75,6 +77,24 @@ export default class TimerList extends Component {
     );
   }
 
+  componentWillMount() {
+    this._getUserId();
+  }
+
+  componentWillUnmount() {
+    Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
+  }
+
+  async _getUserId() {
+    //this.profileId = await AsyncStorage.getItem('@Enforce:profileId');
+    this.userId = await Firebase.getCurrentUser();
+    console.log(this.userId)
+  }
+
+  async _getProfileSettings() {
+    this.profileSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
+    this.profileSettings = JSON.parse(this.profileSettings);
+  }
 
   _onRefresh() {
     this.setState({
@@ -111,7 +131,8 @@ export default class TimerList extends Component {
       this.realm.objects('Ticketed')[0]['list'].push(this.timer);
       this.realm.objects('Timers')[this.timer.index]['list'].shift();
     });
-    Database.setUserTickets('test', this.realm.objects('Ticketed')[0]['list']);
+    Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
+    console.log('ticket success')
     this.timer = null;
     this.updateRows();
   }
