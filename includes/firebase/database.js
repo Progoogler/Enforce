@@ -8,11 +8,12 @@ class Database {
 
     /**
      * Sets a users daily log of tickets
-     * @param userId
+     * @param userId concatenated user profile settings information
      * @param tickets
      * @returns {firebase.Promise<any>|!firebase.Promise.<void>}
      */
     static setUserTickets(userId, tickets) {
+      console.log('SET USER TICKETS, ID', userId)
         let date = new Date();
         let month = date.getMonth();
         let day = date.getDate();
@@ -21,8 +22,14 @@ class Database {
 
         return firebase.database().ref(userTicketPath).set({
             tickets: tickets
-        })
+        });
 
+    }
+
+    static transferUserData(userId, data) {
+      return firebase.database().ref('/user/').set({
+        userId: data
+      });
     }
 
     /**
@@ -46,9 +53,25 @@ class Database {
                 tickets = snapshot.val().tickets
             }
 
-            callback(tickets)
+            callback(tickets);
         });
     }
+
+    static getUserTickets(userId) {
+      let userTicketPath = `/user/${userId}/`;
+      let tickets = {};
+
+      firebase.database().ref(userTicketPath).on('value', (snapshot) => {
+
+          if (snapshot.val()) {
+            tickets = snapshot.val();
+          }
+      });
+      console.log('GET USER TICKETS', tickets)
+      return tickets;
+
+  }
+
 
 }
 
