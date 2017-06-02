@@ -10,6 +10,7 @@ import TimerList from './timerList';
 import VINSearch from './search';
 import History from './history';
 import Metrics from './metrics';
+import Settings from './settings';
 import FAQs from './faq';
 import Realm from 'realm';
 import Schema from '../realm';
@@ -44,6 +45,9 @@ const AppNavigator = DrawerNavigator({
   },
   Metrics: {
     screen: Metrics
+  },
+  Settings: {
+    screen: Settings
   },
   FAQs: {
     screen: FAQs
