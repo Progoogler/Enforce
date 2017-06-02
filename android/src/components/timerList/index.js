@@ -84,15 +84,15 @@ export default class TimerList extends Component {
   }
 
   componentWillUnmount() {
-    if (this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) Database.setUserTickets(this.cityId, this.userId, this.realm.objects('Ticketed')[0]['list']);
+    if (this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) Database.setUserTickets(this.countyId, this.userId, this.realm.objects('Ticketed')[0]['list']);
   }
 
   async _getUserInfo() {
-    this.cityId = await AsyncStorage.getItem('@Enforce:profileSettings');
-    this.cityId = JSON.parse(this.cityId);
-    this.cityId = this.cityId.city;
+    this.countyId = await AsyncStorage.getItem('@Enforce:profileSettings');
+    this.countyId = JSON.parse(this.countyId);
+    this.countyId = this.countyId.county;
     this.userId = await Firebase.getCurrentUser();
-    console.log(this.userId)
+    console.log(this.userId, this.countyId);
   }
 
   async _getProfileSettings() {
