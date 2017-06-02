@@ -9,6 +9,7 @@ const styles = StyleSheet.create({
   ticketCountContainer: {
     alignItems: 'center',
     padding: 15,
+    marginTop: 15,
   },
   ticketCountNumber: {
     fontSize: 42,
