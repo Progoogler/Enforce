@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
   headerTitle: {
     flex: .70,
     height: 60,
-    paddingLeft: 30,
-    fontSize: 35,
+    paddingLeft: 36,
+    fontSize: 32,
     color: 'white',
     textAlignVertical: 'center',
   },

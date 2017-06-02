@@ -20,7 +20,7 @@ export default class Home extends Component {
   }
 
   static navigationOptions = {
-    drawerLabel: 'Home',
+    drawerLabel: 'Overview',
     drawerIcon: () => (
       <Image
         source={require('../../../../shared/images/home-icon.png')}
