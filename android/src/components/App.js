@@ -15,13 +15,8 @@ import Realm from 'realm';
 import Schema from '../realm';
 import Firebase from '../../../includes/firebase/firebase';
 
-import Firestack from 'react-native-firestack';
-
 console.log('initialize')
-//Firebase.initialize();
-// const firestack = new Firestack({
-//   debug: true
-// });
+Firebase.initialize();
 console.log('after initialize')
 
 
