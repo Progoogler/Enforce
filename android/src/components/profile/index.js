@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableHighlight,
   TextInput,
+  ActivityIndicator,
   AsyncStorage,
 } from 'react-native';
 import Firebase from '../../../../includes/firebase/firebase';
@@ -13,7 +14,6 @@ import Database from '../../../../includes/firebase/database';
 
 import Header from '../home/Header';
 import Warning from './Warning';
-import Wait from './Wait';
 
 export default class Profile extends Component {
   constructor() {
@@ -27,7 +27,8 @@ export default class Profile extends Component {
       countyColor: 'black',
       emailWarning: false,
       passwordWarning: false,
-      wait: false,
+      profileStatus: 'Create Profile',
+      animating: false,
     };
     this.profile = {};
     this.profileId = '';
@@ -40,6 +41,10 @@ export default class Profile extends Component {
       <View style={styles.container}>
         <Header navigation={this.props.navigation} />
         <Text style={styles.title}>Profile Settings</Text>
+        <ActivityIndicator
+          animating={this.state.animating}
+          //style={styles.activity}
+          size='large' />
         <View style={styles.row} >
           <Text style={styles.designator}>Email</Text>
           <TextInput
@@ -89,9 +94,8 @@ export default class Profile extends Component {
           style={styles.button}
           underlayColor='green'
           onPress={() => this._setNewProfile() }>
-          <Text style={styles.buttonText}>Confirm</Text>
+          <Text style={styles.buttonText}>{ this.state.profileStatus }</Text>
         </TouchableHighlight>
-        { this.state.wait ? <Wait /> : null }
       </View>
     );
   }
@@ -110,6 +114,7 @@ export default class Profile extends Component {
       return;
     }
     if (this.replacedOldUser) {
+      Database.deleteUserTickets(this.profile.county, this.profileId);
       console.log('unmount data state', this.data);
       Firebase.signInUser(this.state.email, this.state.password);
       setTimeout(() => {
@@ -144,6 +149,10 @@ export default class Profile extends Component {
 
   async _setNewProfile() {
     if (this.state.emailWarning || this.state.passwordWarning) return;
+    this.setState({animating: true, profileStatus: 'Creating Profile'});
+    setTimeout(() => {
+      this.setState({animating: false, profileStatus: 'Create Profile'});
+    }, 3000);
     let settings = {
       email: this.state.email,
       password: this.state.password,
@@ -178,7 +187,7 @@ export default class Profile extends Component {
   }
 
   _onEmailFocus() {
-    this.setState({nameColor: '#4286f4'});
+    this.setState({emailColor: '#4286f4'});
   }
 
   _onEmailBlur() {
@@ -222,8 +231,7 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     color: '#4286f4',
-    marginTop: 30,
-    marginBottom: 30,
+    marginTop: 40,
     fontSize: 34,
     fontWeight: 'bold',
   },
@@ -239,7 +247,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   button: {
-    width: 120,
+    width: 190,
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
