@@ -6,6 +6,7 @@ import {
   Button,
   Image,
   ActivityIndicator,
+  AsyncStorage,
 } from 'react-native';
 import Realm from 'realm';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
@@ -37,34 +38,59 @@ export default class MapApp extends Component {
     )
   };
 
-  componentDidMount() {
+  async componentWillMount() {
+    let settings = await AsyncStorage.getItem('@Enforce:settings');
+    console.log(settings)
+    settings = JSON.parse(settings);
+
     if (this.props.navigation.state.params) this.setModalVisible();
-    LocationServicesDialogBox.checkLocationServicesIsEnabled({
-        message: "<h2>Use Location ?</h2>This app wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
-        ok: "YES",
-        cancel: "NO"
-    }).then(() => {
+
+    if (settings.location) {
+      LocationServicesDialogBox.checkLocationServicesIsEnabled({
+          message: "<h2>Use Location ?</h2>Enforcewants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
+          ok: "OK",
+          cancel: "Continue without"
+      }).then(() => {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            let latitude = parseFloat(position.coords.latitude);
+            let longitude = parseFloat(position.coords.longitude);
+            this._animateToCoord(latitude, longitude);
+            this.realm.write(() => {
+              this.realm.objects('Coordinates')[0].latitude = latitude;
+              this.realm.objects('Coordinates')[0].longitude = longitude;
+            });
+          }, error => {
+            this.setState({showError: true});
+            // Cannot animate to coordinates with previous latlng w/o location provider.
+            // Possible solution is to swap out <MapView.Animated /> w/ initial region set to prev latlng.
+            console.log('Error loading geolocation:', error);
+          },
+          {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
+        );
+      })
+      .catch(() => {
+        this.setState({showError: true});
+      });
+    } else {
       navigator.geolocation.getCurrentPosition(
         position => {
           let latitude = parseFloat(position.coords.latitude);
-          let longitude = parseFloat(position.coords.longitude); console.log('GEO', latitude)
+          let longitude = parseFloat(position.coords.longitude);
           this._animateToCoord(latitude, longitude);
           this.realm.write(() => {
             this.realm.objects('Coordinates')[0].latitude = latitude;
             this.realm.objects('Coordinates')[0].longitude = longitude;
           });
         }, error => {
-          this.setState({showError: true});
+          this.setState({showError: true, animating: false});
           // Cannot animate to coordinates with previous latlng w/o location provider.
           // Possible solution is to swap out <MapView.Animated /> w/ initial region set to prev latlng.
-          console.log('Error loading geolocation:', error); //TODO Save and Get location units from Realm
+          console.log('Error loading geolocation:', error);
         },
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
       );
-    })
-    .catch(() => {
-      this.setState({showError: true});
-    });
+    }
   }
 
   componentWillUnmount() {
