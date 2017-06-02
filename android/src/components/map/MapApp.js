@@ -176,14 +176,16 @@ export default class MapApp extends Component {
           <CustomCallout timer={arr[0]} title="1st" />
         </Marker>
       );
-      arr.forEach(timer => {
-         markers.push(<Marker
-           coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
-           //image={require('../../../../shared/images/pin-orange.png')}
-           key={timer.createdAt} >
-           <CustomCallout timer={arr[0]} title="1st" />
-          </Marker>
-         );
+      arr.forEach((timer, idx) => {
+         if (idx !== 0) {
+           markers.push(<Marker
+             coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
+             //image={require('../../../../shared/images/pin-orange.png')}
+             key={timer.createdAt} >
+             <CustomCallout timer={arr[idx]} title="1st" secondary={true}/>
+            </Marker>
+           );
+         }
       });
       if (arr[0].latitude > 0) {
         setTimeout(() => {

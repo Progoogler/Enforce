@@ -9,10 +9,10 @@ export default class MyCalloutView extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={ this._checkTimedUp(this.props.timer) ? styles.green : styles.blue }>
-          <Text style={styles.message}>{ this._checkTimedUp(this.props.timer) ? 'Ready' : 'Expires at ' + this._getExpiration(this.props.timer) + '\n' + this._prettyMessage(this.props.timer.description)}</Text>
+        <View style={ this.props.secondary ? null : (this._checkTimedUp(this.props.timer) ? styles.green : styles.blue) }>
+          <Text style={styles.message}>{ this.props.secondary ? null : (this._checkTimedUp(this.props.timer) ? 'Ready' : 'Expires at ' + this._getExpiration(this.props.timer) + '\n' + this._prettyMessage(this.props.timer.description)) }</Text>
         </View>
-        <View style={ this._checkTimedUp(this.props.timer) ? styles.greenTriangle : styles.blueTriangle } />
+        <View style={ this.props.secondary ? (this._checkTimedUp(this.props.timer) ? styles.greenCircle : styles.blueCircle) : (this._checkTimedUp(this.props.timer) ? styles.greenTriangle : styles.blueTriangle) } />
       </View>
     );
   }
@@ -106,6 +106,18 @@ const styles = StyleSheet.create({
     transform: [
       {rotate: '180deg'}
     ]
+  },
+  blueCircle: {
+    height: 25,
+    width: 25,
+    borderRadius: 12,
+    backgroundColor: '#4286f4',
+  },
+  greenCircle: {
+    height: 25,
+    width: 25,
+    borderRadius: 12,
+    backgroundColor: 'green',
   }
 });
 
