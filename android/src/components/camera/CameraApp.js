@@ -5,6 +5,7 @@ import {
   Image,
   Text,
   ActivityIndicator,
+  AsyncStorage,
   TouchableHighlight,
   TouchableWithoutFeedback,
 } from 'react-native';
@@ -93,7 +94,11 @@ export class CameraApp extends Component {
     );
 }
 
-  componentWillMount() {
+  async componentWillMount() {
+    let settings = await AsyncStorage.getItem('@Enforce:settings');
+    console.log(settings)
+    settings = JSON.parse(settings);
+
     this.success = (position) => {
       this.latitude = position.coords.latitude;
       this.longitude = position.coords.longitude;
@@ -118,20 +123,28 @@ export class CameraApp extends Component {
       distanceFilter: 1
     };
 
-    LocationServicesDialogBox.checkLocationServicesIsEnabled({
-        message: "<h2>Turn On Location ?</h2>Quicket wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/><a href='#'>Learn more</a>",
-        ok: "YES",
-        cancel: "Continue without"
-    }).then(() => {
+    if (settings.location) {
+      LocationServicesDialogBox.checkLocationServicesIsEnabled({
+          message: "<h2>Turn On Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
+          ok: "OK",
+          cancel: "Continue without"
+      }).then(() => {
+        navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
+        this.setCameraTime();
+        this._setTimeLimit();
+      }).catch(() => {
+        this.latitude = 0;
+        this.longitude = 0;
+        this.setCameraTime();
+        this._setTimeLimit();
+      });
+    } else {
+      this.latitude = 0;
+      this.longitude = 0;
       navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
       this.setCameraTime();
       this._setTimeLimit();
-    }).catch(() => {
-      this.latitude = 0;
-      this.longitude = 0;
-      this.setCameraTime();
-      this._setTimeLimit();
-    });
+    }
   }
 
   setModalVisible(desc) {
