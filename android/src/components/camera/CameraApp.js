@@ -335,6 +335,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     padding: 30,
     margin: 4,
+    marginLeft: 18,
   },
   undo: {
     color: '#4286f4',
