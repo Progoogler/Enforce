@@ -35,6 +35,15 @@ export default class Profile extends Component {
     this.createdNewUser = false;
     this.replacedOldUser = false;
   }
+  static navigationOptions = {
+    drawerLabel: 'Profile',
+    drawerIcon: ({ tintColor }) => (
+      <Image
+        source={require('../../../../shared/images/person-icon.png')}
+        style={[styles.icon]}
+      />
+    )
+  };
 
   render() {
     return (
