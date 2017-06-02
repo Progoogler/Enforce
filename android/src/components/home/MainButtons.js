@@ -25,7 +25,7 @@ export default class MainButtons extends Component {
           onHideUnderlay={() => {this._onHideUnderlay('map')}}
           onShowUnderlay={() => {this._onShowUnderlay('map')}}
           onPress={() => this.props.navigation.navigate('Map')} >
-          <Image source={require('../../../../shared/images/white-pin.png')} />
+          <Image source={require('../../../../shared/images/white-pin.jpg')} />
         </TouchableHighlight>
         <View style={styles.separator} />
         <TouchableHighlight
