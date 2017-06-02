@@ -63,6 +63,11 @@ class Database {
       });
   }
 
+    static deleteUserTickets(cityId, userId) {
+      let userTicketPath = `/${cityId}/${userId}/`;
+      firebase.database().ref(userTicketPath).remove();
+    }
+
 }
 
 module.exports = Database;
