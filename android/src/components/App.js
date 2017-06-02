@@ -25,16 +25,13 @@ const AppNavigator = DrawerNavigator({
   Home: {
     screen: Home
   },
-  Profile: {
-    screen: Profile
-  },
   Map: {
     screen: MapApp
   },
   Camera: {
     screen: CameraApp
   },
-  Timers: { //Cannot navigate to page w/o passing params
+  Timers: {
     screen: TimerList
   },
   "VIN Search": {
@@ -45,6 +42,9 @@ const AppNavigator = DrawerNavigator({
   },
   Metrics: {
     screen: Metrics
+  },
+  Profile: {
+    screen: Profile
   },
   Settings: {
     screen: Settings
