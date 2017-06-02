@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "920809006439",
+    "firebase_url": "https://enforce-a8560.firebaseio.com",
+    "project_id": "enforce-a8560",
+    "storage_bucket": "enforce-a8560.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920809006439:android:c94a97b343c7afa8",
+        "android_client_info": {
+          "package_name": "com.enforce"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "920809006439-5ldhl8vb9kotlhbtv5ka53asivu3h71m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXoLJmCZYma5lVYGn4xFhsqXqOSkLwTE8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

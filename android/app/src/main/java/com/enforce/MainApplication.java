@@ -1,8 +1,9 @@
-package com.quicket;
+package com.enforce;
 
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import io.fullstack.firestack.FirestackPackage;
 import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
 import com.rnfs.RNFSPackage;
 import io.realm.react.RealmReactPackage;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new FirestackPackage(),
             new LocationServicesDialogBoxPackage(),
             new RNFSPackage(),
             new RealmReactPackage(),
