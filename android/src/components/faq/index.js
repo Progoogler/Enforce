@@ -46,6 +46,9 @@ export default class FAQs extends Component {
           <Text style={styles.question}>Do I need to use mobile data in order to use the app?</Text>
           <Text style={styles.answer}>Technically, it is not necessary. But to take advantage of all the features such as geolocation, searching for VINs, and uploading the history log of tickets to our cloud database, it is recommended to have internet connection.</Text>
 
+          <Text style={styles.question}>How would I know where the car is without GPS?</Text>
+          <Text style={styles.answer}>It is worth reiterating that we suggest adding location details to the first picture of a timer. Another way is to take a picture of the street sign or some nearby landmark that will serve as a reminder.</Text>
+
         </ScrollView>
         <View style={styles.footer} />
       </View>
