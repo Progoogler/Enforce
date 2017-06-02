@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  Image,
   Switch,
   StyleSheet,
   AsyncStorage,
@@ -19,6 +20,15 @@ export default class Settings extends Component {
       colorFalseSwitchIsOn: false,
     }
   }
+  static navigationOptions = {
+    drawerLabel: 'Settings',
+    drawerIcon: ({ tintColor }) => (
+      <Image
+        source={require('../../../../shared/images/settings-icon.png')}
+        style={[styles.icon]}
+      />
+    )
+  };
 
   render() {
     return (
