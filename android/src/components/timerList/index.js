@@ -18,17 +18,22 @@ import Footer from './Footer';
 import Navigation from '../home/Header';
 import Warning from './Warning';
 import Done from './Done';
-
+import insertionSortModified from '../home/insertionSort';
 
 export default class TimerList extends Component {
   constructor(props) {
     super(props);
+    this.realm = new Realm();
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    console.log(this.props.navigation.state.params)
     if (!this.props.navigation.state.params) {
+      this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
+      this.list = this.list[0].list;
       this.props.navigation.state.params = {};
-      this.props.navigation.state.params.timers = {};
+      this.props.navigation.state.params.timers = this.list;
+    } else {
+      this.list = this.props.navigation.state.params.timers;
     }
-    this.list = this.props.navigation.state.params.timers;
     this.state = {
       dataSource: ds.cloneWithRows(this.list),
       refreshing: false,
@@ -39,7 +44,7 @@ export default class TimerList extends Component {
     this.timer = null;
     this.ticketedCount = 0;
     this.profileId = '';
-    this.realm = new Realm();
+
   }
   static navigationOptions = {
     drawerLabel: 'Timers',
