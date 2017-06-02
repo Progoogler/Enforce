@@ -13,8 +13,8 @@ const Warning = (props) => (
 
 const styles = StyleSheet.create({
   container: {
-    alignSelf: 'flex-end',
-    marginRight: 60,
+    alignSelf: 'flex-start',
+    marginLeft: 170,
     marginTop: -10,
   },
   text: {

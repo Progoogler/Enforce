@@ -12,6 +12,8 @@ import Firebase from '../../../../includes/firebase/firebase';
 import Database from '../../../../includes/firebase/database';
 
 import Header from '../home/Header';
+import Warning from './Warning';
+import Wait from './Wait';
 
 export default class Profile extends Component {
   constructor() {
@@ -19,10 +21,13 @@ export default class Profile extends Component {
     this.state = {
       email: '',
       password: '',
-      city: '',
+      county: '',
       emailColor: 'black',
       passwordColor: 'black',
-      cityColor: 'black',
+      countyColor: 'black',
+      emailWarning: false,
+      passwordWarning: false,
+      wait: false,
     };
     this.profile = {};
     this.profileId = '';
@@ -48,6 +53,9 @@ export default class Profile extends Component {
             onChangeText={(text) => { this.setState({ email: text })}}
             value={this.state.email} />
         </View>
+
+        { this.state.emailWarning ? <Warning warning={'Enter valid email address'} /> : null }
+
         <View style={styles.row} >
           <Text style={styles.designator}>Password</Text>
           <TextInput
@@ -61,18 +69,21 @@ export default class Profile extends Component {
             onChangeText={(text) => { this.setState({ password: text })}}
             value={this.state.password} />
         </View>
+
+        { this.state.passwordWarning ? <Warning warning={'Must be at least 6 characters'} /> : null }
+
         <View style={styles.row} >
-          <Text style={styles.designator}>City</Text>
+          <Text style={styles.designator}>County</Text>
           <TextInput
-            style={{ borderColor: this.state.cityColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
+            style={{ borderColor: this.state.countyColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
             autoCorrect={false}
             autoCapitalize={'words'}
             fontSize={18}
             underlineColorAndroid={'transparent'}
-            onFocus={() => this._onCityFocus()}
-            onBlur={() => this._onCityBlur()}
-            onChangeText={(text) => { this.setState({ city: text })}}
-            value={this.state.city} />
+            onFocus={() => this._onCountyFocus()}
+            onBlur={() => this._onCountyBlur()}
+            onChangeText={(text) => { this.setState({ county: text })}}
+            value={this.state.county} />
         </View>
         <TouchableHighlight
           style={styles.button}
@@ -80,6 +91,7 @@ export default class Profile extends Component {
           onPress={() => this._setNewProfile() }>
           <Text style={styles.buttonText}>Confirm</Text>
         </TouchableHighlight>
+        { this.state.wait ? <Wait /> : null }
       </View>
     );
   }
@@ -103,7 +115,7 @@ export default class Profile extends Component {
       setTimeout(() => {
         let newId = Firebase.getCurrentUser();
         AsyncStorage.setItem('@Enforce:profileId', newId);
-        Database.transferUserData(this.state.city, newId, this.data);
+        Database.transferUserData(this.state.county, newId, this.data);
       }, 1500);
     }
   }
@@ -116,7 +128,7 @@ export default class Profile extends Component {
       this.setState({
         email: this.profile.email ? this.profile.email : '',
         password: this.profile.password ? this.profile.password : '',
-        city: this.profile.city ? this.profile.city : '',
+        county: this.profile.county ? this.profile.county : '',
       });
       this.profileId = await AsyncStorage.getItem('@Enforce:profileId');
       Firebase.signInUser(this.profile.email, this.profile.password);
@@ -131,10 +143,11 @@ export default class Profile extends Component {
   }
 
   async _setNewProfile() {
+    if (this.state.emailWarning || this.state.passwordWarning) return;
     let settings = {
       email: this.state.email,
       password: this.state.password,
-      city: this.state.city,
+      county: this.state.county,
     };
     settings = JSON.stringify(settings);
     if (!this.profileId) { console.log('no profile id')
@@ -147,7 +160,7 @@ export default class Profile extends Component {
       console.log('try setting new user')
       if (this.profile.email !== this.state.email || this.profile.password !== this.state.password || this.profile.state !== this.state.state) {
 
-        Database.getUserTickets(this.profile.city, this.profileId, (data) => this.data = data);
+        Database.getUserTickets(this.profile.county, this.profileId, (data) => this.data = data);
         console.log('get data from db', this.data)
 
         Firebase.deleteUser();
@@ -175,10 +188,10 @@ export default class Profile extends Component {
     let com = regexForCom.test(email);
     let at = regexForAt.test(email);
     if (!com || !at) {
-      this.setState({emailColor: 'red'});
+      this.setState({emailColor: 'red', emailWarning: true});
       return;
     }
-    this.setState({emailColor: 'black'});
+    this.setState({emailColor: 'black', emailWarning: false});
   }
 
   _onPasswordFocus() {
@@ -187,18 +200,18 @@ export default class Profile extends Component {
 
   _onPasswordBlur() {
     if (this.state.password.length < 6) {
-      this.setState({passwordColor: 'red'});
+      this.setState({passwordColor: 'red', passwordWarning: true});
       return;
     }
-    this.setState({passwordColor: 'black'});
+    this.setState({passwordColor: 'black', passwordWarning: false});
   }
 
-  _onCityFocus() {
-    this.setState({cityColor: '#4286f4'});
+  _onCountyFocus() {
+    this.setState({countyColor: '#4286f4'});
   }
 
-  _onCityBlur() {
-    this.setState({cityColor: 'black'});
+  _onCountyBlur() {
+    this.setState({countyColor: 'black'});
   }
 }
 
