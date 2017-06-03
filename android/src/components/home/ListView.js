@@ -6,7 +6,7 @@ import {
   ListView,
   RefreshControl,
 } from 'react-native';
-import Realm from 'realm';
+import realm from 'realm';
 import RNFS from 'react-native-fs';
 import Row from './Row';
 import insertionSortModified from './insertionSort';
@@ -21,8 +21,8 @@ const styles = StyleSheet.create({
 class TimersList extends Component {
   constructor() {
     super();
-    this.realm = new Realm();
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.realm = new Realm();
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
     this.list = insertionSortModified(this.list);
     this.state = {
@@ -46,10 +46,38 @@ class TimersList extends Component {
         timers={this.list}
         style={styles.container}
         dataSource={this.state.dataSource}
-        renderRow={(data) => <Row {...data} navigation={this.props.navigation} deleteRow={this.deleteRow.bind(this)} realm={this.realm}/>}
+        renderRow={(data) => <Row {...data}
+          navigation={this.props.navigation}
+          deleteRow={this.deleteRow.bind(this)} 
+          latitude={this.latitude}
+          longitude={this.longitude} />}
         renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
       />
     );
+  }
+
+  componentWillMount() {
+    this.latitude = this.realm.objects('Coordinates')[0].latitude;
+    this.longitude = this.realm.objects('Coordinates')[0].longitude;
+    if (!this.latitude) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.latitude = parseFloat(position.coords.latitude);
+          this.longitude = parseFloat(position.coords.longitude);
+          this.realm.write(() => {
+            this.realm.objects('Coordinates')[0].latitude = this.latitude;
+            this.realm.objects('Coordinates')[0].longitude = this.longitude;
+          });
+          this.getDistanceFromLatLon(this.latitude, this.longitude, this.distLat, this.distLong);
+        }, error => {
+          this.setState({showError: true});
+          // Cannot animate to coordinates with previous latlng w/o location provider.
+          // Possible solution is to swap out <MapView.Animated /> w/ initial region set to prev latlng.
+          console.log('Error loading geolocation:', error);
+        },
+        {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
+      );
+    }
   }
 
   deleteRow(timers) {

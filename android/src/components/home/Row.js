@@ -9,7 +9,6 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
-import Realm from 'realm';
 
 export default class Row extends Component {
   constructor() {
@@ -22,7 +21,6 @@ export default class Row extends Component {
     this.longitude = 0;
     this.distLat;
     this.distLon;
-    this.realm = new Realm();
   }
 
   render() {
@@ -71,29 +69,6 @@ export default class Row extends Component {
   }
 
   componentWillMount() {
-      console.log(this.props.realm.objects('Coordinates')[0].latitude)
-      console.log(this.props.list[0].longitude)
-    this.latitude = this.props.realm.objects('Coordinates')[0].latitude;
-    this.longitude = this.props.realm.objects('Coordinates')[0].longitude;
-    if (!this.latitude) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          this.latitude = parseFloat(position.coords.latitude);
-          this.longitude = parseFloat(position.coords.longitude);
-          this.realm.write(() => {
-            this.realm.objects('Coordinates')[0].latitude = this.latitude;
-            this.realm.objects('Coordinates')[0].longitude = this.longitude;
-          });
-          this.getDistanceFromLatLon(this.latitude, this.longitude, this.distLat, this.distLong);
-        }, error => {
-          this.setState({showError: true});
-          // Cannot animate to coordinates with previous latlng w/o location provider.
-          // Possible solution is to swap out <MapView.Animated /> w/ initial region set to prev latlng.
-          console.log('Error loading geolocation:', error);
-        },
-        {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
-      );
-    }
     let i = 0;
     while (i < this.props.list.length) {
       if (this.props.list[i].latitude !== 0) {}
@@ -101,7 +76,7 @@ export default class Row extends Component {
        this.distLong = this.props.list[i].longitude;
       i++;
     }
-    this.getDistanceFromLatLon(this.latitude, this.longitude, this.distLat, this.distLong);
+    this.getDistanceFromLatLon(this.props.latitude, this.props.longitude, this.distLat, this.distLong);
   }
 
   componentDidMount() {
