@@ -82,24 +82,23 @@ export default class Row extends Component {
   }
 
   _getTimeLeft(timer) {
+    if (!timer) return;
     let timeLength = timer.timeLength * 60 * 60 * 1000;
     let timeSince = new Date() - timer.createdAt;
     let timeLeft = (timeLength - timeSince) / 1000;
     let value = '';
-    if (timeLeft < 0) {
-      return value = <Text style={{fontSize: 20, fontWeight: 'bold', color: 'green'}}>Time is up!</Text>;
+      if (timeLeft < 0) {
+      return <Text style={styles.timeUp}>Time is up!</Text>;
     } else if (timeLeft < 60) {
-      return value = 'less than a minute remaining';
+      return<Text style={styles.timeUp}>less than a minute {'\n'}remaining</Text>;
     } else if (timeLeft < 3600) {
-      return value = Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining';
-    } else if (timeLeft > 3600 && timeLeft < 7200) {
-      return value = '1 hour ' + Math.floor((timeLeft - 3600) / 60) + ' minutes remaining';
-    } else if (timeLeft > 7200 && timeLeft < 10800) {
-      return value = '2 hours ' + Math.floor((timeLeft - 7200) / 60) + ' minutes remaining';
-    } else if (timeLeft > 10800 && timeLeft < 14400) {
-      return value = '3 hours ' + Math.floor((timeLeft - 10800) / 60) + ' minutes remaining';
+      if (timeLeft < 300 ) return <Text style={styles.timeUp}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
+      if (timeLeft < 3600 / 4) return <Text style={styles.timeUp}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
+      return <Text style={styles.timeCaution}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
+    } else if (timeLeft > 3600) {
+      return <Text style={styles.timeUpFar}>{Math.floor(timeLeft / 60 / 60)} hour {Math.floor((timeLeft - 3600) / 60)} minutes remaining</Text>;
     } else {
-      return value = 'Over ' + Math.floor(timeLeft / 60 / 60) + ' hours remaining...';
+      return '';
     }
   }
 }
@@ -115,6 +114,20 @@ const styles = StyleSheet.create({
   activity: {
     flex: 1,
     zIndex: 10,
+  },
+  timeUp: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color:'green',
+  },
+  timeUpFar: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  timeCaution: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4286f4',
   },
   buttonsContainer: {
     alignSelf: 'stretch',

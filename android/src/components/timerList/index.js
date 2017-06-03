@@ -90,6 +90,7 @@ export default class TimerList extends Component {
 
   componentWillUnmount() {
     if (this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) Database.setUserTickets(this.countyId, this.userId, this.realm.objects('Ticketed')[0]['list']);
+    this.props.navigation.state.params = undefined;
   }
 
   async _getUserInfo() {
