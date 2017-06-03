@@ -9,6 +9,7 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
+import Realm from 'realm';
 
 export default class Row extends Component {
   constructor() {
@@ -21,6 +22,7 @@ export default class Row extends Component {
     this.longitude = 0;
     this.distLat;
     this.distLon;
+    this.realm = new Realm();
   }
 
   render() {
