@@ -68,6 +68,17 @@ class Database {
       firebase.database().ref(userTicketPath).remove();
     }
 
+    static setTicketImage(refPath, createdAtId, blob) {
+      firebase.storage()
+        .ref(refPath)
+        .child(createdAtId)
+        .put(blob, {contentType: 'image/jpg'})
+        .then((snapshot) => {
+          console.log('SUCCESS', JSON.stringify(snapshot.metadata));
+          blob.close();
+        });
+    }
+
 }
 
 module.exports = Database;

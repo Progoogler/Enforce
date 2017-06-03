@@ -38,28 +38,17 @@ class Firebase {
 
     static getCurrentUser() {
       let user = firebase.auth().currentUser;
-      // let uid = null;
-      // firebase.auth().onAuthStateChanged((user) => {
-      //   if (user !== null) { console.log('FB USER', user, uid)
-      //     uid = user.uid;
-      //   } else { console.log('FB USER NULL', user)
-      //     return null;
-      //   }
-      // }); console.log(uid, user)
-      // return uid;
       console.log('get user', user.uid)
       return user.uid;
     }
 
     static deleteUser() {
-      // potentialy need to reauthenticate before deleting or updating data.
-
       let user = firebase.auth().currentUser;
       console.log('FIREBASE DELETEUSER()', user)
       user.delete().then(() => {
         console.log('FIREBASE: USER DELETED');
       }, (err) => {
-        console.log(`FIREBASE: USER DELETION FAILED! ERROR: ${err}`);
+        console.warn(`FIREBASE: USER DELETION FAILED! ERROR: ${err}`);
       });
     }
 
