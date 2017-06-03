@@ -17,6 +17,7 @@ export default class Settings extends Component {
       notifications: true,
       location: true,
       imageUpload: true,
+      dataUpload: true,
       colorFalseSwitchIsOn: false,
     }
   }
@@ -67,7 +68,7 @@ export default class Settings extends Component {
           <Text style={styles.settingDesc}>Backup images to the cloud database</Text>
           <View style={styles.slider}>
             <Switch
-              onValueChange={(value) => this.setState({imageUpload: value})}
+              onValueChange={(value) => this._imageUploadCondition(value)}
               onTintColor="green"
               style={{marginBottom: 10}}
               thumbTintColor="#4286f4"
@@ -77,15 +78,15 @@ export default class Settings extends Component {
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.settingDesc}>Hi</Text>
+          <Text style={styles.settingDesc}>Upload ticket information to cloud {'\n'} (Accessible for up to 45 days)</Text>
           <View style={styles.slider}>
             <Switch
-              onValueChange={(value) => this.setState({colorFalseSwitchIsOn: value})}
+              onValueChange={(value) => this._toggleUploadCondition(value)}
               onTintColor="green"
               style={{marginBottom: 10}}
               thumbTintColor="#4286f4"
               tintColor="#808080"
-              value={this.state.colorFalseSwitchIsOn} />
+              value={this.state.dataUpload} />
           </View>
         </View>
 
@@ -131,6 +132,27 @@ export default class Settings extends Component {
   componentWillUnmount() {
     let state = JSON.stringify(this.state);
     AsyncStorage.setItem('@Enforce:settings', state);
+  }
+
+  _toggleUploadCondition(boolean) {
+    console.log('BOOLEAN', boolean)
+    if (boolean) {
+      this.setState({dataUpload: true});
+    } else {
+      this.setState({dataUpload: false, imageUpload: false});
+    }
+  }
+
+  _imageUploadCondition(boolean) {
+    if (boolean) {
+      if (!this.state.dataUpload) {
+        this.setState({imageUpload: false});
+      } else {
+        this.setState({imageUpload: true});
+      }
+    } else {
+      this.setState({imageUpload: false});
+    }
   }
 }
 
