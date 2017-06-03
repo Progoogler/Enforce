@@ -15,6 +15,7 @@
     "react-native": "0.42.3",
     "react-native-android-location-services-dialog-box": "^1.2.1",
     "react-native-camera": "^0.8.0",
+    "react-native-fetch-blob": "^0.10.5",
     "react-native-fs": "^2.3.2",
     "react-native-maps": "0.13.1",
     "react-navigation": "^1.0.0-beta.8",

@@ -126,6 +126,7 @@ android {
 }
 //    compile project(':react-native-maps')
 dependencies {
+    compile project(':react-native-fetch-blob')
     compile project(':react-native-android-location-services-dialog-box')
     compile project(':react-native-fs')
     compile project(':realm')
