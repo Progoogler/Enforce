@@ -17,13 +17,12 @@ export default class Row extends Component {
       mounted: false,
       distance: null,
     }
-    this.latitude = 0;
-    this.longitude = 0;
     this.distLat;
     this.distLon;
   }
 
   render() {
+    console.log('HOME ROW', this.props.latitude, this.props.longitude)
     if (this.props.list.length < 1) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
     return (
           <ScrollView

@@ -32,7 +32,6 @@ class TimersList extends Component {
   }
 
   render() {
-    console.log('list', this.list)
     return (
       <ListView
         enableEmptySections={true}
@@ -48,7 +47,7 @@ class TimersList extends Component {
         dataSource={this.state.dataSource}
         renderRow={(data) => <Row {...data}
           navigation={this.props.navigation}
-          deleteRow={this.deleteRow.bind(this)} 
+          deleteRow={this.deleteRow.bind(this)}
           latitude={this.latitude}
           longitude={this.longitude} />}
         renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
@@ -59,25 +58,24 @@ class TimersList extends Component {
   componentWillMount() {
     this.latitude = this.realm.objects('Coordinates')[0].latitude;
     this.longitude = this.realm.objects('Coordinates')[0].longitude;
-    if (!this.latitude) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          this.latitude = parseFloat(position.coords.latitude);
-          this.longitude = parseFloat(position.coords.longitude);
-          this.realm.write(() => {
-            this.realm.objects('Coordinates')[0].latitude = this.latitude;
-            this.realm.objects('Coordinates')[0].longitude = this.longitude;
-          });
-          this.getDistanceFromLatLon(this.latitude, this.longitude, this.distLat, this.distLong);
-        }, error => {
-          this.setState({showError: true});
-          // Cannot animate to coordinates with previous latlng w/o location provider.
-          // Possible solution is to swap out <MapView.Animated /> w/ initial region set to prev latlng.
-          console.log('Error loading geolocation:', error);
-        },
-        {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
-      );
-    }
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.latitude = parseFloat(position.coords.latitude);
+        this.longitude = parseFloat(position.coords.longitude);
+        this.realm.write(() => {
+          this.realm.objects('Coordinates')[0].latitude = this.latitude;
+          this.realm.objects('Coordinates')[0].longitude = this.longitude;
+        });
+        this._onRefresh();
+        // this.getDistanceFromLatLon(this.latitude, this.longitude, this.distLat, this.distLong);
+        // Cannot call function from parent?
+      }, error => {
+        // Cannot animate to coordinates with previous latlng w/o location provider.
+        // Possible solution is to swap out <MapView.Animated /> w/ initial region set to prev latlng.
+        console.log('Error loading geolocation:', error);
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
+    );
   }
 
   deleteRow(timers) {
