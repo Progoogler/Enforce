@@ -35,7 +35,7 @@ export default class Warning extends Component {
               <TouchableHighlight
                 style={styles.yes}
                 underlayColor='#4286f4'
-                onPress={() => { this.props.forceTicket(); this.props.throwWarning() }} >
+                onPress={() => { this.props.forceTicket()}} >
                 <Text style={styles.buttonText}>Yes</Text>
               </TouchableHighlight>
             </View>

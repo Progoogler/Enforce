@@ -20,6 +20,12 @@ import Warning from './Warning';
 import Done from './Done';
 import insertionSortModified from '../home/insertionSort';
 
+import RNFetchBlob from 'react-native-fetch-blob';
+const Blob = RNFetchBlob.polyfill.Blob;
+
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
+window.Blob = Blob
+
 export default class TimerList extends Component {
   constructor(props) {
     super(props);
@@ -75,7 +81,11 @@ export default class TimerList extends Component {
                                     updateRows={this.updateRows.bind(this)}
                                     realm={this.realm}
                                     throwWarning={this.throwWarning.bind(this)}
-                                    expiredFunc={this.expiredFunc.bind(this)}/>}
+                                    expiredFunc={this.expiredFunc.bind(this)}
+                                    RNFetchBlob={RNFetchBlob}
+                                    Blob={Blob}
+                                    Database={Database}
+                                    Firebase={Firebase} />}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} />
         {/* }<Footer /> TODO space out the bottom margin of listview and animate "Done"*/}
         { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : <View /> }
@@ -95,15 +105,12 @@ export default class TimerList extends Component {
 
   async _getUserInfo() {
     this.countyId = await AsyncStorage.getItem('@Enforce:profileSettings');
+    this.settings = await AsyncStorage.getItem('@Enforce:settings');
+    this.settings = JSON.parse(this.settings);
     this.countyId = JSON.parse(this.countyId);
     this.countyId = this.countyId.county;
-    this.userId = await Firebase.getCurrentUser();
+    this.userId = Firebase.getCurrentUser();
     console.log(this.userId, this.countyId);
-  }
-
-  async _getProfileSettings() {
-    this.profileSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
-    this.profileSettings = JSON.parse(this.profileSettings);
   }
 
   _onRefresh() {
@@ -135,13 +142,31 @@ export default class TimerList extends Component {
   }
 
   forceTicket() {
+    if (this.settings.imageUpload) { // TODO Force ticket image upload
+      console.log('uploading file', this.timer)
+      let rnfbURI = RNFetchBlob.wrap(this.timer.mediaPath);
+      Blob
+        .build(rnfbURI, {type: 'image/jpg;'})
+        .then((blob) => {
+          let now = new Date();
+          let month = now.getMonth() + 1;
+          let day = now.getDate();
+          date = `${month}-${day}`;
+          let refPath = `${this.countyId}/${this.userId}/${month}-${day}`;
+          let imagePath = `${this.timer.createdAt}`;
+          this.throwWarning();
+          console.log('what is blob', blob);
+          Database.setTicketImage(refPath, imagePath, blob);
+        });
+    } else {
+      this.throwWarning();
+    }
     this.realm.write(() => {
       this.timer.ticketedAt = new Date() / 1;
       this.realm.objects('Ticketed')[0]['list'].push(this.timer);
       this.realm.objects('Timers')[this.timer.index]['list'].shift();
     });
     //Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
-    this.timer = null;
     this.updateRows();
   }
 

@@ -5,6 +5,7 @@ import {
   Image,
   StyleSheet,
   TouchableHighlight,
+  AsyncStorage,
 } from 'react-native';
 
 
@@ -52,12 +53,27 @@ export default class Row extends Component {
     );
   }
 
+  componentWillMount() {
+    this._getUserInfo();
+  }
+
+  async _getUserInfo() {
+    this.countyId = await AsyncStorage.getItem('@Enforce:profileSettings');
+    this.settings = await AsyncStorage.getItem('@Enforce:settings');
+    this.settings = JSON.parse(this.settings);
+    this.countyId = JSON.parse(this.countyId);
+    this.countyId = this.countyId.county;
+    this.userId = this.props.Firebase.getCurrentUser();
+    console.log(this.userId, this.countyId);
+  }
+
   _onVinRequest() {
     let options = {
     }
   }
 
   _uponTicketed(timer) {
+    console.log('upload', this.settings.imageUpload)
     let now = new Date();
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000) {
       this.props.realm.write(() => {
@@ -65,6 +81,20 @@ export default class Row extends Component {
         this.props.realm.objects('Ticketed')[0]['list'].push(timer);
         this.props.realm.objects('Timers')[timer.index]['list'].shift();
       });
+      if (this.settings.imageUpload) { // TODO Force ticket image upload
+        console.log('uploading file')
+        let rnfbURI = this.props.RNFetchBlob.wrap(timer.mediaPath);
+        this.props.Blob
+          .build(rnfbURI, {type: 'image/jpg;'})
+          .then((blob) => {
+            let month = now.getMonth() + 1;
+            let day = now.getDate();
+            date = `${month}-${day}`;
+            let refPath = `${this.countyId}/${this.userId}/${month}-${day}`;
+            let imagePath = `${timer.createdAt}`;
+            this.props.Database.setTicketImage(refPath, imagePath, blob);
+          });
+      }
       this.props.updateRows();
     } else {
       this.props.throwWarning(timer);
