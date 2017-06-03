@@ -46,7 +46,7 @@ class TimersList extends Component {
         timers={this.list}
         style={styles.container}
         dataSource={this.state.dataSource}
-        renderRow={(data) => <Row {...data} navigation={this.props.navigation} deleteRow={this.deleteRow.bind(this)}/>}
+        renderRow={(data) => <Row {...data} navigation={this.props.navigation} deleteRow={this.deleteRow.bind(this)} realm={this.realm}/>}
         renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
       />
     );

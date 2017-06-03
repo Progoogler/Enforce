@@ -204,7 +204,6 @@ export class CameraApp extends Component {
   }
 
   takePicture() {
-    this.setState({animating: true});
     this.pictureCount++;
     console.log('TAKING PICTURE', this.pictureCount)
     if (this.locationService) navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
@@ -295,7 +294,6 @@ export class CameraApp extends Component {
       });
       this.description = "";
     }
-    this.setState({animating: false});
   }
 
   _onUpdateTimeLimit() {
