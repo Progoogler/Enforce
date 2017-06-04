@@ -99,7 +99,8 @@ export default class TimerList extends Component {
   }
 
   componentWillUnmount() {
-    if (this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) Database.setUserTickets(this.countyId, this.userId, this.realm.objects('Ticketed')[0]['list']);
+    if (this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length &&
+      this.settings.dataUpload) Database.setUserTickets(this.countyId, this.userId, this.realm.objects('Ticketed')[0]['list']);
     this.props.navigation.state.params = undefined;
   }
 
@@ -142,8 +143,7 @@ export default class TimerList extends Component {
   }
 
   forceTicket() {
-    if (this.settings.imageUpload) { // TODO Force ticket image upload
-      console.log('uploading file', this.timer)
+    if (this.settings.imageUpload) {
       let rnfbURI = RNFetchBlob.wrap(this.timer.mediaPath);
       Blob
         .build(rnfbURI, {type: 'image/jpg;'})
@@ -155,7 +155,6 @@ export default class TimerList extends Component {
           let refPath = `${this.countyId}/${this.userId}/${month}-${day}`;
           let imagePath = `${this.timer.createdAt}`;
           this.throwWarning();
-          console.log('what is blob', blob);
           Database.setTicketImage(refPath, imagePath, blob);
         });
     } else {
