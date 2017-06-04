@@ -79,6 +79,27 @@ class Database {
         });
     }
 
+    static getTicketImage(refPath, createdAtId) {
+      firebase.storage()
+        .ref(`${refPath}/${createdAtId}`)
+        .getDownloadURL().then(url => {
+          return (
+            <Image
+              style={{alignSelf: 'center', height: 400, width: 300}}
+              source={{ uri: url }} />
+          );
+        })
+    }
+
+    static getHistoryDates(countyId, userId, callback) {
+      let refPath = `${countyId}/${userId}`;
+
+      firebase.database().ref(refPath).once('value').then((snapshot) => {
+        callback(snapshot.val());
+      });
+
+    }
+
 }
 
 module.exports = Database;
