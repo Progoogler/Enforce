@@ -50,10 +50,6 @@ export default class Profile extends Component {
       <View style={styles.container}>
         <Header navigation={this.props.navigation} />
         <Text style={styles.title}>Profile Settings</Text>
-        <ActivityIndicator
-          animating={this.state.animating}
-          //style={styles.activity}
-          size='large' />
         <View style={styles.row} >
           <Text style={styles.designator}>Email</Text>
           <TextInput
@@ -105,6 +101,10 @@ export default class Profile extends Component {
           onPress={() => this._setNewProfile() }>
           <Text style={styles.buttonText}>{ this.state.profileStatus }</Text>
         </TouchableHighlight>
+        <ActivityIndicator
+          animating={this.state.animating}
+          style={styles.activity}
+          size='large' />
       </View>
     );
   }
@@ -268,5 +268,10 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 24,
     color: 'white',
+  },
+  activity: {
+    position: 'absolute',
+    bottom: 15,
+    alignSelf: 'center',
   },
 });
