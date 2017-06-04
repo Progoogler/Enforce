@@ -273,6 +273,8 @@ export class CameraApp extends Component {
           createdAt: new Date() / 1,
           ticketedAt: 0,
           timeLength: this.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
+          license: '',
+          VIN: '',
           mediaUri: data.mediaUri,
           mediaPath: data.path,
           description: "",
@@ -287,6 +289,8 @@ export class CameraApp extends Component {
           createdAt: new Date() / 1,
           ticketedAt: 0,
           timeLength: this.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
+          license: '',
+          VIN: '',          
           mediaUri: data.mediaUri,
           mediaPath: data.path,
           description: this.description,
