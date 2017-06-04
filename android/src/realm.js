@@ -8,6 +8,8 @@ TimerSchema.schema = {
     timeLength: 'float',
     createdAt: 'int',
     ticketedAt: 'int',
+    license: 'string',
+    VIN: 'string',
     mediaUri: 'string',
     mediaPath: 'string',
     description: 'string'
