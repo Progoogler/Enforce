@@ -194,6 +194,19 @@ export default class MapApp extends Component {
         i++;
       });
     } else {
+      if (this.props.navigation.state.params.historyView) {
+        let dataObj = this.props.navigation.state.params.timers;
+        markers.push(<Marker
+            coordinate={{latitude: dataObj.latitude, longitude: dataObj.longitude}}
+            key={dataObj.createdAt} />
+        );
+        if (dataObj.latitude > 0) {
+          setTimeout(() => {
+            this._animateToCoord(dataObj.latitude, dataObj.longitude);
+          }, 1500);
+        }
+        return markers;
+      }
       let arr = this.props.navigation.state.params.timers;
       markers.push(<Marker
           coordinate={{latitude: arr[0].latitude, longitude: arr[0].longitude}}
