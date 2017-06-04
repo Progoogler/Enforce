@@ -19,7 +19,7 @@ export default class VinSearch extends Component {
   constructor() {
     super();
     this.state = {
-      text: '',
+      license: '',
       done: true, //TODO Design change upon response from Experian
       animating: false,
     }
@@ -59,7 +59,7 @@ export default class VinSearch extends Component {
         <Text style={styles.designator}>License:</Text>
         <TextInput
           style={styles.textInput}
-          onChangeText={(text) => this.setState({text})}
+          onChangeText={(license) => this.setState({license})}
           maxLength={7}
           fontSize={19}
           autoCapitalize={'characters'}
@@ -72,7 +72,7 @@ export default class VinSearch extends Component {
         <TouchableHighlight
           style={styles.inputButton}
           underlayColor='#4286f4'
-          onPress={()=>{}} >
+          onPress={() => { this.props.handleVINSearch(this.state.license) }} >
           <Text style={styles.inputButtonText}>Search VIN</Text>
         </TouchableHighlight>
       </View>

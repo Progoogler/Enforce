@@ -78,9 +78,12 @@ export default class Row extends Component {
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000) {
       this.props.realm.write(() => {
         timer.ticketedAt = now / 1;
+        timer.license = this.props.license;
+        timer.VIN = this.props.VIN;
         this.props.realm.objects('Ticketed')[0]['list'].push(timer);
         this.props.realm.objects('Timers')[timer.index]['list'].shift();
       });
+      if (this.props.license) this.resetLicenseAndVIN();
       if (this.settings.imageUpload) { // TODO Force ticket image upload
         console.log('uploading file')
         let rnfbURI = this.props.RNFetchBlob.wrap(timer.mediaPath);

@@ -50,7 +50,8 @@ export default class TimerList extends Component {
     this.timer = null;
     this.ticketedCount = 0;
     this.profileId = '';
-
+    this.VIN = "";
+    this.license = "";
   }
   static navigationOptions = {
     drawerLabel: 'Timers',
@@ -68,7 +69,7 @@ export default class TimerList extends Component {
         <Navigation navigation={this.props.navigation} />
         <Title limit={this.props.navigation.state.params.timers[0] ? this.props.navigation.state.params.timers[0].timeLength : ""} />
         <Warning throwWarning={this.throwWarning.bind(this)} timeElapsed={this.warning} visibility={this.state.warningVisibility} forceTicket={this.forceTicket.bind(this)}/>
-        <VinSearch />
+        <VinSearch handleVINSearch={this.handleVINSearch.bind(this)}/>
         <ListView
           refreshControl={
             <RefreshControl refreshing={this.state.refreshing}
@@ -82,6 +83,9 @@ export default class TimerList extends Component {
                                     realm={this.realm}
                                     throwWarning={this.throwWarning.bind(this)}
                                     expiredFunc={this.expiredFunc.bind(this)}
+                                    resetLicenseAndVIN={this.resetLicenseAndVIN.bind(this)}
+                                    license={this.license}
+                                    VIN={this.VIN}
                                     RNFetchBlob={RNFetchBlob}
                                     Blob={Blob}
                                     Database={Database}
@@ -162,9 +166,12 @@ export default class TimerList extends Component {
     }
     this.realm.write(() => {
       this.timer.ticketedAt = new Date() / 1;
+      this.timer.license = this.license;
+      this.timer.VIN = this.VIN;
       this.realm.objects('Ticketed')[0]['list'].push(this.timer);
       this.realm.objects('Timers')[this.timer.index]['list'].shift();
     });
+    this.resetLicenseAndVIN();
     //Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
     this.updateRows();
   }
@@ -175,6 +182,22 @@ export default class TimerList extends Component {
       this.realm.objects('Timers')[timer.index]['list'].shift();
     });
     this.updateRows();
+  }
+
+  handleVINSearch(license) {
+    this.license = license;
+
+    // TODO
+    // call fetch to AutoCheck
+    // return VIN
+    // this.vin = VIN
+
+    this.updateRows();
+  }
+
+  resetLicenseAndVIN() {
+    this.license = '';
+    this.VIN = '';
   }
 }
 
