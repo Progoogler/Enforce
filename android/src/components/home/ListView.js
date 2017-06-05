@@ -30,12 +30,14 @@ class TimersList extends Component {
     this.list = insertionSortModified(this.list);
     this.state = {
       dataSource: ds.cloneWithRows(this.list),
+      updatedLocation: false,
       refreshing: false,
+      updateRows: 0,
     };
   }
 
   render() {
-    console.log('TimersList component rerenders')
+    console.log('TimersList component rerenders', this.state.updatedLocation)
     return (
       <ListView
         enableEmptySections={true}
@@ -44,44 +46,46 @@ class TimersList extends Component {
         style={styles.container}
         refreshControl={
           <RefreshControl refreshing={this.state.refreshing}
-            onRefresh={() => { console.log('refresh control')
-              this._onRefresh.bind(this)}} />
+            onRefresh={() => { this._onRefresh()}} />
         }
         timers={this.list}
         style={styles.container}
         dataSource={this.state.dataSource}
         renderRow={(data) => <Row {...data}
-          navigation={this.props.navigation}
-          deleteRow={this.deleteRow.bind(this)}
-          latitude={this.latitude}
-          longitude={this.longitude} />}
+                              navigation={this.props.navigation}
+                              deleteRow={this.deleteRow.bind(this)}
+                              latitude={this.latitude}
+                              longitude={this.longitude}
+                              updateRows={this.state.updateRows}
+                              updatedLocation={this.state.updatedLocation} />}
         renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
       />
     );
   }
 
   componentWillMount() {
-    // this.latitude = this.realm.objects('Coordinates')[0].latitude;
-    // this.longitude = this.realm.objects('Coordinates')[0].longitude;
-    // navigator.geolocation.getCurrentPosition(
-    //   position => {
-    //     this.latitude = parseFloat(position.coords.latitude);
-    //     this.longitude = parseFloat(position.coords.longitude);
-    //     this.realm.write(() => {
-    //       this.realm.objects('Coordinates')[0].latitude = this.latitude;
-    //       this.realm.objects('Coordinates')[0].longitude = this.longitude;
-    //     });
-    //     //this._onRefresh();
-    //     console.log('timer list will mount')
-    //     // this.getDistanceFromLatLon(this.latitude, this.longitude, this.distLat, this.distLong);
-    //     // Cannot call function from parent?
-    //   }, error => {
-    //     // Cannot animate to coordinates with previous latlng w/o location provider.
-    //     // Possible solution is to swap out <MapView.Animated /> w/ initial region set to prev latlng.
-    //     console.log('Error loading geolocation:', error);
-    //   },
-    //   {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
-    // );
+    this.latitude = this.realm.objects('Coordinates')[0].latitude;
+    this.longitude = this.realm.objects('Coordinates')[0].longitude;
+    if (this.props.renderedOnce) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.latitude = parseFloat(position.coords.latitude);
+          this.longitude = parseFloat(position.coords.longitude);
+          this.realm.write(() => {
+            this.realm.objects('Coordinates')[0].latitude = this.latitude;
+            this.realm.objects('Coordinates')[0].longitude = this.longitude;
+          });
+          this.setState({
+            updatedLocation: true,
+          });
+          this._onRefresh();
+        }, error => {
+          console.log('Error loading geolocation:', error);
+        },
+        {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
+      );
+      this.props.toggleRendered();
+    }
   }
 
   componentDidMount() {
@@ -90,7 +94,6 @@ class TimersList extends Component {
 
   async _checkReset() {
     let time = await AsyncStorage.getItem('@Enforce:timeOfFirstPicture');
-    console.log('time', time)
     if (isNaN(parseInt(time))) {
       if (this.realm.objects('Timers').length > 1) {
         let i = 0;
@@ -103,15 +106,13 @@ class TimersList extends Component {
         return;
       }
     }
-    console.log(new Date() - parseInt(time));
-    if (new Date() - parseInt(time) > 2880) {
+    if (new Date() - parseInt(time) > 28800000) {
       this._reset();
     }
   }
 
   _reset() {
     let timerLists = this.realm.objects('Timers');
-    console.log('TIMERS OBJ', timerLists, timerLists.length)
     let ticketList = this.realm.objects('Ticketed');
     let expiredList = this.realm.objects('Expired');
     if (timerLists.length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object
@@ -136,11 +137,7 @@ class TimersList extends Component {
         i++;
       }
       let now = new Date();
-      console.log('lasttime', lastTime, !lastTime || now - lastTime > 2880)
       if (!lastTime || now - lastTime > 28800000) { // Reset DB after 8 hours of activity 28800000
-        //console.log('nav', this.props.navigation)
-        // this.props.navigations.state.params = {};
-        // this.props.navigation.state.params.reset = true;
         console.log('starting loop')
         this._loopDeletion(timerLists);
         if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
@@ -148,6 +145,7 @@ class TimersList extends Component {
         //TODO Doesn't wait..
         AsyncStorage.setItem('@Enforce:timeOfFirstPicture', 'null');
         this.list = [];
+        this.props.updateTicketCount();
         this.setState({dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)});
         setTimeout(() => {
           console.log('NEW REALM')
@@ -167,24 +165,23 @@ class TimersList extends Component {
 
   _loopDeletion(timerLists, once) {
     if (once) {
-      timerLists[0].list.forEach((timer, idx) => {
+      timerLists[0].list.forEach((timer) => {
         RNFS.unlink(timer.mediaPath)
         .then(() => {
           console.log('FILE DELETED');
             this.realm.write(() => {
-              this.realm.delete(timer); //Lists[0]['list'][idx]);
+              this.realm.delete(timer);
             });
           });
         });
     } else {
-      timerLists.forEach((timerList, idx) => {
-        timerList.list.forEach((timer, sidx) => {
+      timerLists.forEach((timerList) => {
+        timerList.list.forEach((timer) => {
           RNFS.unlink(timer.mediaPath)
           .then(() => {
             console.log('FILE DELETED');
 
             this.realm.write(() => {
-              //timerLists[idx]['list'].pop();               this.realm.delete(timerLists[idx]['list'][sidx]);
               this.realm.delete(timer);
             });
           });
@@ -192,15 +189,6 @@ class TimersList extends Component {
       });
     }
   }
-
-
-  // componentWillUpdate() {
-  //   console.log('THIS COMPONENT EXISTS')
-  //   if (this.props.reset) {
-  //     console.log('HALLELUJAH!')
-  //     this.list = [];
-  //   }
-  // }
 
   deleteRow(timers) {
     console.log('DEL' ,timers)
@@ -234,14 +222,13 @@ class TimersList extends Component {
   }
 
   _onRefresh() {
-    console.log('timer list on refresh')
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
     this.list = insertionSortModified(this.list);
     this.setState({
       refreshing: true,
       dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)
     });
-    this.setState({refreshing: false});
+    this.setState({refreshing: false, updateRows: this.state.updateRows = this.state.updateRows + 1, updatedLocation: null});
   }
 }
 

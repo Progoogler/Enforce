@@ -15,7 +15,6 @@ export default class Row extends Component {
     super();
     this.state = {
       mounted: false,
-      distance: null,
     }
     this.distLat;
     this.distLon;
@@ -39,7 +38,7 @@ export default class Row extends Component {
                   </Text>
                   <View style={styles.separator} />
                   <Text style={styles.timerRowTime}>
-                    { this.getTimeLeft(this.props.list[0]) }
+                    { this.props.updateRows ? this.getTimeLeft(this.props.list[0]) : this.getTimeLeft(this.props.list[0]) }
                   </Text>
                 </View>
               </TouchableHighlight>
@@ -53,7 +52,7 @@ export default class Row extends Component {
                     <Text style={styles.buttonText}>Show Map</Text>
                   </View>
                 </TouchableHighlight>
-                <Text style={styles.distance}>{ this.state.distance }</Text>
+                <Text style={styles.distance}>{ (this.props.updatedLocation === true) ? this._getDistance() : this.distance }</Text>
               </View>
 
               <TouchableHighlight
@@ -67,14 +66,8 @@ export default class Row extends Component {
   }
 
   componentWillMount() {
-    let i = 0;
-    while (i < this.props.list.length) {
-      if (this.props.list[i].latitude !== 0) {}
-       this.distLat = this.props.list[i].latitude;
-       this.distLong = this.props.list[i].longitude;
-      i++;
-    }
-    this.getDistanceFromLatLon(this.props.latitude, this.props.longitude, this.distLat, this.distLong);
+    this._getDistance();
+    this.timer = this.props.list;
   }
 
   componentDidMount() {
@@ -98,6 +91,18 @@ export default class Row extends Component {
       width: width - 95,
     }
     this.setState({mounted: true});
+  }
+
+
+  _getDistance() {
+    let i = 0;
+    while (i < this.props.list.length) {
+      if (this.props.list[i].latitude !== 0) {}
+       this.distLat = this.props.list[i].latitude;
+       this.distLong = this.props.list[i].longitude;
+      i++;
+    }
+    return this.getDistanceFromLatLon(this.props.latitude, this.props.longitude, this.distLat, this.distLong);
   }
 
   _openMapPage(timerList) {
@@ -159,7 +164,8 @@ export default class Row extends Component {
       } else {
         d = d.toFixed(1) + ' miles';
       }
-      this.setState({distance: d});
+      this.distance = d;
+      return d;
     }
   }
 
@@ -169,6 +175,17 @@ export default class Row extends Component {
 }
 
 const styles = StyleSheet.create({
+  // timerRowContainer: {
+  //   flexDirection: 'row',
+  //   justifyContent: 'space-between',
+  //   alignItems: 'center',
+  //   borderTopWidth: 1,
+  // },
+
+  //   container: {
+  //   //flex: 1,
+  //   //flexDirection: 'row'
+  // },
   innerScroll: {
     flex: 1,
     flexDirection: 'row',
