@@ -52,7 +52,9 @@ export default class History extends Component {
           { this.state.items.map((item) => item) }
         </Picker>
         <ListView
-          //timers={this.props.navigation.state.params.timers}
+          enableEmptySections={true}
+          // In next release empty section headers will be rendered.
+          // Until then, leave this property alone to mitigate the warning msg.
           style={styles.listview}
           dataSource={this.state.dataSource}
           renderRow={(data) => <Row
