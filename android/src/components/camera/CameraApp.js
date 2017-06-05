@@ -176,6 +176,7 @@ export class CameraApp extends Component {
   }
 
   setCameraTime() {
+    console.log('hello')
     if (!this.realm.objects('Timers')[0]) this.createNewTimerList();
     let timerSequence = this.realm.objects('TimerSequence')[0]; console.log('TIMER SEQ', timerSequence);
     let timeSince = new Date() - timerSequence.timeAccessedAt;
@@ -187,7 +188,7 @@ export class CameraApp extends Component {
       this.createNewTimerList();
       return;
     } else {
-      setTimeout(this.setCameraTime.bind(this), 900000 - timeSince);
+      setTimeout(this.setCameraTime.bind(this), 900500 - timeSince);
     }
     this.setTimerCount();
   }
