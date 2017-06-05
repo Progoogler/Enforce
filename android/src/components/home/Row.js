@@ -22,7 +22,6 @@ export default class Row extends Component {
   }
 
   render() {
-    console.log('ROW', this.props.list.length)
     if (this.props.list.length < 1) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
     return (
           <ScrollView
