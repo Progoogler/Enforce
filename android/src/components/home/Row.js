@@ -22,6 +22,7 @@ export default class Row extends Component {
   }
 
   render() {
+    console.log('ROW', this.props.list.length)
     if (this.props.list.length < 1) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
     return (
           <ScrollView
@@ -169,17 +170,6 @@ export default class Row extends Component {
 }
 
 const styles = StyleSheet.create({
-  // timerRowContainer: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center',
-  //   borderTopWidth: 1,
-  // },
-
-  //   container: {
-  //   //flex: 1,
-  //   //flexDirection: 'row'
-  // },
   innerScroll: {
     flex: 1,
     flexDirection: 'row',
