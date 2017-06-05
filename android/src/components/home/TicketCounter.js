@@ -26,8 +26,8 @@ let length = 0;
 
 const TicketCounter = (props) => (
   <View style={styles.ticketCountContainer} >
-    <Text style={styles.ticketCountNumber}>{ length = props.realm.objects('Ticketed')[0] ? props.realm.objects('Ticketed')[0].list.length : 0 }</Text>
-    <Text style={styles.ticketCountDescription}>{length === 1 ? 'ticket' : 'tickets'} today</Text>
+    <Text style={styles.ticketCountNumber}>{ props.ticketCount }</Text>
+    <Text style={styles.ticketCountDescription}>{ props.ticketCount === 1 ? 'ticket' : 'tickets'} today</Text>
   </View>
 );
 
