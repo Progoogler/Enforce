@@ -13,7 +13,6 @@ import { NavigationActions } from'react-navigation';
 import Database from '../../../../includes/firebase/database';
 
 import Header from '../home/Header';
-//import Listview from './ListView';
 import Row from './Row';
 
 export default class History extends Component {
@@ -21,7 +20,6 @@ export default class History extends Component {
     super();
     this.realm = new Realm();
     this.list = this.realm.objects('Ticketed')[0]['list'];
-    console.log('this list', this.list);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       dataSource: ds.cloneWithRows(this.list),
@@ -30,7 +28,6 @@ export default class History extends Component {
     }
     this.settings = null;
     this.userId = null;
-    this.data = null;
   }
 
   static navigationOptions = {
@@ -58,7 +55,11 @@ export default class History extends Component {
           //timers={this.props.navigation.state.params.timers}
           style={styles.listview}
           dataSource={this.state.dataSource}
-          renderRow={(data) => <Row data={data} NavigationActions={NavigationActions} navigation={this.props.navigation}/>}
+          renderRow={(data) => <Row
+                                data={data}
+                                NavigationActions={NavigationActions}
+                                navigation={this.props.navigation}
+                                selected={this.state.selected} />}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
         />
       </View>
@@ -66,56 +67,54 @@ export default class History extends Component {
   }
 
   componentWillMount() {
-    this._getHistoryData();
+    this._getHistoryDatesRanging45Days();
   }
 
-  componentDidMount() {
-
+  _getHistoryDatesRanging45Days() {
+    let today = new Date();
+    let dates = [];
+    let date = '';
+    let day = 86400000;
+    let value = '';
+    dates.push(<Picker.Item style={styles.item} label="Today" value={'Today'} key={0}/>);
+    for (let i = 1; i < 45; i++) {
+      date = new Date(today - (day * i));
+      value = `${date.getMonth() + 1}-${date.getDate()}`;
+      dates.push(<Picker.Item style={styles.item} label={this._getPrettyDate(date.getMonth() + 1 + '', date.getDate() + '')} value={value} key={i}/>);
+    }
+    this.setState({items: dates});
   }
 
-  async _getHistoryData() {
+  async _getHistoryData(date) {
     let settings = await AsyncStorage.getItem('@Enforce:profileSettings');
     this.userId = await AsyncStorage.getItem('@Enforce:profileId');
     this.settings = JSON.parse(settings);
-    Database.getHistoryDates(this.settings.county, this.userId, (data) => {
-      this.data = data;
-      let items = [];
-      let i = 0;
-      items.push(<Picker.Item style={styles.item} label="Today" value={'Today'} key={i}/>);
-      for (let date in this.data) {
-        items.push(<Picker.Item style={styles.item} label={this._getPrettyDate(date)} value={date} key={i++}/>);
+    await Database.getHistoryData(this.settings.county, this.userId, date, (data) => {
+      this.updating = true;
+      if (data === null) {
+        this._updateRows([]);
+        return;
       }
-      this.setState({items});
-      console.log('THE DATA', this.data )
+      this._updateRows(data.tickets);
+      this.list = data.tickets;
     });
   }
 
   _onValueChange(value, index) {
-    this.list = this.data[value].tickets;
+    this._getHistoryData(value);
     this.selected = value;
-    this._updateRows();
   }
 
-  _updateRows() {
+  _updateRows(list) { console.log('UPDATE ROWS');
+    if (!list) list = this.list;
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(this.list),
+      dataSource: this.state.dataSource.cloneWithRows(list),
       selected: this.selected,
     });
   }
 
-  _getPrettyDate(date) {
-    let month = '';
-    let day = '';
-    let i = 0;
-    while (date[i] !== '-') {
-      month += date[i];
-      i++;
-    }
-    i++;
-    while (i < date.length) {
-      day += date[i];
-      i++;
-    }
+  _getPrettyDate(month, day) {
+
     switch (month) {
       case '1':
         month = 'January';
