@@ -148,6 +148,13 @@ export class CameraApp extends Component {
     }
   }
 
+  componentWillUnmount() {
+    console.log('COMPONENT CAMERA UNMOUNTING', this.count)
+    if (this.count <= 1) {
+      AsyncStorage.setItem('@Enforce:timeOfFirstPicture', (new Date() / 1) + '');
+    }
+  }
+
   setModalVisible(desc) {
     this.setState({modalVisible: !this.state.modalVisible});
     this.description = desc;
@@ -290,7 +297,7 @@ export class CameraApp extends Component {
           ticketedAt: 0,
           timeLength: this.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
           license: '',
-          VIN: '',          
+          VIN: '',
           mediaUri: data.mediaUri,
           mediaPath: data.path,
           description: this.description,
