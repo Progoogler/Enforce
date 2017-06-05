@@ -74,7 +74,6 @@ class Database {
         .child(createdAtId)
         .put(blob, {contentType: 'image/jpg'})
         .then((snapshot) => {
-          console.log('SUCCESS', JSON.stringify(snapshot.metadata));
           blob.close();
         });
     }
@@ -91,10 +90,10 @@ class Database {
         })
     }
 
-    static getHistoryDates(countyId, userId, callback) {
-      let refPath = `${countyId}/${userId}`;
-
+    static getHistoryData(countyId, userId, dateId, callback) {
+      let refPath = `${countyId}/${userId}/${dateId}`;
       firebase.database().ref(refPath).once('value').then((snapshot) => {
+        console.log('get data', snapshot.val())
         callback(snapshot.val());
       });
 
