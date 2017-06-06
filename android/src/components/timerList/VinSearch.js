@@ -19,7 +19,7 @@ export default class VinSearch extends Component {
   constructor() {
     super();
     this.state = {
-      license: '',
+      license: '6NDG717',
       done: true, //TODO Design change upon response from Experian
       animating: false,
     }

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   RefreshControl,
   AsyncStorage,
+  Keyboard,
 } from 'react-native';
 import Realm from 'realm';
 import Database from '../../../../includes/firebase/database';
@@ -34,7 +35,7 @@ export default class TimerList extends Component {
     console.log(this.props.navigation.state.params)
     if (!this.props.navigation.state.params) {
       this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
-      this.list = this.list[0].list;
+      this.list = this.list.length > 0 ? this.list[0].list : {};
       this.props.navigation.state.params = {};
       this.props.navigation.state.params.timers = this.list;
     } else {
@@ -50,7 +51,7 @@ export default class TimerList extends Component {
     this.timer = null;
     this.ticketedCount = 0;
     this.profileId = '';
-    this.VIN = "";
+    this.VIN = "3512";
     this.license = "";
   }
   static navigationOptions = {
@@ -71,6 +72,9 @@ export default class TimerList extends Component {
         <Warning throwWarning={this.throwWarning.bind(this)} timeElapsed={this.warning} visibility={this.state.warningVisibility} forceTicket={this.forceTicket.bind(this)}/>
         <VinSearch handleVINSearch={this.handleVINSearch.bind(this)}/>
         <ListView
+          enableEmptySections={true}
+          // In next release empty section headers will be rendered.
+          // Until then, leave this property alone to mitigate the warning msg.
           refreshControl={
             <RefreshControl refreshing={this.state.refreshing}
             onRefresh={this._onRefresh.bind(this)} />
@@ -111,10 +115,10 @@ export default class TimerList extends Component {
   async _getUserInfo() {
     this.countyId = await AsyncStorage.getItem('@Enforce:profileSettings');
     this.settings = await AsyncStorage.getItem('@Enforce:settings');
+    this.userId = await AsyncStorage.getItem('@Enforce:profileId');
     this.settings = JSON.parse(this.settings);
     this.countyId = JSON.parse(this.countyId);
     this.countyId = this.countyId.county;
-    this.userId = Firebase.getCurrentUser();
     console.log(this.userId, this.countyId);
   }
 
@@ -148,6 +152,7 @@ export default class TimerList extends Component {
 
   forceTicket() {
     if (this.settings.imageUpload) {
+      let imagePath = `${this.timer.createdAt}`;
       let rnfbURI = RNFetchBlob.wrap(this.timer.mediaPath);
       Blob
         .build(rnfbURI, {type: 'image/jpg;'})
@@ -157,12 +162,8 @@ export default class TimerList extends Component {
           let day = now.getDate();
           date = `${month}-${day}`;
           let refPath = `${this.countyId}/${this.userId}/${month}-${day}`;
-          let imagePath = `${this.timer.createdAt}`;
-          this.throwWarning();
           Database.setTicketImage(refPath, imagePath, blob);
         });
-    } else {
-      this.throwWarning();
     }
     this.realm.write(() => {
       this.timer.ticketedAt = new Date() / 1;
@@ -171,7 +172,8 @@ export default class TimerList extends Component {
       this.realm.objects('Ticketed')[0]['list'].push(this.timer);
       this.realm.objects('Timers')[this.timer.index]['list'].shift();
     });
-    this.resetLicenseAndVIN();
+    this.throwWarning();
+    //this.resetLicenseAndVIN();
     //Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
     this.updateRows();
   }
@@ -185,6 +187,8 @@ export default class TimerList extends Component {
   }
 
   handleVINSearch(license) {
+    Keyboard.dismiss();
+    console.log('HANDLE VIN', license, this.license);
     this.license = license;
 
     // TODO
