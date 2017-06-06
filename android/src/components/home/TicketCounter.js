@@ -3,6 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
+  TouchableWithoutFeedback,
 } from 'react-native';
 
 const styles = StyleSheet.create({
@@ -25,10 +26,13 @@ const styles = StyleSheet.create({
 let length = 0;
 
 const TicketCounter = (props) => (
-  <View style={styles.ticketCountContainer} >
-    <Text style={styles.ticketCountNumber}>{ props.ticketCount }</Text>
-    <Text style={styles.ticketCountDescription}>{ props.ticketCount === 1 ? 'ticket' : 'tickets'} today</Text>
-  </View>
+  <TouchableWithoutFeedback
+    onPress={ () => props.navigation.navigate('History') }>
+    <View style={styles.ticketCountContainer}>
+      <Text style={styles.ticketCountNumber}>{ props.ticketCount }</Text>
+      <Text style={styles.ticketCountDescription}>{ props.ticketCount === 1 ? 'ticket' : 'tickets'} today</Text>
+    </View>
+  </TouchableWithoutFeedback>
 );
 
 export default TicketCounter;

@@ -38,7 +38,7 @@ export default class Home extends Component {
       <View style={styles.container} >
         <Header navigation={this.props.navigation} />
         <MainButtons navigation={this.props.navigation} />
-        <TicketCounter realm={this.realm} ticketCount={this.state.ticketCount} />
+        <TicketCounter ticketCount={this.state.ticketCount} navigation={this.props.navigation} />
         <TimersList
           navigation={this.props.navigation}
           updateTicketCount={this.updateTicketCount.bind(this)}
