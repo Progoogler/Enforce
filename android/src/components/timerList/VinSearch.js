@@ -67,6 +67,7 @@ export default class VinSearch extends Component {
           placeHolder={'1ABC234'}
           autoCorrect={false}
           underlineColorAndroid={'transparent'}
+          onFocus={() => this._clearText()}
           value={this.state.license} />
         { /* TODO set up integration account with Experian/AutoCheck */ }
         <TouchableHighlight
@@ -77,6 +78,10 @@ export default class VinSearch extends Component {
         </TouchableHighlight>
       </View>
     );
+  }
+
+  _clearText() {
+    this.state.license.length > 0 ? this.setState({license: ''}) : null;
   }
 }
 
