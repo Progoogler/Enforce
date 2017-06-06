@@ -6,11 +6,12 @@ import {
   Picker,
   ListView,
   AsyncStorage,
+  ActivityIndicator,
   StyleSheet,
 } from 'react-native';
 import Realm from 'realm';
 import { NavigationActions } from'react-navigation';
-import Database from '../../../../includes/firebase/database';
+import { getHistoryData, getTicketImage } from '../../../../includes/firebase/database';
 
 import Header from '../home/Header';
 import Row from './Row';
@@ -20,13 +21,15 @@ export default class History extends Component {
     super();
     this.realm = new Realm();
     this.list = this.realm.objects('Ticketed')[0]['list'];
+    this.ticketedList = this.list;
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       dataSource: ds.cloneWithRows(this.list),
       items: [],
-      selected: 'Today',
+      selected: "Today's Ticketed",
+      animating: false,
     }
-    this.settings = null;
+    this.userSettings = null;
     this.userId = null;
   }
 
@@ -45,12 +48,18 @@ export default class History extends Component {
       <View style={styles.container}>
         <Header navigation={this.props.navigation} />
         <Text style={styles.title}>History</Text>
-        <Picker
-          style={styles.picker}
-          selectedValue={this.state.selected}
-          onValueChange={(val, idx) => this._onValueChange(val, idx)}>
-          { this.state.items.map((item) => item) }
-        </Picker>
+        <View style={styles.pickerActivityRow}>
+          <Picker
+            style={styles.picker}
+            selectedValue={this.state.selected}
+            onValueChange={(val, idx) => this._onValueChange(val, idx)}>
+            { this.state.items.map((item) => item) }
+          </Picker>
+          <ActivityIndicator
+            animating={this.state.animating}
+            //style={styles.activity}
+            size='small' />
+        </View>
         <ListView
           enableEmptySections={true}
           // In next release empty section headers will be rendered.
@@ -61,7 +70,10 @@ export default class History extends Component {
                                 data={data}
                                 NavigationActions={NavigationActions}
                                 navigation={this.props.navigation}
-                                selected={this.state.selected} />}
+                                selected={this.state.selected}
+                                userId={this.userId}
+                                userSettings={this.userSettings}
+                                getTicketImage={getTicketImage} />}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
         />
       </View>
@@ -69,29 +81,29 @@ export default class History extends Component {
   }
 
   componentWillMount() {
-    this._getHistoryDatesRanging45Days();
+    this._getHistoryDates();
   }
 
-  _getHistoryDatesRanging45Days() {
-    let today = new Date();
+  async _getHistoryDates() {
+    this.dateCount = await AsyncStorage.getItem('@Enforce:dateCount');
+    this.dateCount = JSON.parse(this.dateCount);
     let dates = [];
-    let date = '';
-    let day = 86400000;
-    let value = '';
-    dates.push(<Picker.Item style={styles.item} label="Today" value={'Today'} key={0}/>);
-    for (let i = 1; i < 45; i++) {
-      date = new Date(today - (day * i));
-      value = `${date.getMonth() + 1}-${date.getDate()}`;
-      dates.push(<Picker.Item style={styles.item} label={this._getPrettyDate(date.getMonth() + 1 + '', date.getDate() + '')} value={value} key={i}/>);
+    dates.push(<Picker.Item style={styles.item} label="Today's Ticketed" value={"Today's Ticketed"} key={-2}/>);
+    dates.push(<Picker.Item style={styles.item} label="Today's Expired" value={"Today's Expired"} key={-1}/>);
+    for (let i = this.dateCount.length - 1; i >= 0; i--) {
+      let month = this.dateCount[i].slice(0, this.dateCount[i].indexOf('-'));
+      let day = this.dateCount[i].slice(this.dateCount[i].indexOf('-') + 1, this.dateCount[i].length);
+      dates.push(<Picker.Item style={styles.item} label={this._getPrettyDate(month, day)} value={this.dateCount[i]} key={i}/>);
     }
     this.setState({items: dates});
   }
 
   async _getHistoryData(date) {
-    let settings = await AsyncStorage.getItem('@Enforce:profileSettings');
+    let userSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
     this.userId = await AsyncStorage.getItem('@Enforce:profileId');
-    this.settings = JSON.parse(settings);
-    await Database.getHistoryData(this.settings.county, this.userId, date, (data) => {
+    this.userSettings = JSON.parse(userSettings);
+
+    await getHistoryData(this.userSettings.county, this.userId, date, (data) => {
       this.updating = true;
       if (data === null) {
         this._updateRows([]);
@@ -100,18 +112,31 @@ export default class History extends Component {
       this._updateRows(data.tickets);
       this.list = data.tickets;
     });
+
   }
 
-  _onValueChange(value, index) {
+  _onValueChange(value, index) { console.log(value, index)
+    this.setState({animating: true});
+    if (value === "Today's Ticketed") {
+      this.selected = value;
+      this._updateRows(this.ticketedList);
+      return;
+    } else if (value === "Today's Expired") {
+      this.list = this.realm.objects('Expired')[0]['list'];
+      this.selected = value;
+      this._updateRows(this.list);
+      return;
+    }
     this._getHistoryData(value);
     this.selected = value;
   }
 
-  _updateRows(list) { console.log('UPDATE ROWS');
+  _updateRows(list) {
     if (!list) list = this.list;
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(list),
       selected: this.selected,
+      animating: false,
     });
   }
 
@@ -195,13 +220,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
   },
+  pickerActivityRow: {
+    flexDirection: 'row',
+  },
   picker: {
-    width: 140,
+    width: 150,
+    color: '#4286f4',
   },
   listview: {
     flex: 1,
     alignSelf: 'stretch',
-    //backgroundColor: 'white',
   },
   separator: {
     flex: 1,

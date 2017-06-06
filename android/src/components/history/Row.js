@@ -4,6 +4,7 @@ import {
   Text,
   Image,
   StyleSheet,
+  ActivityIndicator,
   TouchableHighlight,
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
@@ -13,6 +14,8 @@ export default class Row extends Component {
     super();
     this.state = {
       getImageText: `Get${'\n'}Photo`,
+      image: [],
+      animating: false,
     }
   }
 
@@ -21,10 +24,13 @@ export default class Row extends Component {
       <View style={styles.container}>
         <View style={styles.rowContainer}>
 
-          { this.props.selected === 'Today' ?
+          { this.props.selected === "Today's Ticketed" || this.props.selected === "Today's Expired" ?
             <Image style={styles.image} source={{uri: this.props.data.mediaUri}} /> :
-            <TouchableHighlight style={styles.getImageButton} onPress={() => {}}><Text>{this.state.getImageText}</Text></TouchableHighlight> }
-
+            <TouchableHighlight style={styles.getImageButton} onPress={() => this._getImageFromDatabase() }>
+              { this.state.image.length === 0 ? <Text style={styles.getImageText}>{this.state.getImageText}</Text> : this.state.image[0] }
+            </TouchableHighlight>
+          }
+          <ActivityIndicator style={styles.activity} animating={this.state.animating} size='small' />
           <View>
             { this.props.data.license ? <Text>License: {this.props.data.license}</Text> : null }
             { this.props.data.VIN ? <Text>VIN: {this.props.data.VIN}</Text> : null }
@@ -72,6 +78,27 @@ export default class Row extends Component {
     });
     this.props.navigation.dispatch(navigateAction);
   }
+
+  _getImageFromDatabase() {
+    this.setState({animating: true});
+    let date = new Date(this.props.data.createdAt);
+    let datePath=`${date.getMonth() + 1}-${date.getDate()}`;
+    let refPath = `${this.props.userSettings.county}/${this.props.userId}/${datePath}`;
+    this.props.getTicketImage(refPath, '1496530142627', (url) => {
+      if (url === null) {
+        this.setState({
+          image: [<View style={styles.getImageButton}><Text style={styles.getImageText}>Photo {'\n'}not{'\n'}available</Text></View>],
+          animating: false,
+        });
+      } else {
+        this.setState({
+          image: [<Image style={{alignSelf: 'center', height: 400, width: 300}} source={{ uri: url }} />],
+          animating: false,
+        });
+      }
+    });
+  }
+
 }
 
 const styles = StyleSheet.create({
@@ -85,6 +112,11 @@ const styles = StyleSheet.create({
     height: 100,
     width: 100,
     marginRight: 15,
+  },
+  activity: {
+    position: 'absolute',
+    alignSelf: 'center',
+    left: 40,
   },
   button: {
     backgroundColor: '#4286f4',
@@ -100,11 +132,15 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   getImageButton: {
+    backgroundColor: 'black',
     height: 100,
     width: 100,
     marginRight: 15,
     borderWidth: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+  },
+  getImageText: {
+    color: 'white',
+    textAlign: 'center',
   }
 });
