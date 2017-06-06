@@ -27,7 +27,7 @@ export default class History extends Component {
       dataSource: ds.cloneWithRows(this.list),
       items: [],
       selected: "Today's Ticketed",
-      animating: false,
+      animating: true,
     }
     this.userSettings = null;
     this.userId = null;
@@ -52,7 +52,7 @@ export default class History extends Component {
           <Picker
             style={styles.picker}
             selectedValue={this.state.selected}
-            onValueChange={(val, idx) => this._onValueChange(val, idx)}>
+            onValueChange={(val, idx) => this._onValueChange(val)}>
             { this.state.items.map((item) => item) }
           </Picker>
           <ActivityIndicator
@@ -95,7 +95,7 @@ export default class History extends Component {
       let day = this.dateCount[i].slice(this.dateCount[i].indexOf('-') + 1, this.dateCount[i].length);
       dates.push(<Picker.Item style={styles.item} label={this._getPrettyDate(month, day)} value={this.dateCount[i]} key={i}/>);
     }
-    this.setState({items: dates});
+    this.setState({items: dates, animating: false});
   }
 
   async _getHistoryData(date) {
@@ -115,7 +115,7 @@ export default class History extends Component {
 
   }
 
-  _onValueChange(value, index) { console.log(value, index)
+  _onValueChange(value) {
     this.setState({animating: true});
     if (value === "Today's Ticketed") {
       this.selected = value;
