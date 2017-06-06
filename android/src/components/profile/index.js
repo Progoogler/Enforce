@@ -8,12 +8,14 @@ import {
   TextInput,
   ActivityIndicator,
   AsyncStorage,
+  NetInfo,
 } from 'react-native';
 import Firebase from '../../../../includes/firebase/firebase';
 import Database from '../../../../includes/firebase/database';
 
 import Header from '../home/Header';
 import Warning from './Warning';
+import ThrowConnectionMessage from './ThrowConnectionMessage';
 
 export default class Profile extends Component {
   constructor() {
@@ -29,6 +31,7 @@ export default class Profile extends Component {
       passwordWarning: false,
       profileStatus: 'Create Profile',
       animating: false,
+      isConnected: true,
     };
     this.profile = {};
     this.profileId = '';
@@ -101,6 +104,7 @@ export default class Profile extends Component {
           onPress={() => this._setNewProfile() }>
           <Text style={styles.buttonText}>{ this.state.profileStatus }</Text>
         </TouchableHighlight>
+        { this.state.isConnected ? null : <ThrowConnectionMessage /> }
         <ActivityIndicator
           animating={this.state.animating}
           style={styles.activity}
@@ -157,42 +161,48 @@ export default class Profile extends Component {
   }
 
   async _setNewProfile() {
-    if (this.state.emailWarning || this.state.passwordWarning) return;
-    this.setState({animating: true, profileStatus: 'Creating Profile'});
-    setTimeout(() => {
-      this.setState({animating: false, profileStatus: 'Create Profile'});
-    }, 3000);
-    let settings = {
-      email: this.state.email,
-      password: this.state.password,
-      county: this.state.county,
-    };
-    settings = JSON.stringify(settings);
-    if (!this.profileId) { console.log('no profile id')
-      AsyncStorage.setItem('@Enforce:profileSettings', settings);
-      Firebase.createNewUser(this.state.email, this.state.password);
-      this.createdNewUser = true;
-      return;
-    }
-    try {
-      console.log('try setting new user')
-      if (this.profile.email !== this.state.email || this.profile.password !== this.state.password || this.profile.state !== this.state.state) {
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        if (this.state.emailWarning || this.state.passwordWarning) return;
+        this.setState({animating: true, profileStatus: 'Creating Profile', isConnected: true});
+        setTimeout(() => {
+          this.setState({animating: false, profileStatus: 'Create Profile'});
+        }, 3000);
+        let settings = {
+          email: this.state.email,
+          password: this.state.password,
+          county: this.state.county,
+        };
+        settings = JSON.stringify(settings);
+        if (!this.profileId) { console.log('no profile id')
+          AsyncStorage.setItem('@Enforce:profileSettings', settings);
+          Firebase.createNewUser(this.state.email, this.state.password);
+          this.createdNewUser = true;
+          return;
+        }
+        try {
+          console.log('try setting new user')
+          if (this.profile.email !== this.state.email || this.profile.password !== this.state.password || this.profile.state !== this.state.state) {
 
-        Database.getUserTickets(this.profile.county, this.profileId, (data) => this.data = data);
-        console.log('get data from db', this.data)
+            Database.getUserTickets(this.profile.county, this.profileId, (data) => this.data = data);
+            console.log('get data from db', this.data)
 
-        Firebase.deleteUser();
+            Firebase.deleteUser();
 
-        AsyncStorage.setItem('@Enforce:profileSettings', settings);
-        console.log('try set item to asyncStore')
-        // create new user, port old data, and delete old db user
-        Firebase.createNewUser(this.state.email, this.state.password);
-        console.log('try created new user')
-        this.replacedOldUser = true;
+            AsyncStorage.setItem('@Enforce:profileSettings', settings);
+            console.log('try set item to asyncStore')
+            // create new user, port old data, and delete old db user
+            Firebase.createNewUser(this.state.email, this.state.password);
+            console.log('try created new user')
+            this.replacedOldUser = true;
+          }
+        } catch (err) {
+          console.warn('Error updating profile setting', err);
+        }
+      } else {
+        this.setState({isConnected: false});
       }
-    } catch (err) {
-      console.warn('Error updating profile setting', err);
-    }
+    });
   }
 
   _onEmailFocus() {
