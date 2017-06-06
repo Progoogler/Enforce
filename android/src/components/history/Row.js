@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableHighlight,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
 
@@ -20,16 +21,21 @@ export default class Row extends Component {
   }
 
   render() {
+    console.log('row')
     return (
       <View style={styles.container}>
         <View style={styles.rowContainer}>
-
-          { this.props.selected === "Today's Ticketed" || this.props.selected === "Today's Expired" ?
-            <Image style={styles.image} source={{uri: this.props.data.mediaUri}} /> :
+          {
+            (this.props.selected === "Today's Ticketed" || this.props.selected === "Today's Expired") ?
+            <TouchableWithoutFeedback onPress={() => this.props.maximizeImage(this.props.data.mediaUri)}>
+              <Image style={styles.image} source={{uri: this.props.data.mediaUri}} />
+            </TouchableWithoutFeedback>
+            :
             <TouchableHighlight style={styles.getImageButton} onPress={() => this._getImageFromDatabase() }>
               { this.state.image.length === 0 ? <Text style={styles.getImageText}>{this.state.getImageText}</Text> : this.state.image[0] }
             </TouchableHighlight>
           }
+
           <ActivityIndicator style={styles.activity} animating={this.state.animating} size='small' />
           <View>
             { this.props.data.license ? <Text>License: {this.props.data.license}</Text> : null }
@@ -49,6 +55,12 @@ export default class Row extends Component {
         </View>
       </View>
     );
+  }
+
+  componentWillUpdate() {
+    if (this.props.dateTransition) {
+      this.setState({image: []});
+    }
   }
 
   _getTimeLimitDesc = (timeLimit) => {
@@ -92,7 +104,7 @@ export default class Row extends Component {
         });
       } else {
         this.setState({
-          image: [<Image style={{alignSelf: 'center', height: 400, width: 300}} source={{ uri: url }} />],
+          image: [<TouchableWithoutFeedback onPress={() => this.props.maximizeImage(url)}><Image style={{alignSelf: 'center', height: 400, width: 300}} source={{ uri: url }} /></TouchableWithoutFeedback>],
           animating: false,
         });
       }

@@ -15,6 +15,7 @@ import { getHistoryData, getTicketImage } from '../../../../includes/firebase/da
 
 import Header from '../home/Header';
 import Row from './Row';
+import ImageModal from './ImageModal';
 
 export default class History extends Component {
   constructor() {
@@ -28,6 +29,9 @@ export default class History extends Component {
       items: [],
       selected: "Today's Ticketed",
       animating: true,
+      dateTransition: false,
+      showMaximizedImage: false,
+      uri: '',
     }
     this.userSettings = null;
     this.userId = null;
@@ -44,16 +48,20 @@ export default class History extends Component {
   };
 
   render() {
+    console.log('index', Header)
     return (
       <View style={styles.container}>
         <Header navigation={this.props.navigation} />
+        <ImageModal uri={this.state.uri} visibility={this.state.showMaximizedImage} maximizeImage={this.maximizeImage.bind(this)}/>
         <Text style={styles.title}>History</Text>
         <View style={styles.pickerActivityRow}>
           <Picker
             style={styles.picker}
             selectedValue={this.state.selected}
-            onValueChange={(val, idx) => this._onValueChange(val)}>
+            onValueChange={(val, idx) => this._onValueChange(val)} >
+
             { this.state.items.map((item) => item) }
+
           </Picker>
           <ActivityIndicator
             animating={this.state.animating}
@@ -71,9 +79,11 @@ export default class History extends Component {
                                 NavigationActions={NavigationActions}
                                 navigation={this.props.navigation}
                                 selected={this.state.selected}
+                                maximizeImage={this.maximizeImage.bind(this)}
                                 userId={this.userId}
                                 userSettings={this.userSettings}
-                                getTicketImage={getTicketImage} />}
+                                getTicketImage={getTicketImage}
+                                dateTransition={this.state.dateTransition} />}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
         />
       </View>
@@ -116,7 +126,7 @@ export default class History extends Component {
   }
 
   _onValueChange(value) {
-    this.setState({animating: true});
+    this.setState({animating: true, dateTransition: true});
     if (value === "Today's Ticketed") {
       this.selected = value;
       this._updateRows(this.ticketedList);
@@ -136,8 +146,18 @@ export default class History extends Component {
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(list),
       selected: this.selected,
+      dateTransition: false,
       animating: false,
     });
+  }
+
+  maximizeImage(uri) {
+    if (uri) {
+      this.setState({showMaximizedImage: true, uri: uri});
+    } else {
+      this.setState({showMaximizedImage: false, uri: ''});
+    }
+    console.log(uri, 'this')
   }
 
   _getPrettyDate(month, day) {
