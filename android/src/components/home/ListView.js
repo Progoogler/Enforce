@@ -76,10 +76,7 @@ class TimersList extends Component {
             this.realm.objects('Coordinates')[0].latitude = this.latitude;
             this.realm.objects('Coordinates')[0].longitude = this.longitude;
           });
-          this.setState({
-            updatedLocation: true,
-          });
-          this._onRefresh();
+          this._mounted && this.setState({ updatedLocation: true }) && this._onRefresh();
         }, error => {
           console.log('Error loading geolocation:', error);
         },
@@ -91,23 +88,17 @@ class TimersList extends Component {
 
   componentDidMount() {
     this._checkReset();
+    this._mounted = true;
+  }
+
+  componentWillUnmount() {
+    this._mounted = false;
   }
 
   async _checkReset() {
     let time = await AsyncStorage.getItem('@Enforce:timeOfFirstPicture');
-    if (isNaN(parseInt(time))) {
-      if (this.realm.objects('Timers').length > 1) {
-        let i = 0;
-        time = 0;
-        while (!time && i < this.realm.objects('Timers').length) {
-          let time = this.realm.objects('Timers')[i].list[0].createdAt;
-          i++;
-        }
-      } else {
-        return;
-      }
-    }
-    if (new Date() - parseInt(time) > 28800000) {
+    if (isNaN(parseInt(time))) return;
+    if (new Date() - parseInt(time) > 28800000) { // Reset DB after 8 hours of activity 28800000
       this._reset();
     }
   }
@@ -142,46 +133,40 @@ class TimersList extends Component {
       while (lastTime === undefined && i < timerLists.length) { // Edge case for empty first object.
         // Get the earliest value from any list starting from ticket list.
         if (ticketList[0].list.length > i && !lastTime) {
-          console.log(ticketList[0].list.length, 'ticket list')
           lastTime = ticketList[0].list[i].createdAt;
           break;
         }
         if (expiredList[0].list.length > i && !lastTime) {
-          console.log(expiredList[0].list.length, 'expired list')
           lastTime = expiredList[0].list[i].createdAt;
           break;
         }
         if (timerLists[i].list.length > 0 && !lastTime) {
-          console.log(timerLists[i].list[0].createdAt, 'timer list')
           lastTime = timerLists[i].list[0].createdAt;
           break;
         }
         i++;
       }
-      let today = new Date();
-      if (!lastTime || today - lastTime > 28800000) { // Reset DB after 8 hours of activity 28800000 // Double check
-        console.log('starting reset')
-        this._loopDeletion(timerLists);
-        if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
-        if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
-        //TODO Doesn't wait..
-        AsyncStorage.setItem('@Enforce:timeOfFirstPicture', 'null');
-        this.list = [];
-        this.props.updateTicketCount();
-        this.setState({dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)});
-        setTimeout(() => {
-          console.log('NEW REALM')
-          Realm.clearTestState();
-          this.realm = new Realm({schema: Schema});
-          this.realm.write(() => {
-            this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
-            this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
-            this.realm.create('Coordinates', {latitude: 0, longitude: 0});
-            this.realm.create('Ticketed', {list: []});
-            this.realm.create('Expired', {list: []});
-          });
-        }, 3000);
-      }
+      console.log('starting reset')
+      this._loopDeletion(timerLists);
+      if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
+      if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
+      //TODO Doesn't wait..
+      AsyncStorage.setItem('@Enforce:timeOfFirstPicture', 'null');
+      this.list = [];
+      this.props.updateTicketCount();
+      this.setState({dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)});
+      setTimeout(() => {
+        console.log('NEW REALM')
+        Realm.clearTestState();
+        this.realm = new Realm({schema: Schema});
+        this.realm.write(() => {
+          this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
+          this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
+          this.realm.create('Coordinates', {latitude: 0, longitude: 0});
+          this.realm.create('Ticketed', {list: []});
+          this.realm.create('Expired', {list: []});
+        });
+      }, 3000);
     }
   }
 
