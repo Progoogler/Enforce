@@ -68,6 +68,11 @@ class Database {
       firebase.database().ref(userTicketPath).remove();
     }
 
+    static removeTicketPath(refPath, ticketDate) {
+      let ticketPath = `${refPath}/${ticketDate}`;
+      firebase.database().ref(ticketPath).remove();
+    }
+
     static setTicketImage(refPath, createdAtId, blob) {
       firebase.storage()
         .ref(refPath)
@@ -78,16 +83,15 @@ class Database {
         });
     }
 
-    static getTicketImage(refPath, createdAtId) {
+    static getTicketImage(refPath, createdAtId, callback) {
       firebase.storage()
         .ref(`${refPath}/${createdAtId}`)
         .getDownloadURL().then(url => {
-          return (
-            <Image
-              style={{alignSelf: 'center', height: 400, width: 300}}
-              source={{ uri: url }} />
-          );
+          callback(url);
         })
+        .catch((err) => {
+          callback(null);
+        });
     }
 
     static getHistoryData(countyId, userId, dateId, callback) {
@@ -96,7 +100,6 @@ class Database {
         console.log('get data', snapshot.val())
         callback(snapshot.val());
       });
-
     }
 
 }
