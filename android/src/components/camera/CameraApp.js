@@ -23,7 +23,6 @@ export class CameraApp extends Component {
   constructor() {
     super();
     this.state = {
-      animating: false,
       modalVisible: false,
       newTimer: false,
     };
@@ -55,12 +54,6 @@ export class CameraApp extends Component {
     console.log('pic count', this.pictureCount)
     return (
       <View style={styles.container} >
-{/*     <View style={{zIndex: 10}} >
-          <ActivityIndicator
-            animating={this.state.animating}
-            style={styles.activity}
-            size='large' />
-        </View> */}
         <LocationInput visibility={this.state.modalVisible} setModalVisible={this.setModalVisible.bind(this)} description={this.description}/>
         <Navigation navigation={this.props.navigation} />
         <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} newTimer={this.state.newTimer} realm={this.realm} />
@@ -99,7 +92,6 @@ export class CameraApp extends Component {
 
   async componentWillMount() {
     let settings = await AsyncStorage.getItem('@Enforce:settings');
-    console.log(settings)
     settings = JSON.parse(settings);
 
     this.success = (position) => {
@@ -151,8 +143,9 @@ export class CameraApp extends Component {
   componentWillUnmount() {
     console.log('COMPONENT CAMERA UNMOUNTING', this.count)
     if (this.count <= 1) {
-      AsyncStorage.setItem('@Enforce:timeOfFirstPicture', 5);
+      AsyncStorage.setItem('@Enforce:timeOfFirstPicture', new Date() / 1 + '');
     }
+    clearTimeout(this._timeout);
   }
 
   setModalVisible(desc) {
@@ -172,6 +165,11 @@ export class CameraApp extends Component {
     }
     this.count = timerSequence.count;
     this.pictureCount = this.realm.objects('Timers')[this.count]['list'].length;
+    if (this.pictureCount === 0) {
+      this.realm.write(() => {
+        this.realm.objects('TimerSequence')[0].timeAccessedAt = new Date() / 1;
+      });
+    }
     console.log('PIC COUNT', this.pictureCount);
   }
 
@@ -187,14 +185,13 @@ export class CameraApp extends Component {
       this.createNewTimerList();
       return;
     } else {
-      setTimeout(this.setCameraTime.bind(this), 900000 - timeSince);
+      this._timeout = setTimeout(this.setCameraTime.bind(this), 900000 - timeSince);
     }
     this.setTimerCount();
   }
 
   _setTimeLimit() {
-    let timeLimit = this.realm.objects('TimeLimit')[0];
-    this.timeLimit = timeLimit.float;
+    this.timeLimit = this.realm.objects('TimeLimit')[0].float;
   }
 
   _showNotification() {
@@ -307,9 +304,11 @@ export class CameraApp extends Component {
     }
   }
 
-  _onUpdateTimeLimit() {
-    let timerSequence = this.realm.objects('TimerSequence')[0];
-    this.timeLimit = this.realm.objects('TimeLimit')[0].float;
+  _onUpdateTimeLimit(newLimit) {
+    this.realm.write(() => {
+      this.realm.objects('TimerSequence')[0].timeAccessedAt = new Date() / 1;
+    });
+    this.timeLimit = newLimit;
     this.setTimerCount('increment');
     this.createNewTimerList();
   }
