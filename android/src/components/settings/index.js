@@ -90,35 +90,10 @@ export default class Settings extends Component {
           </View>
         </View>
 
-        <View style={styles.row}>
-          <Text style={styles.settingDesc}>Hi</Text>
-          <View style={styles.slider}>
-            <Switch
-              onValueChange={(value) => this.setState({colorFalseSwitchIsOn: value})}
-              onTintColor="green"
-              style={{marginBottom: 10}}
-              thumbTintColor="#4286f4"
-              tintColor="#808080"
-              value={this.state.colorFalseSwitchIsOn} />
-          </View>
-        </View>
-
-        <View style={styles.row}>
-          <Text style={styles.settingDesc}>Hi</Text>
-          <View style={styles.slider}>
-            <Switch
-              onValueChange={(value) => this.setState({colorFalseSwitchIsOn: value})}
-              onTintColor="green"
-              style={{marginBottom: 10}}
-              thumbTintColor="#4286f4"
-              tintColor="#808080"
-              value={this.state.colorFalseSwitchIsOn} />
-          </View>
-        </View>
      </View>
     );
   }
-
+  
   async componentWillMount() {
     let settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);

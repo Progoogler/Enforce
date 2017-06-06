@@ -24,15 +24,14 @@ import insertionSortModified from '../home/insertionSort';
 import RNFetchBlob from 'react-native-fetch-blob';
 const Blob = RNFetchBlob.polyfill.Blob;
 
-window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
-window.Blob = Blob
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
+window.Blob = Blob;
 
 export default class TimerList extends Component {
   constructor(props) {
     super(props);
     this.realm = new Realm();
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    console.log(this.props.navigation.state.params)
     if (!this.props.navigation.state.params) {
       this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
       this.list = this.list.length > 0 ? this.list[0].list : {};
