@@ -39,6 +39,7 @@ export default class MapApp extends Component {
   };
 
   async componentWillMount() {
+    this._mounted = true;
     let settings = await AsyncStorage.getItem('@Enforce:settings');
     console.log(settings)
     settings = JSON.parse(settings);
@@ -61,16 +62,14 @@ export default class MapApp extends Component {
               this.realm.objects('Coordinates')[0].longitude = longitude;
             });
           }, error => {
-            this.setState({showError: true});
-            // Cannot animate to coordinates with previous latlng w/o location provider.
-            // Possible solution is to swap out <MapView.Animated /> w/ initial region set to prev latlng.
+            this._mounted && this.setState({showError: true});
             console.log('Error loading geolocation:', error);
           },
           {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
         );
       })
       .catch(() => {
-        this.setState({showError: true});
+        this._mounted && this.setState({showError: true});
       });
     } else {
       navigator.geolocation.getCurrentPosition(
@@ -83,9 +82,7 @@ export default class MapApp extends Component {
             this.realm.objects('Coordinates')[0].longitude = longitude;
           });
         }, error => {
-          this.setState({showError: true, animating: false});
-          // Cannot animate to coordinates with previous latlng w/o location provider.
-          // Possible solution is to swap out <MapView.Animated /> w/ initial region set to prev latlng.
+          this._mounted && this.setState({showError: true, animating: false});
           console.log('Error loading geolocation:', error);
         },
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
@@ -94,6 +91,8 @@ export default class MapApp extends Component {
   }
 
   componentWillUnmount() {
+    clearTimeout(this._timeout);
+    this._mounted = false;
     if (this.state.modalVisible) {
       this.setState({modalVisible: false});
     }
@@ -146,7 +145,6 @@ export default class MapApp extends Component {
   }
 
   _animateToCoord(lat, long) {
-    console.log('ANIMATE', lat)
       this.animatedMap._component.animateToCoordinate({
         latitude: lat,
         longitude: long,
@@ -186,7 +184,7 @@ export default class MapApp extends Component {
         }
         if (lists[i+1] === undefined) {
           if (lat > 0) {
-            setTimeout(() => {
+            this._timeout = setTimeout(() => {
               this._animateToCoord(lat, long);
             }, 1500);
           }
@@ -194,6 +192,7 @@ export default class MapApp extends Component {
         i++;
       });
     } else {
+
       if (this.props.navigation.state.params.historyView) {
         let dataObj = this.props.navigation.state.params.timers;
         markers.push(<Marker
@@ -201,16 +200,16 @@ export default class MapApp extends Component {
             key={dataObj.createdAt} />
         );
         if (dataObj.latitude > 0) {
-          setTimeout(() => {
+          this._timeout = setTimeout(() => {
             this._animateToCoord(dataObj.latitude, dataObj.longitude);
           }, 1500);
         }
         return markers;
       }
+      // Else check timers in params
       let arr = this.props.navigation.state.params.timers;
       markers.push(<Marker
           coordinate={{latitude: arr[0].latitude, longitude: arr[0].longitude}}
-          //image={require('../../../../shared/images/pin-orange.png')}
           key={arr[0].createdAt} >
           <CustomCallout timer={arr[0]} title="1st" />
         </Marker>
@@ -219,7 +218,6 @@ export default class MapApp extends Component {
          if (idx !== 0) {
            markers.push(<Marker
              coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
-             //image={require('../../../../shared/images/pin-orange.png')}
              key={timer.createdAt} >
              <CustomCallout timer={arr[idx]} title="1st" secondary={true}/>
             </Marker>
@@ -227,7 +225,7 @@ export default class MapApp extends Component {
          }
       });
       if (arr[0].latitude > 0) {
-        setTimeout(() => {
+        this._timeout = setTimeout(() => {
           this._animateToCoord(arr[0].latitude, arr[0].longitude);
         }, 1500);
       }
@@ -236,7 +234,7 @@ export default class MapApp extends Component {
   }
 
   setModalVisible() {
-    this.setState({modalVisible: !this.state.modalVisible});
+    this._mounted && this.setState({modalVisible: !this.state.modalVisible});
   }
 }
 
