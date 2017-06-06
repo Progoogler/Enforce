@@ -38,7 +38,6 @@ class TimersList extends Component {
   }
 
   render() {
-    console.log('TimersList component rerenders', this.state.updatedLocation)
     return (
       <ListView
         enableEmptySections={true}
@@ -123,7 +122,7 @@ class TimersList extends Component {
     }
     dateCount.push(date);
     dateCount = await JSON.stringify(dateCount);
-    AsyncStorage.setItem('@Enforce:dataCount', dateCount);
+    AsyncStorage.setItem('@Enforce:dateCount', dateCount);
 
     let timerLists = this.realm.objects('Timers');
     let ticketList = this.realm.objects('Ticketed');
