@@ -12,6 +12,7 @@ import Schema from '../../realm';
 import RNFS from 'react-native-fs';
 import Row from './Row';
 import insertionSortModified from './insertionSort';
+import Database from '../../../../includes/firebase/database'; // Import single method { removeTicketPath }.
 
 const styles = StyleSheet.create({
   container: {
@@ -111,13 +112,34 @@ class TimersList extends Component {
     }
   }
 
-  _reset() {
+  async _reset() {
+    let userId = await AsyncStorage.getItem('@Enforce:profileId');
+    let profileSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
+    profileSettings = JSON.parse(profileSettings);
+    let refPath = `${profileSettings.county}/${userId}`;
+    let dateCount = await AsyncStorage.getItem('@Enforce:dateCount');
+    let today = new Date();
+    let date = `${today.getMonth() + 1}-${today.getDate()}`;
+
+    if (dateCount === null) { // Initialize the dateCount.
+      dateCount = [];
+    } else {
+      dateCount = await JSON.parse(dateCount);
+      if (dateCount.length >= 45) {
+        let removalDate = dateCount.shift();
+        Database.removeTicketPath(refPath, removalDate);
+      }
+    }
+    dateCount.push(date);
+    dateCount = await JSON.stringify(dateCount);
+    AsyncStorage.setItem('@Enforce:dataCount', dateCount);
+
     let timerLists = this.realm.objects('Timers');
     let ticketList = this.realm.objects('Ticketed');
     let expiredList = this.realm.objects('Expired');
-    if (timerLists.length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object
+    if (timerLists.length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
       let i = 0, lastTime;
-      while (lastTime === undefined && i < timerLists.length) { // Edge case for empty first object
+      while (lastTime === undefined && i < timerLists.length) { // Edge case for empty first object.
         // Get the earliest value from any list starting from ticket list.
         if (ticketList[0].list.length > i && !lastTime) {
           console.log(ticketList[0].list.length, 'ticket list')
@@ -136,9 +158,9 @@ class TimersList extends Component {
         }
         i++;
       }
-      let now = new Date();
-      if (!lastTime || now - lastTime > 28800000) { // Reset DB after 8 hours of activity 28800000
-        console.log('starting loop')
+      let today = new Date();
+      if (!lastTime || today - lastTime > 28800000) { // Reset DB after 8 hours of activity 28800000 // Double check
+        console.log('starting reset')
         this._loopDeletion(timerLists);
         if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
         if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
@@ -201,6 +223,7 @@ class TimersList extends Component {
         .then(() => {
           console.log('PICTURE REMOVED');
           this.realm.write(() => {
+            // sidx?
             this.realm.delete(timer[idx]['list'][sidx]);
           });
         });
