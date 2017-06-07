@@ -9,8 +9,7 @@ import {
   Keyboard,
 } from 'react-native';
 import Realm from 'realm';
-import Database from '../../../../includes/firebase/database';
-import Firebase from '../../../../includes/firebase/firebase';
+import { setUserTickets, setTicketImage } from '../../../../includes/firebase/database';
 
 import Title from './Title';
 import VinSearch from './VinSearch';
@@ -22,8 +21,7 @@ import Done from './Done';
 import insertionSortModified from '../home/insertionSort';
 
 import RNFetchBlob from 'react-native-fetch-blob';
-const Blob = RNFetchBlob.polyfill.Blob;
-
+const Blob = RNFetchBlob.polyfill.Blob; // Initialize Blob for converting images into binary
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = Blob;
 
