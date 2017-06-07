@@ -41,7 +41,6 @@ export default class MapApp extends Component {
   async componentWillMount() {
     this._mounted = true;
     let settings = await AsyncStorage.getItem('@Enforce:settings');
-    console.log(settings)
     settings = JSON.parse(settings);
 
     if (this.props.navigation.state.params) this.setModalVisible();
@@ -145,7 +144,7 @@ export default class MapApp extends Component {
   }
 
   _animateToCoord(lat, long) {
-      this.animatedMap._component.animateToCoordinate({
+      this._mounted && this.animatedMap._component.animateToCoordinate({
         latitude: lat,
         longitude: long,
       }, 1500);
@@ -234,7 +233,6 @@ export default class MapApp extends Component {
   }
 
   checkLocationAndRender() {
-    console.log('button')
     LocationServicesDialogBox.checkLocationServicesIsEnabled({
         message: "<h2>Use Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
         ok: "OK",
