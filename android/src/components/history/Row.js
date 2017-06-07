@@ -41,7 +41,7 @@ export default class Row extends Component {
             { this.props.data.license ? <Text>License: {this.props.data.license}</Text> : null }
             { this.props.data.VIN ? <Text>VIN: {this.props.data.VIN}</Text> : null }
             <Text>Photo taken: {this._getPrettyTimeFormat(this.props.data.createdAt)}</Text>
-            <Text>Ticketed: {this._getPrettyTimeFormat(this.props.data.ticketedAt)}</Text>
+            { this.props.data.ticketedAt !== 0 ? <Text>Ticketed: {this._getPrettyTimeFormat(this.props.data.ticketedAt)}</Text> : null }
             <Text>Time limit: {this._getTimeLimitDesc(this.props.data.timeLength)}</Text>
           </View>
           <TouchableHighlight
