@@ -46,12 +46,12 @@ export default class TimerList extends Component {
       warningVisibility: false,
       modalVisible: false,
     };
-    this.warning = "";
     this.timer = null;
     this.ticketedCount = 0;
     this.profileId = '';
-    this.VIN = "3512";
-    this.license = "";
+    this.VIN = "";
+    this.license = '';
+    this.timeElapsed = '';
   }
   static navigationOptions = {
     drawerLabel: 'Timers',
@@ -68,7 +68,7 @@ export default class TimerList extends Component {
       <View style={styles.container}>
         <Navigation navigation={this.props.navigation} />
         <Title limit={this.props.navigation.state.params.timers[0] ? this.props.navigation.state.params.timers[0].timeLength : ""} />
-        <Warning throwWarning={this.throwWarning.bind(this)} timeElapsed={this.warning} visibility={this.state.warningVisibility} forceTicket={this.forceTicket.bind(this)}/>
+        <Warning timeElapsed={this.timeElapsed} visibility={this.state.warningVisibility} uponTicketed={this.uponTicketed.bind(this)} clearWarning={this.updateRows.bind(this)}/>
         <VinSearch handleVINSearch={this.handleVINSearch.bind(this)}/>
         <ListView
           enableEmptySections={true}
@@ -82,20 +82,8 @@ export default class TimerList extends Component {
           style={styles.container}
           dataSource={this.state.dataSource}
           renderRow={(data) => <Row data={data}
-                                    updateRows={this.updateRows.bind(this)}
-                                    realm={this.realm}
-                                    throwWarning={this.throwWarning.bind(this)}
                                     expiredFunc={this.expiredFunc.bind(this)}
-                                    resetLicenseAndVIN={this.resetLicenseAndVIN.bind(this)}
-                                    license={this.license}
-                                    VIN={this.VIN}
-                                    userId={this.userId}
-                                    countyId={this.countyId}
-                                    settings={this.settings}
-                                    RNFetchBlob={RNFetchBlob}
-                                    Blob={Blob}
-                                    Database={Database}
-                                    Firebase={Firebase} />}
+                                    uponTicketed={this.uponTicketed.bind(this)} />}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} />
         {/* }<Footer /> TODO space out the bottom margin of listview and animate "Done"*/}
         { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : <View /> }
@@ -133,73 +121,140 @@ export default class TimerList extends Component {
     this.setState({refreshing: false});
   }
 
-  updateRows() {
-    if (this.list.length === 0) this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(this.list),
-      modalVisible: true,
-    })
-    this.setState({dataSource: this.state.dataSource.cloneWithRows(this.list)});
-  }
-
-  throwWarning(timer) { // @param timer in milliseconds
-    if (timer) { // Close modal if not calling with time now - timer.createdAtDate,
-      let timeElapsed = (new Date() - timer.createdAt) / 1000 / 60;
-      this.timer = timer;
-      this.warning = `${(timeElapsed / 60 + '')[0] !== '0' ? (timeElapsed / 60 + '')[0] + ' hour and ' : ''}  ${Math.floor(timeElapsed % 60)} minutes`;
-      this.setState({warningVisibility: !this.state.warningVisibility});
-      return;
-    }
-    this.timer = null;
-    this.setState({warningVisibility: !this.state.warningVisibility});
-  }
-
-  forceTicket() {
-    let timers = this.realm.objects('Timers')[this.timer.index]['list'];
-    if (timers['0'] === this.timer) {
-      this.realm.write(() => {
-        this.timer.ticketedAt = new Date() / 1;
-        this.timer.license = this.license;
-        this.timer.VIN = this.VIN;
-        this.realm.objects('Ticketed')[0]['list'].push(this.timer);
-        timers.shift();
+  updateRows(clearWarning, only) {
+    if (this.list.length === 0 && clearWarning) {
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(this.list),
+        modalVisible: true, // Show the "Done" button to indicate end of list.
+        warningVisibility: false,
+      });
+    } else if (this.list.length === 0) {
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(this.list),
+        modalVisible: true,
+      });
+    } else if (clearWarning && only) {
+      this.setState({
+        warningVisibility: false,
+      });
+      //this._timer = [];
+    } else if (clearWarning) {
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(this.list),
+        warningVisibility: false,
       });
     } else {
-      let indexOfTimer;
-      for (let index in timers) {
-        if (timers[index].createdAt === this.timer.createdAt) {
-          indexOfTimer = index;
-          break;
-        }
-      }
-      if (indexOfTimer) {
-        this.realm.write(() => {
-          this.timer.ticketedAt = new Date() / 1;
-          this.timer.license = this.license;
-          this.timer.VIN = this.VIN;
-          this.realm.objects('Ticketed')[0]['list'].push(this.timer);
-          timers.splice(parseInt(indexOfTimer), 1);
-        });
-      }
-    }
-    this.throwWarning();
-    //this.resetLicenseAndVIN();
-    //Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
-    this.updateRows();
-    if (this.settings.imageUpload) {
-      let imagePath = `${this.timer.createdAt}`;
-      let rnfbURI = RNFetchBlob.wrap(this.timer.mediaPath);
-      Blob
-        .build(rnfbURI, {type: 'image/jpg;'})
-        .then((blob) => {
-          let now = new Date();
-          let month = now.getMonth() + 1;
-          let day = now.getDate();
-          date = `${month}-${day}`;
-          let refPath = `${this.countyId}/${this.userId}/${month}-${day}`;
-          Database.setTicketImage(refPath, imagePath, blob);
-        });
+      this.setState({
+        dataSource: this.state.dataSource.cloneWithRows(this.list),
+      });
     }
   }
+
+  uponTicketed(timer, force) {
+    console.log('upload', this.settings.imageUpload)
+    if (Array.isArray(timer)) timer = this._timer;
+    let now = new Date();
+    if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000 || force) {
+      let timers = this.realm.objects('Timers')[timer.index]['list'];
+      if (timers['0'].createdAt === timer.createdAt) {
+        this.realm.write(() => {
+          timer.ticketedAt = now / 1;
+          timer.license = this.license;
+          timer.VIN = this.VIN;
+          this.realm.objects('Ticketed')[0]['list'].push(timer);
+          timers.shift();
+        });
+      } else {
+        let indexOfTimer;
+        for (let index in timers) {
+          if (timers[index].createdAt === timer.createdAt) {
+            indexOfTimer = index;
+            break;
+          }
+        }
+        if (indexOfTimer) {
+          this.realm.write(() => {
+            timer.ticketedAt = new Date() / 1;
+            timer.license = this.license;
+            timer.VIN = this.VIN;
+            this.realm.objects('Ticketed')[0]['list'].push(timer);
+            timers.splice(parseInt(indexOfTimer), 1);
+          });
+        }
+      }
+      if (this.license) this.resetLicenseAndVIN();
+      if (this.settings.imageUpload) { // TODO Force ticket image upload
+        console.log('uploading file')
+        let rnfbURI = RNFetchBlob.wrap(timer.mediaPath);
+        Blob
+          .build(rnfbURI, {type: 'image/jpg;'})
+          .then((blob) => {
+            let month = now.getMonth() + 1;
+            let day = now.getDate();
+            date = `${month}-${day}`;
+            let refPath = `${this.countyId}/${this.userId}/${month}-${day}`;
+            let imagePath = `${timer.createdAt}`;
+            Database.setTicketImage(refPath, imagePath, blob);
+          });
+      }
+      this.updateRows('clearWarning');
+    } else {
+      this._timer = timer;
+      let timeElapsed = (new Date() - timer.createdAt) / 1000 / 60;
+      this.timeElapsed = `${(timeElapsed / 60 + '')[0] !== '0' ? (timeElapsed / 60 + '')[0] + ' hour' : ''} ${Math.floor(timeElapsed % 60)} minutes`;
+      this.setState({
+        warningVisibility: true,
+      });
+    }
+  }
+
+  // forceTicket() {
+  //   let timers = this.realm.objects('Timers')[this.timer.index]['list'];
+  //   if (timers['0'] === this.timer) {
+  //     this.realm.write(() => {
+  //       this.timer.ticketedAt = new Date() / 1;
+  //       this.timer.license = this.license;
+  //       this.timer.VIN = this.VIN;
+  //       this.realm.objects('Ticketed')[0]['list'].push(this.timer);
+  //       timers.shift();
+  //     });
+  //   } else {
+  //     let indexOfTimer;
+  //     for (let index in timers) {
+  //       if (timers[index].createdAt === this.timer.createdAt) {
+  //         indexOfTimer = index;
+  //         break;
+  //       }
+  //     }
+  //     if (indexOfTimer) {
+  //       this.realm.write(() => {
+  //         this.timer.ticketedAt = new Date() / 1;
+  //         this.timer.license = this.license;
+  //         this.timer.VIN = this.VIN;
+  //         this.realm.objects('Ticketed')[0]['list'].push(this.timer);
+  //         timers.splice(parseInt(indexOfTimer), 1);
+  //       });
+  //     }
+  //   }
+  //   //this.throwWarning();
+  //   //this.resetLicenseAndVIN();
+  //   //Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
+  //   this.updateRows();
+  //   if (this.settings.imageUpload) {
+  //     let imagePath = `${this.timer.createdAt}`;
+  //     let rnfbURI = RNFetchBlob.wrap(this.timer.mediaPath);
+  //     Blob
+  //       .build(rnfbURI, {type: 'image/jpg;'})
+  //       .then((blob) => {
+  //         let now = new Date();
+  //         let month = now.getMonth() + 1;
+  //         let day = now.getDate();
+  //         date = `${month}-${day}`;
+  //         let refPath = `${this.countyId}/${this.userId}/${month}-${day}`;
+  //         Database.setTicketImage(refPath, imagePath, blob);
+  //       });
+  //   }
+  // }
 
   expiredFunc(timer) {
     let timers = this.realm.objects('Timers')[timer.index]['list'];

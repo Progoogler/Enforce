@@ -15,7 +15,6 @@ export default class Row extends Component {
   }
 
   render() {
-    console.log('PROPS', this.props.userId, this.props.settings, this.props.countyId)
     return (
       <View style={styles.container} >
         <Image
@@ -45,7 +44,7 @@ export default class Row extends Component {
             <TouchableHighlight
               style={styles.rowButton}
               underlayColor='#0099ff'
-              onPress={() => this._uponTicketed(this.props.data)}>
+              onPress={() => this.props.uponTicketed(this.props.data)}>
               <Text style={styles.buttonText}> Ticketed </Text>
             </TouchableHighlight>
           </View>
@@ -56,58 +55,6 @@ export default class Row extends Component {
 
   _onVinRequest() {
     let options = {
-    }
-  }
-
-  _uponTicketed(timer) {
-    console.log('upload', this.props.settings.imageUpload)
-    let now = new Date();
-    if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000) {
-      let timers = this.realm.objects('Timers')[timer.index]['list'];
-      if (timers['0'].createdAt === timer.createdAt) {
-        this.props.realm.write(() => {
-          timer.ticketedAt = now / 1;
-          timer.license = this.props.license;
-          timer.VIN = this.props.VIN;
-          this.props.realm.objects('Ticketed')[0]['list'].push(timer);
-          timers.shift();
-        });
-      } else {
-        let indexOfTimer;
-        for (let index in timers) {
-          if (timers[index].createdAt === timer.createdAt) {
-            indexOfTimer = index;
-            break;
-          }
-        }
-        if (indexOfTimer) {
-          this.props.realm.write(() => {
-            timer.ticketedAt = new Date() / 1;
-            timer.license = this.props.license;
-            timer.VIN = this.props.VIN;
-            this.props.realm.objects('Ticketed')[0]['list'].push(timer);
-            timers.splice(parseInt(indexOfTimer), 1);
-          });
-        }
-      }
-      if (this.props.license) this.resetLicenseAndVIN();
-      if (this.props.settings.imageUpload) { // TODO Force ticket image upload
-        console.log('uploading file')
-        let rnfbURI = this.props.RNFetchBlob.wrap(timer.mediaPath);
-        this.props.Blob
-          .build(rnfbURI, {type: 'image/jpg;'})
-          .then((blob) => {
-            let month = now.getMonth() + 1;
-            let day = now.getDate();
-            date = `${month}-${day}`;
-            let refPath = `${this.props.countyId}/${this.props.userId}/${month}-${day}`;
-            let imagePath = `${timer.createdAt}`;
-            this.props.Database.setTicketImage(refPath, imagePath, blob);
-          });
-      }
-      this.props.updateRows();
-    } else {
-      this.props.throwWarning(timer);
     }
   }
 
