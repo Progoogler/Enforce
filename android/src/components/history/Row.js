@@ -104,7 +104,7 @@ export default class Row extends Component {
         });
       } else {
         this.setState({
-          image: [<TouchableWithoutFeedback onPress={() => this.props.maximizeImage(url)}><Image style={{alignSelf: 'center', height: 400, width: 300}} source={{ uri: url }} /></TouchableWithoutFeedback>],
+          image: [<TouchableWithoutFeedback style={styles.maximizeImage} onPress={() => this.props.maximizeImage(url)}><Image style={{alignSelf: 'center', height: 400, width: 300}} source={{ uri: url }} /></TouchableWithoutFeedback>],
           animating: false,
         });
       }
@@ -121,6 +121,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   image: {
+    height: 100,
+    width: 100,
+    marginRight: 15,
+  },
+  maximizeImage: {
     height: 100,
     width: 100,
     marginRight: 15,
