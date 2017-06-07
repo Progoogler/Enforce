@@ -4,11 +4,18 @@ import {
   Text,
   Image,
   StyleSheet,
+  Dimensions,
 } from 'react-native';
+import MapView, { Marker, Circle } from 'react-native-maps';
+import Realm from 'realm';
 import Header from '../home/Header';
 
 
 export default class Metrics extends Component {
+  constructor() {
+    super();
+    this.realm = new Realm();
+  }
   static navigationOptions = {
     drawerLabel: 'Metrics',
     drawerIcon: () => (
@@ -22,29 +29,82 @@ export default class Metrics extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header navigation={this.props.navigation} />
-        <Text style={styles.title}>This page is currently in progress.</Text>
-        <Text style={styles.message}>We'll let you know when it's ready!</Text>
-        <Image style={styles.image} source={require('../../../../shared/images/worker.jpg')} />
+        <Header style={styles.header} title={'Metrics'} navigation={this.props.navigation} />
+        <MapView.Animated
+          ref={ref => { this.animatedMap = ref; }}
+          style={styles.map}
+          mapType="hybrid"
+          showsUserLocation={true}
+          initialRegion={{
+            latitude: this.realm.objects('Coordinates')[0].latitude ? this.realm.objects('Coordinates')[0].latitude : 37.78926,
+            longitude: this.realm.objects('Coordinates')[0].longitude ? this.realm.objects('Coordinates')[0].longitude : -122.43159,
+            latitudeDelta: 0.0108,
+            longitudeDelta: 0.0060,
+          }} >
+          <MapView.Circle
+            center={{
+              latitude: this.realm.objects('Coordinates')[0].latitude ? this.realm.objects('Coordinates')[0].latitude : 37.78926,
+              longitude: this.realm.objects('Coordinates')[0].longitude ? this.realm.objects('Coordinates')[0].longitude : -122.43159,
+            }}
+            strokeWidth={1}
+            strokeColor={'black'}
+            fillColor={'red'}
+            radius={200}/>
+            <MapView.Circle
+              center={{
+                latitude: this.realm.objects('Coordinates')[0].latitude ? this.realm.objects('Coordinates')[0].latitude - .0125 : 37.78926 - .0125,
+                longitude: this.realm.objects('Coordinates')[0].longitude ? this.realm.objects('Coordinates')[0].longitude + .0125 : -122.43159 + .0125,
+              }}
+              strokeWidth={1}
+              strokeColor={'black'}
+              fillColor={'yellow'}
+              radius={1000}/>
+        </MapView.Animated>
+        <View style={styles.controlContainer}>
+          <Text style={styles.title}>This page is currently in progress.</Text>
+          <Text style={styles.message}>We'll let you know when it's ready!</Text>
+          <Image style={styles.image} source={require('../../../../shared/images/worker.jpg')} />
+        </View>
       </View>
     );
+  }
+
+  componentWillMount() {
+    const {height, width} = Dimensions.get('window');
+    styles.map = {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: height / 2 - 100,
+    };
+    styles.controlContainer = {
+      position: 'absolute',
+      top: height / 2 + 100,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'white',
+    };
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     alignItems: 'center',
+    backgroundColor: 'white',
   },
   image: {
-    marginTop: 200,
+    //marginTop: 200,
   },
   title: {
     fontSize: 24,
-    marginTop: 180,
+    //marginTop: 180,
   },
   message: {
     fontSize: 24,
