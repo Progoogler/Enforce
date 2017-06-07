@@ -46,7 +46,6 @@ export default class TimerList extends Component {
     };
     this.timer = null;
     this.ticketedCount = 0;
-    this.profileId = '';
     this.VIN = "";
     this.license = '';
     this.timeElapsed = '';
@@ -95,20 +94,17 @@ export default class TimerList extends Component {
   }
 
   componentWillUnmount() {
-    if (this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length &&
-      this.settings.dataUpload) Database.setUserTickets(this.countyId, this.userId, this.realm.objects('Ticketed')[0]['list']);
+    if (this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length && this.settings.dataUpload) {
+      Database.setUserTickets(this.refPath, this.realm.objects('Ticketed')[0]['list']);
+    }
     this.props.navigation.state.params = undefined;
   }
 
   async _getUserInfo() {
-    this.countyId = await AsyncStorage.getItem('@Enforce:profileSettings');
     this.settings = await AsyncStorage.getItem('@Enforce:settings');
-    this.userId = await AsyncStorage.getItem('@Enforce:profileId');
     this.settings = JSON.parse(this.settings);
-    this.countyId = JSON.parse(this.countyId);
-    this.countyId = this.countyId.county;
+    this.refPath = await AsyncStorage.getItem('@Enforce:refPath');
     this.updateRows();
-    console.log(this.userId, this.countyId);
   }
 
   _onRefresh() {
@@ -149,7 +145,6 @@ export default class TimerList extends Component {
   }
 
   uponTicketed(timer, force) {
-    console.log('upload', this.settings.imageUpload)
     if (Array.isArray(timer)) timer = this._timer;
     let now = new Date();
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000 || force) {
@@ -190,7 +185,7 @@ export default class TimerList extends Component {
             let month = now.getMonth() + 1;
             let day = now.getDate();
             date = `${month}-${day}`;
-            let refPath = `${this.countyId}/${this.userId}/${month}-${day}`;
+            let refPath = `${this.refPath}/${month}-${day}`;
             let imagePath = `${timer.createdAt}`;
             Database.setTicketImage(refPath, imagePath, blob);
           });
