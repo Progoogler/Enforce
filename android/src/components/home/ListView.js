@@ -9,10 +9,10 @@ import {
 } from 'react-native';
 import realm from 'realm';
 import Schema from '../../realm';
-import RNFS from 'react-native-fs';
+import { unlink, exists } from 'react-native-fs';
 import Row from './Row';
 import insertionSortModified from './insertionSort';
-import Database from '../../../../includes/firebase/database'; // Import single method { removeTicketPath }.
+import { removeTicketPath } from '../../../../includes/firebase/database';
 
 const styles = StyleSheet.create({
   container: {
@@ -117,7 +117,7 @@ class TimersList extends Component {
       dateCount = await JSON.parse(dateCount);
       if (dateCount.length >= 45) {
         let removalDate = dateCount.shift();
-        Database.removeTicketPath(refPath, removalDate);
+        removeTicketPath(refPath, removalDate);
       }
     }
     dateCount.push(date);
@@ -172,7 +172,7 @@ class TimersList extends Component {
   _loopDeletion(timerLists, once) {
     if (once) {
       timerLists[0].list.forEach((timer) => {
-        RNFS.unlink(timer.mediaPath)
+        unlink(timer.mediaPath)
         .then(() => {
           console.log('FILE DELETED');
             this.realm.write(() => {
@@ -183,7 +183,7 @@ class TimersList extends Component {
     } else {
       timerLists.forEach((timerList) => {
         timerList.list.forEach((timer) => {
-          RNFS.unlink(timer.mediaPath)
+          unlink(timer.mediaPath)
           .then(() => {
             console.log('FILE DELETED');
 
@@ -200,10 +200,10 @@ class TimersList extends Component {
     console.log('DEL' ,timers)
 
     timers.forEach((timer, idx) => {
-      RNFS.unlink(timer.mediaPath)
+      unlink(timer.mediaPath)
       .then(() => {
         console.log('FILE DELETED');
-        RNFS.exists(timer.mediaUri)
+        exists(timer.mediaUri)
         .then(() => {
           console.log('PICTURE REMOVED');
           this.realm.write(() => {
