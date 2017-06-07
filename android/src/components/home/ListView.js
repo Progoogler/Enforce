@@ -37,7 +37,7 @@ class TimersList extends Component {
     };
   }
 
-  render() {
+  render() { console.log('Listview renders')
     return (
       <ListView
         enableEmptySections={true}
@@ -88,39 +88,45 @@ class TimersList extends Component {
   componentDidMount() {
     this._checkReset();
     this._mounted = true;
+    this._timeoutRefresh = setTimeout(() => this._onRefresh(), 300000);
   }
 
   componentWillUnmount() {
+    clearTimeout(this._timeoutRefresh);
     this._mounted = false;
   }
 
   async _checkReset() {
-    let time = await AsyncStorage.getItem('@Enforce:timeOfFirstPicture');
-    if (isNaN(parseInt(time))) return;
-    if (new Date() - parseInt(time) > 28800000) { // Reset DB after 8 hours of activity 28800000
+    let today = new Date().getDate();
+    let yesterday = await AsyncStorage.getItem('@Enforce:currentDay');
+    if (today > parseInt(yesterday) || today - parseInt(yesterday) < 0) {
       this._reset();
     }
   }
 
-  async _reset() {
+  async _reset() { console.log('RESET')
     let userId = await AsyncStorage.getItem('@Enforce:profileId');
     let profileSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
     profileSettings = JSON.parse(profileSettings);
     let refPath = `${profileSettings.county}/${userId}`;
     let dateCount = await AsyncStorage.getItem('@Enforce:dateCount');
+    let registerDate = await AsyncStorage.getItem('@Enforce:registerDate');
     let today = new Date();
-    let date = `${today.getMonth() + 1}-${today.getDate()}`;
+    let day = today.getDate() + '';
+    let date = `${today.getMonth() + 1}-${day}`;
+    AsyncStorage.setItem('@Enforce:registerDate', date); // Set for next reset
+    AsyncStorage.setItem('@Enforce:currentDay', day); // Set for checkReset()
 
-    if (dateCount === null) { // Initialize the dateCount.
+    if (dateCount === null) { // Initialize the dateCount for first instance.
       dateCount = [];
     } else {
       dateCount = await JSON.parse(dateCount);
       if (dateCount.length >= 45) {
         let removalDate = dateCount.shift();
-        removeTicketPath(refPath, removalDate);
+        removeTicketPath(refPath, removalDate); // Delete path from Firebase.
       }
     }
-    dateCount.push(date);
+    dateCount.push(registerDate);
     dateCount = await JSON.stringify(dateCount);
     AsyncStorage.setItem('@Enforce:dateCount', dateCount);
 
@@ -128,29 +134,28 @@ class TimersList extends Component {
     let ticketList = this.realm.objects('Ticketed');
     let expiredList = this.realm.objects('Expired');
     if (timerLists.length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
-      let i = 0, lastTime;
-      while (lastTime === undefined && i < timerLists.length) { // Edge case for empty first object.
-        // Get the earliest value from any list starting from ticket list.
-        if (ticketList[0].list.length > i && !lastTime) {
-          lastTime = ticketList[0].list[i].createdAt;
-          break;
-        }
-        if (expiredList[0].list.length > i && !lastTime) {
-          lastTime = expiredList[0].list[i].createdAt;
-          break;
-        }
-        if (timerLists[i].list.length > 0 && !lastTime) {
-          lastTime = timerLists[i].list[0].createdAt;
-          break;
-        }
-        i++;
-      }
+      // let i = 0, lastTime;
+      // while (lastTime === undefined && i < timerLists.length) { // Edge case for empty first object.
+      //   // Get the earliest value from any list starting from ticket list.
+      //   if (ticketList[0].list.length > i && !lastTime) {
+      //     lastTime = ticketList[0].list[i].createdAt;
+      //     break;
+      //   }
+      //   if (expiredList[0].list.length > i && !lastTime) {
+      //     lastTime = expiredList[0].list[i].createdAt;
+      //     break;
+      //   }
+      //   if (timerLists[i].list.length > 0 && !lastTime) {
+      //     lastTime = timerLists[i].list[0].createdAt;
+      //     break;
+      //   }
+      //   i++;
+      // }
       console.log('starting reset')
       this._loopDeletion(timerLists);
       if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
       if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
-      //TODO Doesn't wait..
-      AsyncStorage.setItem('@Enforce:timeOfFirstPicture', 'null');
+
       this.list = [];
       this.props.updateTicketCount();
       this.setState({dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)});
@@ -228,7 +233,7 @@ class TimersList extends Component {
     }, 2000);
   }
 
-  _onRefresh() {
+  _onRefresh() { console.log('refreshing')
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
     this.list = insertionSortModified(this.list);
     this.setState({
@@ -236,6 +241,9 @@ class TimersList extends Component {
       dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)
     });
     this.setState({refreshing: false, updateRows: this.state.updateRows = this.state.updateRows + 1, updatedLocation: null});
+    clearTimeout(this._timeoutRefresh);
+    console.log('clear timeouted', this._timeoutRefresh);
+    this._timeoutRefresh = setTimeout(() => this._onRefresh(), 300000);
   }
 }
 
