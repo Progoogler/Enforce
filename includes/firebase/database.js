@@ -8,13 +8,13 @@ class Database {
      * @param tickets
      * @returns {firebase.Promise<any>|!firebase.Promise.<void>}
      */
-    static setUserTickets(cityId, userId, tickets) {
+    static setUserTickets(refPath, tickets) {
 
         let date = new Date();
         let month = date.getMonth() + 1;
         let day = date.getDate();
         date = `${month}-${day}`;
-        let userTicketPath = `/${cityId}/${userId}/${date}`;
+        let userTicketPath = `/${refPath}/${date}`;
 
         return firebase.database().ref(userTicketPath).set({
             tickets: tickets
