@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { DrawerNavigator } from 'react-navigation';
 import { AsyncStorage } from 'react-native';
-import { CameraApp } from './camera/CameraApp';
+import CameraApp from './camera/CameraApp';
 import MapApp from './map/MapApp';
 import Home from './home';
 import Profile from './profile';
@@ -13,11 +13,7 @@ import Settings from './settings';
 import FAQs from './faq';
 import Realm from 'realm';
 import Schema from '../realm';
-import Firebase from '../../../includes/firebase/firebase';
-
-console.log('initialize')
-Firebase.initialize();
-console.log('after initialize')
+import { initialize as FirebaseInitialize, signInUser as FirebaseSignIn }  from '../../../includes/firebase/firebase';
 
 
 const AppNavigator = DrawerNavigator({
@@ -56,33 +52,33 @@ const AppNavigator = DrawerNavigator({
 
 export default class App extends Component {
   render() {
-    this.signIn();
-    console.log('RUN THIS BABY')
-    // Realm.clearTestState(); // Uncomment to drop/recreate database
-
-       this.realm = new Realm({schema: Schema});
-
-    // this.realm.write(() => {
-    // this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1000, count: 0});
-    // this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
-    // this.realm.create('Coordinates', {latitude: 0, longitude: 0});
-    //  this.realm.create('Ticketed', {list: []});
-    //  this.realm.create('Expired', {list: []});
-    // }); // For beta testing only TODO remove this
-
-
-
-    //console.log('reset?', this.props.navigation.state.params.reset)
     return (
         <AppNavigator />
     );
   }
+
+  componentWillMount() {
+    FirebaseInitialize(); console.log('Firebase initialized');
+    this.realm = new Realm({schema: Schema});
+    this.signIn(); console.log('Signed into Firebase');
+  }
+
+  _resetRealmState() { // For beta testing only TODO remove this
+    Realm.clearTestState(); // Uncomment to drop/recreate database
+    this.realm = new Realm({schema: Schema});
+    this.realm.write(() => {
+      this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1000, count: 0});
+      this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
+      this.realm.create('Coordinates', {latitude: 0, longitude: 0});
+      this.realm.create('Ticketed', {list: []});
+      this.realm.create('Expired', {list: []});
+    });
+  }
+
   async signIn() {
     let profile = await AsyncStorage.getItem('@Enforce:profileSettings');
     profile = JSON.parse(profile);
-    if (profile.email && profile.password) Firebase.signInUser(profile.email, profile.password);
-    console.log('signed in user!');
+    if (profile.email && profile.password) FirebaseSignIn(profile.email, profile.password);
   };
-
 
 }
