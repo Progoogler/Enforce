@@ -50,8 +50,6 @@ export class CameraApp extends Component {
   };
 
   render() {
-    const store = this.context;
-    console.log('pic count', this.pictureCount)
     return (
       <View style={styles.container} >
         <LocationInput visibility={this.state.modalVisible} setModalVisible={this.setModalVisible.bind(this)} description={this.description}/>
@@ -141,7 +139,6 @@ export class CameraApp extends Component {
   }
 
   componentWillUnmount() {
-    console.log('COMPONENT CAMERA UNMOUNTING', this.count)
     if (this.count <= 1) {
       AsyncStorage.setItem('@Enforce:timeOfFirstPicture', new Date() / 1 + '');
     }
@@ -170,7 +167,6 @@ export class CameraApp extends Component {
         this.realm.objects('TimerSequence')[0].timeAccessedAt = new Date() / 1;
       });
     }
-    console.log('PIC COUNT', this.pictureCount);
   }
 
   setCameraTime() {
