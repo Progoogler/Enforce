@@ -17,7 +17,7 @@ export default class Header extends Component {
   render() {
     return (
       <View style={styles.headerContainer} >
-        <Text style={styles.headerTitle}>Enforce</Text>
+        <Text style={styles.headerTitle}>{ this.props.title ? this.props.title : 'Enforce' }</Text>
         <TouchableHighlight
           underlayColor='#4286f4'
           onPress={ () => {
