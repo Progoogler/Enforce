@@ -138,15 +138,17 @@ export default class CameraApp extends Component {
     }
   }
 
+  componentDidMount() {
+    this._mounted = true;
+  }
+
   componentWillUnmount() {
-    if (this.count <= 1) {
-      AsyncStorage.setItem('@Enforce:timeOfFirstPicture', new Date() / 1 + '');
-    }
+    this._mounted = false;
     clearTimeout(this._timeout);
   }
 
   setModalVisible(desc) {
-    this.setState({modalVisible: !this.state.modalVisible});
+    this._mounted && this.setState({modalVisible: !this.state.modalVisible});
     this.description = desc;
   }
 
@@ -192,7 +194,7 @@ export default class CameraApp extends Component {
 
   _showNotification() {
     this.setState({newTimer: true});
-    setTimeout(() => this.setState({newTimer: false}), 2000);
+    setTimeout(() => this._mounted && this.setState({newTimer: false}), 2000);
   }
 
   createNewTimerList() {
@@ -309,6 +311,7 @@ export default class CameraApp extends Component {
     this.createNewTimerList();
   }
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
