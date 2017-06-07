@@ -16,7 +16,7 @@ export default class Warning extends Component {
     return (
       <Modal animationType={"slide"}
         transparent={true}
-        onRequestClose={() => {this.props.throwWarning()}}
+        onRequestClose={() => {this.props.clearWarning('clearWarning', true)}}
         visible={this.props.visibility} >
         <View style={styles.container} >
           <View style={styles.containerBorder} >
@@ -29,13 +29,13 @@ export default class Warning extends Component {
               <TouchableHighlight
                 style={styles.no}
                 underlayColor='#4286f4'
-                onPress={() => {this.props.throwWarning()}} >
+                onPress={() => {this.props.clearWarning('clearWarning', true)}} >
                 <Text style={styles.buttonText}>No</Text>
               </TouchableHighlight>
               <TouchableHighlight
                 style={styles.yes}
                 underlayColor='#4286f4'
-                onPress={() => { this.props.forceTicket()}} >
+                onPress={() => { this.props.uponTicketed([], 'force')}} >
                 <Text style={styles.buttonText}>Yes</Text>
               </TouchableHighlight>
             </View>
