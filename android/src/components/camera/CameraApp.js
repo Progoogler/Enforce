@@ -19,7 +19,7 @@ import Navigation from '../home/Header';
 import SetTimeLimit from './SetTimeLimit';
 import LocationInput from './LocationInput';
 
-export class CameraApp extends Component {
+export default class CameraApp extends Component {
   constructor() {
     super();
     this.state = {
