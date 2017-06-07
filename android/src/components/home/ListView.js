@@ -212,8 +212,7 @@ class TimersList extends Component {
         .then(() => {
           console.log('PICTURE REMOVED');
           this.realm.write(() => {
-            // sidx?
-            this.realm.delete(timer[idx]['list'][sidx]);
+            this.realm.delete(timer);
           });
         });
       });
@@ -233,16 +232,15 @@ class TimersList extends Component {
     }, 2000);
   }
 
-  _onRefresh() { console.log('refreshing')
+  _onRefresh() {
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
     this.list = insertionSortModified(this.list);
-    this.setState({
+    this._mounted && this.setState({
       refreshing: true,
       dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)
     });
-    this.setState({refreshing: false, updateRows: this.state.updateRows = this.state.updateRows + 1, updatedLocation: null});
+    this._mounted && this.setState({refreshing: false, updateRows: this.state.updateRows = this.state.updateRows + 1, updatedLocation: null});
     clearTimeout(this._timeoutRefresh);
-    console.log('clear timeouted', this._timeoutRefresh);
     this._timeoutRefresh = setTimeout(() => this._onRefresh(), 300000);
   }
 }
