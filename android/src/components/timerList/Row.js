@@ -15,6 +15,7 @@ export default class Row extends Component {
   }
 
   render() {
+    console.log('PROPS', this.props.userId, this.props.settings, this.props.countyId)
     return (
       <View style={styles.container} >
         <Image
@@ -53,38 +54,44 @@ export default class Row extends Component {
     );
   }
 
-  componentWillMount() {
-    this._getUserInfo();
-  }
-
-  async _getUserInfo() {
-    this.countyId = await AsyncStorage.getItem('@Enforce:profileSettings');
-    this.settings = await AsyncStorage.getItem('@Enforce:settings');
-    this.settings = JSON.parse(this.settings);
-    this.countyId = JSON.parse(this.countyId);
-    this.countyId = this.countyId.county;
-    this.userId = this.props.Firebase.getCurrentUser();
-    console.log(this.userId, this.countyId);
-  }
-
   _onVinRequest() {
     let options = {
     }
   }
 
   _uponTicketed(timer) {
-    console.log('upload', this.settings.imageUpload)
+    console.log('upload', this.props.settings.imageUpload)
     let now = new Date();
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000) {
-      this.props.realm.write(() => {
-        timer.ticketedAt = now / 1;
-        timer.license = this.props.license;
-        timer.VIN = this.props.VIN;
-        this.props.realm.objects('Ticketed')[0]['list'].push(timer);
-        this.props.realm.objects('Timers')[timer.index]['list'].shift();
-      });
+      let timers = this.realm.objects('Timers')[timer.index]['list'];
+      if (timers['0'].createdAt === timer.createdAt) {
+        this.props.realm.write(() => {
+          timer.ticketedAt = now / 1;
+          timer.license = this.props.license;
+          timer.VIN = this.props.VIN;
+          this.props.realm.objects('Ticketed')[0]['list'].push(timer);
+          timers.shift();
+        });
+      } else {
+        let indexOfTimer;
+        for (let index in timers) {
+          if (timers[index].createdAt === timer.createdAt) {
+            indexOfTimer = index;
+            break;
+          }
+        }
+        if (indexOfTimer) {
+          this.props.realm.write(() => {
+            timer.ticketedAt = new Date() / 1;
+            timer.license = this.props.license;
+            timer.VIN = this.props.VIN;
+            this.props.realm.objects('Ticketed')[0]['list'].push(timer);
+            timers.splice(parseInt(indexOfTimer), 1);
+          });
+        }
+      }
       if (this.props.license) this.resetLicenseAndVIN();
-      if (this.settings.imageUpload) { // TODO Force ticket image upload
+      if (this.props.settings.imageUpload) { // TODO Force ticket image upload
         console.log('uploading file')
         let rnfbURI = this.props.RNFetchBlob.wrap(timer.mediaPath);
         this.props.Blob
@@ -93,7 +100,7 @@ export default class Row extends Component {
             let month = now.getMonth() + 1;
             let day = now.getDate();
             date = `${month}-${day}`;
-            let refPath = `${this.countyId}/${this.userId}/${month}-${day}`;
+            let refPath = `${this.props.countyId}/${this.props.userId}/${month}-${day}`;
             let imagePath = `${timer.createdAt}`;
             this.props.Database.setTicketImage(refPath, imagePath, blob);
           });

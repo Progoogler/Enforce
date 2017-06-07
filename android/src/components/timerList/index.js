@@ -89,6 +89,9 @@ export default class TimerList extends Component {
                                     resetLicenseAndVIN={this.resetLicenseAndVIN.bind(this)}
                                     license={this.license}
                                     VIN={this.VIN}
+                                    userId={this.userId}
+                                    countyId={this.countyId}
+                                    settings={this.settings}
                                     RNFetchBlob={RNFetchBlob}
                                     Blob={Blob}
                                     Database={Database}
@@ -118,6 +121,7 @@ export default class TimerList extends Component {
     this.settings = JSON.parse(this.settings);
     this.countyId = JSON.parse(this.countyId);
     this.countyId = this.countyId.county;
+    this.updateRows();
     console.log(this.userId, this.countyId);
   }
 
@@ -150,6 +154,37 @@ export default class TimerList extends Component {
   }
 
   forceTicket() {
+    let timers = this.realm.objects('Timers')[this.timer.index]['list'];
+    if (timers['0'] === this.timer) {
+      this.realm.write(() => {
+        this.timer.ticketedAt = new Date() / 1;
+        this.timer.license = this.license;
+        this.timer.VIN = this.VIN;
+        this.realm.objects('Ticketed')[0]['list'].push(this.timer);
+        timers.shift();
+      });
+    } else {
+      let indexOfTimer;
+      for (let index in timers) {
+        if (timers[index].createdAt === this.timer.createdAt) {
+          indexOfTimer = index;
+          break;
+        }
+      }
+      if (indexOfTimer) {
+        this.realm.write(() => {
+          this.timer.ticketedAt = new Date() / 1;
+          this.timer.license = this.license;
+          this.timer.VIN = this.VIN;
+          this.realm.objects('Ticketed')[0]['list'].push(this.timer);
+          timers.splice(parseInt(indexOfTimer), 1);
+        });
+      }
+    }
+    this.throwWarning();
+    //this.resetLicenseAndVIN();
+    //Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
+    this.updateRows();
     if (this.settings.imageUpload) {
       let imagePath = `${this.timer.createdAt}`;
       let rnfbURI = RNFetchBlob.wrap(this.timer.mediaPath);
@@ -164,25 +199,33 @@ export default class TimerList extends Component {
           Database.setTicketImage(refPath, imagePath, blob);
         });
     }
-    this.realm.write(() => {
-      this.timer.ticketedAt = new Date() / 1;
-      this.timer.license = this.license;
-      this.timer.VIN = this.VIN;
-      this.realm.objects('Ticketed')[0]['list'].push(this.timer);
-      this.realm.objects('Timers')[this.timer.index]['list'].shift();
-    });
-    this.throwWarning();
-    //this.resetLicenseAndVIN();
-    //Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
-    this.updateRows();
   }
 
   expiredFunc(timer) {
-    this.realm.write(() => {
-      this.realm.objects('Expired')[0]['list'].push(timer);
-      this.realm.objects('Timers')[timer.index]['list'].shift();
-    });
-    this.updateRows();
+    let timers = this.realm.objects('Timers')[timer.index]['list'];
+    if (timers['0'] === timer) {
+      this.realm.write(() => {
+        this.realm.objects('Expired')[0]['list'].push(timer);
+        timers.shift();
+      });
+      this.updateRows();
+      return;
+    } else {
+      let indexOfTimer;
+      for (let index in timers) {
+        if (timers[index].createdAt === timer.createdAt) {
+          indexOfTimer = index;
+          break;
+        }
+      }
+      if (indexOfTimer) {
+        this.realm.write(() => {
+          this.realm.objects('Expired')[0]['list'].push(timer);
+          timers.splice(parseInt(indexOfTimer), 1);
+        });
+        this.updateRows();
+      }
+    }
   }
 
   handleVINSearch(license) {
