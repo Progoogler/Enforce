@@ -48,7 +48,7 @@ export default class MapApp extends Component {
 
     if (settings.location) {
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
-          message: "<h2>Use Location ?</h2>Enforcewants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
+          message: "<h2>Use Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
           ok: "OK",
           cancel: "Continue without"
       }).then(() => {
@@ -67,10 +67,10 @@ export default class MapApp extends Component {
           },
           {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
         );
-      })
-      .catch(() => {
-        this._mounted && this.setState({showError: true});
       });
+      // .catch(() => {
+      //   this._mounted && this.setState({showError: true});
+      // });
     } else {
       navigator.geolocation.getCurrentPosition(
         position => {
@@ -83,7 +83,7 @@ export default class MapApp extends Component {
           });
         }, error => {
           this._mounted && this.setState({showError: true, animating: false});
-          console.log('Error loading geolocation:', error);
+          console.warn('Error loading geolocation:', error);
         },
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
       );
@@ -139,7 +139,7 @@ export default class MapApp extends Component {
             { this.getMarkers() }
         </MapView.Animated>
 
-        { this.state.showError ? <ErrorMessage /> : <View /> }
+        { this.state.showError ? <ErrorMessage checkLocationAndRender={this.checkLocationAndRender.bind(this)} /> : <View /> }
       </View>
     );
   }
@@ -151,7 +151,7 @@ export default class MapApp extends Component {
       }, 1500);
       if (!this.animated) {
         this.animated = true;
-        this.setState({animating: false});
+        this._mounted && this.setState({animating: false});
       }
     }
 
@@ -231,6 +231,34 @@ export default class MapApp extends Component {
       }
     }
     return markers;
+  }
+
+  checkLocationAndRender() {
+    console.log('button')
+    LocationServicesDialogBox.checkLocationServicesIsEnabled({
+        message: "<h2>Use Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
+        ok: "OK",
+        cancel: "Continue without"
+    }).then(() => {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          let latitude = parseFloat(position.coords.latitude);
+          let longitude = parseFloat(position.coords.longitude);
+          this._animateToCoord(latitude, longitude);
+          this.realm.write(() => {
+            this.realm.objects('Coordinates')[0].latitude = latitude;
+            this.realm.objects('Coordinates')[0].longitude = longitude;
+          });
+          this._mounted && this.setState({showError: false});
+        }, error => {
+          console.warn('Error loading geolocation:', error);
+        },
+        {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
+      );
+    });
+    // .catch(() => {
+    //   this._mounted && this.setState({showError: true});
+    // });
   }
 
   setModalVisible() {
