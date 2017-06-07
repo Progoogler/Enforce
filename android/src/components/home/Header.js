@@ -7,23 +7,6 @@ import {
   Image,
 } from 'react-native';
 
-// TODO SEARCH
-// <TextInput
-//   style={styles.searchBox}
-//   onChangeText={(text) => this.setState({text})}
-//   value={this.state.text} />
-// <TouchableHighlight
-//   style={styles.headerSearchButton} >
-//   <Image source={require('../../../../shared/images/search-icon.jpg')} />
-// </TouchableHighlight>
-// headerSearchButton: {
-//   flex: .15,
-//   height: 60,
-//   justifyContent: 'center',
-// },
-// headerSearchIcon: {
-//   textAlign: 'center',
-// },
 
 export default class Header extends Component {
   constructor() {
@@ -43,7 +26,6 @@ export default class Header extends Component {
           style={styles.headerNavigation} >
           <Image source={require('../../../../shared/images/menu-icon.jpg')} />
         </TouchableHighlight>
-
       </View>
     );
   }
