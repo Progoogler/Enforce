@@ -95,7 +95,7 @@ export default class TimerList extends Component {
 
   componentWillUnmount() {
     if (this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length && this.settings.dataUpload) {
-      Database.setUserTickets(this.refPath, this.realm.objects('Ticketed')[0]['list']);
+      setUserTickets(this.refPath, this.realm.objects('Ticketed')[0]['list']);
     }
     this.props.navigation.state.params = undefined;
   }
@@ -187,7 +187,7 @@ export default class TimerList extends Component {
             date = `${month}-${day}`;
             let refPath = `${this.refPath}/${month}-${day}`;
             let imagePath = `${timer.createdAt}`;
-            Database.setTicketImage(refPath, imagePath, blob);
+            setTicketImage(refPath, imagePath, blob);
           });
       }
       this.updateRows('clearWarning');
