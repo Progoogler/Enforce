@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   cameraContainer: {
-    flex: 1,
+    flex: .8,
     flexDirection: 'column',
   },
   preview: {
