@@ -13,13 +13,13 @@ import MainButtons from './MainButtons';
 import Search from '../search';
 
 
-export default class Header extends Component {
+export default class Menu extends Component {
   constructor() {
     super();
     this.state = {
       buttonOpacity: new Animated.Value(1),
       titleOpacity: new Animated.Value(0),
-      search: false,
+      search: false, // TODO Remove passing props to MainButtons if the Animated.View doesn't work.
     };
   }
 
@@ -36,7 +36,7 @@ export default class Header extends Component {
         <View style={styles.container}>
         <View style={styles.headerContainer} >
           <TouchableHighlight
-            onPress={ () => {
+            onPress={() => {
               Animated.parallel([
                 Animated.timing(
                   this.state.titleOpacity,
@@ -50,10 +50,10 @@ export default class Header extends Component {
                 ),
               ]).start();
               this.setState({
-                              search: !this.state.search,
-                              titleOpacity: new Animated.Value(0),
-                              buttonOpacity: new Animated.Value(0),
-                            });
+                search: !this.state.search,
+                titleOpacity: new Animated.Value(0),
+                buttonOpacity: new Animated.Value(0),
+              });
             }}
             underlayColor={'#4286f4'}
             style={styles.searchIcon} >
@@ -78,10 +78,9 @@ export default class Header extends Component {
           </TouchableHighlight>
           </View>
           <Animated.View style={{ opacity: this.state.buttonOpacity }} >
-          <MainButtons navigation={this.props.navigation} />
+          <MainButtons navigation={this.props.navigation} searching={this.state.search} />
           </Animated.View>
         </View>
-
       }
       </View>
     );
