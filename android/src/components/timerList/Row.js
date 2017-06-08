@@ -4,7 +4,7 @@ import {
   Text,
   Image,
   StyleSheet,
-  TouchableHighlight,
+  TouchableOpacity,
   AsyncStorage,
 } from 'react-native';
 
@@ -34,19 +34,19 @@ export default class Row extends Component {
         : null }
         <View style={styles.buttonsContainer} >
           <View style={styles.rowButtonsContainers} >
-            <TouchableHighlight
+            <TouchableOpacity
               style={styles.rowButton}
-              underlayColor='#0099ff'
+              activeOpacity={.9}
               onPress={() => this.props.expiredFunc(this.props.data)} >
               <Text style={styles.buttonText}> Expired </Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
             <View style={styles.separator} />
-            <TouchableHighlight
+            <TouchableOpacity
               style={styles.rowButton}
-              underlayColor='#0099ff'
+              activeOpacity={.9}
               onPress={() => this.props.uponTicketed(this.props.data)}>
               <Text style={styles.buttonText}> Ticketed </Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
