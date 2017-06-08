@@ -13,7 +13,7 @@ import {
 import Firebase from '../../../../includes/firebase/firebase';
 import Database from '../../../../includes/firebase/database';
 
-import Header from '../home/Header';
+import Navigation from '../navigation';
 import Warning from './Warning';
 import ThrowConnectionMessage from './ThrowConnectionMessage';
 
@@ -51,7 +51,7 @@ export default class Profile extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header navigation={this.props.navigation} />
+        <Navigation navigation={this.props.navigation} />
         <Text style={styles.title}>Profile Settings</Text>
         <View style={styles.row} >
           <Text style={styles.designator}>Email</Text>

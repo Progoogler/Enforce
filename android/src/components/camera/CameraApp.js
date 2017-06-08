@@ -15,7 +15,7 @@ import Camera from 'react-native-camera';
 import { unlink, exists } from 'react-native-fs';
 import Realm from 'realm';
 
-import Navigation from '../home/Header';
+import Navigation from '../navigation';
 import SetTimeLimit from './SetTimeLimit';
 import LocationInput from './LocationInput';
 

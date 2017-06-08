@@ -15,7 +15,7 @@ import Title from './Title';
 import VinSearch from './VinSearch';
 import Row from './Row';
 import Footer from './Footer';
-import Navigation from '../home/Header';
+import Navigation from '../navigation';
 import Warning from './Warning';
 import Done from './Done';
 import insertionSortModified from '../home/insertionSort';
@@ -131,7 +131,6 @@ export default class TimerList extends Component {
       this.setState({
         warningVisibility: false,
       });
-      //this._timer = [];
     } else if (clearWarning) {
       this.setState({
         dataSource: this.state.dataSource.cloneWithRows(this.list),
@@ -144,7 +143,7 @@ export default class TimerList extends Component {
     }
   }
 
-  uponTicketed(timer, force) {
+  uponTicketed(timer, force) { // Handle updates to Realm for regular and forced.
     if (Array.isArray(timer)) timer = this._timer;
     let now = new Date();
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000 || force) {
@@ -176,7 +175,7 @@ export default class TimerList extends Component {
         }
       }
       if (this.license) this.resetLicenseAndVIN();
-      if (this.settings.imageUpload) { // TODO Force ticket image upload
+      if (this.settings.imageUpload) {
         console.log('uploading file')
         let rnfbURI = RNFetchBlob.wrap(timer.mediaPath);
         Blob
@@ -200,54 +199,6 @@ export default class TimerList extends Component {
       });
     }
   }
-
-  // forceTicket() {
-  //   let timers = this.realm.objects('Timers')[this.timer.index]['list'];
-  //   if (timers['0'] === this.timer) {
-  //     this.realm.write(() => {
-  //       this.timer.ticketedAt = new Date() / 1;
-  //       this.timer.license = this.license;
-  //       this.timer.VIN = this.VIN;
-  //       this.realm.objects('Ticketed')[0]['list'].push(this.timer);
-  //       timers.shift();
-  //     });
-  //   } else {
-  //     let indexOfTimer;
-  //     for (let index in timers) {
-  //       if (timers[index].createdAt === this.timer.createdAt) {
-  //         indexOfTimer = index;
-  //         break;
-  //       }
-  //     }
-  //     if (indexOfTimer) {
-  //       this.realm.write(() => {
-  //         this.timer.ticketedAt = new Date() / 1;
-  //         this.timer.license = this.license;
-  //         this.timer.VIN = this.VIN;
-  //         this.realm.objects('Ticketed')[0]['list'].push(this.timer);
-  //         timers.splice(parseInt(indexOfTimer), 1);
-  //       });
-  //     }
-  //   }
-  //   //this.throwWarning();
-  //   //this.resetLicenseAndVIN();
-  //   //Database.setUserTickets(this.userId, this.realm.objects('Ticketed')[0]['list']);
-  //   this.updateRows();
-  //   if (this.settings.imageUpload) {
-  //     let imagePath = `${this.timer.createdAt}`;
-  //     let rnfbURI = RNFetchBlob.wrap(this.timer.mediaPath);
-  //     Blob
-  //       .build(rnfbURI, {type: 'image/jpg;'})
-  //       .then((blob) => {
-  //         let now = new Date();
-  //         let month = now.getMonth() + 1;
-  //         let day = now.getDate();
-  //         date = `${month}-${day}`;
-  //         let refPath = `${this.countyId}/${this.userId}/${month}-${day}`;
-  //         Database.setTicketImage(refPath, imagePath, blob);
-  //       });
-  //   }
-  // }
 
   expiredFunc(timer) {
     let timers = this.realm.objects('Timers')[timer.index]['list'];

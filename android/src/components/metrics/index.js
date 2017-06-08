@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import MapView, { Marker, Circle } from 'react-native-maps';
 import Realm from 'realm';
-import Header from '../home/Header';
+import Navigation from '../navigation';
 
 
 export default class Metrics extends Component {
@@ -29,7 +29,7 @@ export default class Metrics extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header style={styles.header} title={'Metrics'} navigation={this.props.navigation} />
+        <Navigation style={styles.header} title={'Metrics'} navigation={this.props.navigation} />
         <MapView.Animated
           ref={ref => { this.animatedMap = ref; }}
           style={styles.map}

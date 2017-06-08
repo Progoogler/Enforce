@@ -13,7 +13,7 @@ import Realm from 'realm';
 import { NavigationActions } from'react-navigation';
 import { getHistoryData, getTicketImage } from '../../../../includes/firebase/database';
 
-import Header from '../home/Header';
+import Navigation from '../navigation';
 import Row from './Row';
 import ImageModal from './ImageModal';
 
@@ -48,10 +48,9 @@ export default class History extends Component {
   };
 
   render() {
-    console.log('index', Header)
     return (
       <View style={styles.container}>
-        <Header navigation={this.props.navigation} />
+        <Navigation navigation={this.props.navigation} />
         <ImageModal uri={this.state.uri} visibility={this.state.showMaximizedImage} maximizeImage={this.maximizeImage.bind(this)}/>
         <Text style={styles.title}>History</Text>
         <View style={styles.pickerActivityRow}>

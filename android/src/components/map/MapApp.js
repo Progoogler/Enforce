@@ -11,7 +11,7 @@ import {
 import Realm from 'realm';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
-import Navigation from '../home/Header';
+import Navigation from '../navigation';
 import LocationDetailsView from './LocationDetailsView';
 import CustomCallout from './CustomCallout';
 import ErrorMessage from './ErrorMessage';

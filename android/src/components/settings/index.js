@@ -8,7 +8,7 @@ import {
   AsyncStorage,
 } from 'react-native';
 
-import Header from '../home/Header';
+import Navigation from '../navigation';
 
 export default class Settings extends Component {
   constructor() {
@@ -34,7 +34,7 @@ export default class Settings extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Header navigation={this.props.navigation}/>
+        <Navigation navigation={this.props.navigation}/>
         <Text style={styles.title}>Settings</Text>
 
 
@@ -93,7 +93,7 @@ export default class Settings extends Component {
      </View>
     );
   }
-  
+
   async componentWillMount() {
     let settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);

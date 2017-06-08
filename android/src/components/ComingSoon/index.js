@@ -5,13 +5,13 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
-import Header from "../home/Header";
+import Navigation from '../navigation';
 
 export default class ComingSoon extends Component {
   render() {
     return (
       <View style={styles.container}>
-          <Header />
+          <Navigation navigation={this.props.navigation} />
         <Text style={styles.title}>This page is currently in progress.</Text>
         <Text style={styles.message}>We'll let you know when it's ready!</Text>
         <Image style={styles.image} source={require('../../../../shared/images/worker.jpg')} />
