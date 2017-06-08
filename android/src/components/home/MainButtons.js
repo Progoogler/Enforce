@@ -3,6 +3,7 @@ import {
   View,
   Text,
   Image,
+  //Animated,
   StyleSheet,
   TouchableHighlight,
 } from 'react-native';
@@ -12,6 +13,7 @@ export default class MainButtons extends Component {
   constructor() {
     super();
     this.state = {
+      //separatorHeight: new Animated.Value(40),
       map: false,
       camera: false,
     }
@@ -39,6 +41,27 @@ export default class MainButtons extends Component {
     );
   }
 
+  // <Animated.View style={{
+  //     borderColor: 'white',
+  //     borderWidth: .5,
+  //     height: this.state.separatorHeight,
+  //   }}></Animated.View>
+
+  // componentWillUpdate() {
+  //   if (this.props.searching) {
+  //     Animated.timing(
+  //       this.state.separatorHeight,
+  //       { toValue: 0,
+  //         duration: 10, },
+  //     ).start();
+  //   } else {
+  //     Animated.timing(
+  //       this.state.separatorHeight,
+  //       { toValue: 40,
+  //         duration: 10, },
+  //     ).start();
+  //   }
+
   _onShowUnderlay(button) {
     button === 'map' ? this.setState({map: true}) : this.setState({camera: true});
   }
@@ -57,12 +80,19 @@ const styles = StyleSheet.create({
   button: {
     flex: .5,
     height: 70,
+    paddingBottom: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  separator: {
+    borderColor: 'white',
+    borderWidth: .35,
+    height: 35,
+  },
   mapPressed: {
     flex: .5,
-    height: 70,
+    height: 60,
+    paddingBottom: 10,
     backgroundColor: '#4286f4',
     alignItems: 'center',
     justifyContent: 'center',
@@ -71,7 +101,8 @@ const styles = StyleSheet.create({
   },
   cameraPressed: {
     flex: .5,
-    height: 70,
+    height: 60,
+    paddingBottom: 10,
     backgroundColor: '#4286f4',
     alignItems: 'center',
     justifyContent: 'center',
@@ -81,11 +112,6 @@ const styles = StyleSheet.create({
   mapButtonText: {
     color: 'white',
     fontSize: 18,
-  },
-  separator: {
-    borderColor: 'white',
-    borderWidth: .5,
-    height: 40,
   },
   cameraButtonText: {
     color: 'white',
