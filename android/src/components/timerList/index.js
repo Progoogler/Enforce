@@ -59,7 +59,7 @@ export default class TimerList extends Component {
       />
     )
   };
-  //<VinSearch handleVINSearch={this.handleVINSearch.bind(this)}/>
+
   render() {
     return (
       <View style={styles.container}>
@@ -82,8 +82,11 @@ export default class TimerList extends Component {
                                     expiredFunc={this.expiredFunc.bind(this)}
                                     uponTicketed={this.uponTicketed.bind(this)} />}
           renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} />
-        {/* }<Footer /> TODO space out the bottom margin of listview and animate "Done"*/}
+
+
         { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : <View /> }
+
+
       </View>
     );
   }
@@ -236,6 +239,7 @@ export default class TimerList extends Component {
     // call fetch to AutoCheck
     // return VIN
     // this.vin = VIN
+    //<VinSearch handleVINSearch={this.handleVINSearch.bind(this)}/>
 
     this.updateRows();
   }
