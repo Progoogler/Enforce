@@ -10,11 +10,12 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#4286f4',
   },
   text: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'green',
+    color: 'white',
   },
 });
 
@@ -27,7 +28,7 @@ class Title extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>{this._getTimeLimitResponse(this.props.limit)} Timer Queue </Text>
+        <Text style={styles.text}>{this._getTimeLimitResponse(this.props.limit)} Queue </Text>
       </View>
     );
   }
