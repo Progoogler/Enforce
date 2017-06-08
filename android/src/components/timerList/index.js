@@ -59,14 +59,14 @@ export default class TimerList extends Component {
       />
     )
   };
-
+  //<VinSearch handleVINSearch={this.handleVINSearch.bind(this)}/>
   render() {
     return (
       <View style={styles.container}>
-        <Navigation navigation={this.props.navigation} />
+        <Navigation navigation={this.props.navigation} search={true} />
         <Title limit={this.props.navigation.state.params.timers[0] ? this.props.navigation.state.params.timers[0].timeLength : ""} />
         <Warning timeElapsed={this.timeElapsed} visibility={this.state.warningVisibility} uponTicketed={this.uponTicketed.bind(this)} clearWarning={this.updateRows.bind(this)}/>
-        <VinSearch handleVINSearch={this.handleVINSearch.bind(this)}/>
+
         <ListView
           enableEmptySections={true}
           // In next release empty section headers will be rendered.
