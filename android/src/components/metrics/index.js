@@ -48,7 +48,7 @@ export default class Metrics extends Component {
             }}
             strokeWidth={1}
             strokeColor={'black'}
-            fillColor={'red'}
+            fillColor={'#ff6600'}
             radius={200}/>
             <MapView.Circle
               center={{
@@ -58,7 +58,7 @@ export default class Metrics extends Component {
               strokeWidth={1}
               strokeColor={'black'}
               fillColor={'yellow'}
-              radius={1000}/>
+              radius={1200}/>
         </MapView.Animated>
         <View style={styles.controlContainer}>
           <Text style={styles.title}>This page is currently in progress.</Text>
