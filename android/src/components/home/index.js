@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import Realm from 'realm';
 import { NavigationActions } from'react-navigation';
-import Header from './Header';
+import Menu from './Menu';
 import MainButtons from './MainButtons';
 import TicketCounter from './TicketCounter';
 import TimersList from './ListView';
@@ -36,8 +36,7 @@ export default class Home extends Component {
   render() {
     return (
       <View style={styles.container} >
-        <Header navigation={this.props.navigation} />
-        <MainButtons navigation={this.props.navigation} />
+        <Menu navigation={this.props.navigation} />
         <TicketCounter ticketCount={this.state.ticketCount} navigation={this.props.navigation} />
         <TimersList
           navigation={this.props.navigation}
