@@ -53,6 +53,7 @@ export default class VINSearch extends Component {
           onPress={ () => {
             Keyboard.dismiss();
             this._fadeContainer();
+            this.setState({ license: '' });
             setTimeout(() => this.props.closeSearch(), 500);
           }}
           underlayColor={'#4286f4'}
@@ -77,7 +78,8 @@ export default class VINSearch extends Component {
               autoCorrect={false}
               autoFocus={true}
               underlineColorAndroid={'transparent'}
-              onFocus={() => {}} />
+              onFocus={() => {}}
+              value={this.state.license} />
           </Animated.View>
 
           <TouchableHighlight
@@ -95,7 +97,7 @@ export default class VINSearch extends Component {
         <Animated.View style={{
                         alignSelf: 'center',
                         height: 1,
-                        borderWidth: 1,
+                        borderWidth: .35,
                         borderColor: 'white',
                         width: this.state.underline,
                         opacity: this.state.underlineOpacity, }}>
@@ -120,7 +122,7 @@ export default class VINSearch extends Component {
 
           <Animated.View style={{
                           borderColor: 'white',
-                          borderWidth: .5,
+                          borderWidth: .35,
                           height: this.state.separatorHeight,
                         }} />
 
