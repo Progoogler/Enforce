@@ -59,6 +59,7 @@ export default class Profile extends Component {
             style={{ borderColor: this.state.emailColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
             autoCorrect={false}
             autoCapitalize={'words'}
+            keyboardType={'email-address'}
             fontSize={18}
             underlineColorAndroid={'transparent'}
             onFocus={() => this._onEmailFocus()}
