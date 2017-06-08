@@ -5,7 +5,7 @@ import {
   Image,
   TextInput,
   TouchableHighlight,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
   StyleSheet,
   Keyboard,
   Animated,
@@ -65,18 +65,19 @@ export default class VINSearch extends Component {
                             width: 150,
                             marginTop: 25,
                             marginLeft: this.state.underlineMargin,
-                            height: 50,
+                            height: 80,
                             paddingLeft: 15,
                             zIndex: 10,
                           }}>
             <TextInput
+              ref={(ref) => { this.myTextInput = ref }}
               onChangeText={(license) => { this._handleTextInput(license) }}
               maxLength={7}
               fontSize={24}
               autoCapitalize={'characters'}
               keyboardType={'numeric'}
               autoCorrect={false}
-              autoFocus={true}
+              autoFocus={ this.props.defaultSearch ? false : true }
               underlineColorAndroid={'transparent'}
               onFocus={() => {}}
               value={this.state.license} />
@@ -109,16 +110,18 @@ export default class VINSearch extends Component {
             flex: 1,
             flexDirection: 'row', }} >
 
-          <TouchableHighlight
+          <TouchableOpacity
             style={styles.button}
-            underlayColor='#4286f4'
+            activeOpacity={.6}
+            //underlayColor='#4286f4'
             onPress={ () => {
-
+              console.log('hist pressed', this.state.license.length)
+              if (this.state.license.length === 0) this.myTextInput.focus();
             }} >
             <Animated.Text style={{
                             color: 'white',
                             opacity: this.state.textFade, }}>History</Animated.Text>
-          </TouchableHighlight>
+          </TouchableOpacity>
 
           <Animated.View style={{
                           borderColor: 'white',
@@ -126,16 +129,18 @@ export default class VINSearch extends Component {
                           height: this.state.separatorHeight,
                         }} />
 
-          <TouchableHighlight
+          <TouchableOpacity
             style={styles.button}
-            underlayColor='#4286f4'
+            activeOpacity={.6}
+            //underlayColor='#4286f4'
             onPress={ () => {
-
+              console.log('pressed', this.state.license.length)
+              if (this.state.license.length === 0) this.myTextInput.focus();
             }} >
             <Animated.Text style={{
                             color: 'white',
                             opacity: this.state.textFade, }}>VIN</Animated.Text>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </Animated.View>
       </Animated.View>
     );
@@ -253,21 +258,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  // container: {
-  //   backgroundColor: 'white',
-  //   flex: 1,
-  //   flexDirection: 'column',
-  //   justifyContent: 'flex-start',
-  //   alignItems: 'center',
-  // },
-  // image: {
-  //   marginTop: 200,
-  // },
-  // title: {
-  //   fontSize: 24,
-  //   marginTop: 180,
-  // },
-  // message: {
-  //   fontSize: 24,
-  // },
 });
