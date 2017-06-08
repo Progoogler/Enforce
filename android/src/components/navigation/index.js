@@ -29,7 +29,7 @@ export default class Header extends Component {
 
         this.state.search ?
 
-        <Search navigation={this.props.navigation} closeSearch={this.closeSearch.bind(this)}/> :
+        <Search navigation={this.props.navigation} closeSearch={this.closeSearch.bind(this)} defaultSearch={this.props.search} /> :
 
         <View style={styles.headerContainer} >
           <TouchableHighlight
@@ -70,6 +70,10 @@ export default class Header extends Component {
       }
       </View>
     );
+  }
+
+  componentWillMount() {
+    this.props.search && this.setState({ search: true });
   }
 
   componentDidMount() {
