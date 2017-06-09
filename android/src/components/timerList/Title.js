@@ -8,6 +8,7 @@ import {
 const styles = StyleSheet.create({
   container: {
     height: 50,
+    marginTop: -18,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#4286f4',

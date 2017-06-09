@@ -15,7 +15,7 @@ import Title from './Title';
 import VinSearch from './VinSearch';
 import Row from './Row';
 import Footer from './Footer';
-import Navigation from '../navigation';
+import Search from '../search/';
 import Warning from './Warning';
 import Done from './Done';
 import insertionSortModified from '../home/insertionSort';
@@ -49,6 +49,7 @@ export default class TimerList extends Component {
     this.VIN = "";
     this.license = '';
     this.timeElapsed = '';
+    this._reset = false;
   }
   static navigationOptions = {
     drawerLabel: 'Timers',
@@ -63,7 +64,7 @@ export default class TimerList extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Navigation navigation={this.props.navigation} search={true} />
+        <Search navigation={this.props.navigation} timerList={true} shouldResetLicense={this.shouldResetLicense.bind(this)} addLicenseToQueue={this.addLicenseToQueue.bind(this)} />
         <Title limit={this.props.navigation.state.params.timers[0] ? this.props.navigation.state.params.timers[0].timeLength : ""} />
         <Warning timeElapsed={this.timeElapsed} visibility={this.state.warningVisibility} uponTicketed={this.uponTicketed.bind(this)} clearWarning={this.updateRows.bind(this)}/>
 
@@ -147,6 +148,7 @@ export default class TimerList extends Component {
   }
 
   uponTicketed(timer, force) { // Handle updates to Realm for regular and forced.
+    console.log(this.license, timer.license, timer, force)
     if (Array.isArray(timer)) timer = this._timer;
     let now = new Date();
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000 || force) {
@@ -207,9 +209,11 @@ export default class TimerList extends Component {
     let timers = this.realm.objects('Timers')[timer.index]['list'];
     if (timers['0'] === timer) {
       this.realm.write(() => {
+        if (this.license) timer.license = this.license;
         this.realm.objects('Expired')[0]['list'].push(timer);
         timers.shift();
       });
+      if (this.license) this.resetLicenseAndVIN();
       this.updateRows();
       return;
     } else {
@@ -222,17 +226,18 @@ export default class TimerList extends Component {
       }
       if (indexOfTimer) {
         this.realm.write(() => {
+          if (this.license) timer.license = this.license;
           this.realm.objects('Expired')[0]['list'].push(timer);
           timers.splice(parseInt(indexOfTimer), 1);
         });
+        if (this.license) this.resetLicenseAndVIN();
         this.updateRows();
       }
     }
   }
 
-  handleVINSearch(license) {
+  addLicenseToQueue(license) {
     Keyboard.dismiss();
-    console.log('HANDLE VIN', license, this.license);
     this.license = license;
 
     // TODO
@@ -244,7 +249,16 @@ export default class TimerList extends Component {
     this.updateRows();
   }
 
+  shouldResetLicense(setToFalse) {  console.log('called to reset');
+    if (setToFalse) {
+      this._reset = false;
+      return;
+    }
+    return this._reset ? true : false;
+  }
+
   resetLicenseAndVIN() {
+    this._reset = true;
     this.license = '';
     this.VIN = '';
   }
