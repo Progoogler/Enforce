@@ -6,7 +6,6 @@ import MapApp from './map/MapApp';
 import Home from './home';
 import Profile from './profile';
 import TimerList from './timerList';
-import VINSearch from './search';
 import History from './history';
 import Metrics from './metrics';
 import Settings from './settings';
@@ -28,9 +27,6 @@ const AppNavigator = DrawerNavigator({
   },
   Timers: {
     screen: TimerList
-  },
-  "VIN Search": {
-    screen: VINSearch
   },
   History: {
     screen: History
