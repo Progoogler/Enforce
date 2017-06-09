@@ -11,7 +11,7 @@ import {
 import Realm from 'realm';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
-import Navigation from '../navigation';
+import Navigation from '../navigation/StaticNavigation';
 import LocationDetailsView from './LocationDetailsView';
 import CustomCallout from './CustomCallout';
 import ErrorMessage from './ErrorMessage';
@@ -28,6 +28,7 @@ export default class MapApp extends Component {
     this.animatedMap = undefined;
     this.realm = new Realm();
   }
+
   static navigationOptions = {
     drawerLabel: 'Map',
     drawerIcon: ({ tintColor }) => (
@@ -37,6 +38,41 @@ export default class MapApp extends Component {
       />
     )
   };
+
+  render() {
+    return (
+      <View style={styles.container} >
+        <Navigation
+          navigation={this.props.navigation}
+          title={'Map View'}
+          route={'Map'}
+          imageSource={require('../../../../shared/images/white-pin.jpg')} />
+
+        {this.getLocationDetails()}
+
+        <ActivityIndicator
+          animating={this.state.animating}
+          style={styles.activity}
+          size='large' />
+
+        <MapView.Animated
+          ref={ref => { this.animatedMap = ref; }}
+          style={styles.map}
+          mapType="hybrid"
+          showsUserLocation={true}
+          initialRegion={{
+            latitude: this.realm.objects('Coordinates')[0].latitude ? this.realm.objects('Coordinates')[0].latitude : 37.78926,
+            longitude: this.realm.objects('Coordinates')[0].longitude ? this.realm.objects('Coordinates')[0].longitude : -122.43159,
+            latitudeDelta: 0.0108,
+            longitudeDelta: 0.0060,
+          }} >
+            { this.getMarkers() }
+        </MapView.Animated>
+
+        { this.state.showError ? <ErrorMessage checkLocationAndRender={this.checkLocationAndRender.bind(this)} /> : <View /> }
+      </View>
+    );
+  }
 
   async componentWillMount() {
     this._mounted = true;
@@ -110,37 +146,6 @@ export default class MapApp extends Component {
       }
       if (!details) return (<LocationDetailsView />);
     }
-  }
-
-  render() {
-    return (
-      <View style={styles.container} >
-        <Navigation navigation={this.props.navigation} />
-
-        {this.getLocationDetails()}
-
-        <ActivityIndicator
-          animating={this.state.animating}
-          style={styles.activity}
-          size='large' />
-
-        <MapView.Animated
-          ref={ref => { this.animatedMap = ref; }}
-          style={styles.map}
-          mapType="hybrid"
-          showsUserLocation={true}
-          initialRegion={{
-            latitude: this.realm.objects('Coordinates')[0].latitude ? this.realm.objects('Coordinates')[0].latitude : 37.78926,
-            longitude: this.realm.objects('Coordinates')[0].longitude ? this.realm.objects('Coordinates')[0].longitude : -122.43159,
-            latitudeDelta: 0.0108,
-            longitudeDelta: 0.0060,
-          }} >
-            { this.getMarkers() }
-        </MapView.Animated>
-
-        { this.state.showError ? <ErrorMessage checkLocationAndRender={this.checkLocationAndRender.bind(this)} /> : <View /> }
-      </View>
-    );
   }
 
   _animateToCoord(lat, long) {
