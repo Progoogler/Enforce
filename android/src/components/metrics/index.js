@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import MapView, { Marker, Circle } from 'react-native-maps';
 import Realm from 'realm';
-import Navigation from '../navigation';
+import Navigation from '../navigation/StaticNavigation';
 
 
 export default class Metrics extends Component {
@@ -29,7 +29,11 @@ export default class Metrics extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Navigation style={styles.header} title={'Metrics'} navigation={this.props.navigation} />
+        <Navigation
+          style={styles.header}
+          title={'Metrics'}
+          navigation={this.props.navigation}
+          imageSource={require('../../../../shared/images/bar-icon.png')} />
         <MapView.Animated
           ref={ref => { this.animatedMap = ref; }}
           style={styles.map}
@@ -38,8 +42,8 @@ export default class Metrics extends Component {
           initialRegion={{
             latitude: this.realm.objects('Coordinates')[0].latitude ? this.realm.objects('Coordinates')[0].latitude : 37.78926,
             longitude: this.realm.objects('Coordinates')[0].longitude ? this.realm.objects('Coordinates')[0].longitude : -122.43159,
-            latitudeDelta: 0.0108,
-            longitudeDelta: 0.0060,
+            latitudeDelta: 0.0308,
+            longitudeDelta: 0.0260,
           }} >
           <MapView.Circle
             center={{
@@ -70,20 +74,16 @@ export default class Metrics extends Component {
   }
 
   componentWillMount() {
-    const {height, width} = Dimensions.get('window');
-    styles.map = {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: height / 2 - 100,
-    };
+    const { height } = Dimensions.get('window');
     styles.controlContainer = {
       position: 'absolute',
-      top: height / 2 + 100,
+      top: height / 2 + 50,
       left: 0,
       right: 0,
       bottom: 0,
+      borderTopWidth: 5,
+      borderColor: '#4286f4',
+      justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: 'white',
     };
@@ -99,6 +99,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     alignItems: 'center',
     backgroundColor: 'white',
+  },
+  map: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0, //height / 2 - 100,
   },
   image: {
     //marginTop: 200,
