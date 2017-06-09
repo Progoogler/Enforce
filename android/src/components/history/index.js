@@ -21,7 +21,7 @@ export default class History extends Component {
   constructor() {
     super();
     this.realm = new Realm();
-    this.list = this.realm.objects('Ticketed')[0]['list'];
+    this.list = this._reverseRealmList(this.realm.objects('Ticketed')[0]['list']); // Display most recent first.
     this.ticketedList = this.list;
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
@@ -131,7 +131,7 @@ export default class History extends Component {
       this._updateRows(this.ticketedList);
       return;
     } else if (value === "Today's Expired") {
-      this.list = this.realm.objects('Expired')[0]['list'];
+      this.list = this._reverseRealmList(this.realm.objects('Expired')[0]['list']);
       this.selected = value;
       this._updateRows(this.list);
       return;
@@ -148,6 +148,14 @@ export default class History extends Component {
       dateTransition: false,
       animating: false,
     });
+  }
+
+  _reverseRealmList(list) {
+    let reversedList = [];
+    for (let i = list.length - 1; i >= 0; i--) {
+      reversedList.push(list[i]);
+    }
+    return reversedList;
   }
 
   maximizeImage(uri) {
