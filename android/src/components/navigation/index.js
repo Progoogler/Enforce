@@ -11,8 +11,7 @@ import {
 
 import Search from '../search';
 
-
-export default class Header extends Component {
+export default class Navigation extends Component {
   constructor() {
     super();
     this.state = {
@@ -29,7 +28,11 @@ export default class Header extends Component {
 
         this.state.search ?
 
-        <Search navigation={this.props.navigation} closeSearch={this.closeSearch.bind(this)} defaultSearch={this.props.search} /> :
+        <Search
+          navigation={this.props.navigation}
+          closeSearch={this.closeSearch.bind(this)}
+          defaultSearch={this.props.search}
+          handleVINSearch={this.props.handleVINSearch ? this.props.handleVINSearch : null} /> :
 
         <View style={styles.headerContainer} >
           <TouchableHighlight
@@ -41,9 +44,9 @@ export default class Header extends Component {
               ).start();
               this.props.toggleSearching ? this.props.toggleSearching() : null;
               this.setState({
-                              search: !this.state.search,
-                              titleOpacity: new Animated.Value(0),
-                            });
+                search: !this.state.search,
+                titleOpacity: new Animated.Value(0),
+              });
             }}
             underlayColor={'#4286f4'}
             style={styles.searchIcon} >
@@ -98,18 +101,17 @@ export default class Header extends Component {
 const styles = StyleSheet.create({
   container: {
     zIndex: 10,
-    // height: 130,
     alignSelf: 'stretch',
     backgroundColor: '#4286f4',
   },
   headerContainer: {
     flexDirection: 'row',
-    backgroundColor: '#4286f4',
-    zIndex: 10,
+    //backgroundColor: '#4286f4',
   },
   searchIcon: {
     marginTop: 5,
     marginRight: 5,
+    flex: .15,
     height: 60,
     width: 60,
   },
@@ -118,8 +120,5 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  headerNavButton: {
-    textAlign: 'center',
   },
 });
