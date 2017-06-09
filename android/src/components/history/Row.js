@@ -67,7 +67,7 @@ export default class Row extends Component {
     if (timeLimit < 1) {
       return `${timeLimit * 60} minutes`;
     } else {
-      return `${timeLimit} hours`;
+      return `${timeLimit} ${timeLimit === 1 ? 'hour' : 'hours'}`;
     }
   }
 
