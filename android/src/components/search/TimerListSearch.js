@@ -4,38 +4,30 @@ import {
   Text,
   Image,
   TextInput,
-  Dimensions,
   TouchableHighlight,
   TouchableOpacity,
   StyleSheet,
   Keyboard,
   Animated,
-  Easing,
 } from 'react-native';
 
 import historySearch from './historySearch';
-import Result from './Result';
 
-const width = Dimensions.get('window').width / 2;
 
 export default class Search extends Component {
   constructor() {
     super();
-    console.log("width", width)
     this.state = {
       buttonOpacity: new Animated.Value(1),
       containerHeight: new Animated.Value(65),
-      underlineMargin: new Animated.Value(width),
+      underlineMargin: new Animated.Value(123),
       underlineOpacity: new Animated.Value(1),
       separatorHeight: new Animated.Value(0),
       underline: new Animated.Value(0),
       textFade: new Animated.Value(0),
-      resultHeight: new Animated.Value(0),
-      resultOpacity: new Animated.Value(0),
       license: '',
-      result: null,
     }
-    this.marginValue = width;
+    this.marginValue = 123;
   }
 
   static navigationOptions = {
@@ -51,10 +43,10 @@ export default class Search extends Component {
   render() {
     return (
       <Animated.View style={{
-        zIndex: 100,
-        height: this.state.containerHeight,
-        alignSelf: 'stretch',
-        backgroundColor: '#4286f4', }} >
+          zIndex: 10,
+          height: this.state.containerHeight,
+          alignSelf: 'stretch',
+          backgroundColor: '#4286f4', }} >
 
         <View style={styles.headerContainer}>
 
@@ -63,8 +55,6 @@ export default class Search extends Component {
             Keyboard.dismiss();
             this._fadeContainer();
             this.setState({ license: '' });
-            this.extendResultContainer();
-            this.props.extendMenuContainer && this.props.extendMenuContainer();
             !this.props.timerList && setTimeout(() => this._mounted && this.props.closeSearch(), 500);
           }}
           underlayColor={'#4286f4'}
@@ -73,11 +63,11 @@ export default class Search extends Component {
         </TouchableHighlight>
 
           <Animated.View style={{
-                            position: 'absolute',
-                            top: 15,
                             width: 150,
+                            marginTop: 25,
                             marginLeft: this.state.underlineMargin,
                             height: 80,
+                            paddingLeft: 15,
                             zIndex: 10,
                           }}>
             <TextInput
@@ -133,7 +123,8 @@ export default class Search extends Component {
           <Animated.View style={{
             borderColor: 'white',
             borderWidth: .35,
-            height: this.state.separatorHeight, }} />
+            height: this.state.separatorHeight,
+          }} />
 
           <TouchableOpacity
             style={styles.button}
@@ -144,22 +135,13 @@ export default class Search extends Component {
             opacity: this.state.textFade, }}>VIN</Animated.Text>
           </TouchableOpacity>
         </Animated.View>
-
-        <Animated.View style={{
-          opacity: this.state.resultOpacity,
-          height: this.state.resultHeight,
-          alignSelf: 'stretch',
-          }}>
-          { this.state.result ? <Result data={this.state.result} /> : null }
-        </Animated.View>
-
       </Animated.View>
     );
     {/**/}
   }
 
   componentDidMount() {
-    Animated.parallel([
+    Animated.stagger(100, [
       Animated.timing(
         this.state.underline,
         { toValue: 180,
@@ -183,7 +165,6 @@ export default class Search extends Component {
     ]).start();
     if (this.props.timerList) this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
     this._mounted = true;
-    setTimeout(() => this._mounted && this.setState({containerHeight: new Animated.Value(130)}), 500);
   }
 
   componentWillUnmount() {
@@ -201,93 +182,32 @@ export default class Search extends Component {
     }
   }
 
-  _handleHistorySearch() { console.log('HISTORY BUTTON PRESSED')
-    if (this.state.license.length === 0) {
-      this.myTextInput.focus();
-    } else {
-      let result = historySearch(this.state.license); console.log('result', result);
-      //this.setState({result, containerHeight: new Animated.Value(240)});
-      this.setState({result});
-      this.extendResultContainer(true);
-      this.props.extendMenuContainer && this.props.extendMenuContainer(true);
-
-
-      if (this.props.timerList) {
-        this.props.addLicenseToQueue && this.props.addLicenseToQueue(this.state.license);
-      }
-    }
-  }
-
-  _handleVINSearch() { console.log('VIN BUTTON PRESSED')
+  _handleHistorySearch() {
     if (this.state.license.length === 0) {
       this.myTextInput.focus();
     } else {
       if (this.props.timerList) {
+        let result = historySearch(this.state.license);
         this.props.addLicenseToQueue && this.props.addLicenseToQueue(this.state.license);
+        console.log('result', result);
       }
     }
   }
-
-  extendResultContainer(extend) {
-    console.log('hi');
-    if (extend) {
-      Animated.parallel([
-        Animated.timing(
-          this.state.containerHeight,
-          { toValue: 250,
-            duration: 600, },
-        ),
-        Animated.timing(
-          this.state.resultHeight,
-          { toValue: 115,
-            duration: 1000, },
-        ),
-        Animated.timing(
-          this.state.resultOpacity,
-          { toValue: 1,
-            duration: 1000, },
-        ),
-      ]).start();
-    }
-
-    // TODO Option to close only the result?
-    // } else { console.log('close container')
-    //   Animated.parallel([
-    //     Animated.timing(
-    //       this.state.resultOpacity,
-    //       { toValue: 0,
-    //         duration: 800, },
-    //     ),
-    //     Animated.timing(
-    //       this.state.resultHeight,
-    //       { toValue: 130,
-    //         duration: 800, },
-    //     ),
-    //   ]).start();
-    // }
-  }
-
-// TODO TODO result check to display not found or vin as well
-//this._displayResultAnimated('history');
-  // _displayResultAnimated(result) {
-  //   if (result === 'history') {
-  //     Animated.timing(
-  //       this.state.containerHeight,
-  //       { toValue: 230,
-  //         duration: 900, },
-  //     ).start();
-  //   } else {
-  //     Animated.timing(
-  //       this.state.containerHeight,
-  //       { toValue: 195,
-  //         duration: 500, },
-  //     ).start();
-  //   }
-  // }
 
    _keyboardDidHide() {
      if (this.state.license) this.props.addLicenseToQueue(this.state.license);
    }
+
+  _handleVINSearch() {
+    if (this.state.license.length === 0) {
+      this.myTextInput.focus();
+    } else {
+      if (this.props.timerList) {
+        console.log('VIN BUTTON PRESSED')
+        this.props.addLicenseToQueue && this.props.addLicenseToQueue(this.state.license);
+      }
+    }
+  }
 
   _handleTextInput(license) {
     if (license.length < this.state.license.length) {
@@ -307,6 +227,7 @@ export default class Search extends Component {
   }
 
   _fadeContainer() {
+
     Animated.parallel([
       Animated.timing(
         this.state.buttonOpacity,
@@ -316,7 +237,7 @@ export default class Search extends Component {
       Animated.timing(
         this.state.containerHeight,
         { toValue: 65,
-          duration: 600, },
+          duration: 500, },
       ),
       Animated.timing(
         this.state.underlineOpacity,
@@ -328,16 +249,6 @@ export default class Search extends Component {
         { toValue: 0,
           duration: 500, },
       ),
-      Animated.timing(
-        this.state.resultOpacity,
-        { toValue: 0,
-          duration: 600, },
-      ),
-      // Animated.timing(
-      //   this.state.resultHeight,
-      //   { toValue: 130,
-      //     duration: 800, },
-      // ),
     ]).start();
   }
 }
