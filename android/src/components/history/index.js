@@ -164,7 +164,6 @@ export default class History extends Component {
     } else {
       this.setState({showMaximizedImage: false, uri: ''});
     }
-    console.log(uri, 'this')
   }
 
   _getPrettyDate(month, day) {
