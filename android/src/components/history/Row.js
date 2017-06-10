@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
 
+
 export default class Row extends Component {
   constructor() {
     super();
@@ -21,12 +22,11 @@ export default class Row extends Component {
   }
 
   render() {
-    console.log('row')
     return (
       <View style={styles.container}>
         <View style={styles.rowContainer}>
           {
-            (this.props.selected === "Today's Ticketed" || this.props.selected === "Today's Expired") ?
+            (this.props.selected === "Today's Tickets" || this.props.selected === "Today's Expired") ?
             <TouchableWithoutFeedback onPress={() => this.props.maximizeImage(this.props.data.mediaUri)}>
               <Image style={styles.image} source={{uri: this.props.data.mediaUri}} />
             </TouchableWithoutFeedback>
@@ -38,11 +38,14 @@ export default class Row extends Component {
 
           <ActivityIndicator style={styles.activity} animating={this.state.animating} size='small' />
           <View>
-            { this.props.data.license ? <Text>License: {this.props.data.license}</Text> : null }
-            { this.props.data.VIN ? <Text>VIN: {this.props.data.VIN}</Text> : null }
-            <Text>Photo taken: {this._getPrettyTimeFormat(this.props.data.createdAt)}</Text>
-            { this.props.data.ticketedAt !== 0 ? <Text>Ticketed: {this._getPrettyTimeFormat(this.props.data.ticketedAt)}</Text> : null }
-            <Text>Time limit: {this._getTimeLimitDesc(this.props.data.timeLength)}</Text>
+          { this.props.data.license && this.props.data.VIN ?
+            <Text><Text style={styles.label}>License:</Text> {this.props.data.license + '         '}
+            <Text style={styles.label}>VIN:</Text> {this.props.data.VIN}</Text> :
+            <Text><Text style={styles.label}>License:</Text> {this.props.data.license}</Text> }
+
+            <Text><Text style={styles.label}>Photo taken:</Text> {this._getPrettyTimeFormat(this.props.data.createdAt)}</Text>
+            { this.props.data.ticketedAt !== 0 ? <Text><Text style={styles.label}>Ticketed:</Text> {this._getPrettyTimeFormat(this.props.data.ticketedAt)}</Text> : null }
+            <Text><Text style={styles.label}>Time limit:</Text> {this._getTimeLimitDesc(this.props.data.timeLength)}</Text>
           </View>
           <TouchableHighlight
             style={styles.button}
@@ -129,6 +132,9 @@ const styles = StyleSheet.create({
     height: 100,
     width: 100,
     marginRight: 15,
+  },
+  label: {
+    fontWeight: 'bold',
   },
   activity: {
     position: 'absolute',
