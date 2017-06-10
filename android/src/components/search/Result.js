@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 
+import MapModal from './MapModal';
 import ImageModal from '../history/ImageModal';
 import Unfound from './Unfound';
 
@@ -17,6 +18,7 @@ export default class Result extends Component {
     super();
     this.state = {
       showMaximizedImage: false,
+      modalVisible: false,
       uri: '',
     }
   }
@@ -66,6 +68,14 @@ export default class Result extends Component {
             <Unfound license={this.props.license} />
 
         }
+
+        { this.state.modalVisible ? <MapModal
+                                      visibility={this.state.modalVisible}
+                                      latitude={this.props.data.data.latitude}
+                                      longitude={this.props.data.data.longitude}
+                                      description={this.props.data.data.description}
+                                      closeModal={this.closeModal.bind(this)} /> : null }
+
       </View>
     );
   }
@@ -87,20 +97,21 @@ export default class Result extends Component {
     hour = (hour <= 12) ? hour : hour - 12;
     let str = date + '';
     str = str.slice(0, 10);
-    return `${str} ${hour}:${minutes} ${period}`;
+    return `${hour}:${minutes} ${period} ${str} `;
   }
 
   _openMapPage = (timer) => {
-    const navigateAction = NavigationActions.navigate({
-      routeName: 'Map',
-      params: {
-        timers: timer,
-        historyView: true,
-        route: this.props.navigation.state.key,
-        license: this.props.data.data.license,
-      },
-    });
-    this.props.navigation.dispatch(navigateAction);
+    // const navigateAction = NavigationActions.navigate({
+    //   routeName: 'Map',
+    //   params: {
+    //     timers: timer,
+    //     historyView: true,
+    //     route: this.props.navigation.state.key,
+    //     license: this.props.data.data.license,
+    //   },
+    // });
+    // this.props.navigation.dispatch(navigateAction);
+    this.setState({modalVisible: true})
   }
 
   maximizeImage(uri) {
@@ -114,6 +125,10 @@ export default class Result extends Component {
   _handleCloseResult() {
     this.props.minimizeResultContainer();
     this.props.resizeMenuContainer && this.props.resizeMenuContainer();
+  }
+
+  closeModal() {
+    this.setState({modalVisible: false});
   }
 
 }
