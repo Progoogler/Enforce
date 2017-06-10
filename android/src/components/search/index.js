@@ -16,7 +16,7 @@ import {
 import historySearch from './historySearch';
 import Result from './Result';
 
-const center = Math.floor(Dimensions.get('window').width / 2);
+const center = Math.floor(Dimensions.get('window').width / 2) - 3.5;
 
 export default class Search extends Component {
   constructor() {
@@ -169,17 +169,24 @@ export default class Search extends Component {
           duration: 500, },
       ),
     ]).start();
-    if (this.props.timerList) this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+    if (this.props.timerList) this.keyboardDidHideForTimerListListener = Keyboard.addListener('keyboardDidHideForTimerList', this._keyboardDidHideForTimerList.bind(this));
     this._mounted = true;
     setTimeout(() => this._mounted && this.setState({containerHeight: new Animated.Value(130)}), 500);
+
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+  }
+
+  _keyboardDidHide() {
+    this.myTextInput.blur();
   }
 
   componentWillUnmount() {
     this._mounted = false;
-    this.props.timerList && this.keyboardDidHideListener.remove();
+    this.props.timerList && this.keyboardDidHideForTimerListListener.remove();
+    this.keyboardDidHideListener.remove();
   }
 
-  componentWillUpdate() { console.log('search component updates')
+  componentWillUpdate() {
     if (this.props.timerList) {
       if (this.props.shouldResetLicense()) {
         this.setState({license: '', underlineMargin: new Animated.Value(center)});
@@ -379,7 +386,7 @@ export default class Search extends Component {
   //   }
   // }
 
-   _keyboardDidHide() {
+   _keyboardDidHideForTimerList() {
      if (this.state.license) this.props.addLicenseToQueue(this.state.license);
    }
 
