@@ -3,7 +3,7 @@ import { DrawerNavigator } from 'react-navigation';
 import { AsyncStorage } from 'react-native';
 import CameraApp from './camera/CameraApp';
 import MapApp from './map/MapApp';
-import Home from './home';
+import Overview from './overview';
 import Profile from './profile';
 import TimerList from './timerList';
 import History from './history';
@@ -16,8 +16,8 @@ import { initialize as FirebaseInitialize, signInUser as FirebaseSignIn }  from 
 
 
 const AppNavigator = DrawerNavigator({
-  Home: {
-    screen: Home
+  Overview: {
+    screen: Overview
   },
   Map: {
     screen: MapApp
