@@ -56,6 +56,7 @@ export default class Navigation extends Component {
             opacity: this.state.titleOpacity,
             flex: .70,
             height: 60,
+            marginLeft: -10,
             fontSize: 32,
             color: 'white',
             textAlignVertical: 'center',
