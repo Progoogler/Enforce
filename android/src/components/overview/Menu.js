@@ -30,7 +30,6 @@ export default class Menu extends Component {
 
       <Animated.View style={{
         zIndex: 9,
-
         height: this.state.containerHeight,
         alignSelf: 'stretch',
         backgroundColor: '#4286f4',
@@ -39,11 +38,7 @@ export default class Menu extends Component {
 
         this.state.search ?
 
-        <Search
-          navigation={this.props.navigation}
-          minimizeMenuContainer={this.minimizeMenuContainer.bind(this)}
-          extendMenuContainer={this.extendMenuContainer.bind(this)}
-          closeSearch={this.closeSearch.bind(this)} /> :
+        <Search navigation={this.props.navigation} noResultNotificationForMenu={this.noResultNotificationForMenu.bind(this)} resizeMenuContainer={this.resizeMenuContainer.bind(this)} closeSearch={this.closeSearch.bind(this)}/> :
 
         <View>
           <View style={styles.headerContainer} >
@@ -75,6 +70,7 @@ export default class Menu extends Component {
               opacity: this.state.titleOpacity,
               flex: .70,
               height: 60,
+              marginLeft: -10,
               fontSize: 32,
               color: 'white',
               textAlignVertical: 'center',
@@ -116,24 +112,68 @@ export default class Menu extends Component {
     this._mounted = false;
   }
 
-  extendMenuContainer() {
-    Animated.timing(
-      this.state.containerHeight, {
-        toValue: 250,
-        duration: 500,
-      },
-    ).start();
-  }
+  resizeMenuContainer(extend) {
+    if (extend) {
+      Animated.timing(
+        this.state.containerHeight,
+        { toValue: 250,
+          duration: 500, },
+        ).start();
+      } else {
+        Animated.timing(
+          this.state.containerHeight,
+          { toValue: 130,
+            duration: 500, },
+        ).start();
+      }
+    }
 
-  minimizeMenuContainer() {
-    Animated.timing(
-      this.state.containerHeight, {
-        toValue: 130,
-        duration: 500,
-      },
-    ).start();
-  }
+    noResultNotificationForMenu() {
 
+        Animated.timing(
+          this.state.containerHeight, {
+            toValue: 200,
+            duration: 600,
+          },
+        ).start();
+        // Animated.timing(
+        //   this.state.resultHeight, {
+        //     toValue: 80,
+        //     duration: 1000,
+        //   },
+        // ),
+        // Animated.timing(
+        //   this.state.resultOpacity, {
+        //     toValue: 1,
+        //     duration: 1000,
+        //   },
+        // ),
+      // ]).start();
+
+      setTimeout(() => {
+
+        // Animated.parallel([
+          Animated.timing(
+            this.state.containerHeight, {
+              toValue: 130,
+              duration: 600,
+            },
+          ).start();
+        //   Animated.timing(
+        //     this.state.resultHeight, {
+        //       toValue: 0,
+        //       duration: 400,
+        //     },
+        //   ),
+        //   Animated.timing(
+        //     this.state.resultOpacity, {
+        //       toValue: 0,
+        //       duration: 1000,
+        //     },
+        //   ),
+        // ]).start();
+      }, 1800);
+    }
 
   closeSearch() {
     this._mounted && this.setState({ search: !this.state.search });
