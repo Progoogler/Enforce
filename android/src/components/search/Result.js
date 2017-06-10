@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Animated,
 } from 'react-native';
-import NavigationActions from 'react-navigation';
+import { NavigationActions } from 'react-navigation';
 
 import ImageModal from '../history/ImageModal';
 
@@ -22,14 +22,7 @@ export default class Result extends Component {
 
   render() {
     return (
-      <View
-        style={{
-          height: 120,
-          alignSelf: 'stretch',
-          backgroundColor: '#4286f4',
-          padding: 15,
-          zIndex: 10,
-        }} >
+      <View style={styles.outerContainer} >
 
         { this.state.showMaximizedImage ? <ImageModal
             navigation={this.props.navigation}
@@ -44,17 +37,25 @@ export default class Result extends Component {
               <Image source={{uri: this.props.data.data.mediaUri}} style={styles.image} />
             </TouchableOpacity>
               <View style={styles.dataContainer}>
-                { this.props.data.data.license ? <Text>License: {this.props.data.data.license}</Text> : null }
-                { this.props.data.data.VIN ? <Text>VIN: {this.props.data.data.VIN}</Text> : null }
-                <Text>Photo taken: {this._getPrettyTimeFormat(this.props.data.data.createdAt)}</Text>
-                { this.props.data.data.ticketedAt !== 0 ? <Text>Ticketed: {this._getPrettyTimeFormat(this.props.data.data.ticketedAt)}</Text> : null }
-                <Text>Time limit: {this._getTimeLimitDesc(this.props.data.data.timeLength)}</Text>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => this._openMapPage(this.props.data.data)} >
-                  <Image source={require('../../../../shared/images/blue-pin.png')} style={styles.mapIcon} />
-                </TouchableOpacity>
+                { this.props.data.data.license && this.props.data.data.VIN ?
+                  <Text><Text style={styles.label}>License:</Text> {this.props.data.data.license + '         '}
+                  <Text style={styles.label}>VIN:</Text> {this.props.data.data.VIN}</Text> :
+                  <Text><Text style={styles.label}>License:</Text> {this.props.data.data.license}</Text> }
+
+                <Text><Text style={styles.label}>Photo taken:</Text> {this._getPrettyTimeFormat(this.props.data.data.createdAt)}</Text>
+                { this.props.data.data.ticketedAt !== 0 ? <Text><Text style={styles.label}>Ticketed:</Text> {this._getPrettyTimeFormat(this.props.data.data.ticketedAt)}</Text> : null }
+                <Text><Text style={styles.label}>Time limit:</Text> {this._getTimeLimitDesc(this.props.data.data.timeLength)}</Text>
               </View>
+              <TouchableOpacity
+                style={styles.mapButton}
+                onPress={() => this._openMapPage(this.props.data.data)} >
+                <Image source={require('../../../../shared/images/blue-pin.png')} style={styles.mapIcon} />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.closeResultButton}
+                onPress={() => this._handleCloseResult()} >
+                <Text style={styles.closeResultText}>X</Text>
+              </TouchableOpacity>
             </View>
             :
 
@@ -63,14 +64,6 @@ export default class Result extends Component {
         }
       </View>
     );
-  }
-  // <View>
-  //   <Text style={styles.buttonText}>Show Map</Text>
-  //   </View>
-
-  componentWillMount() {
-    // console.log('result mounts')
-    // if (this.props.extendMenuContainer) this.props.extendMenuContainer(true);
   }
 
   _getTimeLimitDesc = (timeLimit) => {
@@ -94,9 +87,13 @@ export default class Result extends Component {
   }
 
   _openMapPage = (timer) => {
-    const navigateAction = this.props.NavigationActions.navigate({
+    const navigateAction = NavigationActions.navigate({
       routeName: 'Map',
-      params: {timers: timer, historyView: true, navigation: this.props.navigation},
+      params: {
+        timers: timer,
+        historyView: true,
+        navigation: this.props.navigation
+      },
     });
     this.props.navigation.dispatch(navigateAction);
   }
@@ -109,9 +106,21 @@ export default class Result extends Component {
     }
   }
 
+  _handleCloseResult() {
+    this.props.minimizeResultContainer();
+    this.props.minimizeMenuContainer && this.props.minimizeMenuContainer();
+  }
+
 }
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    height: 120,
+    alignSelf: 'stretch',
+    backgroundColor: '#4286f4',
+    padding: 15,
+    zIndex: 10,
+  },
   container: {
     flex: 1,
     flexDirection: 'row',
@@ -127,31 +136,25 @@ const styles = StyleSheet.create({
     flex: .7,
     padding: 10,
   },
-  // maximizeImage: {
-  //   height: 100,
-  //   width: 100,
-  //   marginRight: 15,
-  // },
-  // activity: {
-  //   position: 'absolute',
-  //   alignSelf: 'center',
-  //   left: 40,
-  // },
-  button: {
-  //   backgroundColor: '#4286f4',
+  label: {
+    fontWeight: 'bold',
+  },
+  mapButton: {
     position: 'absolute',
     bottom: 0,
     right: 0,
-  //   borderWidth: 1,
-  //   borderRadius: 5,
-  //   padding: 5,
-  //   height: 35,
-  // },
-  // buttonText: {
-  //   color: 'white',
+  },
+  closeResultButton: {
+    height: 25,
+    width: 25,
+    backgroundColor: '#4286f4',
+  },
+  closeResultText: {
+    color: 'white',
+    textAlign: 'center',
   },
   mapIcon: {
-    height: 45,
+    height: 35,
     width: 35,
   },
 });
