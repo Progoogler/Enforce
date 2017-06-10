@@ -5,8 +5,7 @@ import {
   Image,
   StyleSheet,
   ActivityIndicator,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
 
@@ -27,13 +26,13 @@ export default class Row extends Component {
         <View style={styles.rowContainer}>
           {
             (this.props.selected === "Today's Tickets" || this.props.selected === "Today's Expired") ?
-            <TouchableWithoutFeedback onPress={() => this.props.maximizeImage(this.props.data.mediaUri)}>
+            <TouchableOpacity activeOpacity={.4} onPress={() => this.props.maximizeImage(this.props.data.mediaUri)}>
               <Image style={styles.image} source={{uri: this.props.data.mediaUri}} />
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
             :
-            <TouchableHighlight style={styles.getImageButton} onPress={() => this._getImageFromDatabase() }>
+            <TouchableOpacity activeOpacity={.4} style={styles.getImageButton} onPress={() => this._getImageFromDatabase() }>
               { this.state.image.length === 0 ? <Text style={styles.getImageText}>{this.state.getImageText}</Text> : this.state.image[0] }
-            </TouchableHighlight>
+            </TouchableOpacity>
           }
 
           <ActivityIndicator style={styles.activity} animating={this.state.animating} size='small' />
@@ -47,14 +46,14 @@ export default class Row extends Component {
             { this.props.data.ticketedAt !== 0 ? <Text><Text style={styles.label}>Ticketed:</Text> {this._getPrettyTimeFormat(this.props.data.ticketedAt)}</Text> : null }
             <Text><Text style={styles.label}>Time limit:</Text> {this._getTimeLimitDesc(this.props.data.timeLength)}</Text>
           </View>
-          <TouchableHighlight
+          <TouchableOpacity
             style={styles.button}
-            underlayColor='#0099ff'
+            activeOpacity={.9}
             onPress={() => this._openMapPage(this.props.data)} >
             <View>
               <Text style={styles.buttonText}>Show Map</Text>
             </View>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -99,7 +98,8 @@ export default class Row extends Component {
     let date = new Date(this.props.data.createdAt);
     let datePath=`${date.getMonth() + 1}-${date.getDate()}`;
     let refPath = `${this.props.userSettings.county}/${this.props.userId}/${datePath}`;
-    this.props.getTicketImage(refPath, '1496530142627', (url) => {
+    let time = this.props.data.createdAt + '';
+    this.props.getTicketImage(refPath, time, (url) => {
       if (url === null) {
         this.setState({
           image: [<View style={styles.getImageButton}><Text style={styles.getImageText}>Photo {'\n'}not{'\n'}available</Text></View>],
@@ -107,7 +107,12 @@ export default class Row extends Component {
         });
       } else {
         this.setState({
-          image: [<TouchableWithoutFeedback style={styles.maximizeImage} onPress={() => this.props.maximizeImage(url)}><Image style={{alignSelf: 'center', height: 400, width: 300}} source={{ uri: url }} /></TouchableWithoutFeedback>],
+          image: [<TouchableOpacity
+                    style={styles.maximizeImage}
+                    activeOpacity={.8}
+                    onPress={() => this.props.maximizeImage(url)}>
+                      <Image style={{alignSelf: 'center', height: 400, width: 300}} source={{ uri: url }} />
+                    </TouchableOpacity>],
           animating: false,
         });
       }
