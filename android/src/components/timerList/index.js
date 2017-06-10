@@ -10,20 +10,20 @@ import {
 } from 'react-native';
 import Realm from 'realm';
 import { setUserTickets, setTicketImage } from '../../../../includes/firebase/database';
+import insertionSortModified from '../overview/insertionSort';
 
 import Title from './Title';
-import VinSearch from './VinSearch';
 import Row from './Row';
 import Footer from './Footer';
-import Search from '../search/';
+import Search from '../search';
 import Warning from './Warning';
 import Done from './Done';
-import insertionSortModified from '../home/insertionSort';
 
 import RNFetchBlob from 'react-native-fetch-blob';
 const Blob = RNFetchBlob.polyfill.Blob; // Initialize Blob for converting images into binary
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = Blob;
+
 
 export default class TimerList extends Component {
   constructor(props) {
@@ -46,7 +46,7 @@ export default class TimerList extends Component {
     };
     this.timer = null;
     this.ticketedCount = 0;
-    this.VIN = "";
+    this.VIN = "3999"; //TODO REMOVE
     this.license = '';
     this.timeElapsed = '';
     this._reset = false;
@@ -236,7 +236,7 @@ export default class TimerList extends Component {
     }
   }
 
-  addLicenseToQueue(license) {
+  addLicenseToQueue(license) { console.log('add license')
     Keyboard.dismiss();
     this.license = license;
 
