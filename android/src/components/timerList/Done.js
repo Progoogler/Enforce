@@ -3,18 +3,19 @@ import {
   View,
   Text,
   Image,
-  TouchableHighlight,
+  TouchableOpacity,
   StyleSheet,
 } from 'react-native';
 
 const Done = (props) => (
   <View style={styles.view}>
-  <TouchableHighlight
+  <TouchableOpacity
+    activeOpacity={.5}
     style={styles.container}
-    onPress={() => {props.navigation.navigate('Home')}}
+    onPress={() => {props.navigation.navigate('Overview')}}
     underlayColor="#0055e1" >
-    <Text style={styles.text}>Done</Text>
-  </TouchableHighlight>
+    <Text style={styles.text}>Done { console.log ('Done')}</Text>
+  </TouchableOpacity>
   </View>
 );
 
