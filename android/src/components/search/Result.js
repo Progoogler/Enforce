@@ -24,7 +24,8 @@ export default class Result extends Component {
     return (
       <View style={styles.outerContainer} >
 
-        { this.state.showMaximizedImage ? <ImageModal
+        { this.state.showMaximizedImage ?
+          <ImageModal
             navigation={this.props.navigation}
             uri={this.state.uri}
             visibility={this.state.showMaximizedImage}
@@ -52,6 +53,7 @@ export default class Result extends Component {
                 <Image source={require('../../../../shared/images/blue-pin.png')} style={styles.mapIcon} />
               </TouchableOpacity>
               <TouchableOpacity
+                opacity={.8}
                 style={styles.closeResultButton}
                 onPress={() => this._handleCloseResult()} >
                 <Text style={styles.closeResultText}>X</Text>
@@ -108,7 +110,7 @@ export default class Result extends Component {
 
   _handleCloseResult() {
     this.props.minimizeResultContainer();
-    this.props.minimizeMenuContainer && this.props.minimizeMenuContainer();
+    this.props.resizeMenuContainer && this.props.resizeMenuContainer();
   }
 
 }
@@ -152,6 +154,7 @@ const styles = StyleSheet.create({
   closeResultText: {
     color: 'white',
     textAlign: 'center',
+    fontWeight: 'bold',
   },
   mapIcon: {
     height: 35,

@@ -149,8 +149,9 @@ export default class Search extends Component {
           { this.state.result ? <Result
                                   data={this.state.result}
                                   navigation={this.props.navigation}
-                                  minimizeMenuContainer={this.props.minimizeMenuContainer ? this.props.minimizeMenuContainer : null}
-                                  minimizeResultContainer={this.minimizeResultContainer.bind(this)} /> : null }
+                                  resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
+                                  minimizeResultContainer={this.minimizeResultContainer.bind(this)}
+                                  closeSearch={this.props.closeSearch} /> : null }
         </Animated.View>
 
       </Animated.View>
@@ -208,11 +209,18 @@ export default class Search extends Component {
       let result = historySearch(this.state.license); console.log('result', result);
       this.setState({result});
 
-      // Case for extending the container of Search in any component.
-      if (result !== undefined) this.extendResultContainer(true);
 
-      // Case for extending the Menu container of Overview.
-      if (result !== undefined) this.props.extendMenuContainer && this.props.extendMenuContainer();
+      if (result !== undefined) {
+        // Case for extending the container of Search in any component.
+        this.extendResultContainer(true);
+
+        // Case for extending the Menu container of Overview.
+        this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
+      } else if (result === null) {
+
+
+
+      }
 
       // Add license to current Timer in queue in TimerList if in TimerList.
       this.props.timerList && this.props.addLicenseToQueue(this.state.license);
