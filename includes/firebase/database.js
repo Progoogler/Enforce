@@ -97,7 +97,6 @@ class Database {
     static getHistoryData(countyId, userId, dateId, callback) {
       let refPath = `${countyId}/${userId}/${dateId}`;
       firebase.database().ref(refPath).once('value').then((snapshot) => {
-        console.log('get data', snapshot.val())
         callback(snapshot.val());
       });
     }
