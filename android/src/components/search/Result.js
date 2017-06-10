@@ -10,6 +10,7 @@ import {
 import { NavigationActions } from 'react-navigation';
 
 import ImageModal from '../history/ImageModal';
+import Unfound from './Unfound';
 
 export default class Result extends Component {
   constructor() {
@@ -59,9 +60,10 @@ export default class Result extends Component {
                 <Text style={styles.closeResultText}>X</Text>
               </TouchableOpacity>
             </View>
+
             :
 
-            null
+            <Unfound license={this.props.license} />
 
         }
       </View>
@@ -94,7 +96,8 @@ export default class Result extends Component {
       params: {
         timers: timer,
         historyView: true,
-        navigation: this.props.navigation
+        route: this.props.navigation.state.key,
+        license: this.props.data.data.license,
       },
     });
     this.props.navigation.dispatch(navigateAction);

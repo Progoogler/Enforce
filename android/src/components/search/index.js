@@ -48,21 +48,7 @@ export default class Search extends Component {
         <View style={styles.headerContainer}>
 
         <TouchableHighlight
-          onPress={ () => {
-            this.state.result !== null && this.minimizeResultContainer();
-            this.props.minimizeMenuContainer && this.props.minimizeMenuContainer();
-
-            this.myTextInput.isFocused() && Keyboard.dismiss();
-            //this.extendResultContainer();
-
-            this.props.timerList && this.myTextInput.focus();
-            !this.props.timerList && Keyboard.dismiss();
-            !this.props.timerList && this._fadeContainer();
-            !this.props.timerList && setTimeout(() => this._mounted && this.props.closeSearch(), 500);
-
-            this.setState({ license: '', underlineMargin: new Animated.Value(center) });
-            this.marginValue = center;
-          }}
+          onPress={ () => this._openSearch() }
           underlayColor={'#4286f4'}
           style={styles.searchIcon} >
           <Image source={require('../../../../shared/images/search-icon.png')} />
@@ -149,6 +135,7 @@ export default class Search extends Component {
           { this.state.result ? <Result
                                   data={this.state.result}
                                   navigation={this.props.navigation}
+                                  license={this.state.license}
                                   resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
                                   minimizeResultContainer={this.minimizeResultContainer.bind(this)}
                                   closeSearch={this.props.closeSearch} /> : null }
@@ -202,24 +189,47 @@ export default class Search extends Component {
     }
   }
 
+  _openSearch() {
+    this.state.result !== null && this.minimizeResultContainer();
+    this.props.minimizeMenuContainer && this.props.minimizeMenuContainer();
+
+    this.myTextInput.isFocused() && Keyboard.dismiss();
+    //this.extendResultContainer();
+
+    this.props.timerList && this.myTextInput.focus();
+    !this.props.timerList && Keyboard.dismiss();
+    !this.props.timerList && this._fadeContainer();
+    !this.props.timerList && setTimeout(() => this._mounted && this.props.closeSearch(), 500);
+
+    this.setState({ license: '', underlineMargin: new Animated.Value(center) });
+    this.marginValue = center;
+  }
+
   _handleHistorySearch() { console.log('HISTORY BUTTON PRESSED')
     if (this.state.license.length === 0) {
       this.myTextInput.focus();
     } else {
+      let prevResult = this.state.result;
       let result = historySearch(this.state.license); console.log('result', result);
+
+      if (result === undefined && prevResult !== 'unfound') {
+
+      }
+
+      result = result === undefined ? 'unfound' : result;
       this.setState({result});
 
 
-      if (result !== undefined) {
+      if (result !== 'unfound') {
         // Case for extending the container of Search in any component.
         this.extendResultContainer(true);
 
         // Case for extending the Menu container of Overview.
         this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
-      } else if (result === null) {
-
-
-
+        Keyboard.dismiss();
+      } else if (result === 'unfound') {
+        this.props.noResultNotificationForMenu && this.props.noResultNotificationForMenu();
+        this.noResultNotification();
       }
 
       // Add license to current Timer in queue in TimerList if in TimerList.
@@ -234,6 +244,53 @@ export default class Search extends Component {
 
       this.props.timerList && this.props.addLicenseToQueue(this.state.license);
     }
+  }
+
+  noResultNotification() {
+    Animated.parallel([
+      Animated.timing(
+        this.state.containerHeight, {
+          toValue: 200,
+          duration: 600,
+        },
+      ),
+      Animated.timing(
+        this.state.resultHeight, {
+          toValue: 80,
+          duration: 1000,
+        },
+      ),
+      Animated.timing(
+        this.state.resultOpacity, {
+          toValue: 1,
+          duration: 1000,
+        },
+      ),
+    ]).start();
+
+    setTimeout(() => {
+
+      Animated.parallel([
+        Animated.timing(
+          this.state.containerHeight, {
+            toValue: 130,
+            duration: 600,
+          },
+        ),
+        Animated.timing(
+          this.state.resultHeight, {
+            toValue: 0,
+            duration: 400,
+          },
+        ),
+        Animated.timing(
+          this.state.resultOpacity, {
+            toValue: 0,
+            duration: 1000,
+          },
+        ),
+      ]).start();
+    }, 1800);
   }
 
   extendResultContainer(extend) {
@@ -384,6 +441,7 @@ export default class Search extends Component {
       // ),
     ]).start();
   }
+
 }
 
 
