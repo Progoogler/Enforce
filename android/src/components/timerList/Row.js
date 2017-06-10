@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   image: {
-    height: 400,
+    height: 390,
   },
   activity: {
     flex: 1,

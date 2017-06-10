@@ -248,12 +248,12 @@ export default class TimerList extends Component {
     this.updateRows();
   }
 
-  shouldResetLicense(setToFalse) {  console.log('called to reset');
+  shouldResetLicense(setToFalse) {
     if (setToFalse) {
       this._reset = false;
       return;
     }
-    return this._reset ? true : false;
+    return this._reset;
   }
 
   resetLicenseAndVIN() {
