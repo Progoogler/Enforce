@@ -4,14 +4,14 @@ import {
   Text,
   StyleSheet,
   Modal,
-  TouchableHighlight,
+  TouchableOpacity,
 } from 'react-native';
 
 export default class Warning extends Component {
   constructor() {
     super();
   }
-
+//            <Text style={styles.title}>Warning</Text>
   render() {
     return (
       <Modal animationType={"slide"}
@@ -20,24 +20,24 @@ export default class Warning extends Component {
         visible={this.props.visibility} >
         <View style={styles.container} >
           <View style={styles.containerBorder} >
-            <Text style={styles.title}>Alert!</Text>
+
             <Text style={styles.message}> Vehicle has parked for </Text>
             <Text style={styles.warning}> {this.props.timeElapsed} </Text>
             <Text style={styles.message}> Are you sure </Text>
             <Text style={styles.message}> you want to ticket now? </Text>
             <View style={styles.buttons} >
-              <TouchableHighlight
+              <TouchableOpacity
                 style={styles.no}
-                underlayColor='#4286f4'
+                activeOpacity={.8}
                 onPress={() => {this.props.clearWarning('clearWarning', true)}} >
-                <Text style={styles.buttonText}>No</Text>
-              </TouchableHighlight>
-              <TouchableHighlight
+                <Text style={styles.noButtonText}>No</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
                 style={styles.yes}
-                underlayColor='#4286f4'
+                activeOpacity={.6}
                 onPress={() => { this.props.uponTicketed([], 'force')}} >
-                <Text style={styles.buttonText}>Yes</Text>
-              </TouchableHighlight>
+                <Text style={styles.yesButtonText}>Yes</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -48,13 +48,14 @@ export default class Warning extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 110,
-    backgroundColor: 'red',
+    marginTop: 170,
+    backgroundColor: '#4286f4',
     padding: 15,
   },
   containerBorder: {
     backgroundColor: 'white',
     alignItems: 'center',
+    borderRadius: 5,
     padding: 20,
   },
   title: {
@@ -62,6 +63,8 @@ const styles = StyleSheet.create({
     fontSize: 28,
   },
   warning: {
+    color: 'green',
+    fontWeight: 'bold',
     fontSize: 24,
     margin: 10,
   },
@@ -72,21 +75,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginTop: 20,
   },
-  buttonText: {
+  noButtonText: {
     fontSize: 22,
+    fontWeight: 'bold',
     color: 'white',
   },
+  yesButtonText: {
+    fontSize: 22,
+    color: '#4286f4',
+  },
   no: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderRadius: 5,
-    backgroundColor: 'green',
+    backgroundColor: '#4286f4',
     marginRight: 50,
-    padding: 20,
+    padding: 10,
   },
   yes: {
-    borderWidth: 2,
-    borderRadius: 5,
-    backgroundColor: 'red',
-    padding: 20,
+    //borderWidth: 2,
+    //borderRadius: 5,
+    //backgroundColor: 'red',
+    padding: 10,
   }
 });
