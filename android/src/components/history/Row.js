@@ -80,7 +80,7 @@ export default class Row extends Component {
     hour = (hour <= 12) ? hour : hour - 12;
     let str = date + '';
     str = str.slice(0, 10);
-    return `${str} ${hour}:${minutes} ${period}`;
+    return `${hour}:${minutes} ${period} ${str}`;
   }
 
   _openMapPage = (timer) => {

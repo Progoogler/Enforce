@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#4286f4',
     fontSize: 34,
-    marginTop: 40,
+    marginTop: 30,
     marginBottom: 60,
     fontWeight: 'bold',
   },

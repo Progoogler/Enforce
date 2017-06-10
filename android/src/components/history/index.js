@@ -27,7 +27,7 @@ export default class History extends Component {
     this.state = {
       dataSource: ds.cloneWithRows(this.list),
       items: [],
-      selected: "Today's Ticketed",
+      selected: "Today's Tickets",
       animating: true,
       dateTransition: false,
       showMaximizedImage: false,
@@ -97,7 +97,7 @@ export default class History extends Component {
     this.dateCount = await AsyncStorage.getItem('@Enforce:dateCount');
     this.dateCount = JSON.parse(this.dateCount);
     let dates = [];
-    dates.push(<Picker.Item style={styles.item} label="Today's Ticketed" value={"Today's Ticketed"} key={-2}/>);
+    dates.push(<Picker.Item style={styles.item} label="Today's Tickets" value={"Today's Tickets"} key={-2}/>);
     dates.push(<Picker.Item style={styles.item} label="Today's Expired" value={"Today's Expired"} key={-1}/>);
     for (let i = this.dateCount.length - 1; i >= 0; i--) {
       let month = this.dateCount[i].slice(0, this.dateCount[i].indexOf('-'));
@@ -126,7 +126,7 @@ export default class History extends Component {
 
   _onValueChange(value) {
     this.setState({animating: true, dateTransition: true});
-    if (value === "Today's Ticketed") {
+    if (value === "Today's Tickets") {
       this.selected = value;
       this._updateRows(this.ticketedList);
       return;
@@ -269,12 +269,11 @@ const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     color: '#4286f4',
-    marginTop: 40,
+    marginTop: 25,
     fontSize: 34,
     fontWeight: 'bold',
   },
   message: {
     fontSize: 24,
-
   },
 });
