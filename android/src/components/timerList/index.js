@@ -237,7 +237,6 @@ export default class TimerList extends Component {
   }
 
   addLicenseToQueue(license) { console.log('add license')
-    Keyboard.dismiss();
     this.license = license;
 
     // TODO
