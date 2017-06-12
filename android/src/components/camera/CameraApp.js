@@ -8,7 +8,7 @@ import {
   AsyncStorage,
   Vibration,
   TouchableHighlight,
-  TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import Camera from 'react-native-camera';
@@ -65,13 +65,13 @@ export default class CameraApp extends Component {
             aspect={Camera.constants.Aspect.fill} >
           </Camera>
           <View style={styles.footer}>
-            <TouchableWithoutFeedback
-              underlayColor="grey"
+            <TouchableOpacity
+              activeOpacity={.6}
               onPress={() => this.setModalVisible()} >
               <Image
                 style={styles.pinIcon}
                 source={require('../../../../shared/images/pin.png')} />
-            </TouchableWithoutFeedback>
+            </TouchableOpacity>
             <TouchableHighlight
               style={styles.capture}
               onPress={() => {
@@ -105,7 +105,7 @@ export default class CameraApp extends Component {
       let realmCoords = this.realm.objects('Coordinates')[0];
       this.latitude = realmCoords.latitude;
       this.longitude = realmCoords.longitude;
-      console.warn('ERROR(' + err.code + '): ' + err.message);
+      console.log('ERROR(' + err.code + '): ' + err.message);
     }
     this.options = {
       enableHighAccuracy: true,
@@ -265,8 +265,8 @@ export default class CameraApp extends Component {
     this.deleting = false;
   }
 
-  savePicture(data) {
-    if (this.description.length === 0) {
+  savePicture(data) { console.log("this.desc", this.description)
+    if (this.description && this.description.length === 0) {
       this.realm.write(() => {
         this.realm.objects('Timers')[this.count]['list'].push({
           index: this.count,

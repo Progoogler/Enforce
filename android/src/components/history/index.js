@@ -240,8 +240,8 @@ export default class History extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
     flex: 1,
+    backgroundColor: 'white',
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
