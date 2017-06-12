@@ -13,7 +13,7 @@ import {
 import Firebase from '../../../../includes/firebase/firebase';
 import Database from '../../../../includes/firebase/database';
 
-import Navigation from '../navigation';
+import Navigation from '../navigation/StaticNavigation';
 import Warning from './Warning';
 import ThrowConnectionMessage from './ThrowConnectionMessage';
 
@@ -51,7 +51,7 @@ export default class Profile extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Navigation navigation={this.props.navigation} />
+        <Navigation navigation={this.props.navigation} title={'Enforce'} />
         <Text style={styles.title}>Profile Settings</Text>
         <View style={styles.row} >
           <Text style={styles.designator}>Email</Text>
@@ -247,6 +247,7 @@ export default class Profile extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   title: {
     textAlign: 'center',

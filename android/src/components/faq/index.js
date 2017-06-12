@@ -6,7 +6,7 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
-import Navigation from '../navigation';
+import Navigation from '../navigation/StaticNavigation';
 
 export default class FAQs extends Component {
   static navigationOptions = {
@@ -22,7 +22,7 @@ export default class FAQs extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Navigation navigation={this.props.navigation} />
+        <Navigation navigation={this.props.navigation} title={'Enforce'} />
         <ScrollView>
           <Text style={styles.title}>Frequently Asked Questions</Text>
           <Text style={styles.question}>How to get started?</Text>

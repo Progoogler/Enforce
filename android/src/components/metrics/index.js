@@ -33,7 +33,7 @@ export default class Metrics extends Component {
           style={styles.header}
           title={'Metrics'}
           navigation={this.props.navigation}
-          imageSource={require('../../../../shared/images/bar-icon.png')} />
+          imageSource={require('../../../../shared/images/backarrow.jpg')} />
         <MapView.Animated
           ref={ref => { this.animatedMap = ref; }}
           style={styles.map}

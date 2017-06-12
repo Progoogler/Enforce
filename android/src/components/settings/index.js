@@ -8,7 +8,7 @@ import {
   AsyncStorage,
 } from 'react-native';
 
-import Navigation from '../navigation';
+import Navigation from '../navigation/StaticNavigation';
 
 export default class Settings extends Component {
   constructor() {
@@ -34,8 +34,8 @@ export default class Settings extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Navigation navigation={this.props.navigation}/>
-        <Text style={styles.title}>Settings</Text>
+        <Navigation navigation={this.props.navigation} title={'Settings'} />
+        <Text style={styles.title}>Control System</Text>
 
 
         <View style={styles.row}>
@@ -134,13 +134,14 @@ export default class Settings extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   title: {
     textAlign: 'center',
     color: '#4286f4',
     fontSize: 34,
     marginTop: 30,
-    marginBottom: 60,
+    marginBottom: 50,
     fontWeight: 'bold',
   },
   row: {
