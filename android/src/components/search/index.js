@@ -57,7 +57,7 @@ export default class Search extends Component {
           <Animated.View style={{
                             position: 'absolute',
                             top: 15,
-                            width: 150,
+                            width: 120,
                             marginLeft: this.state.underlineMargin,
                             height: 80,
                             zIndex: 10,
@@ -391,15 +391,25 @@ export default class Search extends Component {
    }
 
   _handleTextInput(license) {
-    if (license.length < this.state.license.length) {
-      this.marginValue += 7;
+    if (license.length === 0) {
+      Animated.timing(
+        this.state.underlineMargin, {
+          toValue: center,
+        },
+      ).start();
+      this.marginValue = center;
+      this.setState({license});
+      return;
+    }
+    if (license.length < this.state.license.length) { console.log('add')
+      this.marginValue += 6.65;
       Animated.timing(
         this.state.underlineMargin, {
           toValue: this.marginValue,
         },
       ).start();
-    } else {
-      this.marginValue -= 7;
+    } else { console.log("handle")
+      this.marginValue -= 6.65;
       Animated.timing(
         this.state.underlineMargin, {
           toValue: this.marginValue,
