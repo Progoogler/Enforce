@@ -9,6 +9,13 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
+
+
+import FlatList from 'react-native/Libraries/Lists/FlatList';
+
+
+//import { List, ListItem } from 'react-native-elements';
+
 import Realm from 'realm';
 import { NavigationActions } from'react-navigation';
 import { getHistoryData, getTicketImage } from '../../../../includes/firebase/database';
@@ -23,9 +30,8 @@ export default class History extends Component {
     this.realm = new Realm();
     this.list = this._reverseRealmList(this.realm.objects('Ticketed')[0]['list']); // Display most recent first.
     this.ticketedList = this.list;
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
-      dataSource: ds.cloneWithRows(this.list),
+      dataSource: this.list,
       items: [],
       selected: "Today's Tickets",
       animating: true,
@@ -67,27 +73,42 @@ export default class History extends Component {
             //style={styles.activity}
             size='small' />
         </View>
-        <ListView
-          enableEmptySections={true}
-          // In next release empty section headers will be rendered.
-          // Until then, leave this property alone to mitigate the warning msg.
-          style={styles.listview}
-          dataSource={this.state.dataSource}
-          renderRow={(data) => <Row
-                                data={data}
-                                NavigationActions={NavigationActions}
-                                navigation={this.props.navigation}
-                                selected={this.state.selected}
-                                maximizeImage={this.maximizeImage.bind(this)}
-                                userId={this.userId}
-                                userSettings={this.userSettings}
-                                getTicketImage={getTicketImage}
-                                dateTransition={this.state.dateTransition} />}
-          renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
-        />
+
+        <FlatList
+           style={styles.listview}
+           data={this.state.dataSource}
+           ItemSeparatorComponent={this._renderSeparator}
+           renderItem={this._renderItem.bind(this)}
+           keyExtractor={this._keyExtractor} />
+
+
       </View>
     );
   }
+
+  _renderItem(data) {
+    return (
+      <Row
+        data={data.item}
+        NavigationActions={NavigationActions}
+        navigation={this.props.navigation}
+        selected={this.state.selected}
+        maximizeImage={this.maximizeImage.bind(this)}
+        userId={this.userId}
+        userSettings={this.userSettings}
+        getTicketImage={getTicketImage}
+        dateTransition={this.state.dateTransition}
+        />
+    );
+  }
+
+  _renderSeparator() {
+    return <View style={styles.separator} />;
+  }
+
+  _keyExtractor(item, index) {
+    return item.createdAt;
+  };
 
   componentWillMount() {
     this._getHistoryDates();
@@ -119,7 +140,6 @@ export default class History extends Component {
         return;
       }
       this._updateRows(data.tickets);
-      this.list = data.tickets;
     });
 
   }
@@ -143,7 +163,7 @@ export default class History extends Component {
   _updateRows(list) {
     if (!list) list = this.list;
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(list),
+      dataSource: list,
       selected: this.selected,
       dateTransition: false,
       animating: false,
