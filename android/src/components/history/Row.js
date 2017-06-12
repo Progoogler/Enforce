@@ -37,13 +37,19 @@ export default class Row extends Component {
 
           <ActivityIndicator style={styles.activity} animating={this.state.animating} size='small' />
           <View>
-          { this.props.data.license && this.props.data.VIN ?
-            <Text><Text style={styles.label}>License:</Text> {this.props.data.license + '         '}
-            <Text style={styles.label}>VIN:</Text> {this.props.data.VIN}</Text> :
-            <Text><Text style={styles.label}>License:</Text> {this.props.data.license}</Text> }
+            {
+              this.props.data.license && this.props.data.VIN ?
+              <Text><Text style={styles.label}>License:</Text> {this.props.data.license + '         '}
+              <Text style={styles.label}>VIN:</Text> {this.props.data.VIN}</Text> :
 
+              this.props.data.license ?
+
+              <Text><Text style={styles.label}>License:</Text> {this.props.data.license}</Text> : null
+            }
             <Text><Text style={styles.label}>Photo taken:</Text> {this._getPrettyTimeFormat(this.props.data.createdAt)}</Text>
+
             { this.props.data.ticketedAt !== 0 ? <Text><Text style={styles.label}>Ticketed:</Text> {this._getPrettyTimeFormat(this.props.data.ticketedAt)}</Text> : null }
+
             <Text><Text style={styles.label}>Time limit:</Text> {this._getTimeLimitDesc(this.props.data.timeLength)}</Text>
           </View>
           <TouchableOpacity
@@ -160,7 +166,7 @@ const styles = StyleSheet.create({
     color: 'white',
   },
   getImageButton: {
-    backgroundColor: 'black',
+    backgroundColor: 'grey',
     height: 100,
     width: 100,
     marginRight: 15,
