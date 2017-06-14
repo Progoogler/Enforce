@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
 
+import MapModal from './MapModal';
 
 export default class Row extends Component {
   constructor() {
@@ -17,6 +18,7 @@ export default class Row extends Component {
       getImageText: `Get${'\n'}Photo`,
       image: [],
       animating: false,
+      modalVisible: false,
     }
   }
 
@@ -52,15 +54,29 @@ export default class Row extends Component {
 
             <Text><Text style={styles.label}>Time limit:</Text> {this._getTimeLimitDesc(this.props.data.timeLength)}</Text>
           </View>
-          <TouchableOpacity
-            style={styles.button}
-            activeOpacity={.9}
-            onPress={() => this._openMapPage(this.props.data)} >
-            <View>
-              <Text style={styles.buttonText}>Show Map</Text>
-            </View>
-          </TouchableOpacity>
+
+          { this.props.data.latitude ?
+            <TouchableOpacity
+              style={styles.button}
+              activeOpacity={.9}
+              onPress={() => this.setState({modalVisible: true}) } >
+              <View>
+                <Text style={styles.buttonText}>Show Map</Text>
+              </View>
+            </TouchableOpacity>
+            : null }
+            
         </View>
+
+        { this.state.modalVisible ? <MapModal
+                                      data={this.props.data}
+                                      navigation={this.props.navigation}
+                                      visibility={this.state.modalVisible}
+                                      latitude={this.props.data.latitude}
+                                      longitude={this.props.data.longitude}
+                                      description={this.props.data.description}
+                                      closeModal={this.closeModal.bind(this)} /> : null }
+
       </View>
     );
   }
@@ -91,13 +107,13 @@ export default class Row extends Component {
     return `${hour}:${minutes} ${period} ${str}`;
   }
 
-  _openMapPage = (timer) => {
-    const navigateAction = this.props.NavigationActions.navigate({
-      routeName: 'Map',
-      params: {timers: timer, historyView: true, navigation: this.props.navigation},
-    });
-    this.props.navigation.dispatch(navigateAction);
-  }
+  // _openMapPage = (timer) => {
+  //   const navigateAction = this.props.NavigationActions.navigate({
+  //     routeName: 'Map',
+  //     params: {timers: timer, historyView: true, navigation: this.props.navigation},
+  //   });
+  //   this.props.navigation.dispatch(navigateAction);
+  // }
 
   _getImageFromDatabase() {
     this.setState({animating: true});
@@ -123,6 +139,10 @@ export default class Row extends Component {
         });
       }
     });
+  }
+
+  closeModal() {
+    this.setState({modalVisible: false});
   }
 
 }

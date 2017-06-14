@@ -47,7 +47,7 @@ export default class History extends Component {
     )
   };
 
-  render() { console.log('history ', this.list)
+  render() {
     return (
       <View style={styles.container}>
         <Navigation navigation={this.props.navigation} />
@@ -64,6 +64,7 @@ export default class History extends Component {
           </Picker>
           <ActivityIndicator
             animating={this.state.animating}
+            color={'green'}
             size='small' />
         </View>
 
@@ -73,7 +74,6 @@ export default class History extends Component {
            ItemSeparatorComponent={this._renderSeparator}
            renderItem={this._renderItem.bind(this)}
            keyExtractor={this._keyExtractor} />
-
 
       </View>
     );
