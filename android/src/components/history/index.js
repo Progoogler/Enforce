@@ -4,17 +4,11 @@ import {
   Text,
   Image,
   Picker,
-  ListView,
   AsyncStorage,
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
-
-
 import FlatList from 'react-native/Libraries/Lists/FlatList';
-
-
-//import { List, ListItem } from 'react-native-elements';
 
 import Realm from 'realm';
 import { NavigationActions } from'react-navigation';
@@ -53,7 +47,7 @@ export default class History extends Component {
     )
   };
 
-  render() {
+  render() { console.log('history ', this.list)
     return (
       <View style={styles.container}>
         <Navigation navigation={this.props.navigation} />
@@ -70,12 +64,11 @@ export default class History extends Component {
           </Picker>
           <ActivityIndicator
             animating={this.state.animating}
-            //style={styles.activity}
             size='small' />
         </View>
 
         <FlatList
-           style={styles.listview}
+           style={styles.flatlist}
            data={this.state.dataSource}
            ItemSeparatorComponent={this._renderSeparator}
            renderItem={this._renderItem.bind(this)}
@@ -273,7 +266,7 @@ const styles = StyleSheet.create({
     width: 150,
     color: '#4286f4',
   },
-  listview: {
+  flatlist: {
     flex: 1,
     alignSelf: 'stretch',
   },

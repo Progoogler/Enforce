@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  ListView,
+  //ListView,
   View,
   Image,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   AsyncStorage,
   Keyboard,
 } from 'react-native';
+import FlatList from 'react-native/Libraries/Lists/FlatList';
 import Realm from 'realm';
 import { setUserTickets, setTicketImage } from '../../../../includes/firebase/database';
 import insertionSortModified from '../overview/insertionSort';
@@ -29,7 +30,7 @@ export default class TimerList extends Component {
   constructor(props) {
     super(props);
     this.realm = new Realm();
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    //const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     if (!this.props.navigation.state.params) {
       this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
       this.list = this.list.length > 0 ? this.list[0].list : {};
@@ -39,7 +40,7 @@ export default class TimerList extends Component {
       this.list = this.props.navigation.state.params.timers;
     }
     this.state = {
-      dataSource: ds.cloneWithRows(this.list),
+      dataSource: this.list,
       refreshing: false,
       warningVisibility: false,
       modalVisible: false,
@@ -68,25 +69,16 @@ export default class TimerList extends Component {
         <Title limit={this.props.navigation.state.params.timers[0] ? this.props.navigation.state.params.timers[0].timeLength : ""} />
         <Warning timeElapsed={this.timeElapsed} visibility={this.state.warningVisibility} uponTicketed={this.uponTicketed.bind(this)} clearWarning={this.updateRows.bind(this)}/>
 
-        <ListView
-          enableEmptySections={true}
-          // In next release empty section headers will be rendered.
-          // Until then, leave this property alone to mitigate the warning msg.
-          refreshControl={
-            <RefreshControl refreshing={this.state.refreshing}
-            onRefresh={this._onRefresh.bind(this)} />
-          }
-          //timers={this.props.navigation.state.params.timers}
-          style={styles.container}
-          dataSource={this.state.dataSource}
-          renderRow={(data) => <Row data={data}
-                                    expiredFunc={this.expiredFunc.bind(this)}
-                                    uponTicketed={this.uponTicketed.bind(this)} />}
-          renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />} />
-
+        <FlatList
+           data={this.state.dataSource}
+           ItemSeparatorComponent={this._renderSeparator}
+           renderItem={this._renderItem.bind(this)}
+           onRefresh={this._onRefresh.bind(this)}
+           refreshing={this.state.refreshing}
+           keyExtractor={this._keyExtractor}
+           />
 
         { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : <View /> }
-
 
       </View>
     );
@@ -114,7 +106,7 @@ export default class TimerList extends Component {
   _onRefresh() {
     this.setState({
       refreshing: true,
-      dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)
+      dataSource: this.list,
     });
     this.setState({refreshing: false});
   }
@@ -122,13 +114,13 @@ export default class TimerList extends Component {
   updateRows(clearWarning, only) {
     if (this.list.length === 0 && clearWarning) {
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this.list),
+        dataSource: this.list,
         modalVisible: true, // Show the "Done" button to indicate end of list.
         warningVisibility: false,
       });
     } else if (this.list.length === 0) {
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this.list),
+        dataSource: this.list,
         modalVisible: true,
       });
     } else if (clearWarning && only) {
@@ -137,12 +129,12 @@ export default class TimerList extends Component {
       });
     } else if (clearWarning) {
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this.list),
+        dataSource: this.list,
         warningVisibility: false,
       });
     } else {
       this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(this.list),
+        dataSource: this.list,
       });
     }
   }
@@ -261,6 +253,25 @@ export default class TimerList extends Component {
     this.license = '';
     this.VIN = '';
   }
+
+  _renderItem(data) { console.log(data, 'da')
+    return (
+      <Row
+        data={data.item}
+        expiredFunc={this.expiredFunc.bind(this)}
+        uponTicketed={this.uponTicketed.bind(this)} />
+    );
+  }
+
+  _renderSeparator() {
+    return <View style={styles.separator} />;
+  }
+
+  _keyExtractor(item, index) {
+    return item.createdAt;
+  };
+
+
 }
 
 const styles = StyleSheet.create({
