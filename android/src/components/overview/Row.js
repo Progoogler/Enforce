@@ -20,8 +20,8 @@ export default class Row extends Component {
     this.distLon;
   }
 
-  render() {
-    if (this.props.list.length < 1) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
+  render() { console.log('row')
+    if (this.props.data.list.length < 1) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
     return (
           <ScrollView
             style={styles.innerScroll}
@@ -30,15 +30,15 @@ export default class Row extends Component {
             showsHorizontalScrollIndicator={false} >
             <View style={styles.innerContainer} >
               <TouchableHighlight
-                onPress={() => this._openTimerListPage(this.props.list)}
+                onPress={() => this._openTimerListPage(this.props.data.list)}
                 underlayColor="white" >
                 <View style={styles.timerRow}>
                   <Text style={styles.timerRowLength}>
-                    { this.props.list.length < 10 ? this.props.list.length + '    ' : this.props.list.length < 100 ? this.props.list.length + '  ' : this.props.list.length                 /*(this.props.list.length > 1) ? this.props.list.length + '\n cars' : '1 \n car' */}
+                    { this.props.data.list.length < 10 ? this.props.data.list.length + '    ' : this.props.data.list.length < 100 ? this.props.data.list.length + '  ' : this.props.data.list.length                 /*(this.props.data.list.length > 1) ? this.props.data.list.length + '\n cars' : '1 \n car' */}
                   </Text>
                   <View style={styles.separator} />
                   <Text style={styles.timerRowTime}>
-                    { this.props.updateRows ? this.getTimeLeft(this.props.list[0]) : this.getTimeLeft(this.props.list[0]) }
+                    { this.props.updateRows ? this.getTimeLeft(this.props.data.list[0]) : this.getTimeLeft(this.props.data.list[0]) }
                   </Text>
                 </View>
               </TouchableHighlight>
@@ -47,7 +47,7 @@ export default class Row extends Component {
                 <TouchableHighlight
                   style={styles.button}
                   underlayColor='#0099ff'
-                  onPress={() => this._openMapPage(this.props.list)} >
+                  onPress={() => this._openMapPage(this.props.data.list)} >
                   <View>
                     <Text style={styles.buttonText}>Show Map</Text>
                   </View>
@@ -57,7 +57,7 @@ export default class Row extends Component {
 
               <TouchableHighlight
                 style={styles.delete}
-                onPress={() => {this.props.deleteRow(this.props.list)}} >
+                onPress={() => {this.props.deleteRow(this.props.data.list)}} >
                 <Image source={require('../../../../shared/images/bin.jpg')} />
               </TouchableHighlight>
             </View>
@@ -67,7 +67,7 @@ export default class Row extends Component {
 
   componentWillMount() {
     this._getDistance();
-    this.timer = this.props.list;
+    this.timer = this.props.data.list;
   }
 
   componentDidMount() {
@@ -96,10 +96,10 @@ export default class Row extends Component {
 
   _getDistance() {
     let i = 0;
-    while (i < this.props.list.length) {
-      if (this.props.list[i].latitude !== 0) {}
-       this.distLat = this.props.list[i].latitude;
-       this.distLong = this.props.list[i].longitude;
+    while (i < this.props.data.list.length) {
+      if (this.props.data.list[i].latitude !== 0) {}
+       this.distLat = this.props.data.list[i].latitude;
+       this.distLong = this.props.data.list[i].longitude;
       i++;
     }
     return this.getDistanceFromLatLon(this.props.latitude, this.props.longitude, this.distLat, this.distLong);
