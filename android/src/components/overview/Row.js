@@ -36,7 +36,11 @@ export default class Row extends Component {
 
                 <View style={styles.timerRow}>
                   <Text style={styles.timerRowLength}>
-                    { this.props.data.list.length < 10 ? this.props.data.list.length + '    ' : this.props.data.list.length < 100 ? this.props.data.list.length + '  ' : this.props.data.list.length                 /*(this.props.data.list.length > 1) ? this.props.data.list.length + '\n cars' : '1 \n car' */}
+                    {  this.props.data.list.length < 10 ?
+                       '   ' + this.props.data.list.length + ' ' :
+                       this.props.data.list.length < 100 ?
+                       ' ' + this.props.data.list.length + ' ' :
+                       this.props.data.list.length }
                   </Text>
                   <View style={styles.separator} />
                   <Text style={styles.timerRowTime}>
@@ -186,7 +190,7 @@ const styles = StyleSheet.create({
   timerRowLength: {
     fontSize: 28,
     fontWeight: 'bold',
-    paddingLeft: 30,
+    paddingLeft: 22,
     textAlign: 'center',
     color: '#4286f4',
   },
