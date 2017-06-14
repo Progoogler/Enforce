@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Image,
   Modal,
-  TouchableHighlight,
+  TouchableNativeFeedback,
 } from 'react-native';
 
 export default class ImageModal extends Component {
@@ -21,20 +21,23 @@ export default class ImageModal extends Component {
       height: height - 100,
     };
     return (
-      <Modal animationType={"slide"}
-        transparent={true}
+      <Modal animationType={"fade"}
+        transparent={false}
         onRequestClose={() => this.props.maximizeImage()}
         visible={this.props.visibility} >
         <View>
           <Image style={styles.image} source={{uri: this.props.uri}} />
+
           <View style={styles.buttonContainer}>
-          <TouchableHighlight
-            style={styles.button}
-            underlayColor='#4286f4'
-            onPress={() => this.props.maximizeImage()} >
-            <Text style={styles.buttonText}>X</Text>
-          </TouchableHighlight>
+            <TouchableNativeFeedback
+              background={TouchableNativeFeedback.Ripple('white')}
+              onPress={() => this.props.maximizeImage()} >
+              <View style={styles.arrowContainer}>
+                <Image style={styles.backArrow} source={require('../../../../shared/images/backarrow.png')} />
+              </View>
+            </TouchableNativeFeedback>
           </View>
+
         </View>
       </Modal>
     );
@@ -42,22 +45,19 @@ export default class ImageModal extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-  },
   buttonContainer: {
     backgroundColor: '#4286f4',
-    justifyContent: 'center',
-    alignItems: 'center',
     alignSelf: 'stretch',
-    height: 100,
   },
-  button: {
+  arrowContainer: {
     justifyContent: 'center',
-    height: 60,
-    width: 60,
-    borderRadius: 30,
-    marginBottom: 20,
-    backgroundColor: 'white',
+    width: 600,
+    height: 75,
+  },
+  backArrow: {
+    marginLeft: 25,
+    width: 45,
+    height: 38,
   },
   buttonText: {
     fontSize: 38,
