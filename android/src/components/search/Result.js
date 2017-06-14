@@ -101,16 +101,6 @@ export default class Result extends Component {
   }
 
   _openMapPage = (timer) => {
-    // const navigateAction = NavigationActions.navigate({
-    //   routeName: 'Map',
-    //   params: {
-    //     timers: timer,
-    //     historyView: true,
-    //     route: this.props.navigation.state.key,
-    //     license: this.props.data.data.license,
-    //   },
-    // });
-    // this.props.navigation.dispatch(navigateAction);
     this.setState({modalVisible: true})
   }
 

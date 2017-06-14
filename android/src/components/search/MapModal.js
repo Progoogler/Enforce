@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
+  Image,
   Modal,
   StyleSheet,
-  ActivityIndicator,
   TouchableOpacity,
-  BackAndroid,
   Dimensions,
 } from 'react-native';
 
@@ -47,7 +46,11 @@ export default class MapModal extends Component {
               coordinate={{
                 latitude: this.props.latitude,
                 longitude: this.props.longitude}}
-                title={this.props.description} >
+              title={this.props.description} >
+              <Image
+                source={require('../../../../shared/images/blue-pin.png')}
+                style={{ width: 40, height: 40 }}
+              />
             </Marker>
 
           </MapView.Animated>
@@ -55,17 +58,6 @@ export default class MapModal extends Component {
       </Modal>
     );
   }
-
-  // componentDidMount() {
-  //   BackAndroid.addEventListener('CloseModal', () => {
-  //     console.log("close")
-  //     this.props.closeModal();
-  //   });
-  // }
-  //
-  // componentWillUnmount() {
-  //   BackAndroid.removeEventListener('CloseModal');
-  // }
 
   componentWillMount() {
     styles.closeContainer = {
