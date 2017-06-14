@@ -142,14 +142,14 @@ export default class CameraApp extends Component {
     this._mounted = true;
   }
 
-  componentWillUnmount() {
+  componentWillUnmount() { console.log('camera unmounts')
     this._mounted = false;
     clearTimeout(this._timeout);
   }
 
   setModalVisible(desc) {
     this._mounted && this.setState({modalVisible: !this.state.modalVisible});
-    this.description = desc;
+    this.description = desc ? desc : '';
   }
 
   setTimerCount(inc = '') {
