@@ -3,8 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
-  Button,
   Modal,
   TouchableOpacity,
 } from 'react-native';
@@ -14,14 +12,12 @@ export default class LocationInput extends Component {
   constructor() {
     super();
     this.state = {
-      firstLineText: '',
-      secondLineText: '',
+      text: '',
     }
-    this._firstLineText;
-    this._secondLineText;
+    this._textInput;
   }
 
-  render() { console.log(AutoGrowingTextInput);
+  render() {
     return (
       <Modal animationType={'slide'}
         transparent={true}
@@ -33,25 +29,25 @@ export default class LocationInput extends Component {
             <Text style={styles.title}>Location Details:</Text>
             <View style={styles.textInputContainer}>
               <AutoGrowingTextInput
-              style={styles.textInput}
-                ref={(ref) => this._firstLineText = ref}
-                onChange={(text) => this._handleTextInput(text, 'first')}
-                //underlineColorAndroid={'white'}
-                //autoCorrect={false}
+                style={styles.textInput}
+                ref={(ref) => this._textInput = ref}
+                onChange={(event) => this._handleTextInput(event)}
+                underlineColorAndroid={'white'}
+                autoCorrect={false}
+                autoCapitalize={'sentences'}
                 fontSize={26}
                 maxLength={60}
-                //initialHeight={60}
-                //multiline={true}
+                minHeight={120}
                 autoFocus={true}
-                value={this.state.firstLineText} />
+                value={this.state.text} />
 
             </View>
-            <Text style={styles.count}>{60 - this.state.firstLineText.length} characters remaining</Text>
+            <Text style={styles.count}>{60 - this.state.text.length} characters remaining</Text>
             <View style={styles.buttonRow}>
               <TouchableOpacity
                 style={styles.xButton}
                 onPress={() => {
-                  this.setState({firstLineText: '', secondLineText: ''});
+                  this.setState({text: ''});
                   this.props.setModalVisible('');
                 }}>
                 <Text style={styles.x}>Cancel</Text>
@@ -60,11 +56,8 @@ export default class LocationInput extends Component {
                 style={styles.doneButton}
                 activeOpacity={.6}
                 onPress={() => {
-                  let desc = this.state.firstLineText[this.state.firstLineText.length - 1] === ' ' ?
-                    this.state.firstLineText + this.state.secondLineText :
-                    this.state.firstLineText + ' ' + this.state.secondLineText;
-                  this.props.setModalVisible(desc);
-                  this.setState({firstLineText: '', secondLineText: ''});
+                  this.props.setModalVisible(this.state.text);
+                  this.setState({text: ''});
                 }} >
                 <Text style={styles.doneText}>Done</Text>
               </TouchableOpacity>
@@ -75,46 +68,8 @@ export default class LocationInput extends Component {
     );
   }
 
-  // <TextInput
-  //   ref={(ref) => this._secondLineText = ref}
-  //   onChangeText={(text) => this._handleTextInput(text, 'second')}
-  //   autoCorrect={false}
-  //   fontSize={26}
-  //   maxLength={30}
-  //   multiline={true}
-  //   value={this.state.secondLineText} />
-
-  _handleTextInput(text, line) { console.log('text', text, 'l', text.length, 'line', line)
-  this.setState({firstLineText: text});
-    // if (line === 'first') {
-    //    if (text.length < 31) {
-    //      this.setState({firstLineText: text});
-    //    } else {
-    //     //  if (text[text.length - 1] !== ' ') { console.log("refocus")
-    //     //    let carry = '';
-    //     //    let origin;
-    //     //    let i = text.length - 1;
-    //     //    while (text[i] !== ' ') {
-    //     //      carry += text[i];
-    //     //      i--;
-    //     //    }
-    //     //    carry = carry.split('').reverse().join('');
-    //     //    origin = text.slice(0, i);
-    //     //    this.setState({firstLineText: origin, secondLineText: carry});
-    //     //  }
-    //     this.setState({secondLineText: text[text.length - 1]});
-    //      this._secondLineText.focus();
-    //    }
-    //    return;
-    // }
-    // if (line === 'second') {
-    //   if (text.length === 0) {
-    //     this.setState({secondLineText: text});
-    //     this._firstLineText.focus();
-    //   } else {
-    //     this.setState({secondLineText: text});
-    //   }
-    // }
+  _handleTextInput(event) {
+    this.setState({ text: event.nativeEvent.text || '' });
   }
 }
 
@@ -127,15 +82,6 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 5,
   },
-  textInput: {
-
-  paddingLeft: 10,
-  fontSize: 17,
-  flex: 1,
-  backgroundColor: 'white',
-  borderWidth: 0,
-
-},
   buttonRow: {
     flexDirection: 'row',
     alignSelf: 'flex-end',
