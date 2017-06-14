@@ -21,7 +21,7 @@ export default class Menu extends Component {
       containerOpacity: new Animated.Value(1),
       buttonOpacity: new Animated.Value(1),
       titleOpacity: new Animated.Value(0),
-      search: false, // TODO Remove passing props to MainButtons if the Animated.View doesn't work.
+      search: false,
     };
   }
 
@@ -129,49 +129,20 @@ export default class Menu extends Component {
     }
 
     noResultNotificationForMenu() {
+      Animated.timing(
+        this.state.containerHeight, {
+          toValue: 200,
+          duration: 600,
+        },
+      ).start();
 
+      setTimeout(() => {
         Animated.timing(
           this.state.containerHeight, {
-            toValue: 200,
+            toValue: 130,
             duration: 600,
           },
         ).start();
-        // Animated.timing(
-        //   this.state.resultHeight, {
-        //     toValue: 80,
-        //     duration: 1000,
-        //   },
-        // ),
-        // Animated.timing(
-        //   this.state.resultOpacity, {
-        //     toValue: 1,
-        //     duration: 1000,
-        //   },
-        // ),
-      // ]).start();
-
-      setTimeout(() => {
-
-        // Animated.parallel([
-          Animated.timing(
-            this.state.containerHeight, {
-              toValue: 130,
-              duration: 600,
-            },
-          ).start();
-        //   Animated.timing(
-        //     this.state.resultHeight, {
-        //       toValue: 0,
-        //       duration: 400,
-        //     },
-        //   ),
-        //   Animated.timing(
-        //     this.state.resultOpacity, {
-        //       toValue: 0,
-        //       duration: 1000,
-        //     },
-        //   ),
-        // ]).start();
       }, 1800);
     }
 
@@ -198,12 +169,6 @@ export default class Menu extends Component {
 }
 
 const styles = StyleSheet.create({
-  // container: {
-  //   zIndex: 10,
-  //   height: 130,
-  //   alignSelf: 'stretch',
-  //   backgroundColor: '#4286f4',
-  // },
   headerContainer: {
     flexDirection: 'row',
     backgroundColor: '#4286f4',

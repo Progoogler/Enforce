@@ -3,7 +3,6 @@ import {
   View,
   Text,
   Image,
-  //Animated,
   StyleSheet,
   TouchableHighlight,
 } from 'react-native';
@@ -13,7 +12,6 @@ export default class MainButtons extends Component {
   constructor() {
     super();
     this.state = {
-      //separatorHeight: new Animated.Value(40),
       map: false,
       camera: false,
     }
@@ -40,27 +38,6 @@ export default class MainButtons extends Component {
       </View>
     );
   }
-
-  // <Animated.View style={{
-  //     borderColor: 'white',
-  //     borderWidth: .5,
-  //     height: this.state.separatorHeight,
-  //   }}></Animated.View>
-
-  // componentWillUpdate() {
-  //   if (this.props.searching) {
-  //     Animated.timing(
-  //       this.state.separatorHeight,
-  //       { toValue: 0,
-  //         duration: 10, },
-  //     ).start();
-  //   } else {
-  //     Animated.timing(
-  //       this.state.separatorHeight,
-  //       { toValue: 40,
-  //         duration: 10, },
-  //     ).start();
-  //   }
 
   _onShowUnderlay(button) {
     button === 'map' ? this.setState({map: true}) : this.setState({camera: true});

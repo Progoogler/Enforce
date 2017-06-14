@@ -201,7 +201,6 @@ export default class Search extends Component {
     this.props.minimizeMenuContainer && this.props.minimizeMenuContainer();
 
     this.myTextInput.isFocused() && Keyboard.dismiss();
-    //this.extendResultContainer();
 
     this.props.timerList && this.myTextInput.focus();
     !this.props.timerList && Keyboard.dismiss();
@@ -212,7 +211,7 @@ export default class Search extends Component {
     this.marginValue = center;
   }
 
-  _handleHistorySearch() { console.log('HISTORY BUTTON PRESSED')
+  _handleHistorySearch() {
     if (this.state.license.length === 0) {
       this.myTextInput.focus();
     } else {
@@ -229,7 +228,7 @@ export default class Search extends Component {
 
       if (result !== 'unfound') {
         // Case for extending the container of Search in any component.
-        this.extendResultContainer(true);
+        this.extendResultContainer();
 
         // Case for extending the Menu container of Overview.
         this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
@@ -244,7 +243,7 @@ export default class Search extends Component {
     }
   }
 
-  _handleVINSearch() { console.log('VIN BUTTON PRESSED')
+  _handleVINSearch() {
     if (this.state.license.length === 0) {
       this.myTextInput.focus();
     } else {
@@ -300,30 +299,28 @@ export default class Search extends Component {
     }, 1800);
   }
 
-  extendResultContainer(extend) {
-    console.log('hi');
-    if (extend) {
-      Animated.parallel([
-        Animated.timing(
-          this.state.containerHeight, {
-            toValue: 250,
-            duration: 600,
-          },
-        ),
-        Animated.timing(
-          this.state.resultHeight, {
-            toValue: 115,
-            duration: 1000,
-          },
-        ),
-        Animated.timing(
-          this.state.resultOpacity, {
-            toValue: 1,
-            duration: 1000,
-          },
-        ),
-      ]).start();
-    }
+  extendResultContainer() {
+    Animated.parallel([
+      Animated.timing(
+        this.state.containerHeight, {
+          toValue: 250,
+          duration: 600,
+        },
+      ),
+      Animated.timing(
+        this.state.resultHeight, {
+          toValue: 115,
+          duration: 1000,
+        },
+      ),
+      Animated.timing(
+        this.state.resultOpacity, {
+          toValue: 1,
+          duration: 1000,
+        },
+      ),
+    ]).start();
+
   }
 
   minimizeResultContainer() {
@@ -350,41 +347,6 @@ export default class Search extends Component {
     Keyboard.dismiss();
     this.setState({license: '', result: null, underlineMargin: new Animated.Value(center)});
   }
-
-    // TODO Option to close only the result?
-    // } else { console.log('close container')
-    //   Animated.parallel([
-    //     Animated.timing(
-    //       this.state.resultOpacity,
-    //       { toValue: 0,
-    //         duration: 800, },
-    //     ),
-    //     Animated.timing(
-    //       this.state.resultHeight,
-    //       { toValue: 130,
-    //         duration: 800, },
-    //     ),
-    //   ]).start();
-    // }
-
-
-// TODO TODO result check to display not found or vin as well
-//this._displayResultAnimated('history');
-  // _displayResultAnimated(result) {
-  //   if (result === 'history') {
-  //     Animated.timing(
-  //       this.state.containerHeight,
-  //       { toValue: 230,
-  //         duration: 900, },
-  //     ).start();
-  //   } else {
-  //     Animated.timing(
-  //       this.state.containerHeight,
-  //       { toValue: 195,
-  //         duration: 500, },
-  //     ).start();
-  //   }
-  // }
 
    _keyboardDidHideForTimerList() {
      if (this.state.license) this.props.addLicenseToQueue(this.state.license);
@@ -424,38 +386,33 @@ export default class Search extends Component {
       Animated.timing(
         this.state.buttonOpacity,{
           toValue: 0,
-          duration: 700, // 500
+          duration: 700,
         },
       ),
       Animated.timing(
         this.state.containerHeight,{
           toValue: 65,
-          duration: 700, // 600
+          duration: 700,
         },
       ),
       Animated.timing(
         this.state.underlineOpacity,{
           toValue: 0,
-          duration: 700, // 500
+          duration: 700,
         },
       ),
       Animated.timing(
         this.state.underline,{
           toValue: 0,
-          duration: 700, // 500
+          duration: 700,
         },
       ),
       Animated.timing(
         this.state.resultOpacity,{
           toValue: 0,
-          duration: 700, // 600
+          duration: 700,
         },
       ),
-      // Animated.timing(
-      //   this.state.resultHeight,
-      //   { toValue: 130,
-      //     duration: 800, },
-      // ),
     ]).start();
   }
 
