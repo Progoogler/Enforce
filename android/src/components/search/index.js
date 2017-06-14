@@ -419,36 +419,36 @@ export default class Search extends Component {
     this.setState({license});
   }
 
-  _fadeContainer() {
+  _fadeContainer() { console.log('fade container')
     Animated.parallel([
       Animated.timing(
         this.state.buttonOpacity,{
           toValue: 0,
-          duration: 500,
+          duration: 700, // 500
         },
       ),
       Animated.timing(
         this.state.containerHeight,{
           toValue: 65,
-          duration: 600,
+          duration: 700, // 600
         },
       ),
       Animated.timing(
         this.state.underlineOpacity,{
           toValue: 0,
-          duration: 500,
+          duration: 700, // 500
         },
       ),
       Animated.timing(
         this.state.underline,{
           toValue: 0,
-          duration: 500,
+          duration: 700, // 500
         },
       ),
       Animated.timing(
         this.state.resultOpacity,{
           toValue: 0,
-          duration: 600,
+          duration: 700, // 600
         },
       ),
       // Animated.timing(

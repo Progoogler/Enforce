@@ -181,12 +181,17 @@ export default class Menu extends Component {
       Animated.timing(
         this.state.titleOpacity,
         { toValue: 1,
-          duration: 500, },
+          duration: 1000, },
       ),
       Animated.timing(
         this.state.buttonOpacity,
         { toValue: 1,
-          duration: 500, },
+          duration: 1000, },
+      ),
+      Animated.timing(
+        this.state.containerHeight,
+        { toValue: 130,
+          duration: 350, },
       ),
     ]).start();
   }
