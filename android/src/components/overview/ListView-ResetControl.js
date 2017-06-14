@@ -3,86 +3,66 @@ import {
   View,
   Text,
   StyleSheet,
-  ListView,
   RefreshControl,
   AsyncStorage,
 } from 'react-native';
+import FlatList from 'react-native/Libraries/Lists/FlatList';
 import realm from 'realm';
-import Schema from '../../realm';
-import { unlink, exists } from 'react-native-fs';
+
 import Row from './Row';
+
+import Schema from '../../realm';
 import insertionSortModified from './insertionSort';
+import { unlink, exists } from 'react-native-fs';
 import { removeTicketPath } from '../../../../includes/firebase/database';
 
-const styles = StyleSheet.create({
-  container: {
-    alignSelf: 'stretch',
-    marginTop: 25,
-  },
-});
 
-class TimersList extends Component {
+export default class TimersList extends Component {
   constructor() {
     super();
-    console.log('timer list constructor')
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.realm = new Realm();
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
     this.list = insertionSortModified(this.list);
     this.state = {
-      dataSource: ds.cloneWithRows(this.list),
+      dataSource: this.list,
       updatedLocation: false,
       refreshing: false,
       updateRows: 0,
     };
   }
 
-  render() { console.log('Listview renders')
+  render() {
     return (
-      <ListView
-        enableEmptySections={true}
-        // In next release empty section headers will be rendered.
-        // Until then, leave this property alone to mitigate the warning msg.
-        style={styles.container}
-        refreshControl={
-          <RefreshControl refreshing={this.state.refreshing}
-            onRefresh={() => { this._onRefresh()}} />
-        }
-        timers={this.list}
-        style={styles.container}
-        dataSource={this.state.dataSource}
-        renderRow={(data) => <Row {...data}
-                              navigation={this.props.navigation}
-                              deleteRow={this.deleteRow.bind(this)}
-                              latitude={this.latitude}
-                              longitude={this.longitude}
-                              updateRows={this.state.updateRows}
-                              updatedLocation={this.state.updatedLocation} />}
-        renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
-      />
+      <FlatList
+        style={styles.flatlist}
+        data={this.state.dataSource}
+        ItemSeparatorComponent={this._renderSeparator}
+        onRefresh={this._onRefresh.bind(this)}
+        refreshing={this.state.refreshing}
+        renderItem={this._renderItem.bind(this)}
+        keyExtractor={this._keyExtractor} />
+
+
     );
   }
 
-  componentWillMount() {
+  componentWillMount() { console.log("component mounts")
     this.latitude = this.realm.objects('Coordinates')[0].latitude;
     this.longitude = this.realm.objects('Coordinates')[0].longitude;
-    if (this.props.renderedOnce) {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          this.latitude = parseFloat(position.coords.latitude);
-          this.longitude = parseFloat(position.coords.longitude);
-          this.realm.write(() => {
-            this.realm.objects('Coordinates')[0].latitude = this.latitude;
-            this.realm.objects('Coordinates')[0].longitude = this.longitude;
-          });
-          this._mounted && this.setState({ updatedLocation: true }) && this._onRefresh();
-        }, error => {
-          console.log('Error loading geolocation:', error);
-        },
-        {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
-      );
-      this.props.toggleRendered();
-    }
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        this.latitude = parseFloat(position.coords.latitude);
+        this.longitude = parseFloat(position.coords.longitude);
+        this.realm.write(() => {
+          this.realm.objects('Coordinates')[0].latitude = this.latitude;
+          this.realm.objects('Coordinates')[0].longitude = this.longitude;
+        });
+        this._mounted && this.setState({ updatedLocation: true }) && this._onRefresh();
+      }, error => {
+        console.log('Error loading geolocation:', error);
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
+    );
   }
 
   componentDidMount() {
@@ -138,7 +118,7 @@ class TimersList extends Component {
 
       this.list = [];
       this.props.updateTicketCount();
-      this.setState({dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)});
+      this.setState({dataSource: this.list});
       setTimeout(() => {
         console.log('NEW REALM')
         Realm.clearTestState();
@@ -217,12 +197,44 @@ class TimersList extends Component {
     this.list = insertionSortModified(this.list);
     this._mounted && this.setState({
       refreshing: true,
-      dataSource: new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 }).cloneWithRows(this.list)
+      dataSource: this.list,
     });
     this._mounted && this.setState({refreshing: false, updateRows: this.state.updateRows = this.state.updateRows + 1, updatedLocation: null});
     clearTimeout(this._timeoutRefresh);
     this._timeoutRefresh = setTimeout(() => this._onRefresh(), 300000);
   }
+
+  _renderItem(data) {
+    return (
+      <Row
+        data={data.item}
+        navigation={this.props.navigation}
+        deleteRow={this.deleteRow.bind(this)}
+        latitude={this.latitude}
+        longitude={this.longitude}
+        updateRows={this.state.updateRows}
+        updatedLocation={this.state.updatedLocation} />
+    );
+  }
+
+  _renderSeparator() {
+    return <View style={styles.separator} />;
+  }
+
+  _keyExtractor(item, index) {
+    return item.list[0].createdAt;
+  };
+
 }
 
-export default TimersList;
+const styles = StyleSheet.create({
+  flatlist: {
+    alignSelf: 'stretch',
+    marginTop: 25,
+  },
+  separator: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: '#8E8E8E',
+  },
+});
