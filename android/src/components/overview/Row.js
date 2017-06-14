@@ -6,7 +6,8 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
-  TouchableHighlight,
+  TouchableOpacity,
+  TouchableNativeFeedback,
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
 
@@ -20,7 +21,7 @@ export default class Row extends Component {
     this.distLon;
   }
 
-  render() { console.log('row')
+  render() {
     if (this.props.data.list.length < 1) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
     return (
           <ScrollView
@@ -29,9 +30,10 @@ export default class Row extends Component {
             directionalLockEnabled={true}
             showsHorizontalScrollIndicator={false} >
             <View style={styles.innerContainer} >
-              <TouchableHighlight
-                onPress={() => this._openTimerListPage(this.props.data.list)}
-                underlayColor="white" >
+              <TouchableNativeFeedback
+                background={TouchableNativeFeedback.Ripple('#4286f4', true)}
+                onPress={() => this._openTimerListPage(this.props.data.list)} >
+
                 <View style={styles.timerRow}>
                   <Text style={styles.timerRowLength}>
                     { this.props.data.list.length < 10 ? this.props.data.list.length + '    ' : this.props.data.list.length < 100 ? this.props.data.list.length + '  ' : this.props.data.list.length                 /*(this.props.data.list.length > 1) ? this.props.data.list.length + '\n cars' : '1 \n car' */}
@@ -41,25 +43,27 @@ export default class Row extends Component {
                     { this.props.updateRows ? this.getTimeLeft(this.props.data.list[0]) : this.getTimeLeft(this.props.data.list[0]) }
                   </Text>
                 </View>
-              </TouchableHighlight>
+
+              </TouchableNativeFeedback>
 
               <View style={styles.distanceContainer}>
-                <TouchableHighlight
+                <TouchableOpacity
                   style={styles.button}
-                  underlayColor='#0099ff'
+                  activeOpacity={.8}
                   onPress={() => this._openMapPage(this.props.data.list)} >
                   <View>
                     <Text style={styles.buttonText}>Show Map</Text>
                   </View>
-                </TouchableHighlight>
+                </TouchableOpacity>
                 <Text style={styles.distance}>{ (this.props.updatedLocation === true) ? this._getDistance() : this.distance }</Text>
               </View>
 
-              <TouchableHighlight
+              <TouchableOpacity
                 style={styles.delete}
+                activeOpacity={.8}
                 onPress={() => {this.props.deleteRow(this.props.data.list)}} >
                 <Image source={require('../../../../shared/images/bin.jpg')} />
-              </TouchableHighlight>
+              </TouchableOpacity>
             </View>
           </ScrollView>
     );
@@ -175,17 +179,6 @@ export default class Row extends Component {
 }
 
 const styles = StyleSheet.create({
-  // timerRowContainer: {
-  //   flexDirection: 'row',
-  //   justifyContent: 'space-between',
-  //   alignItems: 'center',
-  //   borderTopWidth: 1,
-  // },
-
-  //   container: {
-  //   //flex: 1,
-  //   //flexDirection: 'row'
-  // },
   innerScroll: {
     flex: 1,
     flexDirection: 'row',
