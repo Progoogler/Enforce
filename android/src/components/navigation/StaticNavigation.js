@@ -14,7 +14,7 @@ export default class StaticNavigation extends Component {
     super();
   }
 
-  render() { console.log('image', this.props.imageSource)
+  render() {
     return (
       <View style={styles.container} >
         <TouchableWithoutFeedback style={styles.back} onPress={() => this._handleArrow()} >
@@ -23,6 +23,8 @@ export default class StaticNavigation extends Component {
             source={require('../../../../shared/images/backarrow.jpg')} />
         </TouchableWithoutFeedback>
         <Text style={styles.title}>{ this.props.title ? this.props.title : 'Enforce' }</Text>
+
+        { this.props.navigation ?
         <TouchableHighlight
           underlayColor='#4286f4'
           onPress={ () => {
@@ -31,41 +33,19 @@ export default class StaticNavigation extends Component {
           style={styles.headerNavigation} >
           <Image source={require('../../../../shared/images/menu-icon.jpg')} />
         </TouchableHighlight>
+        : null }
+
       </View>
     );
   }
 
   _handleArrow() {
-    this.props.navigation.navigate('Overview');
+    this.props.navigation && this.props.navigation.navigate('Overview');
+    !this.props.navigation && this.props.closeModal();
   }
 
 }
 
-//   componentWillMount() { console.log('static mounts')
-//     if (this.props.title === 'Map View') {
-//       styles.icon = {
-//         height: 30,
-//         width: 30,
-//         marginLeft: 15,
-//         marginTop: 16,
-//       };
-//     } else if (this.props.title === 'Metrics') { console.log('metrics')
-//       styles.icon = {
-//         height: 30,
-//         width: 40,
-//         marginLeft: 15,
-//         // marginTop: 12,
-//       }
-//     } else {
-//       styles.icon = {
-//         // height: 40,
-//         // width: 40,
-//         // marginLeft: 15,
-//         // marginTop: 5,
-//       }
-//     }
-//   }
-// }
 
 const styles = StyleSheet.create({
   container: {
