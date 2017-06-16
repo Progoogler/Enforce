@@ -55,7 +55,7 @@ export default class Row extends Component {
             <Text><Text style={styles.label}>Time limit:</Text> {this._getTimeLimitDesc(this.props.data.timeLength)}</Text>
           </View>
 
-          { this.props.data.latitude ?
+          { this.props.data.latitude || this.props.data.description ?
             <TouchableOpacity
               style={styles.button}
               activeOpacity={.9}
@@ -65,7 +65,7 @@ export default class Row extends Component {
               </View>
             </TouchableOpacity>
             : null }
-            
+
         </View>
 
         { this.state.modalVisible ? <MapModal
