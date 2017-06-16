@@ -31,7 +31,7 @@ export default class MapApp extends Component {
 
   static navigationOptions = {
     drawerLabel: 'Map',
-    drawerIcon: ({ tintColor }) => (
+    drawerIcon: () => (
       <Image
         source={require('../../../../shared/images/blue-pin.png')}
         style={[styles.icon]}

@@ -32,6 +32,10 @@ export default class TimersList extends Component {
   }
 
   render() {
+    if (this.list.length < 1) {
+      return <View />
+    }
+
     return (
       <FlatList
         style={styles.flatlist}
@@ -41,8 +45,6 @@ export default class TimersList extends Component {
         refreshing={this.state.refreshing}
         renderItem={this._renderItem.bind(this)}
         keyExtractor={this._keyExtractor} />
-
-
     );
   }
 
@@ -117,7 +119,7 @@ export default class TimersList extends Component {
       if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
 
       this.list = [];
-      this.props.updateTicketCount();
+      //this.props.updateTicketCount();
       this.setState({dataSource: this.list});
       setTimeout(() => {
         console.log('NEW REALM')
@@ -193,8 +195,8 @@ export default class TimersList extends Component {
   }
 
   _onRefresh() {
-    this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
-    this.list = insertionSortModified(this.list);
+    this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0'); console.log('list  filtered', this.list)
+    this.list = insertionSortModified(this.list); console.log('sorted', this.list)
     this._mounted && this.setState({
       refreshing: true,
       dataSource: this.list,

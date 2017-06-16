@@ -40,7 +40,7 @@ export default class Profile extends Component {
   }
   static navigationOptions = {
     drawerLabel: 'Profile',
-    drawerIcon: ({ tintColor }) => (
+    drawerIcon: () => (
       <Image
         source={require('../../../../shared/images/person-icon.png')}
         style={[styles.icon]}

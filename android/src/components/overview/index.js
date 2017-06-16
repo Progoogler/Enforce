@@ -21,13 +21,16 @@ export default class Home extends Component {
   }
 
   static navigationOptions = {
+    title: 'Overview',
     drawerLabel: 'Overview',
     drawerIcon: () => (
-      <Image
-        source={require('../../../../shared/images/eyecon.png')}
-        style={[styles.icon]}
-      />
-    )
+      <View style={styles.imageine}>
+        <Image
+          source={require('../../../../shared/images/eyecon.png')}
+          style={[styles.icon]}
+        />
+      </View>
+    ),
   };
 
   render() {

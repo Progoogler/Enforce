@@ -41,7 +41,7 @@ export default class CameraApp extends Component {
 
   static navigationOptions = {
     drawerLabel: 'Camera',
-    drawerIcon: ({ tintColor }) => (
+    drawerIcon: () => (
       <Image
         source={require('../../../../shared/images/camera-blue.png')}
         style={[styles.icon]}

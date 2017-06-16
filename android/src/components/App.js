@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { DrawerNavigator } from 'react-navigation';
-import { AsyncStorage } from 'react-native';
+import { DrawerItems, DrawerNavigator } from 'react-navigation';
+import { View, Text, Image, AsyncStorage, Dimensions } from 'react-native';
 import CameraApp from './camera/CameraApp';
 import MapApp from './map/MapApp';
 import Overview from './overview';
@@ -42,10 +42,45 @@ const AppNavigator = DrawerNavigator({
   },
   FAQs: {
     screen: FAQs
-  }
+  } //<View style={{backgroundColor: '#4286f4', width: 130, height: 25,}}>
+}, {
+    drawerWidth: 180,
+    contentComponent: props => (<View style={{flexDirection: 'row'}}>
+                                <View style={{flex: 1}}>
+                                  <View style={{marginBottom: -3, borderBottomWidth: 1, height: 145, flexDirection: 'row'}} >
+                                    <View style={{height: 145, width: 25, backgroundColor: '#4286f4'}} />
+                                    <View style={{flexDirection: 'column'}}>
+                                      <View style={{backgroundColor: '#4286f4', width: 160, height: 25, justifyContent: 'flex-end', alignItems: 'flex-end'}} >
+                                        <Image style={{height: 16, width: 16, marginRight: 10,}} source={require('../../../shared/images/pin-orange.png')} />
+                                      </View>
+                                      <View style={{height: 35, width: 150}} />
+                                      <View style={{backgroundColor: '#4286f4', width: 150, height: 25,}} />
+                                      <View style={{height: 35, width: 150, marginLeft: 1, flexDirection: 'row'}} >
+                                        <Image style={{height: 25, width: 25, alignSelf: 'flex-end'}} source={require('../../../shared/images/blue-pin.png')} />
+                                        </View>
+                                      <View style={{backgroundColor: '#4286f4', width: 160, height: 25,}} />
+                                    </View>
+                                  </View>
+
+                                  <DrawerItems {...props} />
+                                  </View>
+                                  <View style={{
+                                    position: 'absolute',
+                                    right: 0,
+                                    top: 145,
+                                    width: 5,
+                                    height: 1000,
+                                    backgroundColor: '#4286f4', }} />
+                                </View>),
+    contentOptions: {
+      activeTintColor: '#4286f4',
+      style: {
+
+      },
+    },
 });
-
-
+//<Text style={{fontSize: 22, marginLeft: 15, color: '#4286f4'}}>Navigation</Text>
+//<Image style={{height: 16, width: 16}} source={require('../../../shared/images/pin-orange.png')} />
 export default class App extends Component {
   render() {
     return (

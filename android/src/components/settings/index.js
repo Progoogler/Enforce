@@ -23,7 +23,7 @@ export default class Settings extends Component {
   }
   static navigationOptions = {
     drawerLabel: 'Settings',
-    drawerIcon: ({ tintColor }) => (
+    drawerIcon: () => (
       <Image
         source={require('../../../../shared/images/settings-icon.png')}
         style={[styles.icon]}
