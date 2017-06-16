@@ -42,7 +42,7 @@ const AppNavigator = DrawerNavigator({
   },
   FAQs: {
     screen: FAQs
-  } //<View style={{backgroundColor: '#4286f4', width: 130, height: 25,}}>
+  }
 }, {
     drawerWidth: 180,
     contentComponent: props => (<View style={{flexDirection: 'row'}}>
@@ -74,13 +74,9 @@ const AppNavigator = DrawerNavigator({
                                 </View>),
     contentOptions: {
       activeTintColor: 'green',
-      style: {
-
-      },
     },
 });
-//<Text style={{fontSize: 22, marginLeft: 15, color: '#4286f4'}}>Navigation</Text>
-//<Image style={{height: 16, width: 16}} source={require('../../../shared/images/pin-orange.png')} />
+
 export default class App extends Component {
   render() {
     return (
