@@ -52,14 +52,17 @@ export default class MapModal extends Component {
             <Marker
               coordinate={{
                 latitude: this.props.latitude,
-                longitude: this.props.longitude}}
-              title={this.props.description} >
+                longitude: this.props.longitude}} >
               <Image
-                source={require('../../../../shared/images/blue-pin.png')}
-              />
+                source={require('../../../../shared/images/blue-pin.png')} />
             </Marker>
 
           </MapView.Animated>
+          { this.props.description ?
+              <View style={styles.locationContainer}>
+                <Text style={styles.location}>{this.props.description}</Text>
+              </View>
+            : null }
         </View>
       </Modal>
     );
@@ -94,5 +97,24 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+  },
+  locationContainer: {
+    position: 'absolute',
+    bottom: 30,
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    borderRadius: 50,
+    paddingTop: 2,
+    paddingBottom: 2,
+    zIndex: 100,
+  },
+  location: {
+    textAlign: 'center',
+    color: '#4286f4',
+    fontSize: 18,
+    paddingLeft: 8,
+    paddingRight: 8,
+    paddingBottom: 4,
+    paddingTop: 4,
   },
 });
