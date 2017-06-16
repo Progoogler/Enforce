@@ -6,9 +6,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import Realm from 'realm';
-import { NavigationActions } from'react-navigation';
 import Menu from './Menu';
-import MainButtons from './MainButtons';
 import TicketCounter from './TicketCounter';
 import TimersList from './ListView-ResetControl';
 
@@ -16,7 +14,6 @@ import TimersList from './ListView-ResetControl';
 export default class Home extends Component {
   constructor() {
     super();
-    this.renderedOnce = true;
     this.realm = new Realm();
   }
 
@@ -24,12 +21,9 @@ export default class Home extends Component {
     title: 'Overview',
     drawerLabel: 'Overview',
     drawerIcon: () => (
-      <View style={styles.imageine}>
-        <Image
-          source={require('../../../../shared/images/eyecon.png')}
-          style={[styles.icon]}
-        />
-      </View>
+      <Image
+        source={require('../../../../shared/images/eyecon.png')}
+        style={[styles.icon]} />
     ),
   };
 
@@ -45,7 +39,7 @@ export default class Home extends Component {
 
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({  
   container: {
     flex: 1,
     backgroundColor: 'white',
