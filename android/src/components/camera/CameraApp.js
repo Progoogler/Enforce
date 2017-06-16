@@ -216,7 +216,7 @@ export default class CameraApp extends Component {
         if (this.firstCapture) {
           setTimeout(() => {
             this.savePicture(data);
-          }, 2000);
+          }, 1200);
           this.firstCapture = false;
           return;
         }
@@ -245,9 +245,6 @@ export default class CameraApp extends Component {
     if (length - 1 < 0) return;
     console.log('unlinking')
     unlink(timer.mediaPath)
-    .then(() => {
-      console.log('FILE DELETED');
-      exists(timer.mediaUri)
       .then(() => {
         console.log('PICTURE REMOVED');
         this.realm.write(() => {
@@ -257,11 +254,7 @@ export default class CameraApp extends Component {
       })
       .catch((err) => {
         console.warn(err.message);
-      })
-    })
-    .catch((err) => {
-      console.warn(err.message);
-    });
+      });
     this.deleting = false;
   }
 
