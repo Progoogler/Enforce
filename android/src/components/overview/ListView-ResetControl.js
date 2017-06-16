@@ -195,8 +195,9 @@ export default class TimersList extends Component {
   }
 
   _onRefresh() {
-    this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0'); console.log('list  filtered', this.list)
-    this.list = insertionSortModified(this.list); console.log('sorted', this.list)
+    this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
+    this.list = insertionSortModified(this.list);
+    if (this.list.length === 0) this.list = [{list: [{'createdAt': 0}]}]; // Supplement a fake createdAt prop for FlatList Key && Row render based on empty value.
     this._mounted && this.setState({
       refreshing: true,
       dataSource: this.list,
