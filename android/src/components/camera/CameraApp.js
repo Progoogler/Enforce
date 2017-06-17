@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import Camera from 'react-native-camera';
-import { unlink, exists } from 'react-native-fs';
+import { unlink } from 'react-native-fs';
 import Realm from 'realm';
 
 import Navigation from '../navigation';
