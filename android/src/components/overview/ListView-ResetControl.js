@@ -8,12 +8,10 @@ import {
 } from 'react-native';
 import FlatList from 'react-native/Libraries/Lists/FlatList';
 import realm from 'realm';
-
 import Row from './Row';
-
 import Schema from '../../realm';
 import insertionSortModified from './insertionSort';
-import { unlink, exists } from 'react-native-fs';
+import { unlink } from 'react-native-fs';
 import { removeTicketPath } from '../../../../includes/firebase/database';
 
 
@@ -23,6 +21,7 @@ export default class TimersList extends Component {
     this.realm = new Realm();
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
     this.list = insertionSortModified(this.list);
+    if (this.list.length === 0) this.list = [{list: [{'createdAt': 0}]}]; // Supplement a fake createdAt prop for FlatList Key && Row render based on empty value.
     this.state = {
       dataSource: this.list,
       updatedLocation: false,
@@ -169,13 +168,9 @@ export default class TimersList extends Component {
     timers.forEach((timer, idx) => {
       unlink(timer.mediaPath)
       .then(() => {
-        console.log('FILE DELETED');
-        exists(timer.mediaUri)                                                   // TODO potentially remove -- may not be necessary
-        .then(() => {
-          console.log('PICTURE REMOVED');
-          this.realm.write(() => {
-            this.realm.delete(timer);
-          });
+        console.log('PICTURE REMOVED');
+        this.realm.write(() => {
+          this.realm.delete(timer);
         });
       });
     });
