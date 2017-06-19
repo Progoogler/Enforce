@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   title: {
     alignSelf: 'center',
     color: '#4286f4',
-    margin: 35,
+    margin: 45,
     fontSize: 22,
   },
   question: {
