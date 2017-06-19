@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  //ListView,
   View,
   Image,
   StyleSheet,
@@ -33,11 +32,11 @@ export default class TimerList extends Component {
     //const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     if (!this.props.navigation.state.params) {
       this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
-      this.list = this.list.length > 0 ? this.list[0].list : {};
+      this.list = this.list.length > 0 ? this.list[0].list : [{list: [{'createdAt': 0}]}];
       this.props.navigation.state.params = {};
       this.props.navigation.state.params.timers = this.list;
     } else {
-      this.list = this.props.navigation.state.params.timers;
+      this.list = this.props.navigation.state.params.timers ? this.props.navigation.state.params.timers : [{list: [{'createdAt': 0}]}];
     }
     this.state = {
       dataSource: this.list,
@@ -66,8 +65,10 @@ export default class TimerList extends Component {
     return (
       <View style={styles.container}>
         <Search navigation={this.props.navigation} timerList={true} shouldResetLicense={this.shouldResetLicense.bind(this)} addLicenseToQueue={this.addLicenseToQueue.bind(this)} />
-        <Title limit={this.props.navigation.state.params.timers[0] ? this.props.navigation.state.params.timers[0].timeLength : ""} />
+        <Title limit={typeof this.list[0] !== 'object' ? this.list[0].timeLength : ""} />
         <Warning timeElapsed={this.timeElapsed} visibility={this.state.warningVisibility} uponTicketed={this.uponTicketed.bind(this)} clearWarning={this.updateRows.bind(this)}/>
+
+        { typeof this.list[0] !== 'object' ?
 
         <FlatList
            data={this.state.dataSource}
@@ -78,6 +79,8 @@ export default class TimerList extends Component {
            keyExtractor={this._keyExtractor}
            />
 
+           : null }
+
         { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : <View /> }
 
       </View>
@@ -87,6 +90,7 @@ export default class TimerList extends Component {
   componentWillMount() {
     this._getUserInfo();
     this.ticketCount = this.realm.objects('Ticketed')[0]['list'].length;
+    this._mounted = true;
   }
 
   componentWillUnmount() {
@@ -94,6 +98,7 @@ export default class TimerList extends Component {
       setUserTickets(this.refPath, this.realm.objects('Ticketed')[0]['list']);
     }
     this.props.navigation.state.params = undefined;
+    this._mounted = false;
   }
 
   async _getUserInfo() {
@@ -108,7 +113,7 @@ export default class TimerList extends Component {
       refreshing: true,
       dataSource: this.list,
     });
-    this.setState({refreshing: false});
+    setTimeout(() => { this._mounted && this.setState({refreshing: false})}, 1500);
   }
 
   updateRows(clearWarning, only) {
@@ -120,10 +125,10 @@ export default class TimerList extends Component {
       });
     } else if (this.list.length === 0) {
       this.setState({
-        dataSource: this.list,
-        modalVisible: true,
+        //dataSource: this.list,
+        modalVisible: true, // Show Done sign. TODO Change UI
       });
-    } else if (clearWarning && only) {
+    } else if (clearWarning && only) { // Extra transaction handler for displaying the warning sign.
       this.setState({
         warningVisibility: false,
       });

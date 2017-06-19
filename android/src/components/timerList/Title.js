@@ -34,7 +34,7 @@ class Title extends Component {
   }
 
   _getTimeLimitResponse(length) {
-    if (length === 0 || typeof length === 'string') return '';
+    if (length === 0 || typeof length === 'string') return 'Empty ';
     if (length < 1) {
       length = length * 60;
       return `${parseInt(length)}  Minute`;
