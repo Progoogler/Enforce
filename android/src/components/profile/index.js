@@ -27,6 +27,9 @@ export default class Profile extends Component {
       emailColor: 'black',
       passwordColor: 'black',
       countyColor: 'black',
+      emailBackground: 'white',
+      passwordBackground: 'white',
+      countyBackground: 'white',
       emailWarning: false,
       passwordWarning: false,
       profileStatus: 'Create Profile',
@@ -56,7 +59,7 @@ export default class Profile extends Component {
         <View style={styles.row} >
           <Text style={styles.designator}>Email</Text>
           <TextInput
-            style={{ borderColor: this.state.emailColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
+            style={{ backgroundColor: this.state.emailBackground, borderColor: this.state.emailColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
             autoCorrect={false}
             autoCapitalize={'words'}
             keyboardType={'email-address'}
@@ -73,7 +76,7 @@ export default class Profile extends Component {
         <View style={styles.row} >
           <Text style={styles.designator}>Password</Text>
           <TextInput
-            style={{ borderColor: this.state.passwordColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
+            style={{ backgroundColor: this.state.passwordBackground, borderColor: this.state.passwordColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
             autoCorrect={false}
             secureTextEntry={true}
             fontSize={18}
@@ -89,7 +92,7 @@ export default class Profile extends Component {
         <View style={styles.row} >
           <Text style={styles.designator}>County</Text>
           <TextInput
-            style={{ borderColor: this.state.countyColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
+            style={{ backgroundColor: this.state.countyBackground, borderColor: this.state.countyColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
             autoCorrect={false}
             autoCapitalize={'words'}
             fontSize={18}
@@ -207,7 +210,7 @@ export default class Profile extends Component {
   }
 
   _onEmailFocus() {
-    this.setState({emailColor: '#4286f4'});
+    this.setState({emailColor: '#4286f4', emailBackground: '#e8eae9'});
   }
 
   _onEmailBlur() {
