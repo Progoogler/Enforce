@@ -60,15 +60,15 @@ const styles = StyleSheet.create({
     marginLeft: 25,
   },
   icon: {
-    height: 30,
-    width: 40,
+    height: 20,
+    width: 30,
     marginLeft: 15,
   },
   title: {
     flex: .70,
     height: 60,
     fontSize: 32,
-    marginLeft: 35,
+    marginLeft: 28,
     color: 'white',
     textAlignVertical: 'center',
   },
