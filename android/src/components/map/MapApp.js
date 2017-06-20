@@ -21,12 +21,14 @@ export default class MapApp extends Component {
     super();
     this.state = {
       animating: true,
-      modalVisible: false,
+      modalVisible: false, // pointless TODO check for removal
       showError: false,
+      polyline: [null],
     };
     this.animated = false;
     this.animatedMap = undefined;
     this._dragTimerIndex = undefined;
+    this._timerSecondaryIndex = undefined;
     this.realm = new Realm();
   }
 
@@ -43,18 +45,6 @@ export default class MapApp extends Component {
   render() {
     return (
       <View style={styles.container} >
-        <Navigation
-          navigation={this.props.navigation}
-          title={'Map View'}
-          route={'Map'}
-          imageSource={require('../../../../shared/images/white-pin.jpg')} />
-
-        {this.getLocationDetails()}
-
-        <ActivityIndicator
-          animating={this.state.animating}
-          style={styles.activity}
-          size='large' />
 
         <MapView.Animated
           ref={ref => { this.animatedMap = ref; }}
@@ -68,7 +58,21 @@ export default class MapApp extends Component {
             longitudeDelta: 0.0060,
           }} >
             { this.getMarkers() }
+            { this.state.polyline[0] }
         </MapView.Animated>
+
+        <Navigation
+          navigation={this.props.navigation}
+          title={'Map View'}
+          route={'Map'}
+          imageSource={require('../../../../shared/images/white-pin.jpg')} />
+
+         {this.state.showLocationTip ? <LocationDetailsView /> : null }
+
+        <ActivityIndicator
+          animating={this.state.animating}
+          style={styles.activity}
+          size='large' />
 
         { this.state.showError ? <ErrorMessage checkLocationAndRender={this.checkLocationAndRender.bind(this)} /> : <View /> }
       </View>
@@ -98,15 +102,12 @@ export default class MapApp extends Component {
               this.realm.objects('Coordinates')[0].longitude = longitude;
             });
           }, error => {
-            this._mounted && this.setState({showError: true});
+            this._mounted && this.setState({showError: true, animating: false});
             console.log('Error loading geolocation:', error);
           },
           {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
         );
       });
-      // .catch(() => {
-      //   this._mounted && this.setState({showError: true});
-      // });
     } else {
       navigator.geolocation.getCurrentPosition(
         position => {
@@ -119,10 +120,30 @@ export default class MapApp extends Component {
           });
         }, error => {
           this._mounted && this.setState({showError: true, animating: false});
-          //console.warn('Error loading geolocation:', error);
         },
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
       );
+    }
+  }
+
+  componentDidMount() {
+    if (this.props.navigation.state.params) {
+      let coords = [];
+      this.props.navigation.state.params.timers.forEach( timer => {
+        coords.push({
+          'latitude': timer.latitude,
+          'longitude': timer.longitude,
+        });
+      });
+      this.setState({
+        polyline: [
+          <MapView.Polyline
+            coordinates={coords}
+            strokeWidth={5}
+            strokeColor='red'
+            />
+        ],
+      });
     }
   }
 
@@ -167,31 +188,80 @@ export default class MapApp extends Component {
   _resetTimerCoords(coords) {
     // @params coords: object {longitude: -122.000, latitude: 37.000}.
     this.realm.write(() => {
-      this.realm.objects('Timers')[this._dragTimerIndex].list[0].latitude = coords.latitude;
-      this.realm.objects('Timers')[this._dragTimerIndex].list[0].longitude = coords.longitude;
+      this.realm.objects('Timers')[this._dragTimerIndex].list[this._timerSecondaryIndex ? this._timerSecondaryIndex : 0].latitude = coords.latitude;
+      this.realm.objects('Timers')[this._dragTimerIndex].list[this._timerSecondaryIndex ? this._timerSecondaryIndex : 0].longitude = coords.longitude;
     });
   }
 
-  _matchTimerCoords(latitude) { // Potentially inaccurate match w/o longitude difference as well from origin.
+  _matchTimerCoords(latitude, secondaryMarker) { // Potentially inaccurate match w/o longitude difference as well from origin.
     let diff; // @params diff: difference value b/w latitudes.
     let index;
-    this.realm.objects('Timers').forEach((timerList, idx) => {
-      // @params comp: comparison value
-      let comp = timerList.list[0].latitude - latitude;
-      if (comp < 0) {
-        comp = latitude - timerList.list[0].latitude;
-      }
-      if (!diff) {
-        index = idx;
-        diff = comp;
-      } else {
-        if (comp < diff) {
-          diff = comp;
-          index = idx;
+
+    if (secondaryMarker && this._dragTimerIndex) {
+      this.realm.objects('Timers')[this._dragTimerIndex].list.forEach((timer, idx) => {
+        let comp = timer.latitude - latitude;
+        if (comp < 0) {
+          comp = latitude - timer.latitude;
         }
-      }
-    });
-    this._dragTimerIndex = index;
+        if (!diff) {
+          index = idx;
+          diff = comp;
+        } else {
+          if (comp < diff) {
+            diff = comp;
+            index = idx;
+          }
+        }
+      });
+      this._timerSecondaryIndex = index;
+      return;
+    } else {
+      this.realm.objects('Timers').forEach((timerList, idx) => {
+
+        if (!timerList.list[0]) return; // Do not evaluate empty lists.
+
+        if (secondaryMarker && timerList.list[0].createdAt === this.props.navigation.state.params.timers[0].createdAt) {
+
+          this._dragTimerIndex = idx; // Keep track to prevent first loop from double checking.
+          this.props.navigation.state.params.timers.forEach((timer, sidx) => {
+            let comp = timer.latitude - latitude;
+            if (comp < 0) {
+              comp = latitude - timer.latitude;
+            }
+            if (!diff) {
+              index = sidx;
+              diff = comp;
+            } else {
+              if (comp < diff) {
+                diff = comp;
+                index = sidx;
+              }
+            }
+          });
+          this._timerSecondaryIndex = index;
+          return;
+        } else if (secondaryMarker) {
+          return;
+        } else {
+
+          // @params comp: comparison value
+          let comp = timerList.list[0].latitude - latitude;
+          if (comp < 0) {
+            comp = latitude - timerList.list[0].latitude;
+          }
+          if (!diff) {
+            index = idx;
+            diff = comp;
+          } else {
+            if (comp < diff) {
+              diff = comp;
+              index = idx;
+            }
+          }
+        }
+      });
+      if (!secondaryMarker) this._dragTimerIndex = index;
+    }
   }
 
   getMarkers() {
@@ -247,6 +317,8 @@ export default class MapApp extends Component {
       let arr = this.props.navigation.state.params.timers;
       markers.push(<Marker draggable
           coordinate={{latitude: arr[0].latitude, longitude: arr[0].longitude}}
+          onDragStart={(e) => this._matchTimerCoords(e.nativeEvent.coordinate.latitude, true)}
+          onDragEnd={(e) => this._resetTimerCoords(e.nativeEvent.coordinate)}
           key={arr[0].createdAt} >
           <CustomCallout timer={arr[0]} title="1st" />
         </Marker>
@@ -255,8 +327,10 @@ export default class MapApp extends Component {
          if (idx !== 0) {
            markers.push(<Marker draggable
              coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
+             onDragStart={(e) => this._matchTimerCoords(e.nativeEvent.coordinate.latitude, true)}
+             onDragEnd={(e) => this._resetTimerCoords(e.nativeEvent.coordinate)}
              key={timer.createdAt} >
-             <CustomCallout timer={arr[idx]} title="1st" secondary={true}/>
+             <CustomCallout timer={arr[idx]} secondary={true}/>
             </Marker>
            );
          }
@@ -285,16 +359,13 @@ export default class MapApp extends Component {
             this.realm.objects('Coordinates')[0].latitude = latitude;
             this.realm.objects('Coordinates')[0].longitude = longitude;
           });
-          this._mounted && this.setState({showError: false});
+          this._mounted && this.setState({showError: false, animating: false});
         }, error => {
-          console.warn('Error loading geolocation:', error);
+          this._mounted && this.setState({showError: true, animating: false});
         },
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
       );
     });
-    // .catch(() => {
-    //   this._mounted && this.setState({showError: true});
-    // });
   }
 
   setModalVisible() {
