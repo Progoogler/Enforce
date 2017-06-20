@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   title: {
     flex: .70,
     height: 60,
-    fontSize: 32,
+    fontSize: 28,
     marginLeft: 28,
     color: 'white',
     textAlignVertical: 'center',
