@@ -65,10 +65,10 @@ export default class TimerList extends Component {
     return (
       <View style={styles.container}>
         <Search navigation={this.props.navigation} timerList={true} shouldResetLicense={this.shouldResetLicense.bind(this)} addLicenseToQueue={this.addLicenseToQueue.bind(this)} />
-        <Title limit={typeof this.list[0] !== 'object' ? this.list[0].timeLength : ""} />
+        <Title limit={typeof this.list[0].timeLength ? this.list[0].timeLength : ""} />
         <Warning timeElapsed={this.timeElapsed} visibility={this.state.warningVisibility} uponTicketed={this.uponTicketed.bind(this)} clearWarning={this.updateRows.bind(this)}/>
 
-        { typeof this.list[0] !== 'object' ?
+        { typeof this.list[0].createdAt ?
 
         <FlatList
            data={this.state.dataSource}
