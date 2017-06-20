@@ -193,22 +193,28 @@ export default class MapApp extends Component {
     });
   }
 
-  _matchTimerCoords(latitude, secondaryMarker) { // Potentially inaccurate match w/o longitude difference as well from origin.
-    let diff; // @params diff: difference value b/w latitudes.
+  _matchTimerCoords(coords, secondaryMarker) { // Potentially inaccurate match w/o longitude difference as well from origin.
+    let latDiff, longDiff; // @params *Diff: difference value b/w latitudes.
     let index;
 
     if (secondaryMarker && this._dragTimerIndex) {
       this.realm.objects('Timers')[this._dragTimerIndex].list.forEach((timer, idx) => {
-        let comp = timer.latitude - latitude;
-        if (comp < 0) {
-          comp = latitude - timer.latitude;
+        let latComp = timer.latitude - coords.latitude;
+        let longComp = timer.longitude - coords.longitude;
+        if (latComp < 0) {
+          latComp = coords.latitude - timer.latitude;
         }
-        if (!diff) {
+        if (longComp > 0) {
+          longComp = coords.longitude - timer.longitude;
+        }
+        if (!latDiff) {
           index = idx;
-          diff = comp;
+          latDiff = latComp;
+          longDiff = longComp;
         } else {
-          if (comp < diff) {
-            diff = comp;
+          if (latComp < latDiff && longComp > longDiff) {
+            latDiff = latComp;
+            longDiff = longComp;
             index = idx;
           }
         }
@@ -224,16 +230,22 @@ export default class MapApp extends Component {
 
           this._dragTimerIndex = idx; // Keep track to prevent first loop from double checking.
           this.props.navigation.state.params.timers.forEach((timer, sidx) => {
-            let comp = timer.latitude - latitude;
-            if (comp < 0) {
-              comp = latitude - timer.latitude;
+            let latComp = timer.latitude - coords.latitude;
+            let longComp = timer.longitude - coords.longitude;
+            if (latComp < 0) {
+              latComp = coords.latitude - timer.latitude;
             }
-            if (!diff) {
+            if (longComp > 0) {
+              longComp = coords.longitude - timer.longitude;
+            }
+            if (!latDiff) {
               index = sidx;
-              diff = comp;
+              latDiff = latComp;
+              longDiff = longComp;
             } else {
-              if (comp < diff) {
-                diff = comp;
+              if (latComp < latDiff && longComp > longDiff) {
+                latDiff = latComp;
+                longDiff = longComp;
                 index = sidx;
               }
             }
@@ -245,16 +257,22 @@ export default class MapApp extends Component {
         } else {
 
           // @params comp: comparison value
-          let comp = timerList.list[0].latitude - latitude;
-          if (comp < 0) {
-            comp = latitude - timerList.list[0].latitude;
+          let latComp = timerList.list[0].latitude - coords.latitude;
+          let longComp = timerList.list[0].longitude - coords.longitude;
+          if (latComp < 0) {
+            latComp = coords.latitude - timerList.list[0].latitude;
           }
-          if (!diff) {
+          if (longComp > 0) {
+            longComp = coords.latitude - timerList.list[0].longitude;
+          }
+          if (!latDiff) {
             index = idx;
-            diff = comp;
+            latDiff = latComp;
+            longDiff = longComp;
           } else {
-            if (comp < diff) {
-              diff = comp;
+            if (latComp < latDiff && longComp > longDiff) {
+              latDiff = latComp;
+              longDiff = longComp;
               index = idx;
             }
           }
@@ -282,7 +300,7 @@ export default class MapApp extends Component {
           markers.push(
             <Marker draggable
               coordinate={{latitude: timerList.list[0].latitude, longitude: timerList.list[0].longitude}}
-              onDragStart={(e) => this._matchTimerCoords(e.nativeEvent.coordinate.latitude)}
+              onDragStart={(e) => this._matchTimerCoords(e.nativeEvent.coordinate)}
               onDragEnd={(e) => this._resetTimerCoords(e.nativeEvent.coordinate)}
               key={timerList.list[0].createdAt} >
               <CustomCallout timer={timerList.list[0]} title="1st" />
@@ -317,7 +335,7 @@ export default class MapApp extends Component {
       let arr = this.props.navigation.state.params.timers;
       markers.push(<Marker draggable
           coordinate={{latitude: arr[0].latitude, longitude: arr[0].longitude}}
-          onDragStart={(e) => this._matchTimerCoords(e.nativeEvent.coordinate.latitude, true)}
+          onDragStart={(e) => this._matchTimerCoords(e.nativeEvent.coordinate, true)}
           onDragEnd={(e) => this._resetTimerCoords(e.nativeEvent.coordinate)}
           key={arr[0].createdAt} >
           <CustomCallout timer={arr[0]} title="1st" />
@@ -327,7 +345,7 @@ export default class MapApp extends Component {
          if (idx !== 0) {
            markers.push(<Marker draggable
              coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
-             onDragStart={(e) => this._matchTimerCoords(e.nativeEvent.coordinate.latitude, true)}
+             onDragStart={(e) => this._matchTimerCoords(e.nativeEvent.coordinate, true)}
              onDragEnd={(e) => this._resetTimerCoords(e.nativeEvent.coordinate)}
              key={timer.createdAt} >
              <CustomCallout timer={arr[idx]} secondary={true}/>
