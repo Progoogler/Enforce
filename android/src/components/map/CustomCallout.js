@@ -9,7 +9,9 @@ export default class CustomCallout extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={ this.props.secondary ? null : (this._checkTimedUp(this.props.timer) ? styles.green : styles.blue) }>
+        <View style={ this.props.secondary ? (this.props.timer.description ? (this._checkTimedUp(this.props.timer) ? styles.green : styles.blue) : null) :
+                        (this._checkTimedUp(this.props.timer) ? styles.green : styles.blue) }>
+
           <Text style={styles.message}>
             {
               this.props.secondary ?
