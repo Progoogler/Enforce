@@ -5,12 +5,22 @@ import {
   StyleSheet,
 } from 'react-native';
 
-export default class MyCalloutView extends Component {
+export default class CustomCallout extends Component {
   render() {
     return (
       <View style={styles.container}>
         <View style={ this.props.secondary ? null : (this._checkTimedUp(this.props.timer) ? styles.green : styles.blue) }>
-          <Text style={styles.message}>{ this.props.secondary ? null : (this._checkTimedUp(this.props.timer) ? 'Ready' : 'Expires at ' + this._getExpiration(this.props.timer) + '\n' + this._prettyMessage(this.props.timer.description)) }</Text>
+          <Text style={styles.message}>
+            {
+              this.props.secondary ?
+
+              (this.props.timer.description ? this._prettyMessage(this.props.timer.description) : null) :
+
+             (this._checkTimedUp(this.props.timer) ?
+
+             'Ready' : 'Expires at ' + this._getExpiration(this.props.timer) + '\n' + this._prettyMessage(this.props.timer.description))
+            }
+          </Text>
         </View>
         <View style={ this._checkTimedUp(this.props.timer) ? styles.greenTriangle : styles.blueTriangle } />
       </View>
@@ -109,6 +119,6 @@ const styles = StyleSheet.create({
   },
 });
 
-MyCalloutView.propTypes = {
-  title: React.PropTypes.string.isRequired
+CustomCallout.propTypes = {
+  timer: React.PropTypes.object.isRequired
 };
