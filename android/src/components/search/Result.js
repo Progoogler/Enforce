@@ -5,14 +5,14 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  Animated,
 } from 'react-native';
-import { NavigationActions } from 'react-navigation';
+import PropTypes from 'prop-types';
 
 import MapModal from './MapModal';
 import ImageModal from '../history/ImageModal';
 import Unfound from './Unfound';
 
+/* global require */
 export default class Result extends Component {
   constructor() {
     super();
@@ -29,7 +29,6 @@ export default class Result extends Component {
 
         { this.state.showMaximizedImage ?
           <ImageModal
-            navigation={this.props.navigation}
             uri={this.state.uri}
             visibility={this.state.showMaximizedImage}
             maximizeImage={this.maximizeImage.bind(this)} /> : null }
@@ -52,7 +51,7 @@ export default class Result extends Component {
               </View>
               <TouchableOpacity
                 style={styles.mapButton}
-                onPress={() => this._openMapPage(this.props.data.data)} >
+                onPress={() => this._openMapPage()} >
                 <Image source={require('../../../../shared/images/blue-pin.png')} style={styles.mapIcon} />
               </TouchableOpacity>
               <TouchableOpacity
@@ -100,7 +99,7 @@ export default class Result extends Component {
     return `${hour}:${minutes} ${period} ${str} `;
   }
 
-  _openMapPage = (timer) => {
+  _openMapPage = () => {
     this.setState({modalVisible: true})
   }
 
@@ -122,6 +121,13 @@ export default class Result extends Component {
   }
 
 }
+
+Result.propTypes = {
+  data: PropTypes.object,
+  license: PropTypes.string,
+  minimizeResultContainer: PropTypes.func.isRequired,
+  resizeMenuContainer: PropTypes.func,
+};
 
 const styles = StyleSheet.create({
   outerContainer: {

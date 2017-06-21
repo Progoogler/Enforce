@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   Image,
   TextInput,
   Dimensions,
@@ -10,14 +9,15 @@ import {
   StyleSheet,
   Keyboard,
   Animated,
-  Easing,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import historySearch from './historySearch';
 import Result from './Result';
 
 const center = Math.floor(Dimensions.get('window').width / 2) - 3.5;
 
+/* global require */
 export default class Search extends Component {
   constructor() {
     super();
@@ -143,7 +143,6 @@ export default class Search extends Component {
 
       </Animated.View>
     );
-    {/**/}
   }
 
   componentDidMount() {
@@ -216,9 +215,11 @@ export default class Search extends Component {
       this.myTextInput.focus();
     } else {
       let prevResult = this.state.result;
-      let result = historySearch(this.state.license); console.log('result', result);
+      let result = historySearch(this.state.license);
 
       if (result === undefined && prevResult !== 'unfound') {
+
+        this.noResultNotification(); // TODO QUICK FIX FOR EMPTY BLOCK -- Figure out what goes here!
 
       }
 
@@ -363,14 +364,14 @@ export default class Search extends Component {
       this.setState({license});
       return;
     }
-    if (license.length < this.state.license.length) { console.log('add')
+    if (license.length < this.state.license.length) {
       this.marginValue += 6.65;
       Animated.timing(
         this.state.underlineMargin, {
           toValue: this.marginValue,
         },
       ).start();
-    } else { console.log("handle")
+    } else {
       this.marginValue -= 6.65;
       Animated.timing(
         this.state.underlineMargin, {
@@ -381,7 +382,7 @@ export default class Search extends Component {
     this.setState({license});
   }
 
-  _fadeContainer() { console.log('fade container')
+  _fadeContainer() {
     Animated.parallel([
       Animated.timing(
         this.state.buttonOpacity,{
@@ -418,19 +419,19 @@ export default class Search extends Component {
 
 }
 
+Search.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  timerList: PropTypes.bool,
+  shouldResetLicense: PropTypes.func,
+  minimizeResultContainer: PropTypes.func,
+  minimizeMenuContainer: PropTypes.func,
+  resizeMenuContainer: PropTypes.func,
+  noResultNotificationForMenu: PropTypes.func,
+  closeSearch: PropTypes.func,
+  addLicenseToQueue: PropTypes.func,
+};
 
 const styles = StyleSheet.create({
-  container: {
-    zIndex: 10,
-    height: 130,
-    alignSelf: 'stretch',
-    backgroundColor: '#4286f4',
-  },
-  underlineContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'stretch',
-  },
   headerContainer: {
     flex: 1,
     flexDirection: 'row',
@@ -448,14 +449,6 @@ const styles = StyleSheet.create({
     width: 60,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  headerTitle: {
-    flex: .70,
-    height: 60,
-    paddingLeft: 36,
-    fontSize: 32,
-    color: 'white',
-    textAlignVertical: 'center',
   },
   button: {
     flex: .5,

@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Image,
-  TouchableOpacity,
   StyleSheet,
-  Animated,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 export default class Result extends Component {
   constructor() {
@@ -17,7 +15,7 @@ export default class Result extends Component {
     }
   }
 
-  render() { console.log('renders', this.props.license)
+  render() {
     return (
       <View style={styles.container}>
         <Text style={styles.text}>No results for license #  <Text style={styles.license}>{ this.props.license }</Text></Text>
@@ -25,6 +23,8 @@ export default class Result extends Component {
     );
   }
 }
+
+Result.propTypes = { license: PropTypes.string.isRequired };
 
 const styles = StyleSheet.create({
   container: {

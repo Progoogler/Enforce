@@ -8,11 +8,13 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import MapView, { Marker } from 'react-native-maps';
 
 const height = Dimensions.get('window').height;
 
+/* global require */
 export default class MapModal extends Component {
   constructor() {
     super();
@@ -74,6 +76,13 @@ export default class MapModal extends Component {
 
 }
 
+MapModal.propTypes = {
+  visibility: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  latitude: PropTypes.number,
+  longitude: PropTypes.number,
+  description: PropTypes.string,
+}
 
 const styles = StyleSheet.create({
   mapContainer: {
