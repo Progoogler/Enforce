@@ -29,7 +29,7 @@ const TicketCounter = (props) => (
   <TouchableWithoutFeedback
     onLongPress={ () => props.navigation.navigate('History') }>
     <View style={styles.ticketCountContainer}>
-      <Text style={styles.ticketCountNumber}>{ props.ticketCount }</Text>
+      <Text style={styles.ticketCountNumber}>{ props.reset ? 0 : props.ticketCount }</Text>
       <Text style={styles.ticketCountDescription}>{ props.ticketCount === 1 ? 'ticket' : 'tickets'} today</Text>
     </View>
   </TouchableWithoutFeedback>

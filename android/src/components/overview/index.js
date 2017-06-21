@@ -15,6 +15,9 @@ export default class Home extends Component {
   constructor() {
     super();
     this.realm = new Realm();
+    this.state = {
+      zero: undefined,
+    };
   }
 
   static navigationOptions = {
@@ -31,10 +34,14 @@ export default class Home extends Component {
     return (
       <View style={styles.container} >
         <Menu navigation={this.props.navigation} />
-        <TicketCounter ticketCount={this.realm.objects('Ticketed')[0] ? this.realm.objects('Ticketed')[0].list.length : 0} navigation={this.props.navigation} />
-        <TimersList navigation={this.props.navigation} />
+        <TicketCounter reset={this.state.zero} ticketCount={this.realm.objects('Ticketed')[0] ? this.realm.objects('Ticketed')[0].list.length : 0} navigation={this.props.navigation} />
+        <TimersList resetTicketCounter={this.resetTicketCounter.bind(this)} navigation={this.props.navigation} />
       </View>
     );
+  }
+
+  resetTicketCounter() {
+    this.setState({zero: 0});
   }
 
 }
