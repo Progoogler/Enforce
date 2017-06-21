@@ -23,6 +23,7 @@ export default class MapApp extends Component {
       animating: true,
       modalVisible: false, // pointless TODO check for removal
       showError: false,
+      showLocationTip: false,
       polyline: [null],
     };
     this.animated = false;
@@ -135,15 +136,31 @@ export default class MapApp extends Component {
           'longitude': timer.longitude,
         });
       });
-      this.setState({
-        polyline: [
-          <MapView.Polyline
-            coordinates={coords}
-            strokeWidth={5}
-            strokeColor='red'
-            />
-        ],
-      });
+      if (!this.props.navigation.state.params.timers[0].description) {
+        this.setState({
+          polyline: [
+            <MapView.Polyline
+              coordinates={coords}
+              strokeWidth={5}
+              strokeColor='red'
+              />
+          ],
+          showLocationTip: true,
+        });
+        setTimeout(() => {
+          this._mounted && this.setState({showLocationTip: false});
+        }, 5000);
+      } else {
+        this.setState({
+          polyline: [
+            <MapView.Polyline
+              coordinates={coords}
+              strokeWidth={5}
+              strokeColor='red'
+              />
+          ],
+        });
+      }
     }
   }
 
