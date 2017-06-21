@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 export default class CustomCallout extends Component {
   render() {
@@ -122,5 +123,6 @@ const styles = StyleSheet.create({
 });
 
 CustomCallout.propTypes = {
-  timer: React.PropTypes.object.isRequired
+  timer: PropTypes.object.isRequired,
+  secondary: PropTypes.bool.isRequired,
 };

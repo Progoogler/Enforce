@@ -3,11 +3,11 @@ import MapView, { Marker } from 'react-native-maps';
 import {
   View,
   StyleSheet,
-  Button,
   Image,
   ActivityIndicator,
   AsyncStorage,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Realm from 'realm';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
@@ -37,7 +37,7 @@ export default class MapApp extends Component {
     drawerLabel: 'Map',
     drawerIcon: () => (
       <Image
-        source={require('../../../../shared/images/blue-pin.png')}
+        source={require('../../../../shared/images/blue-pin.png')} /*global require*/
         style={[styles.icon]}
       />
     )
@@ -102,9 +102,8 @@ export default class MapApp extends Component {
               this.realm.objects('Coordinates')[0].latitude = latitude;
               this.realm.objects('Coordinates')[0].longitude = longitude;
             });
-          }, error => {
+          }, () => {
             this._mounted && this.setState({showError: true, animating: false});
-            console.log('Error loading geolocation:', error);
           },
           {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
         );
@@ -119,7 +118,7 @@ export default class MapApp extends Component {
             this.realm.objects('Coordinates')[0].latitude = latitude;
             this.realm.objects('Coordinates')[0].longitude = longitude;
           });
-        }, error => {
+        }, () => {
           this._mounted && this.setState({showError: true, animating: false});
         },
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
@@ -143,6 +142,7 @@ export default class MapApp extends Component {
               coordinates={coords}
               strokeWidth={5}
               strokeColor='red'
+              key={1}
               />
           ],
           showLocationTip: true,
@@ -157,6 +157,7 @@ export default class MapApp extends Component {
               coordinates={coords}
               strokeWidth={5}
               strokeColor='red'
+              key={1}
               />
           ],
         });
@@ -395,7 +396,7 @@ export default class MapApp extends Component {
             this.realm.objects('Coordinates')[0].longitude = longitude;
           });
           this._mounted && this.setState({showError: false, animating: false});
-        }, error => {
+        }, () => {
           this._mounted && this.setState({showError: true, animating: false});
         },
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
@@ -406,6 +407,10 @@ export default class MapApp extends Component {
   setModalVisible() {
     this._mounted && this.setState({modalVisible: !this.state.modalVisible});
   }
+}
+
+MapApp.propTypes = {
+  navigation: PropTypes.object.isRequired,
 }
 
 const styles = StyleSheet.create({

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   TouchableWithoutFeedback,
   View,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 
 const ErrorMessage = (props) => (
@@ -15,6 +16,10 @@ const ErrorMessage = (props) => (
     </View>
   </TouchableWithoutFeedback>
 );
+
+ErrorMessage.propTypes = {
+  checkLocationAndRender: PropTypes.func.isRequired
+}
 
 const { width } = Dimensions.get('window');
 
