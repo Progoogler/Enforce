@@ -114,27 +114,27 @@ export default class TimerList extends Component {
 
   updateRows(clearWarning, only) {
     if (this.list.length === 0 && clearWarning) {
-      this.setState({
+      this._mounted && this.setState({
         dataSource: this.list,
         modalVisible: true, // Show the "Done" button to indicate end of list.
         warningVisibility: false,
       });
     } else if (this.list.length === 0) {
-      this.setState({
+      this._mounted && this.setState({
         //dataSource: this.list,
         modalVisible: true, // Show Done sign. TODO Change UI
       });
     } else if (clearWarning && only) { // Extra transaction handler for displaying the warning sign.
-      this.setState({
+      this._mounted && this.setState({
         warningVisibility: false,
       });
     } else if (clearWarning) {
-      this.setState({
+      this._mounted && this.setState({
         dataSource: this.list,
         warningVisibility: false,
       });
     } else {
-      this.setState({
+      this._mounted && this.setState({
         dataSource: this.list,
       });
     }
@@ -190,7 +190,7 @@ export default class TimerList extends Component {
       this._timer = timer;
       let timeElapsed = (new Date() - timer.createdAt) / 1000 / 60;
       this.timeElapsed = `${(timeElapsed / 60 + '')[0] !== '0' ? (timeElapsed / 60 + '')[0] + ' hour' : ''} ${Math.floor(timeElapsed % 60)} minutes`;
-      this.setState({
+      this._mounted && this.setState({
         warningVisibility: true,
       });
     }
