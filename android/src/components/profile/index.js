@@ -10,6 +10,7 @@ import {
   AsyncStorage,
   NetInfo,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Firebase from '../../../../includes/firebase/firebase';
 import Database from '../../../../includes/firebase/database';
 
@@ -17,6 +18,7 @@ import Navigation from '../navigation/StaticNavigation';
 import Warning from './Warning';
 import ThrowConnectionMessage from './ThrowConnectionMessage';
 
+/* global require */
 export default class Profile extends Component {
   constructor() {
     super();
@@ -126,7 +128,7 @@ export default class Profile extends Component {
       Firebase.signInUser(this.state.email, this.state.password);
       setTimeout(() => {
         let id = Firebase.getCurrentUser();
-        let refPath = `${this.state.county}/${newId}`;
+        let refPath = `${this.state.county}/${id}`;
         AsyncStorage.setItem('@Enforce:refPath', refPath);
         AsyncStorage.setItem('@Enforce:profileId', id);
       }, 1500);
@@ -134,7 +136,6 @@ export default class Profile extends Component {
     }
     if (this.replacedOldUser) {
       Database.deleteUserTickets(this.profile.county, this.profileId);
-      console.log('unmount data state', this.data);
       Firebase.signInUser(this.state.email, this.state.password);
       setTimeout(() => {
         let newId = Firebase.getCurrentUser();
@@ -149,7 +150,6 @@ export default class Profile extends Component {
   async _getProfileFromAsyncStorage() {
     try {
       this.profile = await AsyncStorage.getItem('@Enforce:profileSettings');
-      console.log('cached profile settings:', JSON.parse(this.profile))
       this.profile = JSON.parse(this.profile);
       this.setState({
         email: this.profile.email ? this.profile.email : '',
@@ -158,7 +158,6 @@ export default class Profile extends Component {
       });
       this.profileId = await AsyncStorage.getItem('@Enforce:profileId');
       Firebase.signInUser(this.profile.email, this.profile.password);
-      console.log('get profile id', this.profileId)
     } catch (err) {
       console.warn('Error fetching Profile Settings from AsyncStorage', err);
     }
@@ -185,19 +184,19 @@ export default class Profile extends Component {
           return;
         }
         try { // Replace old account.
-          console.log('try setting new user')
+
           if (this.profile.email !== this.state.email || this.profile.password !== this.state.password || this.profile.state !== this.state.state) {
 
             Database.getUserTickets(this.profile.county, this.profileId, (data) => this.data = data);
-            console.log('get data from db', this.data)
+
 
             Firebase.deleteUser();
 
             AsyncStorage.setItem('@Enforce:profileSettings', settings);
-            console.log('try set item to asyncStore')
+
             // create new user, port old data, and delete old db user
             Firebase.createNewUser(this.state.email, this.state.password);
-            console.log('try created new user')
+
             this.replacedOldUser = true;
           }
         } catch (err) {
@@ -246,6 +245,8 @@ export default class Profile extends Component {
     this.setState({countyColor: 'black'});
   }
 }
+
+Profile.propTypes = { navigation: PropTypes.object.isRequired };
 
 const styles = StyleSheet.create({
   container: {
