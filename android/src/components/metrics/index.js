@@ -6,7 +6,8 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import MapView, { Marker, Circle } from 'react-native-maps';
+import PropTypes from 'prop-types';
+import MapView from 'react-native-maps';
 import Realm from 'realm';
 import Navigation from '../navigation/StaticNavigation';
 
@@ -20,7 +21,7 @@ export default class Metrics extends Component {
     drawerLabel: 'Metrics',
     drawerIcon: () => (
       <Image
-        source={require('../../../../shared/images/bar-icon.png')}
+        source={require('../../../../shared/images/bar-icon.png')} /*global require*/
         style={[styles.icon]}
       />
     )
@@ -66,7 +67,7 @@ export default class Metrics extends Component {
         </MapView.Animated>
         <View style={styles.controlContainer}>
           <Text style={styles.title}>This page is currently in progress.</Text>
-          <Text style={styles.message}>We'll let you know when it's ready!</Text>
+          <Text style={styles.message}>{"We'll let you know when it's ready!"}</Text>
           <Image style={styles.image} source={require('../../../../shared/images/worker.jpg')} />
         </View>
       </View>
@@ -89,6 +90,8 @@ export default class Metrics extends Component {
     };
   }
 }
+
+Metrics.propTypes = { navigation: PropTypes.object.isRequired };
 
 const styles = StyleSheet.create({
   container: {

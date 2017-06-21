@@ -7,8 +7,9 @@ import {
   TouchableWithoutFeedback,
   Image,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
-
+/* global require */
 export default class StaticNavigation extends Component {
   constructor() {
     super();
@@ -46,6 +47,11 @@ export default class StaticNavigation extends Component {
 
 }
 
+StaticNavigation.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  title: PropTypes.string.isRequired,
+  closeModal: PropTypes.func,
+}
 
 const styles = StyleSheet.create({
   container: {

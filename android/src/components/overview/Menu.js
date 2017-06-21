@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableHighlight,
   Image,
   Keyboard,
   Animated,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import MainButtons from './MainButtons';
 import Search from '../search';
 
 
+/* global require */
 export default class Menu extends Component {
   constructor() {
     super();
@@ -168,6 +169,11 @@ export default class Menu extends Component {
   }
 }
 
+Menu.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  title: PropTypes.string,
+};
+
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
@@ -185,8 +191,5 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  headerNavButton: {
-    textAlign: 'center',
   },
 });

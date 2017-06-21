@@ -1,10 +1,28 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
+import PropTypes from 'prop-types';
+
+
+const TicketCounter = (props) => (
+  <TouchableWithoutFeedback
+    onLongPress={ () => props.navigation.navigate('History') }>
+    <View style={styles.ticketCountContainer}>
+      <Text style={styles.ticketCountNumber}>{ props.reset ? 0 : props.ticketCount }</Text>
+      <Text style={styles.ticketCountDescription}>{ props.ticketCount === 1 ? 'ticket' : 'tickets'} today</Text>
+    </View>
+  </TouchableWithoutFeedback>
+);
+
+TicketCounter.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  reset: PropTypes.bool.isRequired,
+  ticketCount: PropTypes.number,
+}
 
 const styles = StyleSheet.create({
   ticketCountContainer: {
@@ -22,17 +40,5 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
-
-let length = 0;
-
-const TicketCounter = (props) => (
-  <TouchableWithoutFeedback
-    onLongPress={ () => props.navigation.navigate('History') }>
-    <View style={styles.ticketCountContainer}>
-      <Text style={styles.ticketCountNumber}>{ props.reset ? 0 : props.ticketCount }</Text>
-      <Text style={styles.ticketCountDescription}>{ props.ticketCount === 1 ? 'ticket' : 'tickets'} today</Text>
-    </View>
-  </TouchableWithoutFeedback>
-);
 
 export default TicketCounter;

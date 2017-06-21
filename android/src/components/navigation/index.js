@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableHighlight,
   Image,
   Keyboard,
   Animated,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import Search from '../search';
 
+/* global require */
 export default class Navigation extends Component {
   constructor() {
     super();
@@ -98,6 +99,14 @@ export default class Navigation extends Component {
     ).start();
   }
 }
+
+Navigation.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  handleVINSearch: PropTypes.func,
+  toggleSearching: PropTypes.func,
+  title: PropTypes.string,
+  search: PropTypes.bool,
+};
 
 const styles = StyleSheet.create({
   container: {

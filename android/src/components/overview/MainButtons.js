@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   Image,
   StyleSheet,
   TouchableHighlight,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 
+/* global require */
 export default class MainButtons extends Component {
   constructor() {
     super();
@@ -62,6 +63,8 @@ export default class MainButtons extends Component {
   }
 }
 
+MainButtons.propTypes = { navigation: PropTypes.object.isRequired };
+
 const styles = StyleSheet.create({
   mainButtonsContainer: {
     flexDirection: 'row',
@@ -90,12 +93,4 @@ const styles = StyleSheet.create({
     borderWidth: .35,
     height: 35,
   },
-  mapButtonText: {
-    color: 'white',
-    fontSize: 18,
-  },
-  cameraButtonText: {
-    color: 'white',
-    fontSize: 18,
-  }
 });

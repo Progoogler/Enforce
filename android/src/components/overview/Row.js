@@ -10,7 +10,10 @@ import {
   TouchableNativeFeedback,
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
+import PropTypes from 'prop-types';
 
+
+/* global require */
 export default class Row extends Component {
   constructor() {
     super();
@@ -79,7 +82,7 @@ export default class Row extends Component {
   }
 
   componentDidMount() {
-    const {height, width} = Dimensions.get('window');
+    const { width } = Dimensions.get('window');
     styles.innerContainer = {
       flexDirection: 'row',
       alignItems: 'center',
@@ -105,9 +108,10 @@ export default class Row extends Component {
   _getDistance() {
     let i = 0;
     while (i < this.props.data.list.length) {
-      if (this.props.data.list[i].latitude !== 0) {}
-       this.distLat = this.props.data.list[i].latitude;
-       this.distLong = this.props.data.list[i].longitude;
+      if (this.props.data.list[i].latitude !== 0) {
+         this.distLat = this.props.data.list[i].latitude;
+         this.distLong = this.props.data.list[i].longitude;
+       }
       i++;
     }
     return this.getDistanceFromLatLon(this.props.latitude, this.props.longitude, this.distLat, this.distLong);
@@ -134,7 +138,6 @@ export default class Row extends Component {
     let timeLength = timer.timeLength * 60 * 60 * 1000;
     let timeSince = new Date() - timer.createdAt;
     let timeLeft = (timeLength - timeSince) / 1000;
-    let value = '';
       if (timeLeft < 0) {
       return <Text style={styles.timeUp}>Time is up!</Text>;
     } else if (timeLeft < 60) {
@@ -181,6 +184,16 @@ export default class Row extends Component {
     return deg * (Math.PI/180)
   }
 }
+
+Row.propTypes = {
+  navigation: PropTypes.object.isRequired,
+  data: PropTypes.object.isRequired,
+  updateRows: PropTypes.func.isRequired,
+  updatedLocation: PropTypes.bool.isRequired,
+  deleteRow: PropTypes.func.isRequired,
+  latitude: PropTypes.number,
+  longitude: PropTypes.number,
+};
 
 const styles = StyleSheet.create({
   innerScroll: {

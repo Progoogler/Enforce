@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
-  RefreshControl,
   AsyncStorage,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import FlatList from 'react-native/Libraries/Lists/FlatList';
-import realm from 'realm';
+import Realm from 'realm';
 import Row from './Row';
 import Schema from '../../realm';
 import insertionSortModified from './insertionSort';
@@ -166,7 +165,7 @@ export default class TimersList extends Component {
   deleteRow(timers) {
     console.log('DEL' ,timers)
 
-    timers.forEach((timer, idx) => {
+    timers.forEach((timer) => {
       unlink(timer.mediaPath)
       .then(() => {
         console.log('PICTURE REMOVED');
@@ -198,7 +197,7 @@ export default class TimersList extends Component {
       refreshing: true,
       dataSource: this.list,
     });
-    this._mounted && this.setState({refreshing: false, updateRows: this.state.updateRows = this.state.updateRows + 1, updatedLocation: null});
+    this._mounted && this.setState({refreshing: false, updateRows: this.state.updateRows + 1, updatedLocation: null});
     clearTimeout(this._timeoutRefresh);
     this._timeoutRefresh = setTimeout(() => this._onRefresh(), 300000);
   }
@@ -220,11 +219,13 @@ export default class TimersList extends Component {
     return <View style={styles.separator} />;
   }
 
-  _keyExtractor(item, index) {
+  _keyExtractor(item) {
     return item.list[0].createdAt;
-  };
+  }
 
 }
+
+TimersList.propTypes = { navigation: PropTypes.object.isRequired };
 
 const styles = StyleSheet.create({
   flatlist: {

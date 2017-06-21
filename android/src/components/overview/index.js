@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   Image,
   StyleSheet,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Realm from 'realm';
 import Menu from './Menu';
 import TicketCounter from './TicketCounter';
 import TimersList from './ListView-ResetControl';
 
-
-export default class Home extends Component {
+/* global require */
+export default class Overview extends Component {
   constructor() {
     super();
     this.realm = new Realm();
@@ -25,8 +25,7 @@ export default class Home extends Component {
     drawerLabel: 'Overview',
     drawerIcon: () => (
       <Image
-        source={require('../../../../shared/images/eyecon.png')}
-        style={[styles.icon]} />
+        source={require('../../../../shared/images/eyecon.png')} />
     ),
   };
 
@@ -48,6 +47,8 @@ export default class Home extends Component {
   }
 
 }
+
+Overview.propTypes = { navigation: PropTypes.object.isRequired };
 
 const styles = StyleSheet.create({
   container: {
