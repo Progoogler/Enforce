@@ -34,14 +34,17 @@ export default class Home extends Component {
     return (
       <View style={styles.container} >
         <Menu navigation={this.props.navigation} />
-        <TicketCounter reset={this.state.zero} ticketCount={this.realm.objects('Ticketed')[0] ? this.realm.objects('Ticketed')[0].list.length : 0} navigation={this.props.navigation} />
+        <TicketCounter
+          reset={this.state.zero}
+          navigation={this.props.navigation}
+          ticketCount={this.realm.objects('Ticketed')[0] ? this.realm.objects('Ticketed')[0].list.length : 0} />
         <TimersList resetTicketCounter={this.resetTicketCounter.bind(this)} navigation={this.props.navigation} />
       </View>
     );
   }
 
   resetTicketCounter() {
-    this.setState({zero: 0});
+    this.setState({zero: '0'});
   }
 
 }
