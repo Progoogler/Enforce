@@ -69,7 +69,7 @@ export default class SetTimeLimit extends Component {
       let history = this.props.realm.objects('TimeLimit')[0];
       this.setState({
         hour: history.hour,
-        minutes: history.minutes
+        minutes: history.minutes ? history.minutes.length === 1 ? '0' + history.minutes : history.minutes : '00',
       });
     }
   }
