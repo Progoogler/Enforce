@@ -6,6 +6,7 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import Navigation from '../navigation/StaticNavigation';
 
 export default class FAQs extends Component {
@@ -13,7 +14,7 @@ export default class FAQs extends Component {
     drawerLabel: 'FAQs',
     drawerIcon: () => (
       <Image
-        source={require('../../../../shared/images/question-mark.png')}
+        source={require('../../../../shared/images/question-mark.png')} /*global require*/
         style={[styles.icon]}
       />
     )
@@ -31,10 +32,10 @@ export default class FAQs extends Component {
           <Text style={styles.answer}>3. Set time limit for current timer</Text>
           <Text style={styles.answer}>4. Add location reminder details</Text>
           <Text style={styles.answer}>5. Snap pictures of license plates</Text>
-          <Text style={styles.answer}>6. Wait until "Time is up!" appears</Text>
-          <Text style={styles.answer}>7. Press on "Time is up!"</Text>
+          <Text style={styles.answer}>6. Wait until {"Time is up!"} appears</Text>
+          <Text style={styles.answer}>7. Press on {"Time is up!"}</Text>
           <Text style={styles.answer}>8. Go to location of first picture</Text>
-          <Text style={styles.answer}>9. Log "Expired" or "Ticketed" for cars</Text>
+          <Text style={styles.answer}>9. Log {"Expired"} or {"Ticketed"} for cars</Text>
           <Text style={styles.answer}>10. Go back to Home and check on timers</Text>
 
           <Text style={styles.question}>Why are the location markers not precise?</Text>
@@ -56,13 +57,11 @@ export default class FAQs extends Component {
   }
 }
 
+FAQs.propTypes = { navigation: PropTypes.object.isRequired }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  header: {
-    position: 'absolute',
-    top: 0,
   },
   title: {
     alignSelf: 'center',

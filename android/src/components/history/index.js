@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import FlatList from 'react-native/Libraries/Lists/FlatList';
 
 import Realm from 'realm';
@@ -41,7 +42,7 @@ export default class History extends Component {
     drawerLabel: 'History',
     drawerIcon: () => (
       <Image
-        source={require('../../../../shared/images/page-icon.png')}
+        source={require('../../../../shared/images/page-icon.png')} /*global require*/
         style={[styles.icon]}
       />
     )
@@ -57,7 +58,7 @@ export default class History extends Component {
           <Picker
             style={styles.picker}
             selectedValue={this.state.selected}
-            onValueChange={(val, idx) => this._onValueChange(val)} >
+            onValueChange={(val) => this._onValueChange(val)} >
 
             { this.state.items.map((item) => item) }
 
@@ -99,9 +100,9 @@ export default class History extends Component {
     return <View style={styles.separator} />;
   }
 
-  _keyExtractor(item, index) {
+  _keyExtractor(item) {
     return item.createdAt;
-  };
+  }
 
   componentWillMount() {
     this._getHistoryDates();
@@ -251,6 +252,8 @@ export default class History extends Component {
   }
 }
 
+History.propTypes = { navigation: PropTypes.object.isRequired }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -275,17 +278,11 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
     backgroundColor: '#8E8E8E',
   },
-  image: {
-    marginTop: 200,
-  },
   title: {
     textAlign: 'center',
     color: '#4286f4',
     marginTop: 25,
     fontSize: 34,
     fontWeight: 'bold',
-  },
-  message: {
-    fontSize: 24,
   },
 });

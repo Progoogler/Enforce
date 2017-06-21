@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   Dimensions,
   StyleSheet,
   Image,
   Modal,
   TouchableNativeFeedback,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 export default class ImageModal extends Component {
   constructor() {
@@ -33,7 +33,7 @@ export default class ImageModal extends Component {
               background={TouchableNativeFeedback.Ripple('white')}
               onPress={() => this.props.maximizeImage()} >
               <View style={styles.arrowContainer}>
-                <Image style={styles.backArrow} source={require('../../../../shared/images/backarrow.png')} />
+                <Image style={styles.backArrow} source={require('../../../../shared/images/backarrow.png')} /> {/*global require*/}
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -42,6 +42,12 @@ export default class ImageModal extends Component {
       </Modal>
     );
   }
+}
+
+ImageModal.propTypes = {
+  maximizeImage: PropTypes.func.isRequired,
+  visibility: PropTypes.bool.isRequired,
+  uri: PropTypes.string.isRequired,
 }
 
 const styles = StyleSheet.create({
@@ -58,12 +64,5 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     width: 45,
     height: 38,
-  },
-  buttonText: {
-    fontSize: 38,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#4286f4',
-    fontFamily: 'sans-serif-medium',
   },
 });

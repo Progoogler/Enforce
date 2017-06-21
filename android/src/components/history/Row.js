@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import { NavigationActions } from'react-navigation';
+import PropTypes from 'prop-types';
 
 import MapModal from './MapModal';
 
@@ -124,7 +124,7 @@ export default class Row extends Component {
     this.props.getTicketImage(refPath, time, (url) => {
       if (url === null) {
         this.setState({
-          image: [<View style={styles.getImageButton}><Text style={styles.getImageText}>Photo {'\n'}not{'\n'}available</Text></View>],
+          image: [<View style={styles.getImageButton} key={date}><Text style={styles.getImageText}>Photo {'\n'}not{'\n'}available</Text></View>],
           animating: false,
         });
       } else {
@@ -132,7 +132,8 @@ export default class Row extends Component {
           image: [<TouchableOpacity
                     style={styles.maximizeImage}
                     activeOpacity={.8}
-                    onPress={() => this.props.maximizeImage(url)}>
+                    onPress={() => this.props.maximizeImage(url)}
+                    key={date} >
                       <Image style={{alignSelf: 'center', height: 400, width: 300}} source={{ uri: url }} />
                     </TouchableOpacity>],
           animating: false,
@@ -145,6 +146,17 @@ export default class Row extends Component {
     this.setState({modalVisible: false});
   }
 
+}
+
+Row.propTypes = {
+  data: PropTypes.object.isRequired,
+  maximizeImage: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  dateTransition: PropTypes.bool.isRequired,
+  userSettings: PropTypes.object.isRequired,
+  userId: PropTypes.string.isRequired,
+  getTicketImage: PropTypes.func.isRequired,
+  selected: PropTypes.string.isRequired,
 }
 
 const styles = StyleSheet.create({

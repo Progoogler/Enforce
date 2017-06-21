@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import MapView, { Marker } from 'react-native-maps';
 import Navigation from '../navigation/StaticNavigation';
@@ -54,7 +55,7 @@ export default class MapModal extends Component {
                 latitude: this.props.latitude,
                 longitude: this.props.longitude}} >
               <Image
-                source={require('../../../../shared/images/blue-pin.png')} />
+                source={require('../../../../shared/images/blue-pin.png')} /> {/*global require*/}
             </Marker>
 
           </MapView.Animated>
@@ -80,6 +81,13 @@ export default class MapModal extends Component {
 
 }
 
+MapModal.propTypes = {
+  visibility: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  latitude: PropTypes.number,
+  longitude: PropTypes.number,
+  description: PropTypes.string,
+}
 
 const styles = StyleSheet.create({
   mapContainer: {
