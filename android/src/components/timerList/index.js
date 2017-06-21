@@ -29,7 +29,6 @@ export default class TimerList extends Component {
   constructor(props) {
     super(props);
     this.realm = new Realm();
-    //const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     if (!this.props.navigation.state.params) {
       this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
       this.list = this.list.length > 0 ? this.list[0].list : [{list: [{'createdAt': 0}]}];
@@ -51,6 +50,7 @@ export default class TimerList extends Component {
     this.timeElapsed = '';
     this._reset = false;
   }
+
   static navigationOptions = {
     drawerLabel: 'Timers',
     drawerIcon: () => (
@@ -65,10 +65,8 @@ export default class TimerList extends Component {
     return (
       <View style={styles.container}>
         <Search navigation={this.props.navigation} timerList={true} shouldResetLicense={this.shouldResetLicense.bind(this)} addLicenseToQueue={this.addLicenseToQueue.bind(this)} />
-        <Title limit={typeof this.list[0].timeLength ? this.list[0].timeLength : ""} />
+        <Title limit={this.list[0] ? this.list[0].timeLength ? this.list[0].timeLength : '' : ''} />
         <Warning timeElapsed={this.timeElapsed} visibility={this.state.warningVisibility} uponTicketed={this.uponTicketed.bind(this)} clearWarning={this.updateRows.bind(this)}/>
-
-        { typeof this.list[0].createdAt ?
 
         <FlatList
            data={this.state.dataSource}
@@ -78,8 +76,6 @@ export default class TimerList extends Component {
            refreshing={this.state.refreshing}
            keyExtractor={this._keyExtractor}
            />
-
-           : null }
 
         { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : <View /> }
 
@@ -145,7 +141,6 @@ export default class TimerList extends Component {
   }
 
   uponTicketed(timer, force) { // Handle updates to Realm for regular and forced.
-    console.log(this.license, timer.license, timer, force)
     if (Array.isArray(timer)) timer = this._timer;
     let now = new Date();
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000 || force) {
@@ -178,7 +173,6 @@ export default class TimerList extends Component {
       }
       if (this.license) this.resetLicenseAndVIN();
       if (this.settings.imageUpload) {
-        console.log('uploading file')
         let rnfbURI = RNFetchBlob.wrap(timer.mediaPath);
         Blob
           .build(rnfbURI, {type: 'image/jpg;'})
@@ -233,7 +227,7 @@ export default class TimerList extends Component {
     }
   }
 
-  addLicenseToQueue(license) { console.log('add license')
+  addLicenseToQueue(license) {
     this.license = license;
 
     // TODO
@@ -259,7 +253,7 @@ export default class TimerList extends Component {
     this.VIN = '';
   }
 
-  _renderItem(data) { console.log(data, 'da')
+  _renderItem(data) {
     return (
       <Row
         data={data.item}
