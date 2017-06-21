@@ -11,8 +11,10 @@ export default class LocationDetailsView extends Component {
     return (
       <View style={styles.container} >
         <View style={styles.containerBorder} >
-          <Text style={styles.title}>Location Details:</Text>
-          <Text style={styles.details}> Pro Tip: Add location details for the first record of new timers for better recall. </Text>
+          <View style={styles.row}>
+          <Text style={styles.bold}>Reminder:</Text>
+          <Text style={styles.details}>Save location details for the first {'\n'} record of new timers for better recall. </Text>
+          </View>
         </View>
       </View>
     );
@@ -30,18 +32,19 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 5,
   },
-  title: {
-    fontSize: 20,
-    //textDecorationLine: 'underline',
+  row: {
+    flexDirection: 'row',
+  },
+  bold: {
     fontWeight: 'bold',
-    marginLeft: 15,
-    marginTop: 15,
+    fontSize: 20,
+    margin: 5,
+    color: '#4286f4',
   },
   details: {
     color: '#4286f4',
     fontWeight: 'bold',
     fontSize: 16,
-    margin: 15,
-    padding: 10,
+    margin: 5,
   },
 });
