@@ -7,6 +7,7 @@ import {
   TextInput,
   Keyboard,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import Notification from './Notification';
 
@@ -83,7 +84,7 @@ export default class SetTimeLimit extends Component {
     this.setState({hour});
   }
 
-  _onChangeMinutes(minutes) { console.log('minutes', minutes)
+  _onChangeMinutes(minutes) {
     let nan = /[^0-9]/.test(minutes);
     let int = parseInt(minutes)
     if ((isNaN(int) && minutes !== '') || int > 60 || nan) {
@@ -133,6 +134,12 @@ export default class SetTimeLimit extends Component {
     });
     this.props.onUpdateTimeLimit(newLimit);
   }
+}
+
+SetTimeLimit.propTypes = {
+  newTimer: PropTypes.bool.isRequired,
+  realm: PropTypes.object.isRequired,
+  onUpdateTimeLimit: PropTypes.func.isRequired,
 }
 
 const styles = StyleSheet.create({

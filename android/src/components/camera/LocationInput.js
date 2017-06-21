@@ -6,6 +6,7 @@ import {
   Modal,
   TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import { AutoGrowingTextInput } from 'react-native-autogrow-textinput';
 
 export default class LocationInput extends Component {
@@ -71,6 +72,11 @@ export default class LocationInput extends Component {
   _handleTextInput(event) {
     this.setState({ text: event.nativeEvent.text || '' });
   }
+}
+
+LocationInput.propTypes = {
+  visibility: PropTypes.bool.isRequired,
+  setModalVisible: PropTypes.func.isRequired,
 }
 
 const styles = StyleSheet.create({
