@@ -8,15 +8,15 @@ import {
 } from 'react-native';
 
 const Done = (props) => (
-  <View style={styles.view}>
   <TouchableOpacity
     activeOpacity={.5}
     style={styles.container}
     onPress={() => {props.navigation.navigate('Overview')}}
     underlayColor="#0055e1" >
-    <Text style={styles.text}>Done { console.log ('Done')}</Text>
+
+    <Text style={styles.text}>Done</Text>
+
   </TouchableOpacity>
-  </View>
 );
 
 const styles = StyleSheet.create({
