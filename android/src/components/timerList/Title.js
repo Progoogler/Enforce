@@ -35,7 +35,7 @@ class Title extends Component {
   }
 
   _getTimeLimitResponse(length) {
-    if (length === 0 || typeof length === 'string') return 'Empty ';
+    if (length === 0) return 'Empty ';
     if (length < 1) {
       length = length * 60;
       return `${parseInt(length)}  Minute`;
@@ -46,6 +46,6 @@ class Title extends Component {
 
 }
 
-Title.propTypes = { limit: PropTypes.string.isRequired };
+Title.propTypes = { limit: PropTypes.number.isRequired };
 
 export default Title;

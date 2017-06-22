@@ -197,7 +197,7 @@ export default class TimersList extends Component {
       refreshing: true,
       dataSource: this.list,
     });
-    this._mounted && this.setState({refreshing: false, updateRows: this.state.updateRows + 1, updatedLocation: null});
+    this._mounted && this.setState({refreshing: false, updateRows: this.state.updateRows + 1, updatedLocation: false});
     clearTimeout(this._timeoutRefresh);
     this._timeoutRefresh = setTimeout(() => this._onRefresh(), 300000);
   }

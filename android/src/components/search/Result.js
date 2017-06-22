@@ -123,7 +123,7 @@ export default class Result extends Component {
 }
 
 Result.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.object || PropTypes.string,
   license: PropTypes.string,
   minimizeResultContainer: PropTypes.func.isRequired,
   resizeMenuContainer: PropTypes.func,

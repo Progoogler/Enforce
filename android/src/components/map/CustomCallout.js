@@ -64,6 +64,11 @@ export default class CustomCallout extends Component {
   }
 }
 
+CustomCallout.propTypes = {
+  timer: PropTypes.object.isRequired,
+  secondary: PropTypes.bool,
+};
+
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
@@ -121,8 +126,3 @@ const styles = StyleSheet.create({
     ]
   },
 });
-
-CustomCallout.propTypes = {
-  timer: PropTypes.object.isRequired,
-  secondary: PropTypes.bool.isRequired,
-};

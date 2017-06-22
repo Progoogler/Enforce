@@ -153,8 +153,8 @@ Row.propTypes = {
   maximizeImage: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   dateTransition: PropTypes.bool.isRequired,
-  userSettings: PropTypes.object.isRequired,
-  userId: PropTypes.string.isRequired,
+  userSettings: PropTypes.object,
+  userId: PropTypes.string,
   getTicketImage: PropTypes.func.isRequired,
   selected: PropTypes.string.isRequired,
 }
