@@ -28,9 +28,9 @@ export default class CameraApp extends Component {
     };
     this.latitude = null;
     this.longitude = null;
-    this.cameraId = null;
+    this.camera = null;
     this.firstCapture = true;
-    this.count = 0;
+    this.listIndex = 0;
     this.pictureCount = 0;
     this.timeLimit = 1;
     this.description = "";
@@ -158,12 +158,12 @@ export default class CameraApp extends Component {
       this.realm.write(() => {
         timerSequence.count++;
       });
-      if (this.count < timerSequence.count) this.count = timerSequence.count;
+      if (this.listIndex < timerSequence.count) this.listIndex = timerSequence.count;
       this.pictureCount = 0;
       return;
     }
-    this.count = timerSequence.count;
-    this.pictureCount = this.realm.objects('Timers')[this.count]['list'].length;
+    this.listIndex = timerSequence.count;
+    this.pictureCount = this.realm.objects('Timers')[this.listIndex]['list'].length;
     if (this.pictureCount === 0) {
       this.realm.write(() => {
         this.realm.objects('TimerSequence')[0].timeAccessedAt = new Date() / 1;
@@ -213,11 +213,8 @@ export default class CameraApp extends Component {
     console.log('called navigator')
     }
 
-    const options = {};
-    //options.location = ...
-    console.log('camera', this.camera)
-    console.log('call this.camera')
-    this.camera.capture({metadata: options})
+    console.log('call camera', this.camera)
+    this.camera.capture()
       .then((data) => { console.log('then block')
         if (this.firstCapture) {     console.log('first capture')
           setTimeout(() => {     console.log('calling savePicture')
@@ -239,8 +236,8 @@ export default class CameraApp extends Component {
       if (pictureCount > 1) this.pictureCount--;
       this.deleting = true;
     }
-    const length = this.realm.objects('Timers')[this.count]['list'].length;
-    const timer = this.realm.objects('Timers')[this.count]['list'][pictureCount - 1];
+    const length = this.realm.objects('Timers')[this.listIndex]['list'].length;
+    const timer = this.realm.objects('Timers')[this.listIndex]['list'][pictureCount - 1];
     if (!timer) {
       setTimeout(() => {
         console.log('set time out current deletion', pictureCount)
@@ -254,7 +251,7 @@ export default class CameraApp extends Component {
       .then(() => {
         console.log('PICTURE REMOVED');
         this.realm.write(() => {
-          this.realm.objects('Timers')[this.count]['list'].splice(pictureCount - 1, 1);
+          this.realm.objects('Timers')[this.listIndex]['list'].splice(pictureCount - 1, 1);
           this.realm.delete(timer);
         });
       })
@@ -267,8 +264,8 @@ export default class CameraApp extends Component {
   savePicture(data: object) {
     if (this.description && this.description.length === 0) {
       this.realm.write(() => {
-        this.realm.objects('Timers')[this.count]['list'].push({
-          index: this.count,
+        this.realm.objects('Timers')[this.listIndex]['list'].push({
+          index: this.listIndex,
           latitude: this.latitude,
           longitude: this.longitude,
           createdAt: new Date() / 1,
@@ -283,8 +280,8 @@ export default class CameraApp extends Component {
       });
     } else {
       this.realm.write(() => {
-        this.realm.objects('Timers')[this.count]['list'].push({
-          index: this.count,
+        this.realm.objects('Timers')[this.listIndex]['list'].push({
+          index: this.listIndex,
           latitude: this.latitude,
           longitude: this.longitude,
           createdAt: new Date() / 1,
