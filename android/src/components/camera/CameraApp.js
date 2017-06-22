@@ -4,12 +4,12 @@ import {
   View,
   Image,
   Text,
-  ActivityIndicator,
   AsyncStorage,
   Vibration,
   TouchableHighlight,
   TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import Camera from 'react-native-camera';
 import { unlink } from 'react-native-fs';
@@ -208,13 +208,19 @@ export default class CameraApp extends Component {
   takePicture() {
     this.pictureCount++;
     console.log('TAKING PICTURE', this.pictureCount)
-    if (this.locationService) navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
+    if (this.locationService) { console.log('calling navigator')
+      navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
+    console.log('called navigator')
+    }
+
     const options = {};
     //options.location = ...
+    // console.log('camera', this.camera)
+    console.log('call this.camera')
     this.camera.capture({metadata: options})
-      .then((data) => {
-        if (this.firstCapture) {
-          setTimeout(() => {
+      .then((data) => { console.log('then block')
+        if (this.firstCapture) {     console.log('first capture')
+          setTimeout(() => {     console.log('calling savePicture')
             this.savePicture(data);
           }, 1200);
           this.firstCapture = false;
@@ -304,6 +310,8 @@ export default class CameraApp extends Component {
     this.createNewTimerList();
   }
 }
+
+CameraApp.propTypes = { navigation: PropTypes.object.isRequired };
 
 const styles = StyleSheet.create({
   container: {
