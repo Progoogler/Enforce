@@ -104,7 +104,7 @@ export default class Row extends Component {
     }
   }
 
-  _getPrettyTimeFormat = (createdAt) => {
+  _getPrettyTimeFormat = (createdAt: number): string => {
     let date = new Date(createdAt);
     let hour = date.getHours();
     let minutes = date.getMinutes() + '';

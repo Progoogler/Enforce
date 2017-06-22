@@ -15,6 +15,7 @@ import Navigation from '../navigation/StaticNavigation';
 
 const height = Dimensions.get('window').height;
 
+/*global require*/
 export default class MapModal extends Component {
   constructor() {
     super();
@@ -54,8 +55,7 @@ export default class MapModal extends Component {
               coordinate={{
                 latitude: this.props.latitude,
                 longitude: this.props.longitude}} >
-              <Image
-                source={require('../../../../shared/images/blue-pin.png')} /> {/*global require*/}
+              <Image source={require('../../../../shared/images/blue-pin.png')} />
             </Marker>
 
           </MapView.Animated>
