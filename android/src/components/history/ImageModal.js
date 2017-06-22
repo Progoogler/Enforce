@@ -9,17 +9,13 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+/* global require */
 export default class ImageModal extends Component {
   constructor() {
     super();
   }
 
   render() {
-    const { height } = Dimensions.get('window');
-    styles.image = {
-      alignSelf: 'stretch',
-      height: height - 100,
-    };
     return (
       <Modal animationType={"fade"}
         transparent={false}
@@ -33,14 +29,21 @@ export default class ImageModal extends Component {
               background={TouchableNativeFeedback.Ripple('white')}
               onPress={() => this.props.maximizeImage()} >
               <View style={styles.arrowContainer}>
-                <Image style={styles.backArrow} source={require('../../../../shared/images/backarrow.png')} /> {/*global require*/}
+                <Image style={styles.backArrow} source={require('../../../../shared/images/backarrow.png')} />
               </View>
             </TouchableNativeFeedback>
           </View>
-
         </View>
       </Modal>
     );
+  }
+
+  componentWillMount() {
+    const { height } = Dimensions.get('window');
+    styles.image = {
+      alignSelf: 'stretch',
+      height: height - 100,
+    };
   }
 }
 

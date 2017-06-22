@@ -20,6 +20,7 @@ export default class Row extends Component {
       animating: false,
       modalVisible: false,
     }
+    this._mounted;
   }
 
   render() {
@@ -59,7 +60,7 @@ export default class Row extends Component {
             <TouchableOpacity
               style={styles.button}
               activeOpacity={.9}
-              onPress={() => this.setState({modalVisible: true}) } >
+              onPress={() => this._mounted && this.setState({modalVisible: true}) } >
               <View>
                 <Text style={styles.buttonText}>Show Map</Text>
               </View>
@@ -81,10 +82,18 @@ export default class Row extends Component {
     );
   }
 
+  componentDidMount() {
+    this._mounted = true;
+  }
+
   componentWillUpdate() {
     if (this.props.dateTransition) {
-      this.setState({image: []});
+      this._mounted && this.setState({image: []});
     }
+  }
+
+  componentWillUnmount() {
+    this._mounted = false;
   }
 
   _getTimeLimitDesc = (timeLimit) => {
@@ -107,28 +116,20 @@ export default class Row extends Component {
     return `${hour}:${minutes} ${period} ${str}`;
   }
 
-  // _openMapPage = (timer) => {
-  //   const navigateAction = this.props.NavigationActions.navigate({
-  //     routeName: 'Map',
-  //     params: {timers: timer, historyView: true, navigation: this.props.navigation},
-  //   });
-  //   this.props.navigation.dispatch(navigateAction);
-  // }
-
   _getImageFromDatabase() {
-    this.setState({animating: true});
+    this._mounted && this.setState({animating: true});
     let date = new Date(this.props.data.createdAt);
     let datePath=`${date.getMonth() + 1}-${date.getDate()}`;
     let refPath = `${this.props.userSettings.county}/${this.props.userId}/${datePath}`;
     let time = this.props.data.createdAt + '';
     this.props.getTicketImage(refPath, time, (url) => {
       if (url === null) {
-        this.setState({
+        this._mounted && this.setState({
           image: [<View style={styles.getImageButton} key={date}><Text style={styles.getImageText}>Photo {'\n'}not{'\n'}available</Text></View>],
           animating: false,
         });
       } else {
-        this.setState({
+        this._mounted && this.setState({
           image: [<TouchableOpacity
                     style={styles.maximizeImage}
                     activeOpacity={.8}
@@ -143,7 +144,7 @@ export default class Row extends Component {
   }
 
   closeModal() {
-    this.setState({modalVisible: false});
+    this._mounted && this.setState({modalVisible: false});
   }
 
 }
@@ -183,6 +184,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignSelf: 'center',
     left: 40,
+    zIndex: 10,
   },
   button: {
     backgroundColor: '#4286f4',
