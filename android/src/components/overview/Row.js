@@ -188,7 +188,7 @@ export default class Row extends Component {
 Row.propTypes = {
   navigation: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
-  updateRows: PropTypes.func.isRequired,
+  updateRows: PropTypes.number.isRequired,
   updatedLocation: PropTypes.bool.isRequired,
   deleteRow: PropTypes.func.isRequired,
   latitude: PropTypes.number,

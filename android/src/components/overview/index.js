@@ -16,7 +16,7 @@ export default class Overview extends Component {
     super();
     this.realm = new Realm();
     this.state = {
-      zero: undefined,
+      zero: false,
     };
   }
 

@@ -7,9 +7,11 @@ import {
   StyleSheet,
   AsyncStorage,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 import Navigation from '../navigation/StaticNavigation';
 
+/* global require */
 export default class Settings extends Component {
   constructor() {
     super();
@@ -110,7 +112,6 @@ export default class Settings extends Component {
   }
 
   _toggleUploadCondition(boolean) {
-    console.log('BOOLEAN', boolean)
     if (boolean) {
       this.setState({dataUpload: true});
     } else {
@@ -130,6 +131,8 @@ export default class Settings extends Component {
     }
   }
 }
+
+Settings.propTypes = { navigation: PropTypes.object.isRequired };
 
 const styles = StyleSheet.create({
   container: {
