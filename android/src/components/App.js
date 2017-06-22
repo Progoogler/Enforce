@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { DrawerItems, DrawerNavigator } from 'react-navigation';
-import { View, Text, Image, AsyncStorage } from 'react-native';
+import { View, Image, AsyncStorage } from 'react-native';
 import CameraApp from './camera/CameraApp';
 import MapApp from './map/MapApp';
 import Overview from './overview';
@@ -14,7 +14,7 @@ import Realm from 'realm';
 import Schema from '../realm';
 import { initialize as FirebaseInitialize, signInUser as FirebaseSignIn }  from '../../../includes/firebase/firebase';
 
-
+/* global require */
 const AppNavigator = DrawerNavigator({
   Overview: {
     screen: Overview
@@ -85,9 +85,9 @@ export default class App extends Component {
   }
 
   componentWillMount() {
-    FirebaseInitialize(); console.log('Firebase initialized');
+    FirebaseInitialize();
     this.realm = new Realm({schema: Schema});
-    this.signIn(); console.log('Signed into Firebase');
+    this.signIn();
   }
 
   _resetRealmState() { // For beta testing only TODO remove this
@@ -106,6 +106,6 @@ export default class App extends Component {
     let profile = await AsyncStorage.getItem('@Enforce:profileSettings');
     profile = JSON.parse(profile);
     if (profile.email && profile.password) FirebaseSignIn(profile.email, profile.password);
-  };
+  }
 
 }
