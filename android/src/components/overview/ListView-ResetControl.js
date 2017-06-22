@@ -130,7 +130,7 @@ export default class TimersList extends Component {
           this.realm.create('Ticketed', {list: []});
           this.realm.create('Expired', {list: []});
         });
-        this.resetTicketCounter();
+        this.props.resetTicketCounter();
       }, 3000);
     }
   }
