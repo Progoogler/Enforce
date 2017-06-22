@@ -17,7 +17,7 @@ export default class Warning extends Component {
     return (
       <Modal animationType={"slide"}
         transparent={true}
-        onRequestClose={() => {this.props.clearWarning('clearWarning', true)}}
+        onRequestClose={() => {this.props.clearWarning('clearWarning', 'only')}}
         visible={this.props.visibility} >
         <View style={styles.container} >
           <View style={styles.containerBorder} >
@@ -30,7 +30,7 @@ export default class Warning extends Component {
               <TouchableOpacity
                 style={styles.no}
                 activeOpacity={.8}
-                onPress={() => {this.props.clearWarning('clearWarning', true)}} >
+                onPress={() => {this.props.clearWarning('clearWarning', 'only')}} >
                 <Text style={styles.noButtonText}>No</Text>
               </TouchableOpacity>
               <TouchableOpacity

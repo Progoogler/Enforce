@@ -104,36 +104,7 @@ export default class Row extends Component {
     this.setState({mounted: true});
   }
 
-
-  _getDistance() {
-    let i = 0;
-    while (i < this.props.data.list.length) {
-      if (this.props.data.list[i].latitude !== 0) {
-         this.distLat = this.props.data.list[i].latitude;
-         this.distLong = this.props.data.list[i].longitude;
-       }
-      i++;
-    }
-    return this.getDistanceFromLatLon(this.props.latitude, this.props.longitude, this.distLat, this.distLong);
-  }
-
-  _openMapPage(timerList) {
-    const navigateAction = NavigationActions.navigate({
-      routeName: 'Map',
-      params: {timers: timerList, navigation: this.props.navigation},
-    });
-    this.props.navigation.dispatch(navigateAction);
-  }
-
-  _openTimerListPage(timerList) {
-    const navigateAction = NavigationActions.navigate({
-      routeName: 'Timers',
-      params: {timers: timerList},
-    });
-    this.props.navigation.dispatch(navigateAction);
-  }
-
-  getTimeLeft(timer) {
+  getTimeLeft(timer: object): object {
     if (!timer) return;
     let timeLength = timer.timeLength * 60 * 60 * 1000;
     let timeSince = new Date() - timer.createdAt;
@@ -153,7 +124,19 @@ export default class Row extends Component {
     }
   }
 
-  getDistanceFromLatLon(lat1,lon1,lat2,lon2) {
+  _getDistance(): string {
+    let i = 0;
+    while (i < this.props.data.list.length) {
+      if (this.props.data.list[i].latitude !== 0) {
+         this.distLat = this.props.data.list[i].latitude;
+         this.distLong = this.props.data.list[i].longitude;
+       }
+      i++;
+    }
+    return this.getDistanceFromLatLon(this.props.latitude, this.props.longitude, this.distLat, this.distLong);
+  }
+
+  getDistanceFromLatLon(lat1: number, lon1: number, lat2: number, lon2: number): string {
 
     if (lat1 && lon1 && lat2 && lon2) {
       var R = 6371; // Radius of the earth in km
@@ -180,9 +163,26 @@ export default class Row extends Component {
     }
   }
 
-  deg2rad(deg) {
+  deg2rad(deg: number): number {
     return deg * (Math.PI/180)
   }
+
+  _openMapPage(timerList: object): undefined {
+    const navigateAction = NavigationActions.navigate({
+      routeName: 'Map',
+      params: {timers: timerList, navigation: this.props.navigation},
+    });
+    this.props.navigation.dispatch(navigateAction);
+  }
+
+  _openTimerListPage(timerList: object): undefined {
+    const navigateAction = NavigationActions.navigate({
+      routeName: 'Timers',
+      params: {timers: timerList},
+    });
+    this.props.navigation.dispatch(navigateAction);
+  }
+
 }
 
 Row.propTypes = {

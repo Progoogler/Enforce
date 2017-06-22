@@ -1,4 +1,4 @@
-export default function insertionSortModified(arr) {
+export default function insertionSortModified(arr: object): array {
       const aux = [];
 
       for (let list in arr) {

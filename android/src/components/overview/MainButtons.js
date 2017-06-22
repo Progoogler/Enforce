@@ -54,11 +54,11 @@ export default class MainButtons extends Component {
     );
   }
 
-  _onShowUnderlay(button) {
+  _onShowUnderlay(button: string) {
     button === 'map' ? this.setState({mapUnderline: true}) : this.setState({cameraUnderline: true});
   }
 
-  _onHideUnderlay(button) {
+  _onHideUnderlay(button: string) {
     button === 'map' ? this.setState({mapUnderline: false}) : this.setState({cameraUnderline: false});
   }
 }

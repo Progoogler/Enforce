@@ -75,7 +75,7 @@ export default class SetTimeLimit extends Component {
     }
   }
 
-  _onChangeHour(hour) {
+  _onChangeHour(hour: string) {
     let nan = /[^0-9]/.test(hour);
     if ((isNaN(parseInt(hour)) && hour !== '') || nan) {
       this.setState({hour: '1'});
@@ -84,7 +84,7 @@ export default class SetTimeLimit extends Component {
     this.setState({hour});
   }
 
-  _onChangeMinutes(minutes) {
+  _onChangeMinutes(minutes: string) {
     let nan = /[^0-9]/.test(minutes);
     let int = parseInt(minutes)
     if ((isNaN(int) && minutes !== '') || int > 60 || nan) {

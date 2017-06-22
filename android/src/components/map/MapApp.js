@@ -188,7 +188,7 @@ export default class MapApp extends Component {
     }
   }
 
-  _animateToCoord(lat, long) {
+  _animateToCoord(lat: number, long: number) {
       this._mounted && this.animatedMap._component.animateToCoordinate({
         latitude: lat,
         longitude: long,
@@ -211,7 +211,7 @@ export default class MapApp extends Component {
     });
   }
 
-  _matchTimerCoords(coords, secondaryMarker) { // Potentially inaccurate match w/o longitude difference as well from origin.
+  _matchTimerCoords(coords: object, secondaryMarker?: boolean) { // Potentially inaccurate match w/o longitude difference as well from origin.
     let latDiff, longDiff; // @params *Diff: difference value b/w latitudes.
     let index;
 

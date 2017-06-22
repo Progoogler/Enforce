@@ -113,7 +113,7 @@ export default class Menu extends Component {
     this._mounted = false;
   }
 
-  resizeMenuContainer(extend) {
+  resizeMenuContainer(extend: boolean) {
     if (extend) {
       Animated.timing(
         this.state.containerHeight,

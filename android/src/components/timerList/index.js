@@ -110,7 +110,7 @@ export default class TimerList extends Component {
     setTimeout(() => { this._mounted && this.setState({refreshing: false})}, 1500);
   }
 
-  updateRows(clearWarning, only) {
+  updateRows(clearWarning: string, only?: string): undefined {
     if (this.list.length === 0 && clearWarning) {
       this._mounted && this.setState({
         dataSource: this.list,
@@ -138,7 +138,7 @@ export default class TimerList extends Component {
     }
   }
 
-  uponTicketed(timer, force) { // Handle updates to Realm for regular and forced.
+  uponTicketed(timer: object, force?: string): undefined { // Handle updates to Realm for regular and forced.
     if (Array.isArray(timer)) timer = this._timer;
     let now = new Date();
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000 || force) {
@@ -193,7 +193,7 @@ export default class TimerList extends Component {
     }
   }
 
-  expiredFunc(timer) {
+  expiredFunc(timer: object): undefined {
     let timers = this.realm.objects('Timers')[timer.index]['list'];
     if (timers['0'] === timer) {
       this.realm.write(() => {
@@ -224,7 +224,7 @@ export default class TimerList extends Component {
     }
   }
 
-  addLicenseToQueue(license) {
+  addLicenseToQueue(license: string) {
     this.license = license;
 
     // TODO
@@ -236,7 +236,7 @@ export default class TimerList extends Component {
     this.updateRows();
   }
 
-  shouldResetLicense(setToFalse) {
+  shouldResetLicense(setToFalse: boolean) {
     if (setToFalse) {
       this._reset = false;
       return;
@@ -250,7 +250,7 @@ export default class TimerList extends Component {
     this.VIN = '';
   }
 
-  _renderItem(data) {
+  _renderItem(data: object): object {
     return (
       <Row
         data={data.item}
@@ -263,7 +263,7 @@ export default class TimerList extends Component {
     return <View style={styles.separator} />;
   }
 
-  _keyExtractor(item) {
+  _keyExtractor(item: object = {'createdAt': 0}): number {
     return item.createdAt;
   }
 

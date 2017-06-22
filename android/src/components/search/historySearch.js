@@ -1,6 +1,6 @@
 import Realm from 'realm';
 
-const historySearch = (license) => {
+const historySearch = (license: string): object => {
   if (typeof license !== 'string') return;
   if (license.length > 7) return;
   const realm = new Realm();

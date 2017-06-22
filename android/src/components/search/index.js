@@ -190,7 +190,7 @@ export default class Search extends Component {
       if (this.props.shouldResetLicense()) {
         this.setState({license: '', underlineMargin: new Animated.Value(center)});
         this.marginValue = center;
-        this.props.shouldResetLicense('done');
+        this.props.shouldResetLicense(true);
       }
     }
   }
@@ -353,7 +353,7 @@ export default class Search extends Component {
      if (this.state.license) this.props.addLicenseToQueue(this.state.license);
    }
 
-  _handleTextInput(license) {
+  _handleTextInput(license: string) {
     if (license.length === 0) {
       Animated.timing(
         this.state.underlineMargin, {

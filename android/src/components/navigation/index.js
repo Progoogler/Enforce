@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
-    //backgroundColor: '#4286f4',
   },
   searchIcon: {
     marginTop: 5,

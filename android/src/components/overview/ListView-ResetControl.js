@@ -20,7 +20,6 @@ export default class TimersList extends Component {
     this.realm = new Realm();
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
     this.list = insertionSortModified(this.list);
-    if (this.list.length === 0) this.list = [{list: [{'createdAt': 0}]}]; // Supplement a fake createdAt prop for FlatList Key && Row render based on empty value.
     this.state = {
       dataSource: this.list,
       updatedLocation: false,
@@ -46,7 +45,7 @@ export default class TimersList extends Component {
     );
   }
 
-  componentWillMount() { console.log("component mounts")
+  componentWillMount() {
     this.latitude = this.realm.objects('Coordinates')[0].latitude;
     this.longitude = this.realm.objects('Coordinates')[0].longitude;
     navigator.geolocation.getCurrentPosition(
@@ -135,7 +134,7 @@ export default class TimersList extends Component {
     }
   }
 
-  _loopDeletion(timerLists, once) {
+  _loopDeletion(timerLists: object, once?: boolean) {
     if (once) {
       timerLists[0].list.forEach((timer) => {
         unlink(timer.mediaPath)
@@ -162,8 +161,8 @@ export default class TimersList extends Component {
     }
   }
 
-  deleteRow(timers) {
-    console.log('DEL' ,timers)
+  deleteRow(timers: object): undefined {
+    this.setState({ refreshing: true });
 
     timers.forEach((timer) => {
       unlink(timer.mediaPath)
@@ -192,7 +191,6 @@ export default class TimersList extends Component {
   _onRefresh() {
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
     this.list = insertionSortModified(this.list);
-    if (this.list.length === 0) this.list = [{list: [{'createdAt': 0}]}]; // Supplement a fake createdAt prop for FlatList Key && Row render based on empty value.
     this._mounted && this.setState({
       refreshing: true,
       dataSource: this.list,
@@ -202,7 +200,7 @@ export default class TimersList extends Component {
     this._timeoutRefresh = setTimeout(() => this._onRefresh(), 300000);
   }
 
-  _renderItem(data) {
+  _renderItem(data: object = {list: [{'createdAt': 0}]}): object { // Supplement a fake createdAt prop for FlatList Key && Row render based on empty value.
     return (
       <Row
         data={data.item}
@@ -219,7 +217,7 @@ export default class TimersList extends Component {
     return <View style={styles.separator} />;
   }
 
-  _keyExtractor(item) {
+  _keyExtractor(item: object = {list: [{'createdAt': 0}]}): number {
     return item.list[0].createdAt;
   }
 

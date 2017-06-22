@@ -57,7 +57,7 @@ export default class Row extends Component {
 
   }
 
-  _getPrettyTimeFormat(createdAt) {
+  _getPrettyTimeFormat(createdAt: number): string {
     let date = new Date(createdAt);
     let hour = date.getHours();
     let minutes = date.getMinutes() + '';
@@ -67,7 +67,7 @@ export default class Row extends Component {
     return `${hour}:${minutes} ${period}`;
   }
 
-  _getTimeLeft(timer) {
+  _getTimeLeft(timer: object): object {
     if (!timer) return;
     let timeLength = timer.timeLength * 60 * 60 * 1000;
     let timeSince = new Date() - timer.createdAt;
@@ -79,7 +79,7 @@ export default class Row extends Component {
     } else if (timeLeft < 3600) {
       if (timeLeft < 300 ) return <Text style={styles.timeUp}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
       if (timeLeft < 3600 / 4) return <Text style={styles.timeUp}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
-      return <Text style={styles.timeCaution}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
+      return <Text style={styles.timeUpNear}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
     } else if (timeLeft > 3600) {
       return <Text style={styles.timeUpFar}>{Math.floor(timeLeft / 60 / 60)} hour {Math.floor((timeLeft % 3600) / 60)} minutes remaining</Text>;
     } else {
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
   },
-  timeCaution: {
+  timeUpNear: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#4286f4',

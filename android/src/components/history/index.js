@@ -122,7 +122,7 @@ export default class History extends Component {
     this.setState({items: dates, animating: false});
   }
 
-  async _getHistoryData(date) {
+  async _getHistoryData(date: string): undefined {
     let userSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
     this.userId = await AsyncStorage.getItem('@Enforce:profileId');
     this.userSettings = JSON.parse(userSettings);
@@ -138,7 +138,7 @@ export default class History extends Component {
 
   }
 
-  _onValueChange(value) {
+  _onValueChange(value: string): undefined {
     this.setState({animating: true, dateTransition: true});
     if (value === "Today's Tickets") {
       this.selected = value;
@@ -154,7 +154,7 @@ export default class History extends Component {
     this.selected = value;
   }
 
-  _updateRows(list) {
+  _updateRows(list: object): undefined {
     if (!list) list = this.list;
     this.setState({
       dataSource: list,
@@ -164,7 +164,7 @@ export default class History extends Component {
     });
   }
 
-  _reverseRealmList(list) {
+  _reverseRealmList(list: object): array {
     let reversedList = [];
     for (let i = list.length - 1; i >= 0; i--) {
       reversedList.push(list[i]);
@@ -172,7 +172,7 @@ export default class History extends Component {
     return reversedList;
   }
 
-  maximizeImage(uri) {
+  maximizeImage(uri?: string): undefined {
     if (uri) {
       this.setState({showMaximizedImage: true, uri: uri});
     } else {
@@ -180,7 +180,7 @@ export default class History extends Component {
     }
   }
 
-  _getPrettyDate(month, day) {
+  _getPrettyDate(month: string, day: string): string {
 
     switch (month) {
       case '1':

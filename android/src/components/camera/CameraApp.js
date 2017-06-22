@@ -147,12 +147,12 @@ export default class CameraApp extends Component {
     clearTimeout(this._timeout);
   }
 
-  setModalVisible(desc) {
+  setModalVisible(desc?: string = '') {
     this._mounted && this.setState({modalVisible: !this.state.modalVisible});
-    this.description = desc ? desc : '';
+    this.description = desc;
   }
 
-  setTimerCount(inc = '') {
+  setTimerCount(inc: string = '') {
     let timerSequence = this.realm.objects('TimerSequence')[0];
     if (inc) {
       this.realm.write(() => {
@@ -215,7 +215,7 @@ export default class CameraApp extends Component {
 
     const options = {};
     //options.location = ...
-    // console.log('camera', this.camera)
+    console.log('camera', this.camera)
     console.log('call this.camera')
     this.camera.capture({metadata: options})
       .then((data) => { console.log('then block')
@@ -231,7 +231,7 @@ export default class CameraApp extends Component {
       .catch(err => console.error(err));
   }
 
-  deletePreviousPicture(pictureCount) { console.log('deleting', pictureCount - 1)
+  deletePreviousPicture(pictureCount: number) { console.log('deleting', pictureCount - 1)
     // TODO Updating most recent picture may delay the deletion order
     // removing previous data before the most recent picture has updated to realm.
     if (!this.deleting) {
@@ -264,7 +264,7 @@ export default class CameraApp extends Component {
     this.deleting = false;
   }
 
-  savePicture(data) { console.log("this.desc", this.description)
+  savePicture(data: object) {
     if (this.description && this.description.length === 0) {
       this.realm.write(() => {
         this.realm.objects('Timers')[this.count]['list'].push({
@@ -289,7 +289,7 @@ export default class CameraApp extends Component {
           longitude: this.longitude,
           createdAt: new Date() / 1,
           ticketedAt: 0,
-          timeLength: this.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
+          timeLength: this.timeLimit,
           license: '',
           VIN: '',
           mediaUri: data.mediaUri,
@@ -301,7 +301,7 @@ export default class CameraApp extends Component {
     }
   }
 
-  _onUpdateTimeLimit(newLimit) {
+  _onUpdateTimeLimit(newLimit: number) {
     this.realm.write(() => {
       this.realm.objects('TimerSequence')[0].timeAccessedAt = new Date() / 1;
     });

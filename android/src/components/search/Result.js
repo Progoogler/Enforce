@@ -79,7 +79,7 @@ export default class Result extends Component {
     );
   }
 
-  _getTimeLimitDesc = (timeLimit) => {
+  _getTimeLimitDesc = (timeLimit: number): string => {
     if (timeLimit < 1) {
       return `${timeLimit * 60} minutes`;
     } else {
@@ -87,7 +87,7 @@ export default class Result extends Component {
     }
   }
 
-  _getPrettyTimeFormat = (createdAt) => {
+  _getPrettyTimeFormat = (createdAt: number): string => {
     let date = new Date(createdAt);
     let hour = date.getHours();
     let minutes = date.getMinutes() + '';
