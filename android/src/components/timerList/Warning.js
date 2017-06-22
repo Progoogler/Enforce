@@ -6,12 +6,13 @@ import {
   Modal,
   TouchableOpacity,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 export default class Warning extends Component {
   constructor() {
     super();
   }
-//            <Text style={styles.title}>Warning</Text>
+
   render() {
     return (
       <Modal animationType={"slide"}
@@ -46,6 +47,13 @@ export default class Warning extends Component {
   }
 }
 
+Warning.propTypes = {
+  clearWarning: PropTypes.func.isRequired,
+  visibility: PropTypes.bool.isRequired,
+  timeElapsed: PropTypes.string.isRequired,
+  uponTicketed: PropTypes.func.isRequired,
+};
+
 const styles = StyleSheet.create({
   container: {
     marginTop: 170,
@@ -57,10 +65,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 5,
     padding: 20,
-  },
-  title: {
-    color: 'red',
-    fontSize: 28,
   },
   warning: {
     color: 'green',
@@ -92,9 +96,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   yes: {
-    //borderWidth: 2,
-    //borderRadius: 5,
-    //backgroundColor: 'red',
     padding: 10,
   }
 });

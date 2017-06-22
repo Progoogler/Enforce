@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
-  View,
   Text,
-  Image,
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 const Done = (props) => (
   <TouchableOpacity
@@ -18,6 +17,8 @@ const Done = (props) => (
 
   </TouchableOpacity>
 );
+
+Done.propTypes = { navigation: PropTypes.object.isRequired };
 
 const styles = StyleSheet.create({
   container: {

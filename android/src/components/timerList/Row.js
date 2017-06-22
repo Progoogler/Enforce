@@ -5,8 +5,8 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  AsyncStorage,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 
 export default class Row extends Component {
@@ -54,8 +54,7 @@ export default class Row extends Component {
   }
 
   _onVinRequest() {
-    let options = {
-    }
+
   }
 
   _getPrettyTimeFormat(createdAt) {
@@ -73,7 +72,6 @@ export default class Row extends Component {
     let timeLength = timer.timeLength * 60 * 60 * 1000;
     let timeSince = new Date() - timer.createdAt;
     let timeLeft = (timeLength - timeSince) / 1000;
-    let value = '';
       if (timeLeft < 0) {
       return <Text style={styles.timeUp}>Time is up!</Text>;
     } else if (timeLeft < 60) {
@@ -90,16 +88,18 @@ export default class Row extends Component {
   }
 }
 
+Row.propTypes = {
+  data: PropTypes.object.isRequired,
+  expiredFunc: PropTypes.func.isRequired,
+  uponTicketed: PropTypes.func.isRequired,
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
   image: {
     height: 390,
-  },
-  activity: {
-    flex: 1,
-    zIndex: 10,
   },
   timeUp: {
     fontSize: 20,

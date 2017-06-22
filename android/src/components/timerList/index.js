@@ -3,18 +3,15 @@ import {
   View,
   Image,
   StyleSheet,
-  RefreshControl,
   AsyncStorage,
-  Keyboard,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import FlatList from 'react-native/Libraries/Lists/FlatList';
 import Realm from 'realm';
 import { setUserTickets, setTicketImage } from '../../../../includes/firebase/database';
-import insertionSortModified from '../overview/insertionSort';
 
 import Title from './Title';
 import Row from './Row';
-import Footer from './Footer';
 import Search from '../search';
 import Warning from './Warning';
 import Done from './Done';
@@ -25,6 +22,7 @@ window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = Blob;
 
 
+/* global require */
 export default class TimerList extends Component {
   constructor(props) {
     super(props);
@@ -179,7 +177,6 @@ export default class TimerList extends Component {
           .then((blob) => {
             let month = now.getMonth() + 1;
             let day = now.getDate();
-            date = `${month}-${day}`;
             let refPath = `${this.refPath}/${month}-${day}`;
             let imagePath = `${timer.createdAt}`;
             setTicketImage(refPath, imagePath, blob);
@@ -266,10 +263,14 @@ export default class TimerList extends Component {
     return <View style={styles.separator} />;
   }
 
-  _keyExtractor(item, index) {
+  _keyExtractor(item) {
     return item.createdAt;
-  };
+  }
 
+}
+
+TimerList.propTypes = {
+  navigation: PropTypes.object.isRequired,
 
 }
 
