@@ -6,7 +6,6 @@ import {
   Text,
   AsyncStorage,
   Vibration,
-  TouchableHighlight,
   TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -72,13 +71,14 @@ export default class CameraApp extends Component {
                 style={styles.pinIcon}
                 source={require('../../../../shared/images/pin.png')} />
             </TouchableOpacity>
-            <TouchableHighlight
+            <TouchableOpacity
+              activeOpacity={.6}
               style={styles.capture}
               onPress={() => {
               this.takePicture();
             }} >
               <View></View>
-            </TouchableHighlight>
+            </TouchableOpacity>
             <Text
               style={styles.undo}
               onPress={() => this.deletePreviousPicture(this.pictureCount) }>UNDO</Text>
@@ -213,7 +213,7 @@ export default class CameraApp extends Component {
     console.log('called navigator')
     }
 
-    console.log('call camera', this.camera)
+    console.log('call camera')
     this.camera.capture()
       .then((data) => { console.log('then block')
         if (this.firstCapture) {     console.log('first capture')
@@ -228,7 +228,7 @@ export default class CameraApp extends Component {
       .catch(err => console.error(err));
   }
 
-  deletePreviousPicture(pictureCount: number) { console.log('deleting', pictureCount - 1)
+  deletePreviousPicture(pictureCount: number) {
     // TODO Updating most recent picture may delay the deletion order
     // removing previous data before the most recent picture has updated to realm.
     if (!this.deleting) {
@@ -238,15 +238,15 @@ export default class CameraApp extends Component {
     }
     const length = this.realm.objects('Timers')[this.listIndex]['list'].length;
     const timer = this.realm.objects('Timers')[this.listIndex]['list'][pictureCount - 1];
-    if (!timer) {
+    if (!timer && pictureCount - 1 >= 0) {
       setTimeout(() => {
-        console.log('set time out current deletion', pictureCount)
         this.deletePreviousPicture(pictureCount);
       }, 5000);
       return;
+    } else {
+      this.deleting = false;
     }
     if (length - 1 < 0) return;
-    console.log('unlinking')
     unlink(timer.mediaPath)
       .then(() => {
         console.log('PICTURE REMOVED');
