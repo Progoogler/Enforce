@@ -66,8 +66,6 @@ const styles = StyleSheet.create({
     marginLeft: 25,
   },
   icon: {
-    height: 20,
-    width: 30,
     marginLeft: 15,
   },
   title: {
@@ -81,7 +79,7 @@ const styles = StyleSheet.create({
     textShadowOffset: {
       width: 2,
       height: 1
-    }
+    },
   },
   headerNavigation: {
     flex: .15,
