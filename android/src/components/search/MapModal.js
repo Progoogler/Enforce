@@ -24,7 +24,7 @@ export default class MapModal extends Component {
     return (
       <Modal animationType={"slide"}
         transparent={true}
-        onRequestClose={() => {}}
+        onRequestClose={() => this.props.closeModal()}
         visible={this.props.visibility} >
         <TouchableOpacity
           style={styles.closeContainer}
