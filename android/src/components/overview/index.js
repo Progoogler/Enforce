@@ -43,7 +43,7 @@ export default class Overview extends Component {
   }
 
   resetTicketCounter() {
-    this.setState({zero: '0'});
+    this.setState({zero: true});
   }
 
 }

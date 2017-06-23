@@ -121,7 +121,9 @@ export default class TimersList extends Component {
       setTimeout(() => {
         console.log('NEW REALM')
         Realm.clearTestState();
+        console.log("cleared test state");
         this.realm = new Realm({schema: Schema});
+        console.log('set Schema');
         this.realm.write(() => {
           this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
           this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
@@ -129,7 +131,9 @@ export default class TimersList extends Component {
           this.realm.create('Ticketed', {list: []});
           this.realm.create('Expired', {list: []});
         });
+        console.log('write base realm');
         this.props.resetTicketCounter();
+        console.log('reset ticket counter');
       }, 3000);
     }
   }
@@ -223,7 +227,10 @@ export default class TimersList extends Component {
 
 }
 
-TimersList.propTypes = { navigation: PropTypes.object.isRequired };
+TimersList.propTypes = {
+  resetTicketCounter: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+};
 
 const styles = StyleSheet.create({
   flatlist: {
