@@ -17,6 +17,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: 'white',
+    textShadowColor: 'grey',
+    textShadowOffset: {
+      width: 1,
+      height: 1
+    },
   },
 });
 

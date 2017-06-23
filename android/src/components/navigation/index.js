@@ -61,6 +61,11 @@ export default class Navigation extends Component {
             fontSize: 32,
             color: 'white',
             textAlignVertical: 'center',
+            textShadowColor: 'blue',
+            textShadowOffset: {
+              width: 2,
+              height: 1
+            },
           }}>{ this.props.title ? this.props.title : 'Enforce' }</Animated.Text>
           <TouchableHighlight
             underlayColor='#4286f4'

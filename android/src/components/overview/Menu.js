@@ -75,6 +75,11 @@ export default class Menu extends Component {
               fontSize: 32,
               color: 'white',
               textAlignVertical: 'center',
+              textShadowColor: '#3399ff',
+              textShadowOffset: {
+                width: 2,
+                height: 1
+              },
             }}>
 
             { this.props.title ? this.props.title : 'Enforce' }

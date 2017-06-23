@@ -77,6 +77,11 @@ const styles = StyleSheet.create({
     marginLeft: 28,
     color: 'white',
     textAlignVertical: 'center',
+    textShadowColor: '#3399ff',
+    textShadowOffset: {
+      width: 2,
+      height: 1
+    }
   },
   headerNavigation: {
     flex: .15,

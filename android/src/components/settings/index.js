@@ -146,6 +146,11 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 50,
     fontWeight: 'bold',
+    textShadowColor: 'grey',
+    textShadowOffset: {
+      width: 1,
+      height: 1
+    },
   },
   row: {
     flexDirection: 'row',

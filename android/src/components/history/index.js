@@ -284,5 +284,10 @@ const styles = StyleSheet.create({
     marginTop: 25,
     fontSize: 34,
     fontWeight: 'bold',
+    textShadowColor: 'grey',
+    textShadowOffset: {
+      width: 1,
+      height: 1
+    },
   },
 });
