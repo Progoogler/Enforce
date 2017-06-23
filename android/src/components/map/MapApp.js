@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import {
   View,
+  Text,
   StyleSheet,
   Image,
   ActivityIndicator,
@@ -76,6 +77,9 @@ export default class MapApp extends Component {
           size='large' />
 
         { this.state.showError ? <ErrorMessage checkLocationAndRender={this.checkLocationAndRender.bind(this)} /> : <View /> }
+        <View style={styles.logoContainer}>
+          <Text style={styles.logo}>Enforce</Text>
+        </View>
       </View>
     );
   }
@@ -437,5 +441,21 @@ const styles = StyleSheet.create({
   activity: {
     flex: 1,
     zIndex: 10,
-  }
+  },
+  logoContainer: {
+    position: 'absolute',
+    bottom: 7,
+    right: 10,
+  },
+  logo: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '400',
+    textShadowColor: 'grey',
+    textShadowRadius: 5,
+    textShadowOffset: {
+      width: 2,
+      height: 1
+    }
+  },
 });
