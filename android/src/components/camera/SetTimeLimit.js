@@ -3,7 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableHighlight,
+  TouchableOpacity,
   TextInput,
   Keyboard,
 } from 'react-native';
@@ -27,12 +27,12 @@ export default class SetTimeLimit extends Component {
         this.props.newTimer ?
         <View style={styles.notification}>
           <Notification />
-          <TouchableHighlight
+          <TouchableOpacity
             style={styles.notificationButton}
-            underlayColor="green"
+            activeOpacity={.8}
             onPress={this._updateTimeLimit.bind(this)} >
             <Text style={styles.buttonText}>Set Limit</Text>
-          </TouchableHighlight>
+          </TouchableOpacity>
         </View>
 
         :
@@ -53,12 +53,12 @@ export default class SetTimeLimit extends Component {
             value={this.state.minutes} />
           <Text style={styles.timeDesc}>Min</Text>
 
-        <TouchableHighlight
+        <TouchableOpacity
           style={styles.setButton}
-          underlayColor="green"
+          activeOpacity={.8}
           onPress={this._updateTimeLimit.bind(this)} >
           <Text style={styles.buttonText}>Set Limit</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     }
     </View>
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'grey',
   },
   notificationButton: {
-    marginLeft: 70,
+    marginLeft: 67,
     backgroundColor: 'green',
     borderWidth: 2,
     borderRadius: 8,

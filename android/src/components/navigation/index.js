@@ -61,7 +61,7 @@ export default class Navigation extends Component {
             fontSize: 32,
             color: 'white',
             textAlignVertical: 'center',
-            textShadowColor: 'blue',
+            textShadowColor: '#3399ff',
             textShadowOffset: {
               width: 2,
               height: 1
