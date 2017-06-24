@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { DrawerItems, DrawerNavigator } from 'react-navigation';
 import { View, Image, AsyncStorage } from 'react-native';
+
 import CameraApp from './camera/CameraApp';
 import MapApp from './map/MapApp';
 import Overview from './overview';
@@ -10,6 +11,7 @@ import History from './history';
 import Metrics from './metrics';
 import Settings from './settings';
 import FAQs from './faq';
+
 import Realm from 'realm';
 import Schema from '../realm';
 import { initialize as FirebaseInitialize, signInUser as FirebaseSignIn }  from '../../../includes/firebase/firebase';
