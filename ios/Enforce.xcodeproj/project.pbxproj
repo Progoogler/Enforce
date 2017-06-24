@@ -37,16 +37,13 @@
 		2D02E4C91E0B4AEC006451C7 /* libReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DAD3EA31DF850E9000B6D8A /* libReact.a */; };
 		2DCD954D1E0B4F2C00145EB5 /* EnforceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EnforceTests.m */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
-<<<<<<< HEAD
 		63DDC58AB5C24696954FD78C /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4427BD14B1FE4C8C8746D240 /* libAirMaps.a */; };
 		6F85576D6F1547CD8AB4EC5D /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF0880BE1FC40F8AC704114 /* libRCTCamera.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		A5240075B5AF477280E9CC54 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 241EFACC99D24859BA690782 /* libRNFetchBlob.a */; };
 		E2DBCAA6EF324A60A7F4EFB9 /* libRealmReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8629187E69684A98BA230386 /* libRealmReact.a */; };
 		ECC81FC394264EE094196235 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = FC412E4047254EA4BF6EFAA0 /* libc++.tbd */; };
-=======
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
->>>>>>> a76fece10be9583c35b316dca9b614d8576bf023
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -308,14 +305,11 @@
 		6AF0880BE1FC40F8AC704114 /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
-<<<<<<< HEAD
 		8629187E69684A98BA230386 /* libRealmReact.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRealmReact.a; sourceTree = "<group>"; };
 		DC411DAD5A25404381D11F78 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/lib/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
 		E2FB53BA28BC48CFA10D63F7 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		EAF49E106000486CAF9D3F20 /* libz.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		FC412E4047254EA4BF6EFAA0 /* libc++.tbd */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
-=======
->>>>>>> a76fece10be9583c35b316dca9b614d8576bf023
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
