@@ -24,7 +24,7 @@ export default class MapModal extends Component {
     return (
       <Modal animationType={"slide"}
         transparent={true}
-        onRequestClose={() => {}}
+        onRequestClose={() => this.props.closeModal()}
         visible={this.props.visibility} >
         <TouchableOpacity
           style={styles.closeContainer}
@@ -38,8 +38,8 @@ export default class MapModal extends Component {
             mapType="hybrid"
             showsUserLocation={true}
             initialRegion={{
-              latitude: this.props.latitude !== 0 ? this.props.latitude : 37.78926,
-              longitude: this.props.longitude !== 0 ? this.props.longitude : -122.43159,
+              latitude: this.props.latitude ? this.props.latitude : 37.78926,
+              longitude: this.props.longitude ? this.props.longitude : -122.43159,
               latitudeDelta: 0.0108,
               longitudeDelta: 0.0060,
             }} >

@@ -29,7 +29,7 @@ export default class ImageModal extends Component {
               background={TouchableNativeFeedback.Ripple('white')}
               onPress={() => this.props.maximizeImage()} >
               <View style={styles.arrowContainer}>
-                <Image style={styles.backArrow} source={require('../../../../shared/images/backarrow.png')} />
+                <Image style={styles.backArrow} source={require('../../../../shared/images/backarrow.jpg')} />
               </View>
             </TouchableNativeFeedback>
           </View>
@@ -42,7 +42,7 @@ export default class ImageModal extends Component {
     const { height } = Dimensions.get('window');
     styles.image = {
       alignSelf: 'stretch',
-      height: height - 100,
+      height: height - 85,
     };
   }
 }
@@ -60,12 +60,12 @@ const styles = StyleSheet.create({
   },
   arrowContainer: {
     justifyContent: 'center',
-    width: 600,
-    height: 75,
+    width: '100%',
+    height: 60,
   },
   backArrow: {
     marginLeft: 25,
-    width: 45,
-    height: 38,
+    // width: 45,
+    // height: 38,
   },
 });
