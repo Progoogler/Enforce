@@ -89,12 +89,6 @@ export default class Row extends Component {
       width: width + 65,
       borderTopWidth: .5,
     }
-    styles.button = {
-      backgroundColor: '#4286f4',
-      borderWidth: 1,
-      borderRadius: 5,
-      padding: 5,
-    }
     styles.timerRow = {
       flexDirection: 'row',
       alignItems: 'center',
@@ -223,6 +217,13 @@ const styles = StyleSheet.create({
   },
   timerRowTime: {
     paddingLeft: 12,
+  },
+  button: {
+    backgroundColor: '#4286f4',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+    elevation: 2,
   },
   buttonText: {
     color: 'white',

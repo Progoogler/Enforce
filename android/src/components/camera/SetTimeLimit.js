@@ -170,6 +170,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 8,
     borderColor: 'white',
+    elevation: 5,
   },
   buttonText: {
     fontSize: 28,
