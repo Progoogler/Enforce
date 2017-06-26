@@ -46,12 +46,12 @@ export default class LocationInput extends Component {
             <Text style={styles.count}>{60 - this.state.text.length} characters remaining</Text>
             <View style={styles.buttonRow}>
               <TouchableOpacity
-                style={styles.xButton}
+                style={styles.cancelButton}
                 onPress={() => {
                   this.setState({text: ''});
                   this.props.setModalVisible('');
                 }}>
-                <Text style={styles.x}>Cancel</Text>
+                <Text style={styles.cancelText}>Cancel</Text>
                 </TouchableOpacity>
               <TouchableOpacity
                 style={styles.doneButton}
@@ -77,7 +77,7 @@ export default class LocationInput extends Component {
 LocationInput.propTypes = {
   visibility: PropTypes.bool.isRequired,
   setModalVisible: PropTypes.func.isRequired,
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -93,13 +93,13 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     margin: 15,
   },
-  xButton: {
+  cancelButton: {
       alignItems: 'center',
       alignSelf: 'flex-end',
       marginRight: 40,
       marginBottom: 6,
   },
-  x: {
+  cancelText: {
     color: 'white',
     fontSize: 16,
   },

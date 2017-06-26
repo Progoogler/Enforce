@@ -51,7 +51,7 @@ export default class CameraApp extends Component {
   render() {
     return (
       <View style={styles.container} >
-        <LocationInput visibility={this.state.modalVisible} setModalVisible={this.setModalVisible.bind(this)} description={this.description}/>
+        <LocationInput visibility={this.state.modalVisible} setModalVisible={this.setModalVisible.bind(this)} />
         <Navigation navigation={this.props.navigation} />
         <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} newTimer={this.state.newTimer} realm={this.realm} />
 
@@ -79,9 +79,13 @@ export default class CameraApp extends Component {
             }} >
               <View></View>
             </TouchableOpacity>
-            <Text
-              style={styles.undo}
-              onPress={() => this.deletePreviousPicture(this.pictureCount) }>UNDO</Text>
+            <TouchableOpacity
+              activeOpacity={.6}
+              style={styles.undoButton} >
+              <Text
+                style={styles.undo}
+                onPress={() => this.deletePreviousPicture(this.pictureCount) }>UNDO</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -114,7 +118,7 @@ export default class CameraApp extends Component {
       distanceFilter: 1
     };
 
-    if (settings.location) {
+    if (settings && settings.location) {
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
           message: "<h2>Turn On Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
           ok: "OK",
@@ -342,9 +346,11 @@ const styles = StyleSheet.create({
     margin: 4,
     marginLeft: 18,
   },
+  undoButton: {
+    marginRight: 20,
+  },
   undo: {
     color: '#4286f4',
-    marginRight: 20,
     fontSize: 20,
   },
 });
