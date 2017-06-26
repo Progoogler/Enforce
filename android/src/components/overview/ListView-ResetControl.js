@@ -116,7 +116,9 @@ export default class TimersList extends Component {
       if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
 
       this.list = [{list: [{'createdAt': 0}]}];
-      //this.props.updateTicketCount();
+      console.log('pre reset');
+      this.props.resetTicketCounter();
+      console.log('reset ticket counter');
       this._mounted && this.setState({dataSource: this.list});
       setTimeout(() => {
         console.log('NEW REALM')
@@ -132,8 +134,6 @@ export default class TimersList extends Component {
           this.realm.create('Expired', {list: []});
         });
         console.log('write base realm');
-        this.props.resetTicketCounter();
-        console.log('reset ticket counter');
       }, 3000);
     }
   }
