@@ -114,7 +114,7 @@ export default class CameraApp extends Component {
       distanceFilter: 1
     };
 
-    if (settings.location) {
+    if (settings && settings.location) {
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
           message: "<h2>Turn On Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
           ok: "OK",
