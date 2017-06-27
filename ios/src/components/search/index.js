@@ -56,7 +56,7 @@ export default class Search extends Component {
 
           <Animated.View style={{
                             position: 'absolute',
-                            top: 15,
+                            top: 8,
                             width: 120,
                             marginLeft: this.state.underlineMargin,
                             height: 80,
@@ -164,13 +164,13 @@ export default class Search extends Component {
       ),
       Animated.timing(
         this.state.containerHeight,
-        { toValue: 130,
+        { toValue: 100,
           duration: 500, },
       ),
     ]).start();
     if (this.props.timerList) this.keyboardDidHideForTimerListListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHideForTimerList.bind(this));
     this._mounted = true;
-    setTimeout(() => this._mounted && this.setState({containerHeight: new Animated.Value(130)}), 500);
+    setTimeout(() => this._mounted && this.setState({containerHeight: new Animated.Value(100)}), 500);
 
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
   }
@@ -280,7 +280,7 @@ export default class Search extends Component {
       Animated.parallel([
         Animated.timing(
           this.state.containerHeight, {
-            toValue: 130,
+            toValue: 100,
             duration: 600,
           },
         ),
@@ -328,7 +328,7 @@ export default class Search extends Component {
     Animated.parallel([
       Animated.timing(
         this.state.containerHeight, {
-          toValue: 130,
+          toValue: 100,
           duration: 600,
         },
       ),
@@ -435,6 +435,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flex: 1,
     flexDirection: 'row',
+    paddingTop: 15,
   },
   searchIcon: {
     marginTop: 5,
@@ -447,13 +448,13 @@ const styles = StyleSheet.create({
     right: 1,
     height: 60,
     width: 60,
+    marginTop: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },
   button: {
     flex: .5,
     height: 50,
-    //paddingBottom: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
