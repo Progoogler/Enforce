@@ -99,7 +99,7 @@ export default class Settings extends Component {
   async componentWillMount() {
     let settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);
-    this.setState({
+    settings && this.setState({
       notications: settings.notifcations,
       location: settings.location,
       imageUpload: settings.imageUpload,
@@ -159,9 +159,9 @@ const styles = StyleSheet.create({
   },
   settingDesc: {
     marginLeft: 25,
-    fontSize: 18,
+    fontSize: 16,
   },
   slider: {
-    marginRight: 25,
+    marginRight: 15,
   }
 });
