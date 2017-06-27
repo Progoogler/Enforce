@@ -20,7 +20,6 @@ export default class Settings extends Component {
       location: true,
       imageUpload: true,
       dataUpload: true,
-      colorFalseSwitchIsOn: false,
     }
   }
   static navigationOptions = {
@@ -100,9 +99,10 @@ export default class Settings extends Component {
     let settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);
     settings && this.setState({
-      notications: settings.notifcations,
+      notifications: settings.notifications,
       location: settings.location,
       imageUpload: settings.imageUpload,
+      dataUpload: settings.dataUpload,
     });
   }
 
