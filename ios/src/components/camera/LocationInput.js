@@ -30,15 +30,16 @@ export default class LocationInput extends Component {
             <Text style={styles.title}>Location Details:</Text>
             <View style={styles.textInputContainer}>
               <AutoGrowingTextInput
-                style={styles.textInput}
-                ref={(ref) => this._textInput = ref}
+                //style={styles.textInput}
+                ref={(ref) => this._textInput = ref }
                 onChange={(event) => this._handleTextInput(event)}
                 underlineColorAndroid={'white'}
                 autoCorrect={false}
                 autoCapitalize={'sentences'}
                 fontSize={26}
                 maxLength={60}
-                minHeight={120}
+                initialHeight={120}
+                maxHeight={160}
                 autoFocus={true}
                 value={this.state.text} />
 
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
   },
   textInputContainer: {
     marginLeft: 15,
-    height: 120,
+    //height: 120,
   },
   count: {
     marginLeft: 25,
