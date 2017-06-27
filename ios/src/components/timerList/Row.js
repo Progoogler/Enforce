@@ -18,7 +18,7 @@ export default class Row extends Component {
     return (
       <View style={styles.container} >
         <Image
-          style={styles.image}
+            style={{height: this.props.imageHeight}}
           source={{uri: this.props.data.mediaUri}} />
         <View style={styles.descriptionContainer}>
           <Text style={styles.timeLeft}>{this._getTimeLeft(this.props.data)}</Text>
@@ -98,9 +98,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  image: {
-    height: 390,
-  },
   timeUp: {
     fontSize: 20,
     fontWeight: 'bold',
@@ -143,6 +140,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    height: 80,
     padding: 15,
   },
   timeContainer: {

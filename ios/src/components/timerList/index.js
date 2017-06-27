@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
+  Dimensions,
   StyleSheet,
   AsyncStorage,
 } from 'react-native';
@@ -20,6 +21,9 @@ import RNFetchBlob from 'react-native-fetch-blob';
 const Blob = RNFetchBlob.polyfill.Blob; // Initialize Blob for converting images into binary
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = Blob;
+
+var { height } = Dimensions.get('window');
+var imageHeight = height - 100 - 40 - 80 - 60;
 
 
 /* global require */
@@ -254,6 +258,7 @@ export default class TimerList extends Component {
     return (
       <Row
         data={data.item}
+        imageHeight={imageHeight}
         expiredFunc={this.expiredFunc.bind(this)}
         uponTicketed={this.uponTicketed.bind(this)} />
     );
