@@ -110,7 +110,6 @@ export default class TimersList extends Component {
     let ticketList = this.realm.objects('Ticketed');
     let expiredList = this.realm.objects('Expired');
     if (timerLists.length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
-      console.log('starting reset')
       this._loopDeletion(timerLists);
       if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
       if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
