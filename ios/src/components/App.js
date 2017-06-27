@@ -107,7 +107,7 @@ export default class App extends Component {
      async signIn() {
          let profile = await AsyncStorage.getItem('@Enforce:profileSettings');
          profile = JSON.parse(profile);
-         if (profile.email && profile.password) FirebaseSignIn(profile.email, profile.password);
+         if (profile && (profile.email && profile.password)) FirebaseSignIn(profile.email, profile.password);
      }
 
 }
