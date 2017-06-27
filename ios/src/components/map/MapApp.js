@@ -91,7 +91,7 @@ export default class MapApp extends Component {
 
     if (this.props.navigation.state.params) this.setModalVisible();
 
-    if (settings.location) {
+    if (settings && settings.location) {
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
           message: "<h2>Use Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
           ok: "OK",
