@@ -168,7 +168,7 @@ export default class Search extends Component {
           duration: 500, },
       ),
     ]).start();
-    if (this.props.timerList) this.keyboardDidHideForTimerListListener = Keyboard.addListener('keyboardDidHideForTimerList', this._keyboardDidHideForTimerList.bind(this));
+    if (this.props.timerList) this.keyboardDidHideForTimerListListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHideForTimerList.bind(this));
     this._mounted = true;
     setTimeout(() => this._mounted && this.setState({containerHeight: new Animated.Value(130)}), 500);
 
