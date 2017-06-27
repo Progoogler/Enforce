@@ -61,12 +61,18 @@ export default class Profile extends Component {
         <View style={styles.row} >
           <Text style={styles.designator}>Email</Text>
           <TextInput
-            style={{ backgroundColor: this.state.emailBackground, borderColor: this.state.emailColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
+            style={{
+              backgroundColor: this.state.emailBackground,
+              borderColor: this.state.emailColor,
+              borderWidth: 1,
+              flex: .45,
+              paddingLeft: 15,
+            }}
             autoCorrect={false}
             autoCapitalize={'words'}
             keyboardType={'email-address'}
             fontSize={18}
-            underlineColorAndroid={'transparent'}
+            
             onFocus={() => this._onEmailFocus()}
             onBlur={() => this._onEmailBlur()}
             onChangeText={(text) => { this.setState({ email: text })}}
@@ -78,11 +84,17 @@ export default class Profile extends Component {
         <View style={styles.row} >
           <Text style={styles.designator}>Password</Text>
           <TextInput
-            style={{ backgroundColor: this.state.passwordBackground, borderColor: this.state.passwordColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
+            style={{
+              backgroundColor: this.state.passwordBackground,
+              borderColor: this.state.passwordColor,
+              borderWidth: 1,
+              flex: .45,
+              paddingLeft: 15,
+            }}
             autoCorrect={false}
             secureTextEntry={true}
             fontSize={18}
-            underlineColorAndroid={'transparent'}
+            
             onFocus={() => this._onPasswordFocus()}
             onBlur={() => this._onPasswordBlur()}
             onChangeText={(text) => { this.setState({ password: text })}}
@@ -94,11 +106,17 @@ export default class Profile extends Component {
         <View style={styles.row} >
           <Text style={styles.designator}>County</Text>
           <TextInput
-            style={{ backgroundColor: this.state.countyBackground, borderColor: this.state.countyColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
+            style={{
+              backgroundColor: this.state.countyBackground,
+              borderColor: this.state.countyColor,
+              borderWidth: 1,
+              flex: .45,
+              paddingLeft: 15,
+            }}
             autoCorrect={false}
             autoCapitalize={'words'}
             fontSize={18}
-            underlineColorAndroid={'transparent'}
+            
             onFocus={() => this._onCountyFocus()}
             onBlur={() => this._onCountyBlur()}
             onChangeText={(text) => { this.setState({ county: text })}}
@@ -151,13 +169,13 @@ export default class Profile extends Component {
     try {
       this.profile = await AsyncStorage.getItem('@Enforce:profileSettings');
       this.profile = JSON.parse(this.profile);
-      this.setState({
+      this.profile && this.setState({
         email: this.profile.email ? this.profile.email : '',
         password: this.profile.password ? this.profile.password : '',
         county: this.profile.county ? this.profile.county : '',
       });
       this.profileId = await AsyncStorage.getItem('@Enforce:profileId');
-      Firebase.signInUser(this.profile.email, this.profile.password);
+      this.profileId && Firebase.signInUser(this.profile.email, this.profile.password);
     } catch (err) {
       console.warn('Error fetching Profile Settings from AsyncStorage', err);
     }
@@ -267,13 +285,15 @@ const styles = StyleSheet.create({
     },
   },
   row: {
+                     
     flexDirection: 'row',
     margin: 25,
 
   },
   designator: {
+    flex: .25,
     fontSize: 20,
-    marginLeft: 25,
+    marginLeft: 20,
     marginTop: 15,
     fontWeight: 'bold',
   },
