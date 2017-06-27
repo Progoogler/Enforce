@@ -19,6 +19,7 @@ import Navigation from '../navigation';
 import Row from './Row';
 import ImageModal from './ImageModal';
 
+/*global require*/
 export default class History extends Component {
   constructor() {
     super();
@@ -42,7 +43,7 @@ export default class History extends Component {
     drawerLabel: 'History',
     drawerIcon: () => (
       <Image
-        source={require('../../../../shared/images/page-icon.png')} /*global require*/
+        source={require('../../../../shared/images/page-icon.png')}
         style={[styles.icon]}
       />
     )
@@ -114,10 +115,12 @@ export default class History extends Component {
     let dates = [];
     dates.push(<Picker.Item style={styles.item} label="Today's Tickets" value={"Today's Tickets"} key={-2}/>);
     dates.push(<Picker.Item style={styles.item} label="Today's Expired" value={"Today's Expired"} key={-1}/>);
-    for (let i = this.dateCount.length - 1; i >= 0; i--) {
-      let month = this.dateCount[i].slice(0, this.dateCount[i].indexOf('-'));
-      let day = this.dateCount[i].slice(this.dateCount[i].indexOf('-') + 1, this.dateCount[i].length);
-      dates.push(<Picker.Item style={styles.item} label={this._getPrettyDate(month, day)} value={this.dateCount[i]} key={i}/>);
+    if (Array.isArray(this.dateCount)) {
+      for (let i = this.dateCount.length - 1; i >= 0; i--) {
+        let month = this.dateCount[i].slice(0, this.dateCount[i].indexOf('-'));
+        let day = this.dateCount[i].slice(this.dateCount[i].indexOf('-') + 1, this.dateCount[i].length);
+        dates.push(<Picker.Item style={styles.item} label={this._getPrettyDate(month, day)} value={this.dateCount[i]} key={i}/>);
+      }
     }
     this.setState({items: dates, animating: false});
   }
@@ -267,7 +270,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     width: 150,
-    color: '#4286f4',
+    marginTop: -65,
   },
   flatlist: {
     flex: 1,
