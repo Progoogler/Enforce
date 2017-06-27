@@ -100,9 +100,10 @@ export default class Settings extends Component {
     let settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);
     this.setState({
-      notications: settings.notifcations,
+      notifications: settings.notifications,
       location: settings.location,
       imageUpload: settings.imageUpload,
+      dataUpload: settings.dataUpload,
     });
   }
 
