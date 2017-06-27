@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
   },
   separator: {
     borderColor: 'white',
-    borderWidth: .35,
+    borderWidth: .45,
     height: 35,
   },
 });
