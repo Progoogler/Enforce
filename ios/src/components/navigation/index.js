@@ -56,7 +56,8 @@ export default class Navigation extends Component {
           <Animated.Text style={{
             opacity: this.state.titleOpacity,
             flex: .70,
-            height: 60,
+            //height: 60,
+            marginTop: 10,
             marginLeft: -10,
             fontSize: 32,
             color: 'white',
@@ -118,6 +119,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
     alignSelf: 'stretch',
     backgroundColor: '#4286f4',
+                                 paddingTop: 15,
   },
   headerContainer: {
     flexDirection: 'row',

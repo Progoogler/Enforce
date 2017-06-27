@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#4286f4',
+    marginTop: -10,
   },
   buttonColumn: {
     flex: .5,

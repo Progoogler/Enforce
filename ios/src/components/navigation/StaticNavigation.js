@@ -32,7 +32,7 @@ export default class StaticNavigation extends Component {
             this.props.navigation.navigate('DrawerOpen');
           }}
           style={styles.headerNavigation} >
-          <Image source={require('../../../../shared/images/menu-icon.jpg')} />
+            <Image source={require('../../../../shared/images/menu-icon.jpg')} style={{height: 45}}/>
         </TouchableHighlight>
         : null }
 
@@ -56,6 +56,8 @@ StaticNavigation.propTypes = {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
+    height: 60,
+    paddingTop: 15,
     alignItems: 'center',
     backgroundColor: '#4286f4',
     zIndex: 10,
@@ -70,7 +72,6 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: .70,
-    height: 60,
     fontSize: 28,
     marginLeft: 28,
     color: 'white',
@@ -83,7 +84,6 @@ const styles = StyleSheet.create({
   },
   headerNavigation: {
     flex: .15,
-    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
   },
