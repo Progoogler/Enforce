@@ -116,16 +116,11 @@ export default class TimersList extends Component {
       if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
 
       this.list = [{list: [{'createdAt': 0}]}];
-      console.log('pre reset');
       this.props.resetTicketCounter();
-      console.log('reset ticket counter');
       this._mounted && this.setState({dataSource: this.list});
       setTimeout(() => {
-        console.log('NEW REALM')
         Realm.clearTestState();
-        console.log("cleared test state");
         this.realm = new Realm({schema: Schema});
-        console.log('set Schema');
         this.realm.write(() => {
           this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
           this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
@@ -133,7 +128,6 @@ export default class TimersList extends Component {
           this.realm.create('Ticketed', {list: []});
           this.realm.create('Expired', {list: []});
         });
-        console.log('write base realm');
       }, 3000);
     }
   }
