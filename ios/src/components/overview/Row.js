@@ -33,7 +33,7 @@ export default class Row extends Component {
             showsHorizontalScrollIndicator={false} >
             <View style={styles.innerContainer} >
               <TouchableOpacity
-                activeOpacity={.6}
+                activeOpacity={.6}
                 onPress={() => this._openTimerListPage(this.props.data.list)} >
 
                 <View style={styles.timerRow}>
