@@ -4,12 +4,10 @@ import {
   View,
   Image,
   Text,
-  AsyncStorage,
   Vibration,
   TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import Camera from 'react-native-camera';
 import { unlink } from 'react-native-fs';
 import Realm from 'realm';
@@ -89,9 +87,6 @@ export default class CameraApp extends Component {
 }
 
   async componentWillMount() {
-    let settings = await AsyncStorage.getItem('@Enforce:settings');
-    settings = JSON.parse(settings);
-
     this.success = (position) => {
       this.latitude = position.coords.latitude;
       this.longitude = position.coords.longitude;
@@ -103,8 +98,8 @@ export default class CameraApp extends Component {
     }
     this.error = (err) => {
       let realmCoords = this.realm.objects('Coordinates')[0];
-      this.latitude = realmCoords.latitude;
-      this.longitude = realmCoords.longitude;
+      this.latitude = realmCoords.latitude || 0;
+      this.longitude = realmCoords.longitude || 0;
       console.log('ERROR(' + err.code + '): ' + err.message);
     }
     this.options = {
@@ -114,28 +109,9 @@ export default class CameraApp extends Component {
       distanceFilter: 1
     };
 
-    if (settings && settings.location) {
-      LocationServicesDialogBox.checkLocationServicesIsEnabled({
-          message: "<h2>Turn On Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
-          ok: "OK",
-          cancel: "Continue without"
-      }).then(() => {
-        navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
-        this.setCameraTime();
-        this._setTimeLimit();
-      }).catch(() => {
-        this.latitude = 0;
-        this.longitude = 0;
-        this.setCameraTime();
-        this._setTimeLimit();
-      });
-    } else {
-      this.latitude = 0;
-      this.longitude = 0;
-      navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
-      this.setCameraTime();
-      this._setTimeLimit();
-    }
+    navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
+    this.setCameraTime();
+    this._setTimeLimit();
   }
 
   componentDidMount() {
