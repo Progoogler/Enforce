@@ -8,7 +8,10 @@ import PropTypes from 'prop-types';
 
 const Warning = (props) => (
   <View style={styles.container}>
-    <Text style={styles.text}>{props.warning}</Text>
+    <View style={styles.filler} />
+    <View style={styles.textWrap}>
+      <Text style={styles.text}>{props.warning}</Text>
+    </View>
   </View>
 );
 
@@ -16,9 +19,14 @@ Warning.propTypes = { warning: PropTypes.string.isRequired }
 
 const styles = StyleSheet.create({
   container: {
-    alignSelf: 'flex-start',
-    marginLeft: 170,
+    flexDirection: 'row',
     marginTop: -10,
+  },
+  filler: {
+    flex: .40,
+  },
+  textWrap: {
+    flex: .60,
   },
   text: {
     color: 'red',
