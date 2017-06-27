@@ -114,7 +114,7 @@ export default class Search extends Component {
 
           <Animated.View style={{
             borderColor: 'white',
-            borderWidth: .35,
+            borderWidth: .45,
             height: this.state.separatorHeight, }} />
 
           <TouchableOpacity
@@ -452,8 +452,8 @@ const styles = StyleSheet.create({
   },
   button: {
     flex: .5,
-    height: 70,
-    paddingBottom: 10,
+    height: 50,
+    //paddingBottom: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
