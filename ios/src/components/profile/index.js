@@ -285,7 +285,6 @@ const styles = StyleSheet.create({
     },
   },
   row: {
-                     
     flexDirection: 'row',
     margin: 25,
 
@@ -293,8 +292,9 @@ const styles = StyleSheet.create({
   designator: {
     flex: .25,
     fontSize: 20,
-    marginLeft: 20,
+    marginLeft: 10,
     marginTop: 15,
+    marginBottom: 5,
     fontWeight: 'bold',
   },
   button: {
