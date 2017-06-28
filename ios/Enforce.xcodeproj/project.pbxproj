@@ -36,6 +36,12 @@
 		2DCD954D1E0B4F2C00145EB5 /* EnforceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* EnforceTests.m */; };
 		5B7477B1B3544C10A26BE521 /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D818D3857744B43A22F111F /* libRCTCamera.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
+		711E708D1F02F51A00089989 /* tesseract.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711E70891F02F51A00089989 /* tesseract.framework */; };
+		711E708E1F02F51A00089989 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711E708A1F02F51A00089989 /* opencv2.framework */; };
+		711E708F1F02F51A00089989 /* openalpr.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711E708B1F02F51A00089989 /* openalpr.framework */; };
+		711E70901F02F51A00089989 /* leptonica.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 711E708C1F02F51A00089989 /* leptonica.framework */; };
+		711E70931F02F60200089989 /* runtime_data in Resources */ = {isa = PBXBuildFile; fileRef = 711E70911F02F60200089989 /* runtime_data */; };
+		711E70941F02F60200089989 /* openalpr.conf in Resources */ = {isa = PBXBuildFile; fileRef = 711E70921F02F60200089989 /* openalpr.conf */; };
 		7140CBE61F00494A00126268 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7140CBE51F00494A00126268 /* libz.tbd */; };
 		7140CC061F00496100126268 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 7140CC051F00496100126268 /* libc++.tbd */; };
 		7140CC3B1F004B9D00126268 /* libRealmReact.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7140CBCE1EFE271100126268 /* libRealmReact.a */; };
@@ -45,6 +51,7 @@
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		B45AB8C6EF3C487EB2D593A9 /* libRNFetchBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FE57F7C9B29D4FB0882552EF /* libRNFetchBlob.a */; };
 		B556D7B7B8E74863BC66AB6B /* libAirMaps.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EA962C62FD094901B051E9A5 /* libAirMaps.a */; };
+		B9E95923A52A472E9ACB01C8 /* libRNOpenAlpr.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 88FC66267029493295B0E3B6 /* libRNOpenAlpr.a */; };
 		FBAA4B6BA3FA4FC7A422A5FC /* libRNFS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 34A280409298486388500998 /* libRNFS.a */; };
 /* End PBXBuildFile section */
 
@@ -224,6 +231,13 @@
 			remoteGlobalIDString = 2D2A28201D9B03D100D4039D;
 			remoteInfo = "RCTAnimation-tvOS";
 		};
+		711E70871F02F45800089989 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FE0E9434358E4D22BCF11649 /* RNOpenAlpr.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RNOpenAlpr;
+		};
 		7140CBC11EFE271000126268 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0A2758B397D34AA8B7C691A0 /* RNFS.xcodeproj */;
@@ -361,17 +375,25 @@
 		57610100C6064C57AEDE7672 /* AutoGrowTextInput.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AutoGrowTextInput.xcodeproj; path = "../node_modules/react-native-autogrow-textinput/ios/AutoGrowTextInput.xcodeproj"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		70E3F42D80BE4A3380EDE4AE /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
+		711E70891F02F51A00089989 /* tesseract.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = tesseract.framework; sourceTree = "<group>"; };
+		711E708A1F02F51A00089989 /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
+		711E708B1F02F51A00089989 /* openalpr.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = openalpr.framework; sourceTree = "<group>"; };
+		711E708C1F02F51A00089989 /* leptonica.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = leptonica.framework; sourceTree = "<group>"; };
+		711E70911F02F60200089989 /* runtime_data */ = {isa = PBXFileReference; lastKnownFileType = folder; name = runtime_data; path = "../node_modules/react-native-openalpr/ios/Frameworks/openalpr.framework/runtime_data"; sourceTree = "<group>"; };
+		711E70921F02F60200089989 /* openalpr.conf */ = {isa = PBXFileReference; lastKnownFileType = text; name = openalpr.conf; path = "../node_modules/react-native-openalpr/ios/Frameworks/openalpr.framework/openalpr.conf"; sourceTree = "<group>"; };
 		7140CBE51F00494A00126268 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		7140CC051F00496100126268 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		7140CC171F004B8C00126268 /* RealmReact.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RealmReact.xcodeproj; path = "../node_modules/realm/react-native/ios/RealmReact.xcodeproj"; sourceTree = "<group>"; };
 		7140CCE61F01E7B900126268 /* RCTCameraRoll.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTCameraRoll.xcodeproj; path = "../node_modules/react-native/Libraries/CameraRoll/RCTCameraRoll.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		88FC66267029493295B0E3B6 /* libRNOpenAlpr.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNOpenAlpr.a; sourceTree = "<group>"; };
 		8D818D3857744B43A22F111F /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
 		B33A0CD7A0A846708733AC97 /* AirMaps.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = AirMaps.xcodeproj; path = "../node_modules/react-native-maps/ios/AirMaps.xcodeproj"; sourceTree = "<group>"; };
 		B7E9874163F74D25860F51F3 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 		E2FB53BA28BC48CFA10D63F7 /* RNFetchBlob.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFetchBlob.xcodeproj; path = "../node_modules/react-native-fetch-blob/ios/RNFetchBlob.xcodeproj"; sourceTree = "<group>"; };
 		EA962C62FD094901B051E9A5 /* libAirMaps.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libAirMaps.a; sourceTree = "<group>"; };
+		FE0E9434358E4D22BCF11649 /* RNOpenAlpr.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNOpenAlpr.xcodeproj; path = "../node_modules/react-native-openalpr/ios/RNOpenAlpr.xcodeproj"; sourceTree = "<group>"; };
 		FE57F7C9B29D4FB0882552EF /* libRNFetchBlob.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNFetchBlob.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -394,8 +416,11 @@
 				7140CC061F00496100126268 /* libc++.tbd in Frameworks */,
 				7140CBE61F00494A00126268 /* libz.tbd in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
+				711E70901F02F51A00089989 /* leptonica.framework in Frameworks */,
 				7140CD671F01FD9E00126268 /* AutoGrowTextInput.xcodeproj in Frameworks */,
+				711E708F1F02F51A00089989 /* openalpr.framework in Frameworks */,
 				5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */,
+				711E708D1F02F51A00089989 /* tesseract.framework in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
 				00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */,
 				00C302E81ABCBA2D00DB3ED1 /* libRCTImage.a in Frameworks */,
@@ -405,10 +430,12 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				711E708E1F02F51A00089989 /* opencv2.framework in Frameworks */,
 				FBAA4B6BA3FA4FC7A422A5FC /* libRNFS.a in Frameworks */,
 				5B7477B1B3544C10A26BE521 /* libRCTCamera.a in Frameworks */,
 				B45AB8C6EF3C487EB2D593A9 /* libRNFetchBlob.a in Frameworks */,
 				B556D7B7B8E74863BC66AB6B /* libAirMaps.a in Frameworks */,
+				B9E95923A52A472E9ACB01C8 /* libRNOpenAlpr.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -552,6 +579,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		711E705E1F02F45800089989 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				711E70881F02F45800089989 /* libRNOpenAlpr.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		7140CBA41EFE271000126268 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -681,6 +716,7 @@
 				3F533652FB1F45C9986EAC3B /* RNFetchBlob.xcodeproj */,
 				57610100C6064C57AEDE7672 /* AutoGrowTextInput.xcodeproj */,
 				B33A0CD7A0A846708733AC97 /* AirMaps.xcodeproj */,
+				FE0E9434358E4D22BCF11649 /* RNOpenAlpr.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -697,6 +733,12 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				711E70911F02F60200089989 /* runtime_data */,
+				711E70921F02F60200089989 /* openalpr.conf */,
+				711E70891F02F51A00089989 /* tesseract.framework */,
+				711E708A1F02F51A00089989 /* opencv2.framework */,
+				711E708B1F02F51A00089989 /* openalpr.framework */,
+				711E708C1F02F51A00089989 /* leptonica.framework */,
 				13B07FAE1A68108700A75B9A /* Enforce */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* EnforceTests */,
@@ -917,6 +959,10 @@
 					ProductGroup = 7140CC4D1F00B3CF00126268 /* Products */;
 					ProjectRef = 70E3F42D80BE4A3380EDE4AE /* RNFS.xcodeproj */;
 				},
+				{
+					ProductGroup = 711E705E1F02F45800089989 /* Products */;
+					ProjectRef = FE0E9434358E4D22BCF11649 /* RNOpenAlpr.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -1090,6 +1136,13 @@
 			remoteRef = 5E9157341DD0AC6500FF2AA8 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		711E70881F02F45800089989 /* libRNOpenAlpr.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNOpenAlpr.a;
+			remoteRef = 711E70871F02F45800089989 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		7140CBC21EFE271000126268 /* libRNFS.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1209,6 +1262,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				711E70931F02F60200089989 /* runtime_data in Resources */,
+				711E70941F02F60200089989 /* openalpr.conf in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
@@ -1345,12 +1400,14 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-autogrow-textinput/ios",
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-openalpr/ios/**",
 				);
 				INFOPLIST_FILE = EnforceTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1385,12 +1442,14 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-autogrow-textinput/ios",
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-openalpr/ios/**",
 				);
 				INFOPLIST_FILE = EnforceTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1414,6 +1473,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
@@ -1426,6 +1490,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-autogrow-textinput/ios",
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-openalpr/ios/**",
 				);
 				INFOPLIST_FILE = Enforce/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1447,6 +1512,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-maps/lib/ios/**",
@@ -1459,6 +1529,7 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-autogrow-textinput/ios",
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-openalpr/ios/**",
 				);
 				INFOPLIST_FILE = Enforce/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1498,11 +1569,13 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-autogrow-textinput/ios",
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-openalpr/ios/**",
 				);
 				INFOPLIST_FILE = "Enforce-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1546,11 +1619,13 @@
 					"$(SRCROOT)/../node_modules/react-native-fetch-blob/ios/**",
 					"$(SRCROOT)/../node_modules/react-native-autogrow-textinput/ios",
 					"$(SRCROOT)/../node_modules/react-native-maps/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-openalpr/ios/**",
 				);
 				INFOPLIST_FILE = "Enforce-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
@@ -1591,6 +1666,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.Enforce-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1615,6 +1691,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
