@@ -14,7 +14,8 @@ export default class Row extends Component {
     super();
   }
 
-  render() {
+  render() { console.log('row renders', this.props.data);
+    if (this.props.data.createdAt === 0) return <View/>;
     return (
       <View style={styles.container} >
         <Image
@@ -27,7 +28,7 @@ export default class Row extends Component {
             <Text style={styles.timeCreatedAt}>{this._getPrettyTimeFormat(this.props.data.createdAt)}</Text>
           </View>
         </View>
-        { this.props.data.description.length > 0 ?
+        { this.props.data.description ?
         <View style={styles.locationContainer}>
           <Text style={styles.location}>{ `${this.props.data.description}` }</Text>
         </View>
