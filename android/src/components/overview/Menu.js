@@ -128,7 +128,7 @@ export default class Menu extends Component {
       } else {
         Animated.timing(
           this.state.containerHeight,
-          { toValue: 130,
+          { toValue: 120,
             duration: 500, },
         ).start();
       }
@@ -145,7 +145,7 @@ export default class Menu extends Component {
       setTimeout(() => {
         Animated.timing(
           this.state.containerHeight, {
-            toValue: 130,
+            toValue: 120,
             duration: 600,
           },
         ).start();
