@@ -60,7 +60,7 @@ export default class CameraApp extends Component {
             ref={(cam) => {
               this.camera = cam;
             }}
-            style={styles.preview}
+            style={styles.camera}
             aspect={Camera.constants.Aspect.fill} >
           </Camera>
           <View style={styles.footer}>
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     flex: .8,
     flexDirection: 'column',
   },
-  preview: {
+  camera: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
