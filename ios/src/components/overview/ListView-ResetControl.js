@@ -80,6 +80,8 @@ export default class TimersList extends Component {
     let yesterday = await AsyncStorage.getItem('@Enforce:currentDay');
     if (today > parseInt(yesterday) || today - parseInt(yesterday) < 0) {
       this._reset();
+    } else if (!yesterday) {
+      this._reset();
     }
   }
 
