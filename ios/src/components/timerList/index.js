@@ -23,7 +23,7 @@ window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = Blob;
 
 var { height } = Dimensions.get('window');
-var imageHeight = height - 120 - 40 - 80 - 60;
+var imageHeight = height - 120 - 30 - 80 - 60;
 
 
 /* global require */

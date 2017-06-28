@@ -12,6 +12,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#4286f4',
+    marginTop: -10,
+    zIndex: 10,
   },
   text: {
     fontSize: 20,
