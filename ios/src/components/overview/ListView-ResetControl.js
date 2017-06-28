@@ -101,10 +101,11 @@ export default class TimersList extends Component {
       dateCount = JSON.parse(dateCount);
       if (dateCount.length >= 45) {
         let removalDate = dateCount.shift();
-        removeTicketPath(refPath, removalDate); // Delete path from Firebase.
+        refPath && removeTicketPath(refPath, removalDate); // Delete path from Firebase.
       }
     }
-    dateCount.push(registerDate); // Add the previous date to the History list
+    // TODO Consider adding condition to push date only if upload data settings is on
+    registerDate && dateCount.push(registerDate); // Add the previous date to the History list
     dateCount = JSON.stringify(dateCount);
     AsyncStorage.setItem('@Enforce:dateCount', dateCount);
 
