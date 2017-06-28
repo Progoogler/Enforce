@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  Dimensions,
   StyleSheet,
   Image,
   Modal,
@@ -21,7 +20,7 @@ export default class ImageModal extends Component {
         transparent={false}
         onRequestClose={() => this.props.maximizeImage()}
         visible={this.props.visibility} >
-        <View>
+        <View style={styles.container}>
           <Image style={styles.image} source={{uri: this.props.uri}} />
 
           <View style={styles.buttonContainer}>
@@ -38,13 +37,6 @@ export default class ImageModal extends Component {
     );
   }
 
-  componentWillMount() {
-    const { height } = Dimensions.get('window');
-    styles.image = {
-      alignSelf: 'stretch',
-      height: height - 85,
-    };
-  }
 }
 
 ImageModal.propTypes = {
@@ -54,6 +46,13 @@ ImageModal.propTypes = {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  image: {
+    flex: 1,
+    alignSelf: 'stretch',
+  },
   buttonContainer: {
     backgroundColor: '#4286f4',
     alignSelf: 'stretch',
@@ -65,7 +64,5 @@ const styles = StyleSheet.create({
   },
   backArrow: {
     marginLeft: 25,
-    // width: 45,
-    // height: 38,
   },
 });
