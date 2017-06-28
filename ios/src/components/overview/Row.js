@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   timeUpNear: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#4286f4',
   },
