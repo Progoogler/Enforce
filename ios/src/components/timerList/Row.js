@@ -14,7 +14,7 @@ export default class Row extends Component {
     super();
   }
 
-  render() { console.log('row renders', this.props.data);
+  render() {
     if (this.props.data.createdAt === 0) return <View/>;
     return (
       <View style={styles.container} >

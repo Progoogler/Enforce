@@ -23,7 +23,7 @@ window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = Blob;
 
 var { height } = Dimensions.get('window');
-var imageHeight = height - 100 - 40 - 80 - 60;
+var imageHeight = height - 120 - 40 - 80 - 60;
 
 
 /* global require */
@@ -33,9 +33,7 @@ export default class TimerList extends Component {
     this.realm = new Realm();
     if (!this.props.navigation.state.params) {
       this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
-      console.log('this list', this.list)
       this.list = this.list.length > 0 ? this.list[0].list : [{'createdAt': 0}];
-      console.log('after tern', this.list)
       this.props.navigation.state.params = {};
       this.props.navigation.state.params.timers = this.list;
     } else {
@@ -102,7 +100,6 @@ export default class TimerList extends Component {
   }
   
   componentDidMount() {
-    console.log('timer mounts', this.list[0].createdAt)
     if (this.list[0].createdAt === 0) this.setState({modalVisible: true});
   }
 
