@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import ALPR from 'react-native-openalpr';
 import Camera from 'react-native-camera';
 import { unlink } from 'react-native-fs';
 import Realm from 'realm';
@@ -20,6 +21,7 @@ export default class CameraApp extends Component {
   constructor() {
     super();
     this.state = {
+      plate: '',
       modalVisible: false,
       newTimer: false,
     };
@@ -55,12 +57,21 @@ export default class CameraApp extends Component {
 
         <View style={styles.cameraContainer} >
           <Camera
-            ref={(cam) => {
-              this.camera = cam;
-            }}
-            style={styles.preview}
-            aspect={Camera.constants.Aspect.fill} >
-          </Camera>
+            ref={(cam) => this.camera = cam }
+            style={styles.camera}
+            aspect={Camera.constants.Aspect.fill}
+          />
+          <ALPR
+            style={styles.imageRecognizer}
+            aspect={Camera.constants.Aspect.fill}
+            captureQuality={Camera.constants.CaptureQuality.medium}
+            country='us'
+            onPlateRecognized={this.onPlateRecognized}
+            plateOutlineColor='#ff0000'
+            showPlateOutline
+            torchMode={Camera.constants.TorchMode.off}
+            touchToFocus
+          />
           <View style={styles.footer}>
             <TouchableOpacity
               activeOpacity={.6}
@@ -121,6 +132,14 @@ export default class CameraApp extends Component {
   componentWillUnmount() { console.log('camera unmounts')
     this._mounted = false;
     clearTimeout(this._timeout);
+  }
+  
+  onPlateRecognized({ plate, confidence }) {
+    if (confidence > 0.9) {
+      this.setState({
+        plate,
+      });
+    }
   }
 
   setModalVisible(desc?: string = '') {
@@ -247,7 +266,7 @@ export default class CameraApp extends Component {
           createdAt: new Date() / 1,
           ticketedAt: 0,
           timeLength: this.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
-          license: '',
+          license: this.state.plate ? this.state.plate : '',
           VIN: '',
           mediaUri: data.mediaUri,
           mediaPath: data.path,
@@ -263,7 +282,7 @@ export default class CameraApp extends Component {
           createdAt: new Date() / 1,
           ticketedAt: 0,
           timeLength: this.timeLimit,
-          license: '',
+          license: this.state.plate ? this.state.plate : '',
           VIN: '',
           mediaUri: data.mediaUri,
           mediaPath: data.path,
@@ -295,11 +314,17 @@ const styles = StyleSheet.create({
     flex: .8,
     flexDirection: 'column',
   },
-  preview: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
+   camera: {
+     flex: 1,
+     justifyContent: 'flex-end',
+     alignItems: 'center',
+     zIndex: 10,
+     
+   },
+   imageRecognizer: {
+     height: '80%',
+     width: '100%',
+   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
