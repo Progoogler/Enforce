@@ -36,6 +36,9 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+# OpenALPR
+/ios/*.framework
+
 # BUCK
 buck-out/
 \.buckd/
