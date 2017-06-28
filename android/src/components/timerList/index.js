@@ -24,7 +24,7 @@ window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = Blob;
 
 var { height } = Dimensions.get('window');
-var imageHeight = height - (StatusBar.currentHeight ? StatusBar.currentHeight : 0) - 100 - 40 - 90 - 60;
+var imageHeight = height - (StatusBar.currentHeight ? StatusBar.currentHeight : 0) - 120 - 30 - 90 - 60;
 
 /* global require */
 export default class TimerList extends Component {
