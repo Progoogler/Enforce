@@ -37,7 +37,11 @@ npm-debug.log
 yarn-error.log
 
 # OpenALPR
-/ios/*.framework
+/ios/leptonica.framework/*
+/ios/opencv2.framework/*
+/ios/tesseract.framework/*
+/ios/openalpr.framework/*
+
 
 # BUCK
 buck-out/
