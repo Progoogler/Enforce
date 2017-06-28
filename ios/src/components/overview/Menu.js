@@ -193,8 +193,10 @@ const styles = StyleSheet.create({
     width: 60,
   },
   headerNavigation: {
-    flex: .15,
+    position: 'absolute',
+    right: .25,
     height: 60,
+    marginTop: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },

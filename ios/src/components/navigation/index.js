@@ -56,7 +56,6 @@ export default class Navigation extends Component {
           <Animated.Text style={{
             opacity: this.state.titleOpacity,
             flex: .70,
-            //height: 60,
             marginTop: 10,
             marginLeft: -10,
             fontSize: 32,
@@ -119,10 +118,10 @@ const styles = StyleSheet.create({
     zIndex: 10,
     alignSelf: 'stretch',
     backgroundColor: '#4286f4',
-                                 paddingTop: 15,
   },
   headerContainer: {
     flexDirection: 'row',
+    paddingTop: 15,
   },
   searchIcon: {
     marginTop: 5,
@@ -132,8 +131,10 @@ const styles = StyleSheet.create({
     width: 60,
   },
   headerNavigation: {
-    flex: .15,
+    position: 'absolute',
+    right: .25,
     height: 60,
+    marginTop: 15,
     justifyContent: 'center',
     alignItems: 'center',
   },

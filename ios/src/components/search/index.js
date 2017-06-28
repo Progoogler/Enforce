@@ -164,13 +164,13 @@ export default class Search extends Component {
       ),
       Animated.timing(
         this.state.containerHeight,
-        { toValue: 100,
+        { toValue: 120,
           duration: 500, },
       ),
     ]).start();
     if (this.props.timerList) this.keyboardDidHideForTimerListListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHideForTimerList.bind(this));
     this._mounted = true;
-    setTimeout(() => this._mounted && this.setState({containerHeight: new Animated.Value(100)}), 500);
+    setTimeout(() => this._mounted && this.setState({containerHeight: new Animated.Value(120)}), 500);
 
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
   }
@@ -280,7 +280,7 @@ export default class Search extends Component {
       Animated.parallel([
         Animated.timing(
           this.state.containerHeight, {
-            toValue: 100,
+            toValue: 120,
             duration: 600,
           },
         ),
@@ -328,7 +328,7 @@ export default class Search extends Component {
     Animated.parallel([
       Animated.timing(
         this.state.containerHeight, {
-          toValue: 100,
+          toValue: 120,
           duration: 600,
         },
       ),
@@ -445,9 +445,8 @@ const styles = StyleSheet.create({
   },
   headerNavigation: {
     position: 'absolute',
-    right: 1,
+    right: .25,
     height: 60,
-    width: 60,
     marginTop: 15,
     justifyContent: 'center',
     alignItems: 'center',
