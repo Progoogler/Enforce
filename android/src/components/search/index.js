@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import historySearch from './historySearch';
 import Result from './Result';
 
-const center = Math.floor(Dimensions.get('window').width / 2) - 3.5;
+const center = Math.floor(Dimensions.get('window').width / 2) - 3.8;
 
 /* global require */
 export default class Search extends Component {
@@ -56,7 +56,7 @@ export default class Search extends Component {
 
           <Animated.View style={{
                             position: 'absolute',
-                            top: 8,
+                            top: 17,
                             width: 120,
                             marginLeft: this.state.underlineMargin,
                             height: 80,
@@ -164,14 +164,12 @@ export default class Search extends Component {
       ),
       Animated.timing(
         this.state.containerHeight,
-        { toValue: 100,
+        { toValue: 120,
           duration: 500, },
       ),
     ]).start();
     if (this.props.timerList) this.keyboardDidHideForTimerListListener = Keyboard.addListener('keyboardDidHideForTimerList', this._keyboardDidHideForTimerList.bind(this));
     this._mounted = true;
-    setTimeout(() => this._mounted && this.setState({containerHeight: new Animated.Value(100)}), 500);
-
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
   }
 
@@ -280,7 +278,7 @@ export default class Search extends Component {
       Animated.parallel([
         Animated.timing(
           this.state.containerHeight, {
-            toValue: 100,
+            toValue: 120,
             duration: 600,
           },
         ),
@@ -328,7 +326,7 @@ export default class Search extends Component {
     Animated.parallel([
       Animated.timing(
         this.state.containerHeight, {
-          toValue: 100,
+          toValue: 120,
           duration: 600,
         },
       ),
