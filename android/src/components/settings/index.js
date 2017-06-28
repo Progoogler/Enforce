@@ -20,7 +20,6 @@ export default class Settings extends Component {
       location: true,
       imageUpload: true,
       dataUpload: true,
-      colorFalseSwitchIsOn: false,
     }
   }
   static navigationOptions = {
