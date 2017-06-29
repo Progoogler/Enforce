@@ -92,7 +92,7 @@ export default class App extends Component {
          this.signIn();
      }
 
-     componentDidMount() {
+  componentDidMount() { console.log('hi');
        if (!this.realm.objects('Coordinates')) this._resetRealmState();
      }
 
