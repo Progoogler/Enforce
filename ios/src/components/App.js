@@ -1,16 +1,16 @@
-  import React, { Component } from 'react';
+import React, { Component } from 'react';
 import { DrawerItems, DrawerNavigator } from 'react-navigation';
 import { View, Image, AsyncStorage } from 'react-native';
 
- import CameraApp from './camera/CameraApp';
- import MapApp from './map/MapApp';
+import CameraApp from './camera/CameraApp';
+import MapApp from './map/MapApp';
 import Overview from './overview';
- import Profile from './profile';
- import TimerList from './timerList';
- import History from './history';
- import Metrics from './metrics';
- import Settings from './settings';
- import FAQs from './faq';
+import Profile from './profile';
+import TimerList from './timerList';
+import History from './history';
+import Metrics from './metrics';
+import Settings from './settings';
+import FAQs from './faq';
 
 import Realm from 'realm';
 import Schema from '../realm';
@@ -63,7 +63,7 @@ const AppNavigator = DrawerNavigator({
 //                                  <View style={{backgroundColor: '#4286f4', width: 160, height: 25, borderTopRightRadius: 25}} />
 //                                  </View>
 //                                  </View>
-// 
+//
 //                                  <DrawerItems {...props} />
 //                                  </View>
 //                                  <View style={{
@@ -91,7 +91,11 @@ export default class App extends Component {
          this.realm = new Realm({schema: Schema});
          this.signIn();
      }
-    
+
+     componentDidMount() {
+       if (!this.realm.objects('Coordinates')) this._resetRealmState();
+     }
+
      _resetRealmState() { // For beta testing only TODO remove this
          Realm.clearTestState(); // Uncomment to drop/recreate database
          this.realm = new Realm({schema: Schema});
@@ -103,7 +107,7 @@ export default class App extends Component {
                           this.realm.create('Expired', {list: []});
                           });
      }
-    
+
      async signIn() {
          let profile = await AsyncStorage.getItem('@Enforce:profileSettings');
          profile = JSON.parse(profile);
