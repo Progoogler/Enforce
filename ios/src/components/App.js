@@ -93,7 +93,11 @@ export default class App extends Component {
      }
 
      componentDidMount() {
-       if (!this.realm.objects('Coordinates')) this._resetRealmState();
+       let firstTime = AsyncStorage.getItem('@Enforce:firstTimeAccess');
+       if (!firstTime) {
+         this._resetRealmState();
+         AsyncStorage.setItem('@Enforce:firstTimeAccess', 'true');
+       }
      }
 
      _resetRealmState() { // For beta testing only TODO remove this
