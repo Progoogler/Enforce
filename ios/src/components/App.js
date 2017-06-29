@@ -92,8 +92,14 @@ export default class App extends Component {
          this.signIn();
      }
 
-  componentDidMount() { console.log('hi');
-       if (!this.realm.objects('Coordinates')) this._resetRealmState();
+
+     componentDidMount() {
+       let firstTime = AsyncStorage.getItem('@Enforce:firstTimeAccess');
+       if (!firstTime) {
+         this._resetRealmState();
+         AsyncStorage.setItem('@Enforce:firstTimeAccess', 'true');
+       }
+
      }
 
      _resetRealmState() { // For beta testing only TODO remove this
