@@ -86,6 +86,7 @@ export default class App extends Component {
       );
     }
 
+
   componentWillMount() {
     FirebaseInitialize();
     this.realm = new Realm({schema: Schema});
@@ -99,6 +100,22 @@ export default class App extends Component {
     }
     this.signIn();
   }
+
+   componentWillMount() {
+       FirebaseInitialize();
+       this.realm = new Realm({schema: Schema});
+       this.signIn();
+   }
+
+
+   componentDidMount() {
+     let firstTime = AsyncStorage.getItem('@Enforce:firstTimeAccess');
+     if (!firstTime) {
+       this._resetRealmState();
+       AsyncStorage.setItem('@Enforce:firstTimeAccess', 'true');
+     }
+   }
+
 
    _resetRealmState() { // For beta testing only TODO remove this
        Realm.clearTestState(); // Uncomment to drop/recreate database
