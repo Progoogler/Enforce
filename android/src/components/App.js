@@ -89,6 +89,14 @@ export default class App extends Component {
   componentWillMount() {
     FirebaseInitialize();
     this.realm = new Realm({schema: Schema});
+    let firstTimeAccess = AsyncStorage.getItem('@Enforce:registerDate');
+    if (!firstTimeAccess) {
+      this._resetRealmState();
+      let today = new Date();
+      let day = today.getDate() + '';
+      let date = `${today.getMonth() + 1}-${day}`;
+      AsyncStorage.setItem('@Enforce:registerDate', date);
+    }
     this.signIn();
   }
 
@@ -107,7 +115,7 @@ export default class App extends Component {
   async signIn() {
     let profile = await AsyncStorage.getItem('@Enforce:profileSettings');
     profile = JSON.parse(profile);
-    if (profile.email && profile.password) FirebaseSignIn(profile.email, profile.password);
+    if (profile && (profile.email && profile.password)) FirebaseSignIn(profile.email, profile.password);
   }
 
 }

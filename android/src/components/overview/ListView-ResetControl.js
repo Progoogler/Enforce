@@ -49,7 +49,7 @@ export default class TimersList extends Component {
     this.latitude = this.realm.objects('Coordinates')[0].latitude;
     this.longitude = this.realm.objects('Coordinates')[0].longitude;
     navigator.geolocation.getCurrentPosition(
-      position => {
+      position => { //console.log(this.realm.where(Coordinates.class).findFirst());
         this.latitude = parseFloat(position.coords.latitude);
         this.longitude = parseFloat(position.coords.longitude);
         this.realm.write(() => {

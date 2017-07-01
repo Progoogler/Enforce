@@ -81,43 +81,41 @@ const AppNavigator = DrawerNavigator({
 
 export default class App extends Component {
   render() {
-        return (
-                <AppNavigator />
-        );
+      return (
+        <AppNavigator />
+      );
     }
 
-     componentWillMount() {
-         FirebaseInitialize();
-         this.realm = new Realm({schema: Schema});
-         this.signIn();
-     }
+  componentWillMount() {
+    FirebaseInitialize();
+    this.realm = new Realm({schema: Schema});
+    let firstTimeAccess = AsyncStorage.getItem('@Enforce:registerDate');
+    if (!firstTimeAccess) {
+      this._resetRealmState();
+      let today = new Date();
+      let day = today.getDate() + '';
+      let date = `${today.getMonth() + 1}-${day}`;
+      AsyncStorage.setItem('@Enforce:registerDate', date);
+    }
+    this.signIn();
+  }
 
+   _resetRealmState() { // For beta testing only TODO remove this
+       Realm.clearTestState(); // Uncomment to drop/recreate database
+       this.realm = new Realm({schema: Schema});
+       this.realm.write(() => {
+                        this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1000, count: 0});
+                        this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
+                        this.realm.create('Coordinates', {latitude: 0, longitude: 0});
+                        this.realm.create('Ticketed', {list: []});
+                        this.realm.create('Expired', {list: []});
+                        });
+   }
 
-     componentDidMount() {
-       let firstTime = AsyncStorage.getItem('@Enforce:firstTimeAccess');
-       if (!firstTime) {
-         this._resetRealmState();
-         AsyncStorage.setItem('@Enforce:firstTimeAccess', 'true');
-       }
-
-     }
-
-     _resetRealmState() { // For beta testing only TODO remove this
-         Realm.clearTestState(); // Uncomment to drop/recreate database
-         this.realm = new Realm({schema: Schema});
-         this.realm.write(() => {
-                          this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1000, count: 0});
-                          this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
-                          this.realm.create('Coordinates', {latitude: 0, longitude: 0});
-                          this.realm.create('Ticketed', {list: []});
-                          this.realm.create('Expired', {list: []});
-                          });
-     }
-
-     async signIn() {
-         let profile = await AsyncStorage.getItem('@Enforce:profileSettings');
-         profile = JSON.parse(profile);
-         if (profile && (profile.email && profile.password)) FirebaseSignIn(profile.email, profile.password);
-     }
+   async signIn() {
+       let profile = await AsyncStorage.getItem('@Enforce:profileSettings');
+       profile = JSON.parse(profile);
+       if (profile && (profile.email && profile.password)) FirebaseSignIn(profile.email, profile.password);
+   }
 
 }
