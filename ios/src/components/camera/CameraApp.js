@@ -47,6 +47,19 @@ export default class CameraApp extends Component {
       />
     )
   };
+  
+//  <ALPR
+//  style={styles.imageRecognizer}
+//  aspect={Camera.constants.Aspect.fill}
+//  captureQuality={Camera.constants.CaptureQuality.medium}
+//  country='us'
+//  onPlateRecognized={(data) => this.onPlateRecognized(data)}
+//  plateOutlineColor='#ff0000'
+//  showPlateOutline
+//  torchMode={Camera.constants.TorchMode.off}
+//  touchToFocus
+//  />
+
 
   render() {
     return (
@@ -56,21 +69,11 @@ export default class CameraApp extends Component {
         <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} newTimer={this.state.newTimer} realm={this.realm} />
 
         <View style={styles.cameraContainer} >
+
           <Camera
             ref={(cam) => this.camera = cam }
             style={styles.camera}
             aspect={Camera.constants.Aspect.fill}
-          />
-          <ALPR
-            style={styles.imageRecognizer}
-            aspect={Camera.constants.Aspect.fill}
-            captureQuality={Camera.constants.CaptureQuality.medium}
-            country='us'
-            onPlateRecognized={this.onPlateRecognized}
-            plateOutlineColor='#ff0000'
-            showPlateOutline
-            torchMode={Camera.constants.TorchMode.off}
-            touchToFocus
           />
           <View style={styles.footer}>
             <TouchableOpacity
@@ -135,10 +138,12 @@ export default class CameraApp extends Component {
   }
   
   onPlateRecognized({ plate, confidence }) {
+    
     if (confidence > 0.9) {
       this.setState({
         plate,
       });
+      console.log('plate recognized', this.state.plate, confidence);
     }
   }
 
