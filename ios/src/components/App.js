@@ -80,41 +80,28 @@ const AppNavigator = DrawerNavigator({
  });
 
 export default class App extends Component {
-  render() {
+  render() { console.log('app mounts');
       return (
         <AppNavigator />
       );
     }
 
 
-  componentWillMount() {
+  async componentWillMount() { console.log('app mounts');
     FirebaseInitialize();
     this.realm = new Realm({schema: Schema});
-    let firstTimeAccess = AsyncStorage.getItem('@Enforce:registerDate');
-    if (!firstTimeAccess) {
+    /*let firstTimeAccess = await AsyncStorage.getItem('@Enforce:registerDate');
+    console.log('first time', firstTimeAccess);
+    if (true) { console.log('reset realm')
       this._resetRealmState();
       let today = new Date();
       let day = today.getDate() + '';
       let date = `${today.getMonth() + 1}-${day}`;
       AsyncStorage.setItem('@Enforce:registerDate', date);
-    }
+      AsyncStorage.setItem('@Enforce:currentDay', day);
+    } */
     this.signIn();
   }
-
-   componentWillMount() {
-       FirebaseInitialize();
-       this.realm = new Realm({schema: Schema});
-       this.signIn();
-   }
-
-
-   componentDidMount() {
-     let firstTime = AsyncStorage.getItem('@Enforce:firstTimeAccess');
-     if (!firstTime) {
-       this._resetRealmState();
-       AsyncStorage.setItem('@Enforce:firstTimeAccess', 'true');
-     }
-   }
 
 
    _resetRealmState() { // For beta testing only TODO remove this

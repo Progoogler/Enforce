@@ -29,7 +29,7 @@ export default class Overview extends Component {
     ),
   };
 
-  render() {
+  render() { console.log('overview renders')
     return (
       <View style={styles.container} >
         <Menu navigation={this.props.navigation} />
