@@ -17,6 +17,7 @@ import Realm from 'realm';
 import Navigation from '../navigation';
 import SetTimeLimit from './SetTimeLimit';
 import LocationInput from './LocationInput';
+import Capture from './Capture';
 
 export default class CameraApp extends Component {
   constructor() {
@@ -57,36 +58,11 @@ export default class CameraApp extends Component {
 
         <View style={styles.cameraContainer} >
           <Camera
-            ref={(cam) => {
-              this.camera = cam;
-            }}
+            ref={(cam) => this.camera = cam }
             style={styles.camera}
             aspect={Camera.constants.Aspect.fill} >
           </Camera>
-          <View style={styles.footer}>
-            <TouchableOpacity
-              activeOpacity={.6}
-              onPress={() => this.setModalVisible()} >
-              <Image
-                style={styles.pinIcon}
-                source={require('../../../../shared/images/pin.png')} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={.6}
-              style={styles.capture}
-              onPress={() => {
-              this.takePicture();
-            }} >
-              <View></View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={.6}
-              style={styles.undoButton} >
-              <Text
-                style={styles.undo}
-                onPress={() => this.deletePreviousPicture(this.pictureCount) }>UNDO</Text>
-            </TouchableOpacity>
-          </View>
+          <Capture setModalVisible={this.setModalVisible.bind(this)} takePicture={this.takePicture.bind(this)} deletePreviousPicture={this.deletePreviousPicture.bind(this)} />
         </View>
       </View>
     );
@@ -232,20 +208,20 @@ export default class CameraApp extends Component {
       .catch(err => console.error(err));
   }
 
-  deletePreviousPicture(pictureCount: number) {
+  deletePreviousPicture(pictureCount?: number) {
     // TODO Updating most recent picture may delay the deletion order
     // removing previous data before the most recent picture has updated to realm.
     if (!this.deleting) {
       Vibration.vibrate();
-      if (pictureCount > 1) this.pictureCount--;
+      if (this.pictureCount > 1) this.pictureCount--;
       this.deleting = true;
     }
     const length = this.realm.objects('Timers')[this.listIndex]['list'].length;
-    const timer = this.realm.objects('Timers')[this.listIndex]['list'][pictureCount - 1];
-    if (!timer && pictureCount - 1 >= 0) {
+    const timer = this.realm.objects('Timers')[this.listIndex]['list'][pictureCount ? pictureCount - 1 : this.pictureCount - 1];
+    if (!timer && this.pictureCount - 1 >= 0) {
       setTimeout(() => {
-        this.deletePreviousPicture(pictureCount);
-      }, 5000);
+        pictureCount ? this.deletePreviousPicture(pictureCount) : this.deletePreviousPicture(this.pictureCount);
+      }, 2500);
       return;
     } else {
       this.deleting = false;
@@ -255,7 +231,7 @@ export default class CameraApp extends Component {
       .then(() => {
         console.log('PICTURE REMOVED');
         this.realm.write(() => {
-          this.realm.objects('Timers')[this.listIndex]['list'].splice(pictureCount - 1, 1);
+          this.realm.objects('Timers')[this.listIndex]['list'].splice(pictureCount ? pictureCount - 1 : this.pictureCount - 1, 1);
           this.realm.delete(timer);
         });
       })
@@ -327,30 +303,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 1)',
-    height: 80,
-  },
-  pinIcon: {
-    marginLeft: 20,
-  },
-  capture: {
-    borderWidth: 1,
-    borderColor: 'white',
-    borderRadius: 100,
-    padding: 30,
-    margin: 4,
-    marginLeft: 18,
-  },
-  undoButton: {
-    marginRight: 20,
-  },
-  undo: {
-    color: '#4286f4',
-    fontSize: 20,
   },
 });
