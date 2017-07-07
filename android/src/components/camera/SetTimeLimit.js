@@ -10,6 +10,12 @@ import {
 import PropTypes from 'prop-types';
 
 import Notification from './Notification';
+import {
+  timeLimitContainerHeight,
+  extraLargeFontSize,
+  largeFontSize,
+  mediumFontSize,
+} from '../styles/common';
 
 export default class SetTimeLimit extends Component {
   constructor() {
@@ -38,6 +44,7 @@ export default class SetTimeLimit extends Component {
         :
 
       <View style={styles.container}>
+        <View style={styles.timeInputsContainer}>
           <TextInput
             style={styles.hourInput}
             keyboardType={'numeric'}
@@ -52,6 +59,7 @@ export default class SetTimeLimit extends Component {
             onChangeText={(minutes) => this._onChangeMinutes(minutes)}
             value={this.state.minutes} />
           <Text style={styles.timeDesc}>Min</Text>
+        </View>
 
         <TouchableOpacity
           style={styles.setButton}
@@ -145,27 +153,32 @@ SetTimeLimit.propTypes = {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    height: 70,
+    height: timeLimitContainerHeight,
     backgroundColor: 'grey',
+    paddingLeft: '6%',
+    paddingRight: '6%',
+  },
+  timeInputsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   hourInput: {
-    width: 25,
-    fontSize: 24,
+    width: '12%',
+    fontSize: largeFontSize,
     color: 'white',
   },
   minutesInput: {
-    width: 40,
-    fontSize: 24,
+    width: '18%',
+    fontSize: largeFontSize,
     color: 'white',
   },
   timeDesc: {
-    fontSize: 18,
-    marginRight: 25,
+    fontSize: mediumFontSize,
+    marginRight: '8%',
   },
   setButton: {
-    marginLeft: 40,
     backgroundColor: 'green',
     borderWidth: 2,
     borderRadius: 8,
@@ -173,24 +186,26 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   buttonText: {
-    fontSize: 28,
+    fontSize: extraLargeFontSize,
     color: 'white',
-    padding: 4,
+    padding: '1.5%',
   },
   notification: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     borderBottomWidth: 4,
     borderColor: 'green',
-    height: 74,
+    height: timeLimitContainerHeight + 4,
     backgroundColor: 'grey',
+    paddingLeft: '6%',
+    paddingRight: '6%',
   },
   notificationButton: {
-    marginLeft: 67,
     backgroundColor: 'green',
     borderWidth: 2,
     borderRadius: 8,
     borderColor: 'white',
+    elevation: 5,
   }
 });

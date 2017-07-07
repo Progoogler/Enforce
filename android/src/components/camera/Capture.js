@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import {
   captureContainerHeight,
-  undoFontSize,
+  mediumFontSize,
 } from '../styles/common';
 
 var buttonSize = captureContainerHeight - 10;
@@ -84,6 +84,6 @@ const styles = StyleSheet.create({
   },
   undo: {
     color: '#4286f4',
-    fontSize: undoFontSize,
+    fontSize: mediumFontSize,
   },
 });

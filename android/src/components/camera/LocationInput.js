@@ -9,6 +9,12 @@ import {
 import PropTypes from 'prop-types';
 import { AutoGrowingTextInput } from 'react-native-autogrow-textinput';
 
+import {
+  textInputContainerHeight,
+  largeFontSize,
+  mediumFontSize,
+} from '../styles/common';
+
 export default class LocationInput extends Component {
   constructor() {
     super();
@@ -25,7 +31,7 @@ export default class LocationInput extends Component {
         visible={this.props.visibility}
         onRequestClose={() => this.props.setModalVisible(this.state.text)} >
         <View style={styles.container} >
-          <View style={styles.containerBorder} >
+
 
             <Text style={styles.title}>Location Details:</Text>
             <View style={styles.textInputContainer}>
@@ -63,7 +69,7 @@ export default class LocationInput extends Component {
                 <Text style={styles.doneText}>Done</Text>
               </TouchableOpacity>
             </View>
-          </View>
+
         </View>
       </Modal>
     );
@@ -83,48 +89,44 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#4286f4',
     marginTop: 60,
-  },
-  containerBorder: {
-    margin: 10,
-    padding: 5,
+    padding: '4%',
   },
   buttonRow: {
     flexDirection: 'row',
     alignSelf: 'flex-end',
-    margin: 15,
+    margin: '4%',
   },
   cancelButton: {
       alignItems: 'center',
       alignSelf: 'flex-end',
-      marginRight: 40,
-      marginBottom: 6,
+      marginRight: '12%',
+      marginBottom: '2%',
   },
   cancelText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: mediumFontSize,
   },
   title: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
-    marginLeft: 15,
+    fontSize: largeFontSize,
+    marginLeft: '5%',
   },
   textInputContainer: {
-    marginLeft: 15,
-    height: 120,
+    marginLeft: '5%',
+    height: textInputContainerHeight,
   },
   count: {
-    marginLeft: 25,
+    marginLeft: '8%',
   },
   doneButton: {
     alignItems: 'center',
     backgroundColor: 'green',
-    width: 60,
+    padding: '2%',
     borderRadius: 6,
   },
   doneText: {
-    fontSize: 20,
-    padding: 4,
+    fontSize: mediumFontSize,
     color: 'white',
   },
 });
