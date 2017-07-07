@@ -25,7 +25,6 @@ export default class MapApp extends Component {
     super();
     this.state = {
       animating: true,
-      modalVisible: false, // pointless TODO check for removal
       showError: false,
       showLocationTip: false,
       polyline: [null],
@@ -88,8 +87,6 @@ export default class MapApp extends Component {
     this._mounted = true;
     let settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);
-
-    if (this.props.navigation.state.params) this.setModalVisible();
 
     if (settings.location) {
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
@@ -172,9 +169,6 @@ export default class MapApp extends Component {
   componentWillUnmount() {
     clearTimeout(this._timeout);
     this._mounted = false;
-    if (this.state.modalVisible) {
-      this.setState({modalVisible: false});
-    }
     if (this.props.navigation.state.params) {
       // Remove params for fresh state when main Map Button is pressed
       this.props.navigation.state.params = undefined;
@@ -408,9 +402,6 @@ export default class MapApp extends Component {
     });
   }
 
-  setModalVisible() {
-    this._mounted && this.setState({modalVisible: !this.state.modalVisible});
-  }
 }
 
 MapApp.propTypes = {
