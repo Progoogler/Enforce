@@ -7,6 +7,7 @@ import {
   TouchableNativeFeedback,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { primaryBlue, navigationBarHeight } from '../styles/common';
 
 /* global require */
 export default class ImageModal extends Component {
@@ -54,15 +55,15 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   buttonContainer: {
-    backgroundColor: '#4286f4',
+    backgroundColor: primaryBlue,
     alignSelf: 'stretch',
   },
   arrowContainer: {
     justifyContent: 'center',
     width: '100%',
-    height: 60,
+    height: navigationBarHeight,
   },
   backArrow: {
-    marginLeft: 25,
+    marginLeft: '6%',
   },
 });

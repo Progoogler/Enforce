@@ -18,6 +18,11 @@ import { getHistoryData, getTicketImage } from '../../../../includes/firebase/da
 import Navigation from '../navigation';
 import Row from './Row';
 import ImageModal from './ImageModal';
+import {
+  primaryBlue,
+  titleTextShadow,
+  xxlargeFontSize,
+} from '../styles/common';
 
 export default class History extends Component {
   constructor() {
@@ -266,8 +271,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   picker: {
-    width: 150,
-    color: '#4286f4',
+    width: '35%',
+    color: primaryBlue,
   },
   flatlist: {
     flex: 1,
@@ -280,11 +285,11 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    color: '#4286f4',
-    marginTop: 25,
-    fontSize: 34,
+    color: primaryBlue,
+    marginTop: '6%',
+    fontSize: xxlargeFontSize,
     fontWeight: 'bold',
-    textShadowColor: 'grey',
+    textShadowColor: titleTextShadow,
     textShadowOffset: {
       width: 1,
       height: 1

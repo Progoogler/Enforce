@@ -9,6 +9,13 @@ import {
 import PropTypes from 'prop-types';
 import Navigation from '../navigation/StaticNavigation';
 
+import {
+  primaryBlue,
+  largeFontSize,
+  mediumFontSize,
+  smallFontSize,
+} from '../styles/common';
+
 export default class FAQs extends Component {
   static navigationOptions = {
     drawerLabel: 'FAQs',
@@ -65,22 +72,22 @@ const styles = StyleSheet.create({
   },
   title: {
     alignSelf: 'center',
-    color: '#4286f4',
-    margin: 45,
-    fontSize: 22,
+    color: primaryBlue,
+    marginTop: '10%',
+    marginBottom: '3%',
+    fontSize: largeFontSize,
   },
   question: {
     fontWeight: 'bold',
-    margin: 15,
-    fontSize: 18,
-    paddingRight: 25,
+    margin: '5%',
+    fontSize: mediumFontSize,
   },
   answer: {
-    fontSize: 15,
-    paddingLeft: 25,
-    paddingRight: 35,
+    fontSize: smallFontSize,
+    paddingLeft: '7%',
+    paddingRight: '7%',
   },
   footer: {
-    marginBottom: 40,
+    marginBottom: '5%',
   },
 });
