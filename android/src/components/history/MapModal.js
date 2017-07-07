@@ -15,7 +15,7 @@ import Navigation from '../navigation/StaticNavigation';
 import {
   primaryBlue,
   mediumFontSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 const height = Dimensions.get('window').height;
 

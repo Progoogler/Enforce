@@ -9,7 +9,7 @@ import {
 import {
   captureContainerHeight,
   mediumFontSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 var buttonSize = captureContainerHeight - 10;
 

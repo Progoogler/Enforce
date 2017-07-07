@@ -15,7 +15,7 @@ import {
   primaryBlue,
   mediumFontSize,
   pinSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 const height = Dimensions.get('window').height;
 

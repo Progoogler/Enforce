@@ -1,3 +1,5 @@
+// This schema is imported twice. Once from App.js and ListView-ResetControl.js
+
 class TimerSchema {};
 TimerSchema.schema = {
   name: 'Timer',

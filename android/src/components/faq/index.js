@@ -14,7 +14,7 @@ import {
   largeFontSize,
   mediumFontSize,
   smallFontSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 export default class FAQs extends Component {
   static navigationOptions = {

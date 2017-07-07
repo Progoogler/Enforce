@@ -15,7 +15,7 @@ import {
   extraLargeFontSize,
   largeFontSize,
   mediumFontSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 export default class SetTimeLimit extends Component {
   constructor() {

@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { ticketCountFontSize, ticketDescFontSize } from '../styles/common';
+import { ticketCountFontSize, ticketDescFontSize } from '../../styles/common';
 
 const TicketCounter = (props) => (
   <TouchableWithoutFeedback

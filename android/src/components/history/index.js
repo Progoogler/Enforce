@@ -22,7 +22,7 @@ import {
   primaryBlue,
   titleTextShadow,
   xxlargeFontSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 export default class History extends Component {
   constructor() {

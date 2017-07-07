@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import {
   primaryBlue,
   smallFontSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 export default class CustomCallout extends Component {
   render() {

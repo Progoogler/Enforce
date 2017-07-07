@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import {
   primaryBlue,
   mediumFontSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 export default class Result extends Component {
   constructor() {

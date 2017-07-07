@@ -18,7 +18,7 @@ import {
   smallFontSize,
   closeButtonSize,
   pinSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 /* global require */
 export default class Result extends Component {

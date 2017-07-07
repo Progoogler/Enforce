@@ -16,7 +16,7 @@ import {
   largeFontSize,
   mediumFontSize,
   smallFontSize
-} from '../styles/common';
+} from '../../styles/common';
 
 var timerLengthPaddingLeft = 28;
 

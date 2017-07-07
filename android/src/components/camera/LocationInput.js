@@ -15,7 +15,7 @@ import {
   navigationBarHeight,
   largeFontSize,
   mediumFontSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 export default class LocationInput extends Component {
   constructor() {

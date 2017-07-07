@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 
 import MainButtons from './MainButtons';
 import Search from '../search';
-import { primaryBlue, blueTextShadow, titleFontSize } from '../styles/common';
+import { primaryBlue, blueTextShadow, titleFontSize } from '../../styles/common';
 
 /* global require */
 export default class Menu extends Component {

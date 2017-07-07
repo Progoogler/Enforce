@@ -6,7 +6,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { primaryBlue, mediumFontSize } from '../styles/common';
+import { primaryBlue, mediumFontSize } from '../../styles/common';
 
 const ErrorMessage = (props) => (
   <TouchableWithoutFeedback onPress={() => props.checkLocationAndRender()}>

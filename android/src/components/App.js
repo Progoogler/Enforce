@@ -13,7 +13,7 @@ import Settings from './settings';
 import FAQs from './faq';
 
 import Realm from 'realm';
-import Schema from '../realm';
+import Schema from '../db/realm';
 import { initialize as FirebaseInitialize, signInUser as FirebaseSignIn }  from '../../../includes/firebase/firebase';
 
 /* global require */

@@ -13,7 +13,7 @@ import Navigation from '../navigation/StaticNavigation';
 import {
   primaryBlue,
   largeFontSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 /*global require*/
 export default class Metrics extends Component {

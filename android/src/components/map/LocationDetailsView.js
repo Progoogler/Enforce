@@ -8,7 +8,7 @@ import {
   primaryBlue,
   mediumFontSize,
   smallFontSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 
 export default class LocationDetailsView extends Component {

@@ -14,7 +14,7 @@ import {
   primaryBlue,
   imageSize,
   smallFontSize,
-} from '../styles/common';
+} from '../../styles/common';
 
 export default class Row extends Component {
   constructor() {

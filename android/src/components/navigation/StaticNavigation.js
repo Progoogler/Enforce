@@ -8,7 +8,12 @@ import {
   Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { titleFontSize, primaryBlue, blueTextShadow, navigationBarHeight } from '../styles/common';
+import {
+  titleFontSize,
+  primaryBlue,
+  blueTextShadow,
+  navigationBarHeight,
+} from '../../styles/common';
 
 /* global require */
 export default class StaticNavigation extends Component {

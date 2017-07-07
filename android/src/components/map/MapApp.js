@@ -17,7 +17,7 @@ import LocationDetailsView from './LocationDetailsView';
 import CustomCallout from './CustomCallout';
 import ErrorMessage from './ErrorMessage';
 
-import { smallFontSize } from '../styles/common';
+import { smallFontSize } from '../../styles/common';
 
 /*global require*/
 export default class MapApp extends Component {

@@ -15,7 +15,7 @@ import {
   primaryBlue,
   blueTextShadow,
   navigationBarHeight
-} from '../styles/common';
+} from '../../styles/common';
 
 /* global require */
 export default class Navigation extends Component {

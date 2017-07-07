@@ -7,7 +7,7 @@ import {
   TouchableNativeFeedback,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { primaryBlue, navigationBarHeight } from '../styles/common';
+import { primaryBlue, navigationBarHeight } from '../../styles/common';
 
 /* global require */
 export default class ImageModal extends Component {

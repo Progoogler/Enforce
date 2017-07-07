@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import FlatList from 'react-native/Libraries/Lists/FlatList';
 import Realm from 'realm';
 import Row from './Row';
-import Schema from '../../realm';
+import Schema from '../../db/realm';
 import insertionSortModified from './insertionSort';
 import { unlink } from 'react-native-fs';
 import { removeTicketPath } from '../../../../includes/firebase/database';

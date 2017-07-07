@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
 
 import historySearch from './historySearch';
 import Result from './Result';
-import { primaryBlue, smallFontSize } from '../styles/common';
+import { primaryBlue, smallFontSize } from '../../styles/common';
 
 const center = Math.floor(Dimensions.get('window').width / 2) - 3.8;
 
