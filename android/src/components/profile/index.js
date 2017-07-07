@@ -18,6 +18,14 @@ import Navigation from '../navigation/StaticNavigation';
 import Warning from './Warning';
 import ThrowConnectionMessage from './ThrowConnectionMessage';
 
+import {
+  primaryBlue,
+  titleTextShadow,
+  xxlargeFontSize,
+  largeFontSize,
+  mediumFontSize,
+} from '../../styles/common';
+
 /* global require */
 export default class Profile extends Component {
   constructor() {
@@ -46,10 +54,7 @@ export default class Profile extends Component {
   static navigationOptions = {
     drawerLabel: 'Profile',
     drawerIcon: () => (
-      <Image
-        source={require('../../../../shared/images/person-icon.png')}
-        style={[styles.icon]}
-      />
+      <Image source={require('../../../../shared/images/person-icon.png')} />
     )
   };
 
@@ -65,7 +70,7 @@ export default class Profile extends Component {
             autoCorrect={false}
             autoCapitalize={'words'}
             keyboardType={'email-address'}
-            fontSize={18}
+            fontSize={mediumFontSize}
             underlineColorAndroid={'transparent'}
             onFocus={() => this._onEmailFocus()}
             onBlur={() => this._onEmailBlur()}
@@ -81,7 +86,7 @@ export default class Profile extends Component {
             style={{ backgroundColor: this.state.passwordBackground, borderColor: this.state.passwordColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
             autoCorrect={false}
             secureTextEntry={true}
-            fontSize={18}
+            fontSize={mediumFontSize}
             underlineColorAndroid={'transparent'}
             onFocus={() => this._onPasswordFocus()}
             onBlur={() => this._onPasswordBlur()}
@@ -97,7 +102,7 @@ export default class Profile extends Component {
             style={{ backgroundColor: this.state.countyBackground, borderColor: this.state.countyColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
             autoCorrect={false}
             autoCapitalize={'words'}
-            fontSize={18}
+            fontSize={mediumFontSize}
             underlineColorAndroid={'transparent'}
             onFocus={() => this._onCountyFocus()}
             onBlur={() => this._onCountyBlur()}
@@ -209,7 +214,7 @@ export default class Profile extends Component {
   }
 
   _onEmailFocus() {
-    this.setState({emailColor: '#4286f4', emailBackground: '#e8eae9'});
+    this.setState({emailColor: primaryBlue, emailBackground: '#e8eae9'});
   }
 
   _onEmailBlur() {
@@ -219,30 +224,30 @@ export default class Profile extends Component {
     let com = regexForCom.test(email);
     let at = regexForAt.test(email);
     if (!com || !at) {
-      this.setState({emailColor: 'red', emailWarning: true});
+      this.setState({emailColor: 'red', emailWarning: true, emailBackground: 'white'});
       return;
     }
-    this.setState({emailColor: 'black', emailWarning: false});
+    this.setState({emailColor: 'black', emailWarning: false, emailBackground: 'white'});
   }
 
   _onPasswordFocus() {
-    this.setState({passwordColor: '#4286f4'});
+    this.setState({passwordColor: primaryBlue, passwordBackground: '#e8eae9'});
   }
 
   _onPasswordBlur() {
     if (this.state.password.length < 6) {
-      this.setState({passwordColor: 'red', passwordWarning: true});
+      this.setState({passwordColor: 'red', passwordWarning: true, passwordBackground: 'white'});
       return;
     }
-    this.setState({passwordColor: 'black', passwordWarning: false});
+    this.setState({passwordColor: 'black', passwordWarning: false, passwordBackground: 'white'});
   }
 
   _onCountyFocus() {
-    this.setState({countyColor: '#4286f4'});
+    this.setState({countyColor: primaryBlue, countyBackground: '#e8eae9'});
   }
 
   _onCountyBlur() {
-    this.setState({countyColor: 'black'});
+    this.setState({countyColor: 'black', countyBackground: 'white'});
   }
 }
 
@@ -255,12 +260,12 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    color: '#4286f4',
-    marginTop: 30,
-    marginBottom: 40,
-    fontSize: 34,
+    color: primaryBlue,
+    fontSize: xxlargeFontSize,
+    marginTop: '8%',
+    marginBottom: '10%',
     fontWeight: 'bold',
-    textShadowColor: 'grey',
+    textShadowColor: titleTextShadow,
     textShadowOffset: {
       width: 1,
       height: 1
@@ -268,32 +273,31 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    margin: 25,
-
+    margin: '7%',
   },
   designator: {
-    fontSize: 20,
-    marginLeft: 25,
-    marginTop: 15,
+    fontSize: mediumFontSize,
+    marginLeft: '5%',
+    marginTop: '4%',
     fontWeight: 'bold',
   },
   button: {
-    width: 190,
+    width: '50%',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: 60,
-    padding: 12,
+    marginTop: '15%',
+    padding: '3%',
     borderRadius: 10,
-    backgroundColor: '#4286f4',
+    backgroundColor: primaryBlue,
   },
   buttonText: {
-    fontSize: 24,
+    fontSize: largeFontSize,
     color: 'white',
   },
   activity: {
     position: 'absolute',
-    bottom: 15,
+    bottom: '4%',
     alignSelf: 'center',
   },
 });

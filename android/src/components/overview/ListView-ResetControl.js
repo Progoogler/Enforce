@@ -228,7 +228,6 @@ TimersList.propTypes = {
 const styles = StyleSheet.create({
   flatlist: {
     alignSelf: 'stretch',
-    marginTop: 25,
   },
   separator: {
     flex: 1,

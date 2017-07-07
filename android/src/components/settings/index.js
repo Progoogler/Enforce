@@ -10,6 +10,12 @@ import {
 import PropTypes from 'prop-types';
 
 import Navigation from '../navigation/StaticNavigation';
+import {
+  primaryBlue,
+  titleTextShadow,
+  xxlargeFontSize,
+  smallFontSize,
+} from '../../styles/common';
 
 /* global require */
 export default class Settings extends Component {
@@ -46,7 +52,7 @@ export default class Settings extends Component {
               onValueChange={(value) => this.setState({notifications: value})}
               onTintColor="green"
               style={{marginBottom: 10}}
-              thumbTintColor="#4286f4"
+              thumbTintColor={primaryBlue}
               tintColor="#808080"
               value={this.state.notifications} />
           </View>
@@ -59,7 +65,7 @@ export default class Settings extends Component {
               onValueChange={(value) => this.setState({location: value})}
               onTintColor="green"
               style={{marginBottom: 10}}
-              thumbTintColor="#4286f4"
+              thumbTintColor={primaryBlue}
               tintColor="#808080"
               value={this.state.location} />
           </View>
@@ -72,7 +78,7 @@ export default class Settings extends Component {
               onValueChange={(value) => this._imageUploadCondition(value)}
               onTintColor="green"
               style={{marginBottom: 10}}
-              thumbTintColor="#4286f4"
+              thumbTintColor={primaryBlue}
               tintColor="#808080"
               value={this.state.imageUpload} />
           </View>
@@ -85,7 +91,7 @@ export default class Settings extends Component {
               onValueChange={(value) => this._toggleUploadCondition(value)}
               onTintColor="green"
               style={{marginBottom: 10}}
-              thumbTintColor="#4286f4"
+              thumbTintColor={primaryBlue}
               tintColor="#808080"
               value={this.state.dataUpload} />
           </View>
@@ -141,12 +147,12 @@ const styles = StyleSheet.create({
   },
   title: {
     textAlign: 'center',
-    color: '#4286f4',
-    fontSize: 34,
-    marginTop: 30,
-    marginBottom: 50,
+    color: primaryBlue,
+    fontSize: xxlargeFontSize,
+    marginTop: '8%',
+    marginBottom: '10%',
     fontWeight: 'bold',
-    textShadowColor: 'grey',
+    textShadowColor: titleTextShadow,
     textShadowOffset: {
       width: 1,
       height: 1
@@ -155,13 +161,13 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 25,
+    marginBottom: '8%',
   },
   settingDesc: {
-    marginLeft: 25,
-    fontSize: 18,
+    marginLeft: '6%',
+    fontSize: smallFontSize + 2,
   },
   slider: {
-    marginRight: 25,
+    marginRight: '6%',
   }
 });

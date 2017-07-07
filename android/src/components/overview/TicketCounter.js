@@ -27,8 +27,8 @@ TicketCounter.propTypes = {
 const styles = StyleSheet.create({
   ticketCountContainer: {
     alignItems: 'center',
-    padding: 15,
-    marginTop: 15,
+    marginTop: '6%',
+    marginBottom: '10%',
   },
   ticketCountNumber: {
     fontSize: ticketCountFontSize,
