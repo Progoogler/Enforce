@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import PropTypes from 'prop-types';
-
+import { ticketCountFontSize, ticketDescFontSize } from '../styles/common';
 
 const TicketCounter = (props) => (
   <TouchableWithoutFeedback
@@ -31,13 +31,13 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   ticketCountNumber: {
-    fontSize: 42,
+    fontSize: ticketCountFontSize,
     fontWeight: 'bold',
     color: 'green',
   },
   ticketCountDescription: {
     color: 'green',
-    fontSize: 18,
+    fontSize: ticketDescFontSize,
   },
 });
 

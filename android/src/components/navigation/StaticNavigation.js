@@ -8,6 +8,7 @@ import {
   Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { titleFontSize, primaryBlue, blueTextShadow, navigationBarHeight } from '../styles/common';
 
 /* global require */
 export default class StaticNavigation extends Component {
@@ -27,7 +28,7 @@ export default class StaticNavigation extends Component {
 
         { this.props.navigation ?
         <TouchableHighlight
-          underlayColor='#4286f4'
+          underlayColor={primaryBlue}
           onPress={ () => {
             this.props.navigation.navigate('DrawerOpen');
           }}
@@ -57,25 +58,19 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4286f4',
-    zIndex: 10,
-  },
-  back: {
-    height: 50,
-    width: 40,
-    marginLeft: 25,
+    backgroundColor: primaryBlue,
+    height: navigationBarHeight,
   },
   icon: {
-    marginLeft: 15,
+    marginLeft: '4%',
   },
   title: {
     flex: .70,
-    height: 60,
-    fontSize: 28,
-    marginLeft: 28,
+    fontSize: titleFontSize,
+    marginLeft: '5%',
     color: 'white',
     textAlignVertical: 'center',
-    textShadowColor: '#3399ff',
+    textShadowColor: blueTextShadow,
     textShadowOffset: {
       width: 2,
       height: 1
@@ -83,7 +78,8 @@ const styles = StyleSheet.create({
   },
   headerNavigation: {
     flex: .15,
-    height: 60,
+    position: 'absolute',
+    right: '1%',
     justifyContent: 'center',
     alignItems: 'center',
   },

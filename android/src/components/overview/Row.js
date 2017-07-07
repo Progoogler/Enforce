@@ -11,7 +11,14 @@ import {
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
 import PropTypes from 'prop-types';
+import {
+  primaryBlue,
+  largeFontSize,
+  mediumFontSize,
+  smallFontSize
+} from '../styles/common';
 
+var timerLengthPaddingLeft = 28;
 
 /* global require */
 export default class Row extends Component {
@@ -34,16 +41,12 @@ export default class Row extends Component {
             showsHorizontalScrollIndicator={false} >
             <View style={styles.innerContainer} >
               <TouchableNativeFeedback
-                background={TouchableNativeFeedback.Ripple('#4286f4', true)}
+                background={TouchableNativeFeedback.Ripple(primaryBlue, true)}
                 onPress={() => this._openTimerListPage(this.props.data.list)} >
 
                 <View style={styles.timerRow}>
                   <Text style={styles.timerRowLength}>
-                    {  this.props.data.list.length < 10 ?
-                       '   ' + this.props.data.list.length + ' ' :
-                       this.props.data.list.length < 100 ?
-                       ' ' + this.props.data.list.length + ' ' :
-                       this.props.data.list.length }
+                    { this.props.data.list.length }
                   </Text>
                   <View style={styles.separator} />
                   <Text style={styles.timerRowTime}>
@@ -77,6 +80,13 @@ export default class Row extends Component {
   }
 
   componentWillMount() {
+    if (this.props.data.list.length < 10) {
+      timerLengthPaddingLeft = 28;
+    } else if (this.props.data.list.length < 100) {
+      timerLengthPaddingLeft = 22;
+    } else {
+      timerLengthPaddingLeft = 16;
+    }
     this._getDistance();
     this.timer = this.props.data.list;
   }
@@ -108,8 +118,8 @@ export default class Row extends Component {
     } else if (timeLeft < 60) {
       return<Text style={styles.timeUp}>less than a minute {'\n'}remaining</Text>;
     } else if (timeLeft < 3600) {
-      if (timeLeft < 300 ) return <Text style={styles.timeUp}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
-      if (timeLeft < 3600 / 4) return <Text style={styles.timeUp}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
+      //if (timeLeft < 300 ) return <Text style={styles.timeUp}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
+      if (timeLeft < 3600 / 4) return <Text style={styles.timeUpVeryNear}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
       return <Text style={styles.timeUpNear}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
     } else if (timeLeft > 3600) {
       return <Text style={styles.timeUpFar}>{Math.floor(timeLeft / 60 / 60)} hour {Math.floor((timeLeft % 3600) / 60)} minutes remaining</Text>;
@@ -195,31 +205,36 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   timerRowLength: {
-    fontSize: 28,
+    fontSize: largeFontSize,
     fontWeight: 'bold',
-    paddingLeft: 22,
+    paddingLeft: timerLengthPaddingLeft,
     textAlign: 'center',
-    color: '#4286f4',
+    color: primaryBlue,
   },
   timeUp: {
-    fontSize: 20,
+    fontSize: largeFontSize,
+    fontWeight: 'bold',
+    color:'green',
+  },
+  timeUpVeryNear: {
+    fontSize: mediumFontSize,
     fontWeight: 'bold',
     color:'green',
   },
   timeUpFar: {
-    fontSize: 14,
+    fontSize: smallFontSize,
     fontWeight: 'bold',
   },
   timeUpNear: {
-    fontSize: 18,
+    fontSize: mediumFontSize,
     fontWeight: 'bold',
-    color: '#4286f4',
+    color: primaryBlue,
   },
   timerRowTime: {
     paddingLeft: 12,
   },
   button: {
-    backgroundColor: '#4286f4',
+    backgroundColor: primaryBlue,
     borderWidth: 1,
     borderRadius: 5,
     padding: 5,
