@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 50,
     padding: '2%',
+    marginBottom: -2,
   },
   green: {
     flex: 1,
@@ -93,6 +94,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 50,
     padding: '2%',
+    marginBottom: -2,
   },
   message: {
     textAlign: 'center',
