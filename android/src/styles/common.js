@@ -12,10 +12,18 @@ export var navigationBarHeight = responsiveHeight(8);
 
 /* Overview */
 // Row
+export var timerRowHeight = responsiveHeight(14);
+export var timerRowWidth = responsiveWidth(115);
+export var timerRowDescWidth = responsiveWidth(75);
+export var timerRowDistanceWidth = responsiveWidth(25);
 
 // TicketCounter
 export var ticketCountFontSize = responsiveFontSize(5);
 export var ticketDescFontSize = responsiveFontSize(2);
+
+/* Timer List */
+// Row
+
 
 /* Camera */
 // Time Limit
