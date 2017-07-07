@@ -17,6 +17,9 @@ import LocationDetailsView from './LocationDetailsView';
 import CustomCallout from './CustomCallout';
 import ErrorMessage from './ErrorMessage';
 
+import { smallFontSize } from '../styles/common';
+
+/*global require*/
 export default class MapApp extends Component {
   constructor() {
     super();
@@ -37,10 +40,7 @@ export default class MapApp extends Component {
   static navigationOptions = {
     drawerLabel: 'Map',
     drawerIcon: () => (
-      <Image
-        source={require('../../../../shared/images/blue-pin.png')} /*global require*/
-        style={[styles.icon]}
-      />
+      <Image source={require('../../../../shared/images/blue-pin.png')} />
     )
   };
 
@@ -418,10 +418,6 @@ MapApp.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  icon: {
-    width: 24,
-    height: 24,
-  },
   container: {
     position: 'absolute',
     top: 0,
@@ -449,7 +445,7 @@ const styles = StyleSheet.create({
   },
   logo: {
     color: 'white',
-    fontSize: 18,
+    fontSize: smallFontSize,
     fontWeight: '400',
     textShadowColor: 'grey',
     textShadowRadius: 5,
