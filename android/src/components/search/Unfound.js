@@ -6,6 +6,11 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import {
+  primaryBlue,
+  mediumFontSize,
+} from '../styles/common';
+
 export default class Result extends Component {
   constructor() {
     super();
@@ -33,12 +38,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
-    paddingBottom: 25,
+    paddingBottom: '8%',
   },
   text: {
-    fontSize: 22,
+    fontSize: mediumFontSize,
   },
   license: {
-    color: '#4286f4',
+    color: primaryBlue,
   },
 });

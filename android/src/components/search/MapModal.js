@@ -11,6 +11,11 @@ import {
 import PropTypes from 'prop-types';
 
 import MapView, { Marker } from 'react-native-maps';
+import {
+  primaryBlue,
+  mediumFontSize,
+  pinSize,
+} from '../styles/common';
 
 const height = Dimensions.get('window').height;
 
@@ -50,7 +55,7 @@ export default class MapModal extends Component {
                 longitude: this.props.longitude}} >
               <Image
                 source={require('../../../../shared/images/blue-pin.png')}
-                style={{ width: 40, height: 40 }} />
+                style={{ width: pinSize, height: pinSize }} />
             </Marker>
 
           </MapView.Animated>
@@ -103,20 +108,18 @@ const styles = StyleSheet.create({
   },
   locationContainer: {
     position: 'absolute',
-    bottom: 30,
+    bottom: '7%',
     alignSelf: 'center',
     backgroundColor: 'white',
     borderRadius: 50,
-    paddingTop: 2,
-    paddingBottom: 2,
   },
   location: {
     textAlign: 'center',
-    color: '#4286f4',
-    fontSize: 18,
-    paddingLeft: 8,
-    paddingRight: 8,
-    paddingBottom: 4,
-    paddingTop: 4,
+    color: primaryBlue,
+    fontSize: mediumFontSize,
+    paddingLeft: '3%',
+    paddingRight: '3%',
+    paddingBottom: '1.5%',
+    paddingTop: '1.5%',
   },
 });

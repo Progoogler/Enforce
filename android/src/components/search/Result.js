@@ -12,6 +12,14 @@ import MapModal from './MapModal';
 import ImageModal from '../history/ImageModal';
 import Unfound from './Unfound';
 
+import {
+  imageSize,
+  primaryBlue,
+  smallFontSize,
+  closeButtonSize,
+  pinSize,
+} from '../styles/common';
+
 /* global require */
 export default class Result extends Component {
   constructor() {
@@ -133,9 +141,8 @@ const styles = StyleSheet.create({
   outerContainer: {
     height: 120,
     alignSelf: 'stretch',
-    backgroundColor: '#4286f4',
-    padding: 15,
-    zIndex: 10,
+    backgroundColor: primaryBlue,
+    padding: '4%',
   },
   container: {
     flex: 1,
@@ -143,17 +150,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   image: {
-    height: 100,
-    width: 100,
-    marginRight: 15,
+    height: imageSize,
+    width: imageSize,
+    marginRight: '4%',
     flex: .3,
   },
   dataContainer: {
     flex: .7,
-    padding: 10,
+    padding: '1.5%',
   },
   label: {
     fontWeight: 'bold',
+    fontSize: smallFontSize,
   },
   mapButton: {
     position: 'absolute',
@@ -161,9 +169,9 @@ const styles = StyleSheet.create({
     right: 0,
   },
   closeResultButton: {
-    height: 25,
-    width: 25,
-    backgroundColor: '#4286f4',
+    height: closeButtonSize,
+    width: closeButtonSize,
+    backgroundColor: primaryBlue,
   },
   closeResultText: {
     color: 'white',
@@ -171,7 +179,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   mapIcon: {
-    height: 35,
-    width: 35,
+    height: pinSize,
+    width: pinSize,
   },
 });

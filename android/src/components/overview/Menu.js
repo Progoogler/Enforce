@@ -11,7 +11,7 @@ import PropTypes from 'prop-types';
 
 import MainButtons from './MainButtons';
 import Search from '../search';
-
+import { primaryBlue, blueTextShadow, titleFontSize } from '../styles/common';
 
 /* global require */
 export default class Menu extends Component {
@@ -30,10 +30,9 @@ export default class Menu extends Component {
     return (
 
       <Animated.View style={{
-        zIndex: 9,
         height: this.state.containerHeight,
         alignSelf: 'stretch',
-        backgroundColor: '#4286f4',
+        backgroundColor: primaryBlue,
       }}>
       {
 
@@ -63,19 +62,17 @@ export default class Menu extends Component {
                   buttonOpacity: new Animated.Value(0),
                 });
               }}
-              underlayColor={'#4286f4'}
+              underlayColor={primaryBlue}
               style={styles.searchIcon} >
               <Image source={require('../../../../shared/images/search-icon.png')} />
             </TouchableHighlight>
             <Animated.Text style={{
               opacity: this.state.titleOpacity,
               flex: .70,
-              height: 60,
-              marginLeft: -10,
-              fontSize: 32,
+              fontSize: titleFontSize,
               color: 'white',
               textAlignVertical: 'center',
-              textShadowColor: '#3399ff',
+              textShadowColor: blueTextShadow,
               textShadowOffset: {
                 width: 2,
                 height: 1
@@ -86,7 +83,7 @@ export default class Menu extends Component {
 
             </Animated.Text>
             <TouchableHighlight
-              underlayColor='#4286f4'
+              underlayColor={primaryBlue}
               onPress={ () => {
                 Keyboard.dismiss();
                 this.props.navigation.navigate('DrawerOpen');
@@ -95,7 +92,7 @@ export default class Menu extends Component {
               <Image source={require('../../../../shared/images/menu-icon.jpg')} />
             </TouchableHighlight>
           </View>
-          <Animated.View style={{ opacity: this.state.buttonOpacity }} >
+          <Animated.View style={{ opacity: this.state.buttonOpacity, marginTop: '2%', }} >
             <MainButtons navigation={this.props.navigation} searching={this.state.search} />
           </Animated.View>
         </View>
@@ -182,18 +179,15 @@ Menu.propTypes = {
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
-    backgroundColor: '#4286f4',
-    zIndex: 10,
   },
   searchIcon: {
-    marginTop: 5,
-    marginRight: 5,
-    height: 60,
-    width: 60,
+    marginTop: '1%',
+    marginRight: '5%',
   },
   headerNavigation: {
     flex: .15,
-    height: 60,
+    position: 'absolute',
+    right: '1%',
     justifyContent: 'center',
     alignItems: 'center',
   },

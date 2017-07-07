@@ -10,7 +10,9 @@ import PropTypes from 'prop-types';
 import { AutoGrowingTextInput } from 'react-native-autogrow-textinput';
 
 import {
+  primaryBlue,
   textInputContainerHeight,
+  navigationBarHeight,
   largeFontSize,
   mediumFontSize,
 } from '../styles/common';
@@ -87,8 +89,8 @@ LocationInput.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#4286f4',
-    marginTop: 60,
+    backgroundColor: primaryBlue,
+    marginTop: navigationBarHeight,
     padding: '4%',
   },
   buttonRow: {

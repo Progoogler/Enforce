@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 
 import historySearch from './historySearch';
 import Result from './Result';
+import { primaryBlue, smallFontSize } from '../styles/common';
 
 const center = Math.floor(Dimensions.get('window').width / 2) - 3.8;
 
@@ -43,24 +44,22 @@ export default class Search extends Component {
         zIndex: 10,
         height: this.state.containerHeight,
         alignSelf: 'stretch',
-        backgroundColor: '#4286f4', }} >
+        backgroundColor: primaryBlue, }} >
 
         <View style={styles.headerContainer}>
 
         <TouchableHighlight
           onPress={ () => this._openSearch() }
-          underlayColor={'#4286f4'}
+          underlayColor={primaryBlue}
           style={styles.searchIcon} >
           <Image source={require('../../../../shared/images/search-icon.png')} />
         </TouchableHighlight>
 
           <Animated.View style={{
                             position: 'absolute',
-                            top: 17,
-                            width: 120,
+                            top: '28%',
+                            width: '30%',
                             marginLeft: this.state.underlineMargin,
-                            height: 80,
-                            zIndex: 10,
                           }}>
             <TextInput
               ref={(ref) => { this.myTextInput = ref }}
@@ -72,7 +71,6 @@ export default class Search extends Component {
               autoCorrect={false}
               autoFocus={ this.props.timerList ? false : true }
               underlineColorAndroid={'transparent'}
-              onFocus={() => {}}
               value={this.state.license} />
           </Animated.View>
 
@@ -81,7 +79,7 @@ export default class Search extends Component {
               Keyboard.dismiss();
               this.props.navigation.navigate('DrawerOpen')
             }}
-            underlayColor={'#4286f4'}
+            underlayColor={primaryBlue}
             style={styles.headerNavigation} >
             <Image source={require('../../../../shared/images/menu-icon.jpg')} />
           </TouchableHighlight>
@@ -90,7 +88,6 @@ export default class Search extends Component {
 
         <Animated.View style={{
                         alignSelf: 'center',
-                        height: 1,
                         borderWidth: .35,
                         borderColor: 'white',
                         width: this.state.underline,
@@ -100,6 +97,7 @@ export default class Search extends Component {
 
         <Animated.View style={{
             opacity: this.state.buttonOpacity,
+            height: '8%',
             flex: 1,
             flexDirection: 'row', }} >
 
@@ -109,6 +107,7 @@ export default class Search extends Component {
             onPress={ () => { this._handleHistorySearch(this.state.license) }} >
             <Animated.Text style={{
               color: 'white',
+              fontSize: smallFontSize,
               opacity: this.state.textFade, }}>History</Animated.Text>
           </TouchableOpacity>
 
@@ -123,6 +122,7 @@ export default class Search extends Component {
             onPress={ () => { this._handleVINSearch(this.state.license) }} >
             <Animated.Text style={{
             color: 'white',
+            fontSize: smallFontSize,
             opacity: this.state.textFade, }}>VIN</Animated.Text>
           </TouchableOpacity>
         </Animated.View>
@@ -435,23 +435,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   searchIcon: {
-    marginTop: 5,
-    marginRight: 5,
-    height: 60,
-    width: 60,
+    marginTop: '1%',
   },
   headerNavigation: {
     position: 'absolute',
     right: 1,
-    height: 60,
-    width: 60,
     justifyContent: 'center',
     alignItems: 'center',
   },
   button: {
     flex: .5,
-    height: 70,
-    paddingBottom: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
