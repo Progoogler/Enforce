@@ -13,6 +13,9 @@ import {
   largeFontSize,
   mediumFontSize,
   smallFontSize,
+  timerRowImageHeight,
+  timerRowDescContainerHeight,
+  timerRowButtonsContainerHeight,
 } from '../../styles/common';
 
 export default class Row extends Component {
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 2,
     borderColor: 'white',
-    height: 60,
+    height: timerRowButtonsContainerHeight,//60,
   },
   rowButton: {
     flex: .5,
@@ -147,7 +150,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 90,
+    height: timerRowDescContainerHeight,//90,
     padding: '4%',
   },
   timeContainer: {

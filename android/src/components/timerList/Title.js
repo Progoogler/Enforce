@@ -5,7 +5,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { primaryBlue, mediumFontSize } from '../../styles/common';
+import { primaryBlue, mediumFontSize, timeLimitTitleContainerHeight } from '../../styles/common';
 
 
 class Title extends Component {
@@ -36,7 +36,7 @@ Title.propTypes = { limit: PropTypes.number.isRequired };
 
 const styles = StyleSheet.create({
   container: {
-    height: 40,
+    height: timeLimitTitleContainerHeight,  //40,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: primaryBlue,
