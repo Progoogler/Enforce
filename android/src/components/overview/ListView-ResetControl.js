@@ -26,12 +26,11 @@ export default class TimersList extends Component {
       refreshing: false,
       updateRows: 0,
     };
+    this._key = 0;
   }
 
   render() {
-    if (this.list.length < 1) {
-      return <View />
-    }
+1
 
     return (
       <FlatList
@@ -148,7 +147,6 @@ export default class TimersList extends Component {
           unlink(timer.mediaPath)
           .then(() => {
             console.log('FILE DELETED');
-
             this.realm.write(() => {
               this.realm.delete(timer);
             });
@@ -164,7 +162,6 @@ export default class TimersList extends Component {
     timers.forEach((timer) => {
       unlink(timer.mediaPath)
       .then(() => {
-        console.log('PICTURE REMOVED');
         this.realm.write(() => {
           this.realm.delete(timer);
         });
@@ -176,7 +173,6 @@ export default class TimersList extends Component {
         this.list[timerObj].list = {};
       }
     }
-
     setTimeout(() => {
       this.realm.write(() => {
         this.realm.delete(timers);
@@ -214,8 +210,8 @@ export default class TimersList extends Component {
     return <View style={styles.separator} />;
   }
 
-  _keyExtractor(item: object = {list: [{'createdAt': 0}]}): number {
-    return item.list[0].createdAt;
+  _keyExtractor(item): number {
+    return this._key++;
   }
 
 }
