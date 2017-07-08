@@ -14,7 +14,7 @@ import {
   titleFontSize,
   primaryBlue,
   blueTextShadow,
-  navigationBarHeight
+  navBarContainerHeight,
 } from '../../styles/common';
 
 /* global require */
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
-    height: navigationBarHeight,
+    height: navBarContainerHeight,
   },
   searchIcon: {
     marginTop: '1%',
@@ -134,7 +134,5 @@ const styles = StyleSheet.create({
     flex: .15,
     position: 'absolute',
     right: '1%',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

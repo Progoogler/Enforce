@@ -3,7 +3,6 @@ import {
   View,
   Image,
   TextInput,
-  Dimensions,
   TouchableHighlight,
   TouchableOpacity,
   StyleSheet,
@@ -14,9 +13,20 @@ import PropTypes from 'prop-types';
 
 import historySearch from './historySearch';
 import Result from './Result';
-import { primaryBlue, smallFontSize } from '../../styles/common';
+import {
+  primaryBlue,
+  smallFontSize,
+  navBarContainerHeight,
+  searchContainerHeight,
+  resultContainerHeight,
+  resultHeight,
+  noResultContainerHeight,
+  noResultHeight,
+  windowCenterPoint,
+  underlineWidth,
+  separatorHeight,
+ } from '../../styles/common';
 
-const center = Math.floor(Dimensions.get('window').width / 2) - 3.8;
 
 /* global require */
 export default class Search extends Component {
@@ -24,8 +34,8 @@ export default class Search extends Component {
     super();
     this.state = {
       buttonOpacity: new Animated.Value(1),
-      containerHeight: new Animated.Value(65),
-      underlineMargin: new Animated.Value(center),
+      containerHeight: new Animated.Value(navBarContainerHeight),
+      underlineMargin: new Animated.Value(windowCenterPoint),
       underlineOpacity: new Animated.Value(1),
       separatorHeight: new Animated.Value(0),
       underline: new Animated.Value(0),
@@ -35,7 +45,7 @@ export default class Search extends Component {
       license: '',
       result: null,
     }
-    this.marginValue = center;
+    this.marginValue = windowCenterPoint;
   }
 
   render() {
@@ -57,7 +67,7 @@ export default class Search extends Component {
 
           <Animated.View style={{
                             position: 'absolute',
-                            top: '28%',
+                            top: '35%',
                             width: '30%',
                             marginLeft: this.state.underlineMargin,
                           }}>
@@ -97,7 +107,7 @@ export default class Search extends Component {
 
         <Animated.View style={{
             opacity: this.state.buttonOpacity,
-            height: '8%',
+            // height: '8%',
             flex: 1,
             flexDirection: 'row', }} >
 
@@ -149,7 +159,7 @@ export default class Search extends Component {
     Animated.parallel([
       Animated.timing(
         this.state.underline,
-        { toValue: 180,
+        { toValue: underlineWidth,
           duration: 500 },
       ),
       Animated.timing(
@@ -159,12 +169,12 @@ export default class Search extends Component {
       ),
       Animated.timing(
         this.state.separatorHeight,
-        { toValue: 40,
+        { toValue: separatorHeight,
           duration: 250, },
       ),
       Animated.timing(
         this.state.containerHeight,
-        { toValue: 120,
+        { toValue: searchContainerHeight,
           duration: 500, },
       ),
     ]).start();
@@ -186,8 +196,8 @@ export default class Search extends Component {
   componentWillUpdate() {
     if (this.props.timerList) {
       if (this.props.shouldResetLicense()) {
-        this.setState({license: '', underlineMargin: new Animated.Value(center)});
-        this.marginValue = center;
+        this.setState({license: '', underlineMargin: new Animated.Value(windowCenterPoint)});
+        this.marginValue = windowCenterPoint;
         this.props.shouldResetLicense(true);
       }
     }
@@ -204,8 +214,8 @@ export default class Search extends Component {
     !this.props.timerList && this._fadeContainer();
     !this.props.timerList && setTimeout(() => this._mounted && this.props.closeSearch(), 500);
 
-    this.setState({ license: '', underlineMargin: new Animated.Value(center) });
-    this.marginValue = center;
+    this.setState({ license: '', underlineMargin: new Animated.Value(windowCenterPoint) });
+    this.marginValue = windowCenterPoint;
   }
 
   _handleHistorySearch() {
@@ -255,13 +265,13 @@ export default class Search extends Component {
     Animated.parallel([
       Animated.timing(
         this.state.containerHeight, {
-          toValue: 200,
+          toValue: noResultContainerHeight,
           duration: 600,
         },
       ),
       Animated.timing(
         this.state.resultHeight, {
-          toValue: 80,
+          toValue: noResultHeight,
           duration: 1000,
         },
       ),
@@ -278,7 +288,7 @@ export default class Search extends Component {
       Animated.parallel([
         Animated.timing(
           this.state.containerHeight, {
-            toValue: 120,
+            toValue: searchContainerHeight,
             duration: 600,
           },
         ),
@@ -302,13 +312,13 @@ export default class Search extends Component {
     Animated.parallel([
       Animated.timing(
         this.state.containerHeight, {
-          toValue: 250,
+          toValue: resultContainerHeight,
           duration: 600,
         },
       ),
       Animated.timing(
         this.state.resultHeight, {
-          toValue: 115,
+          toValue: resultHeight,//115,
           duration: 1000,
         },
       ),
@@ -326,7 +336,7 @@ export default class Search extends Component {
     Animated.parallel([
       Animated.timing(
         this.state.containerHeight, {
-          toValue: 120,
+          toValue: searchContainerHeight,
           duration: 600,
         },
       ),
@@ -344,7 +354,7 @@ export default class Search extends Component {
       ),
     ]).start();
     Keyboard.dismiss();
-    this.setState({license: '', result: null, underlineMargin: new Animated.Value(center)});
+    this.setState({license: '', result: null, underlineMargin: new Animated.Value(windowCenterPoint)});
   }
 
    _keyboardDidHideForTimerList() {
@@ -355,10 +365,10 @@ export default class Search extends Component {
     if (license.length === 0) {
       Animated.timing(
         this.state.underlineMargin, {
-          toValue: center,
+          toValue: windowCenterPoint,
         },
       ).start();
-      this.marginValue = center;
+      this.marginValue = windowCenterPoint;
       this.setState({license});
       return;
     }
@@ -390,7 +400,7 @@ export default class Search extends Component {
       ),
       Animated.timing(
         this.state.containerHeight,{
-          toValue: 65,
+          toValue: navBarContainerHeight,
           duration: 700,
         },
       ),
@@ -440,8 +450,6 @@ const styles = StyleSheet.create({
   headerNavigation: {
     position: 'absolute',
     right: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   button: {
     flex: .5,

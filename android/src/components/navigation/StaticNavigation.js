@@ -12,7 +12,7 @@ import {
   titleFontSize,
   primaryBlue,
   blueTextShadow,
-  navigationBarHeight,
+  navBarContainerHeight,
 } from '../../styles/common';
 
 /* global require */
@@ -61,10 +61,11 @@ StaticNavigation.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
+    zIndex: 10,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: primaryBlue,
-    height: navigationBarHeight,
+    height: navBarContainerHeight,
   },
   icon: {
     marginLeft: '4%',
@@ -85,7 +86,5 @@ const styles = StyleSheet.create({
     flex: .15,
     position: 'absolute',
     right: '1%',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });

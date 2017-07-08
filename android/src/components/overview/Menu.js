@@ -11,14 +11,21 @@ import PropTypes from 'prop-types';
 
 import MainButtons from './MainButtons';
 import Search from '../search';
-import { primaryBlue, blueTextShadow, titleFontSize } from '../../styles/common';
+import {
+  primaryBlue,
+  blueTextShadow,
+  titleFontSize,
+  searchContainerHeight,
+  resultContainerHeight,
+  noResultContainerHeight,
+ } from '../../styles/common';
 
 /* global require */
 export default class Menu extends Component {
   constructor() {
     super();
     this.state = {
-      containerHeight: new Animated.Value(130),
+      containerHeight: new Animated.Value(searchContainerHeight),
       containerOpacity: new Animated.Value(1),
       buttonOpacity: new Animated.Value(1),
       titleOpacity: new Animated.Value(0),
@@ -71,6 +78,7 @@ export default class Menu extends Component {
               flex: .70,
               fontSize: titleFontSize,
               color: 'white',
+              marginLeft: '5%',
               textAlignVertical: 'center',
               textShadowColor: blueTextShadow,
               textShadowOffset: {
@@ -119,13 +127,13 @@ export default class Menu extends Component {
     if (extend) {
       Animated.timing(
         this.state.containerHeight,
-        { toValue: 250,
+        { toValue: resultContainerHeight, // 250
           duration: 500, },
         ).start();
       } else {
         Animated.timing(
           this.state.containerHeight,
-          { toValue: 120,
+          { toValue: searchContainerHeight, //120
             duration: 500, },
         ).start();
       }
@@ -134,7 +142,7 @@ export default class Menu extends Component {
     noResultNotificationForMenu() {
       Animated.timing(
         this.state.containerHeight, {
-          toValue: 200,
+          toValue: noResultContainerHeight, //200,
           duration: 600,
         },
       ).start();
@@ -142,7 +150,7 @@ export default class Menu extends Component {
       setTimeout(() => {
         Animated.timing(
           this.state.containerHeight, {
-            toValue: 120,
+            toValue: searchContainerHeight,
             duration: 600,
           },
         ).start();
@@ -164,7 +172,7 @@ export default class Menu extends Component {
       ),
       Animated.timing(
         this.state.containerHeight,
-        { toValue: 130,
+        { toValue: searchContainerHeight,
           duration: 350, },
       ),
     ]).start();
@@ -182,13 +190,9 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     marginTop: '1%',
-    marginRight: '5%',
   },
   headerNavigation: {
-    flex: .15,
     position: 'absolute',
     right: '1%',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
 });
