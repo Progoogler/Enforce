@@ -61,8 +61,8 @@ export default class Profile extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Navigation navigation={this.props.navigation} title={'Enforce'} />
-        <Text style={styles.title}>Profile Settings</Text>
+        <Navigation navigation={this.props.navigation} title={'Profile'} />
+        <Text style={styles.title}>Account Settings</Text>
         <View style={styles.row} >
           <Text style={styles.designator}>Email</Text>
           <TextInput

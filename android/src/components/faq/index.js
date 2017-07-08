@@ -16,21 +16,19 @@ import {
   smallFontSize,
 } from '../../styles/common';
 
+/*global require*/
 export default class FAQs extends Component {
   static navigationOptions = {
     drawerLabel: 'FAQs',
     drawerIcon: () => (
-      <Image
-        source={require('../../../../shared/images/question-mark.png')} /*global require*/
-        style={[styles.icon]}
-      />
+      <Image source={require('../../../../shared/images/question-mark.png')} />
     )
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <Navigation navigation={this.props.navigation} title={'Enforce'} />
+        <Navigation navigation={this.props.navigation} title={'FAQs'} />
         <ScrollView>
           <Text style={styles.title}>Frequently Asked Questions</Text>
           <Text style={styles.question}>How to get started?</Text>
