@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: primaryBlue,
-    marginTop: '-3%',
+    marginTop: '-1%',
   },
   text: {
     fontSize: mediumFontSize,
