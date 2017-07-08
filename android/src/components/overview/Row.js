@@ -88,10 +88,10 @@ export default class Row extends Component {
     }
     styles.timerRowLength = {
       fontSize: largeFontSize,
-      fontWeight: 'bold',
-      paddingLeft: timerLengthPaddingLeft,
-      textAlign: 'center',
       color: primaryBlue,
+      paddingLeft: timerLengthPaddingLeft,
+      fontWeight: 'bold',
+      textAlign: 'center',
     };
     this._getDistance();
     this.timer = this.props.data.list;
@@ -126,7 +126,7 @@ export default class Row extends Component {
       if (timeLeft < 0) {
       return <Text style={styles.timeUp}>Time is up!</Text>;
     } else if (timeLeft < 60) {
-      return<Text style={styles.timeUp}>less than a minute {'\n'}remaining</Text>;
+      return<Text style={styles.timeUpVeryNear}>less than a minute {'\n'}remaining</Text>;
     } else if (timeLeft < 3600) {
       if (timeLeft < 3600 / 4) return <Text style={styles.timeUpVeryNear}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
       return <Text style={styles.timeUpNear}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
