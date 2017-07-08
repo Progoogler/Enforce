@@ -30,8 +30,6 @@ export default class TimersList extends Component {
   }
 
   render() {
-1
-
     return (
       <FlatList
         style={styles.flatlist}
