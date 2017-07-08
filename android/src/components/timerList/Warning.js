@@ -7,7 +7,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { primaryBlue, largeFontSize, mediumFontSize } from '../../styles/common';
+import {
+  primaryBlue,
+  largeFontSize,
+  mediumFontSize,
+  warningContainerMarginTop,
+} from '../../styles/common';
 
 export default class Warning extends Component {
   constructor() {
@@ -57,7 +62,7 @@ Warning.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 145,
+    marginTop: warningContainerMarginTop,
     backgroundColor: primaryBlue,
     padding: '5%',
   },
