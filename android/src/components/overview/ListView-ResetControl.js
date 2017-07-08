@@ -40,7 +40,7 @@ export default class TimersList extends Component {
         onRefresh={this._onRefresh.bind(this)}
         refreshing={this.state.refreshing}
         renderItem={this._renderItem.bind(this)}
-        keyExtractor={this._keyExtractor} />
+        keyExtractor={this._keyExtractor.bind(this)} />
     );
   }
 
