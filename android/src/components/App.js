@@ -88,8 +88,12 @@ export default class App extends Component {
 
   componentWillMount() {
     FirebaseInitialize();
-    this.realm = new Realm({schema: Schema});
-    let firstTimeAccess = AsyncStorage.getItem('@Enforce:registerDate');
+    this._checkFirstTimeAccess();
+    this.signIn();
+  }
+
+  async _checkFirstTimeAccess() {
+    let firstTimeAccess = await AsyncStorage.getItem('@Enforce:registerDate');
     if (!firstTimeAccess) {
       this._resetRealmState();
       let today = new Date();
@@ -97,7 +101,6 @@ export default class App extends Component {
       let date = `${today.getMonth() + 1}-${day}`;
       AsyncStorage.setItem('@Enforce:registerDate', date);
     }
-    this.signIn();
   }
 
   _resetRealmState() { // For beta testing only TODO remove this
