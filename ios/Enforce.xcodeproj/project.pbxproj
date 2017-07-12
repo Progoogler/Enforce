@@ -688,6 +688,21 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		71E2FBF41F16C71000653B6B /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "New Group";
+			sourceTree = "<group>";
+		};
+		71E2FC1C1F16C72000653B6B /* New Group1 */ = {
+			isa = PBXGroup;
+			children = (
+				71E2FBF41F16C71000653B6B /* New Group */,
+			);
+			name = "New Group1";
+			sourceTree = "<group>";
+		};
 		78C398B11ACF4ADC00677621 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -733,6 +748,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				71E2FC1C1F16C72000653B6B /* New Group1 */,
 				711E70911F02F60200089989 /* runtime_data */,
 				711E70921F02F60200089989 /* openalpr.conf */,
 				711E70891F02F51A00089989 /* tesseract.framework */,
@@ -1509,6 +1525,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Enforce;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1550,6 +1567,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = Enforce;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
