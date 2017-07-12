@@ -156,13 +156,13 @@ export default class Profile extends Component {
     try {
       this.profile = await AsyncStorage.getItem('@Enforce:profileSettings');
       this.profile = JSON.parse(this.profile);
-      this.setState({
+      this.profile && this.setState({
         email: this.profile.email ? this.profile.email : '',
         password: this.profile.password ? this.profile.password : '',
         county: this.profile.county ? this.profile.county : '',
       });
       this.profileId = await AsyncStorage.getItem('@Enforce:profileId');
-      Firebase.signInUser(this.profile.email, this.profile.password);
+      this.profileId && Firebase.signInUser(this.profile.email, this.profile.password);
     } catch (err) {
       console.warn('Error fetching Profile Settings from AsyncStorage', err);
     }

@@ -88,7 +88,7 @@ export default class MapApp extends Component {
     let settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);
 
-    if (settings.location) {
+    if (settings && settings.location) {
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
           message: "<h2>Use Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
           ok: "OK",
