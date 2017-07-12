@@ -3,12 +3,12 @@ import {
   View,
   Image,
   Dimensions,
-  //StatusBar,
   StyleSheet,
   AsyncStorage,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import FlatList from 'react-native/Libraries/Lists/FlatList';
+import StatusBar from 'react-native-status-bar-size';
 import Realm from 'realm';
 import { setUserTickets, setTicketImage } from '../../../../includes/firebase/database';
 
@@ -25,7 +25,7 @@ window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = Blob;
 
 var { height } = Dimensions.get('window');
-//var imageHeight = timerRowImageHeight - (StatusBar.currentHeight ? StatusBar.currentHeight : 0)// - 120 - 30 - 90 - 60;
+var imageHeight = timerRowImageHeight - (StatusBar.currentHeight ? StatusBar.currentHeight : 0);
 
 /* global require */
 export default class TimerList extends Component {
