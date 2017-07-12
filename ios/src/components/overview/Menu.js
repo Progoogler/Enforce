@@ -187,6 +187,7 @@ Menu.propTypes = {
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
+    alignItems: 'cener',
   },
   searchIcon: {
     marginTop: '1%',
