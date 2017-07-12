@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableHighlight,
   Image,
@@ -60,8 +59,8 @@ export default class Navigation extends Component {
             style={styles.searchIcon} >
             <Image source={require('../../../../shared/images/search-icon.png')} />
           </TouchableHighlight>
-          <Text style={{
-            //opacity: this.state.titleOpacity,
+          <Animated.Text style={{
+            opacity: this.state.titleOpacity,
             flex: .70,
             fontSize: titleFontSize,
             color: 'white',
@@ -71,7 +70,7 @@ export default class Navigation extends Component {
               width: 2,
               height: 1
             },
-          }}>{ this.props.title ? this.props.title : 'Enforce' }</Text>
+          }}>{ this.props.title ? this.props.title : 'Enforce' }</Animated.Text>
           <TouchableHighlight
             underlayColor={primaryBlue}
             onPress={ () => {
@@ -125,6 +124,7 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     height: navBarContainerHeight,
   },
   searchIcon: {
