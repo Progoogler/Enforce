@@ -4,9 +4,10 @@ import {
   StyleSheet,
   Image,
   Modal,
-  TouchableOpacity,
+  TouchableNativeFeedback,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { primaryBlue, navigationBarHeight } from '../../styles/common';
 
 /* global require */
 export default class ImageModal extends Component {
@@ -20,23 +21,23 @@ export default class ImageModal extends Component {
         transparent={false}
         onRequestClose={() => this.props.maximizeImage()}
         visible={this.props.visibility} >
-            <View style={styles.container}>
+        <View style={styles.container}>
           <Image style={styles.image} source={{uri: this.props.uri}} />
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              activeOpacity={.6}
+            <TouchableNativeFeedback
+              background={TouchableNativeFeedback.Ripple('white')}
               onPress={() => this.props.maximizeImage()} >
               <View style={styles.arrowContainer}>
                 <Image style={styles.backArrow} source={require('../../../../shared/images/backarrow.jpg')} />
               </View>
-            </TouchableOpacity>
+            </TouchableNativeFeedback>
           </View>
         </View>
       </Modal>
     );
   }
-  
+
 }
 
 ImageModal.propTypes = {
@@ -46,23 +47,23 @@ ImageModal.propTypes = {
 }
 
 const styles = StyleSheet.create({
-   container: {
-     flex: 1,
-   },
-   image: {
-     flex: 1,
-     alignSelf: 'stretch',
-   },
+  container: {
+    flex: 1,
+  },
+  image: {
+    flex: 1,
+    alignSelf: 'stretch',
+  },
   buttonContainer: {
-    backgroundColor: '#4286f4',
+    backgroundColor: primaryBlue,
     alignSelf: 'stretch',
   },
   arrowContainer: {
     justifyContent: 'center',
     width: '100%',
-    height: 60,
+    height: navigationBarHeight,
   },
   backArrow: {
-    marginLeft: 25,
+    marginLeft: '6%',
   },
 });

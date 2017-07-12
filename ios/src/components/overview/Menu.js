@@ -11,14 +11,21 @@ import PropTypes from 'prop-types';
 
 import MainButtons from './MainButtons';
 import Search from '../search';
-
+import {
+  primaryBlue,
+  blueTextShadow,
+  titleFontSize,
+  searchContainerHeight,
+  resultContainerHeight,
+  noResultContainerHeight,
+ } from '../../styles/common';
 
 /* global require */
 export default class Menu extends Component {
   constructor() {
     super();
     this.state = {
-      containerHeight: new Animated.Value(130),
+      containerHeight: new Animated.Value(searchContainerHeight),
       containerOpacity: new Animated.Value(1),
       buttonOpacity: new Animated.Value(1),
       titleOpacity: new Animated.Value(0),
@@ -30,10 +37,9 @@ export default class Menu extends Component {
     return (
 
       <Animated.View style={{
-        zIndex: 9,
         height: this.state.containerHeight,
         alignSelf: 'stretch',
-        backgroundColor: '#4286f4',
+        backgroundColor: primaryBlue,
       }}>
       {
 
@@ -63,19 +69,18 @@ export default class Menu extends Component {
                   buttonOpacity: new Animated.Value(0),
                 });
               }}
-              underlayColor={'#4286f4'}
+              underlayColor={primaryBlue}
               style={styles.searchIcon} >
               <Image source={require('../../../../shared/images/search-icon.png')} />
             </TouchableHighlight>
             <Animated.Text style={{
               opacity: this.state.titleOpacity,
               flex: .70,
-              marginTop: 10,
-              marginLeft: -10,
-              fontSize: 32,
+              fontSize: titleFontSize,
               color: 'white',
+              marginLeft: '5%',
               textAlignVertical: 'center',
-              textShadowColor: '#3399ff',
+              textShadowColor: blueTextShadow,
               textShadowOffset: {
                 width: 2,
                 height: 1
@@ -86,7 +91,7 @@ export default class Menu extends Component {
 
             </Animated.Text>
             <TouchableHighlight
-              underlayColor='#4286f4'
+              underlayColor={primaryBlue}
               onPress={ () => {
                 Keyboard.dismiss();
                 this.props.navigation.navigate('DrawerOpen');
@@ -95,7 +100,7 @@ export default class Menu extends Component {
               <Image source={require('../../../../shared/images/menu-icon.jpg')} />
             </TouchableHighlight>
           </View>
-          <Animated.View style={{ opacity: this.state.buttonOpacity }} >
+          <Animated.View style={{ opacity: this.state.buttonOpacity, marginTop: '2%', }} >
             <MainButtons navigation={this.props.navigation} searching={this.state.search} />
           </Animated.View>
         </View>
@@ -122,13 +127,13 @@ export default class Menu extends Component {
     if (extend) {
       Animated.timing(
         this.state.containerHeight,
-        { toValue: 250,
+        { toValue: resultContainerHeight, // 250
           duration: 500, },
         ).start();
       } else {
         Animated.timing(
           this.state.containerHeight,
-          { toValue: 130,
+          { toValue: searchContainerHeight, //120
             duration: 500, },
         ).start();
       }
@@ -137,7 +142,7 @@ export default class Menu extends Component {
     noResultNotificationForMenu() {
       Animated.timing(
         this.state.containerHeight, {
-          toValue: 200,
+          toValue: noResultContainerHeight, //200,
           duration: 600,
         },
       ).start();
@@ -145,7 +150,7 @@ export default class Menu extends Component {
       setTimeout(() => {
         Animated.timing(
           this.state.containerHeight, {
-            toValue: 130,
+            toValue: searchContainerHeight,
             duration: 600,
           },
         ).start();
@@ -167,7 +172,7 @@ export default class Menu extends Component {
       ),
       Animated.timing(
         this.state.containerHeight,
-        { toValue: 130,
+        { toValue: searchContainerHeight,
           duration: 350, },
       ),
     ]).start();
@@ -182,22 +187,12 @@ Menu.propTypes = {
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
-    backgroundColor: '#4286f4',
-    paddingTop: 15,
-    zIndex: 10,
   },
   searchIcon: {
-    marginTop: 5,
-    marginRight: 5,
-    height: 60,
-    width: 60,
+    marginTop: '1%',
   },
   headerNavigation: {
     position: 'absolute',
-    right: .25,
-    height: 60,
-    marginTop: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
+    right: '1%',
   },
 });

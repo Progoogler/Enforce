@@ -4,6 +4,7 @@ import {
   Animated,
   Text,
 } from 'react-native';
+import { extraLargeFontSize } from '../../styles/common';
 
 export default class Notification extends Component {
   constructor(props) {
@@ -42,6 +43,6 @@ const styles = StyleSheet.create({
   text: {
     color: 'rgba(255, 255, 255, 1.0)',
     fontWeight: 'bold',
-    fontSize: 28,
+    fontSize: extraLargeFontSize,
   },
 });

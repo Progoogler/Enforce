@@ -5,28 +5,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
-
-const styles = StyleSheet.create({
-  container: {
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#4286f4',
-    marginTop: -10,
-    zIndex: 10,
-  },
-  text: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'white',
-    textShadowColor: 'grey',
-    textShadowOffset: {
-      width: 1,
-      height: 1
-    },
-  },
-});
-
+import { primaryBlue, mediumFontSize, timeLimitTitleContainerHeight } from '../../styles/common';
 
 
 class Title extends Component {
@@ -54,5 +33,25 @@ class Title extends Component {
 }
 
 Title.propTypes = { limit: PropTypes.number.isRequired };
+
+const styles = StyleSheet.create({
+  container: {
+    height: timeLimitTitleContainerHeight,  //40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: primaryBlue,
+    marginTop: '-1%',
+  },
+  text: {
+    fontSize: mediumFontSize,
+    fontWeight: 'bold',
+    color: 'white',
+    textShadowColor: 'grey',
+    textShadowOffset: {
+      width: 1,
+      height: 1
+    },
+  },
+});
 
 export default Title;

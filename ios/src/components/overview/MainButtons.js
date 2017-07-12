@@ -6,7 +6,7 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import PropTypes from 'prop-types';
-
+import { primaryBlue } from '../../styles/common';
 
 /* global require */
 export default class MainButtons extends Component {
@@ -27,7 +27,7 @@ export default class MainButtons extends Component {
         <View style={styles.buttonColumn}>
           <TouchableHighlight
             style={styles.button}
-            underlayColor='#4286f4'
+            underlayColor={primaryBlue}
             onHideUnderlay={() => {this._onHideUnderlay('map')}}
             onShowUnderlay={() => {this._onShowUnderlay('map')}}
             onPress={() => this.props.navigation.navigate('Map')} >
@@ -41,7 +41,7 @@ export default class MainButtons extends Component {
         <View style={styles.buttonColumn}>
           <TouchableHighlight
             style={ styles.button }
-            underlayColor='#4286f4'
+            underlayColor={primaryBlue}
             onHideUnderlay={() => {this._onHideUnderlay('camera')}}
             onShowUnderlay={() => {this._onShowUnderlay('camera')}}
             onPress={() => this.props.navigation.navigate('Camera')} >
@@ -69,8 +69,7 @@ const styles = StyleSheet.create({
   mainButtonsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#4286f4',
-    marginTop: -10,
+    backgroundColor: primaryBlue,
   },
   buttonColumn: {
     flex: .5,
@@ -80,18 +79,18 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     bottom: 0,
-    borderWidth: 5,
+    borderWidth: 3,
     borderColor: 'white',
   },
   button: {
     height: 70,
-    paddingBottom: 10,
+    paddingBottom: '2%',
     alignItems: 'center',
     justifyContent: 'center',
   },
   separator: {
     borderColor: 'white',
-    borderWidth: .45,
-    height: 35,
+    borderWidth: .35,
+    height: '45%',
   },
 });

@@ -3,8 +3,11 @@ import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
 } from 'react-native';
+import {
+  primaryBlue,
+  smallFontSize,
+} from '../../styles/common';
 
 const ThrowConnectionMessage = () => (
   <View style={styles.container}>
@@ -12,25 +15,23 @@ const ThrowConnectionMessage = () => (
   </View>
 );
 
-const { width } = Dimensions.get('window');
-
 const styles = StyleSheet.create({
+  container: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    width: '100%',
+    position: 'absolute',
+    bottom: 0,
+    zIndex: 10,
+    borderTopWidth: 2,
+    borderColor: primaryBlue,
+  },
   message: {
-    padding: 18,
-    fontSize: 16,
+    padding: '5%',
+    fontSize: smallFontSize,
   },
 });
 
-styles.container = {
-  position: 'absolute',
-  bottom: 0,
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: 'white',
-  width: width,
-  zIndex: 10,
-  borderTopWidth: 2,
-  borderColor: '#4286f4',
-};
 
 export default ThrowConnectionMessage;

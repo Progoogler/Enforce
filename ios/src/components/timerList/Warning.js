@@ -7,6 +7,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import {
+  primaryBlue,
+  largeFontSize,
+  mediumFontSize,
+  warningContainerMarginTop,
+} from '../../styles/common';
 
 export default class Warning extends Component {
   constructor() {
@@ -56,46 +62,44 @@ Warning.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 170,
-    backgroundColor: '#4286f4',
-    padding: 15,
+    marginTop: warningContainerMarginTop,
+    backgroundColor: primaryBlue,
+    padding: '5%',
   },
   containerBorder: {
     backgroundColor: 'white',
     alignItems: 'center',
     borderRadius: 5,
-    padding: 20,
+    padding: '6%',
   },
   warning: {
     color: 'green',
     fontWeight: 'bold',
-    fontSize: 24,
-    margin: 10,
+    fontSize: largeFontSize,
+    margin: '3%',
   },
   message: {
-    fontSize: 20,
+    fontSize: mediumFontSize,
   },
   buttons: {
     flexDirection: 'row',
-    marginTop: 20,
+    alignItems: 'center',
+    marginTop: '6%',
   },
   noButtonText: {
-    fontSize: 22,
+    fontSize: largeFontSize,
     fontWeight: 'bold',
     color: 'white',
   },
   yesButtonText: {
-    fontSize: 22,
-    color: '#4286f4',
+    fontSize: largeFontSize,
+    color: primaryBlue,
   },
   no: {
     borderWidth: 1,
     borderRadius: 5,
-    backgroundColor: '#4286f4',
-    marginRight: 50,
-    padding: 10,
+    backgroundColor: primaryBlue,
+    marginRight: '15%',
+    padding: '3%',
   },
-  yes: {
-    padding: 10,
-  }
 });

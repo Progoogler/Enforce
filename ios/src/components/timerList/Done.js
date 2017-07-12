@@ -5,13 +5,13 @@ import {
   StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { primaryBlue, largeFontSize } from '../../styles/common';
 
 const Done = (props) => (
   <TouchableOpacity
     activeOpacity={.5}
     style={styles.container}
-    onPress={() => {props.navigation.navigate('Overview')}}
-    underlayColor="#0055e1" >
+    onPress={() => {props.navigation.navigate('Overview')}} >
 
     <Text style={styles.text}>Done</Text>
 
@@ -25,15 +25,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-    backgroundColor: '#4286f4',
-    height: 80,
-    width: 100,
+    backgroundColor: primaryBlue,
+    height: '10%',
+    width: '20%',
     borderRadius: 10,
-    marginBottom: 18,
+    marginBottom: '6%',
   },
   text: {
-    padding: 5,
-    fontSize: 24,
+    padding: '2%',
+    fontSize: largeFontSize,
     color: 'white',
     fontWeight: 'bold',
   },

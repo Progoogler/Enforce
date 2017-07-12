@@ -5,6 +5,10 @@ import {
   StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import {
+  primaryBlue,
+  smallFontSize,
+} from '../../styles/common';
 
 export default class CustomCallout extends Component {
   render() {
@@ -76,11 +80,12 @@ const styles = StyleSheet.create({
   blue: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#4286f4',
+    backgroundColor: primaryBlue,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 50,
-    padding: 6,
+    padding: '2%',
+    marginBottom: -2,
   },
   green: {
     flex: 1,
@@ -88,12 +93,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 50,
-    padding: 6,
+    padding: '2%',
+    marginBottom: -2,
   },
   message: {
     textAlign: 'center',
+    fontSize: smallFontSize,
     color: 'white',
-    paddingBottom: 8,
+    margin: '1%',
   },
   blueTriangle: {
     width: 0,
@@ -105,7 +112,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 20,
     borderLeftColor: 'transparent',
     borderRightColor: 'transparent',
-    borderBottomColor: '#4286f4',
+    borderBottomColor: primaryBlue,
     transform: [
       {rotate: '180deg'}
     ]

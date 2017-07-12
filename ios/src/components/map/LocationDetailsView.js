@@ -4,6 +4,12 @@ import {
   Text,
   StyleSheet,
 } from 'react-native';
+import {
+  primaryBlue,
+  mediumFontSize,
+  smallFontSize,
+} from '../../styles/common';
+
 
 export default class LocationDetailsView extends Component {
 
@@ -23,28 +29,28 @@ export default class LocationDetailsView extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#4286f4',
+    backgroundColor: primaryBlue,
     alignSelf: 'stretch',
     zIndex: 10,
   },
   containerBorder: {
     backgroundColor: 'white',
-    margin: 10,
-    padding: 5,
+    margin: '3%',
+    padding: '1.5%',
   },
   row: {
     flexDirection: 'row',
   },
   bold: {
     fontWeight: 'bold',
-    fontSize: 20,
-    margin: 5,
-    color: '#4286f4',
+    fontSize: mediumFontSize,
+    margin: '1.5%',
+    color: primaryBlue,
   },
   details: {
-    color: '#4286f4',
+    color: primaryBlue,
     fontWeight: 'bold',
-    fontSize: 16,
-    margin: 5,
+    fontSize: smallFontSize,
+    margin: '1.5%',
   },
 });

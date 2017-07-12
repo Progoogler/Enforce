@@ -10,6 +10,12 @@ import {
 import PropTypes from 'prop-types';
 
 import Search from '../search';
+import {
+  titleFontSize,
+  primaryBlue,
+  blueTextShadow,
+  navBarContainerHeight,
+} from '../../styles/common';
 
 /* global require */
 export default class Navigation extends Component {
@@ -49,26 +55,24 @@ export default class Navigation extends Component {
                 titleOpacity: new Animated.Value(0),
               });
             }}
-            underlayColor={'#4286f4'}
+            underlayColor={primaryBlue}
             style={styles.searchIcon} >
             <Image source={require('../../../../shared/images/search-icon.png')} />
           </TouchableHighlight>
           <Animated.Text style={{
             opacity: this.state.titleOpacity,
             flex: .70,
-            marginTop: 10,
-            marginLeft: -10,
-            fontSize: 32,
+            fontSize: titleFontSize,
             color: 'white',
             textAlignVertical: 'center',
-            textShadowColor: '#3399ff',
+            textShadowColor: blueTextShadow,
             textShadowOffset: {
               width: 2,
               height: 1
             },
           }}>{ this.props.title ? this.props.title : 'Enforce' }</Animated.Text>
           <TouchableHighlight
-            underlayColor='#4286f4'
+            underlayColor={primaryBlue}
             onPress={ () => {
               Keyboard.dismiss();
               this.props.navigation.navigate('DrawerOpen');
@@ -115,27 +119,20 @@ Navigation.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    zIndex: 10,
     alignSelf: 'stretch',
-    backgroundColor: '#4286f4',
+    backgroundColor: primaryBlue,
   },
   headerContainer: {
     flexDirection: 'row',
-    paddingTop: 15,
+    height: navBarContainerHeight,
   },
   searchIcon: {
-    marginTop: 5,
-    marginRight: 5,
+    marginTop: '1%',
     flex: .15,
-    height: 60,
-    width: 60,
   },
   headerNavigation: {
+    flex: .15,
     position: 'absolute',
-    right: .25,
-    height: 60,
-    marginTop: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
+    right: '1%',
   },
 });

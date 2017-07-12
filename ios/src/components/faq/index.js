@@ -9,21 +9,26 @@ import {
 import PropTypes from 'prop-types';
 import Navigation from '../navigation/StaticNavigation';
 
+import {
+  primaryBlue,
+  largeFontSize,
+  mediumFontSize,
+  smallFontSize,
+} from '../../styles/common';
+
+/*global require*/
 export default class FAQs extends Component {
   static navigationOptions = {
     drawerLabel: 'FAQs',
     drawerIcon: () => (
-      <Image
-        source={require('../../../../shared/images/question-mark.png')} /*global require*/
-        style={[styles.icon]}
-      />
+      <Image source={require('../../../../shared/images/question-mark.png')} />
     )
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <Navigation navigation={this.props.navigation} title={'Enforce'} />
+        <Navigation navigation={this.props.navigation} title={'FAQs'} />
         <ScrollView>
           <Text style={styles.title}>Frequently Asked Questions</Text>
           <Text style={styles.question}>How to get started?</Text>
@@ -65,22 +70,22 @@ const styles = StyleSheet.create({
   },
   title: {
     alignSelf: 'center',
-    color: '#4286f4',
-    margin: 45,
-    fontSize: 22,
+    color: primaryBlue,
+    marginTop: '10%',
+    marginBottom: '3%',
+    fontSize: largeFontSize,
   },
   question: {
     fontWeight: 'bold',
-    margin: 15,
-    fontSize: 18,
-    paddingRight: 25,
+    margin: '5%',
+    fontSize: mediumFontSize,
   },
   answer: {
-    fontSize: 15,
-    paddingLeft: 25,
-    paddingRight: 35,
+    fontSize: smallFontSize,
+    paddingLeft: '7%',
+    paddingRight: '7%',
   },
   footer: {
-    marginBottom: 40,
+    marginBottom: '5%',
   },
 });

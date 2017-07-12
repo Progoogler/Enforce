@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import FlatList from 'react-native/Libraries/Lists/FlatList';
 import Realm from 'realm';
 import Row from './Row';
-import Schema from '../../realm';
+import Schema from '../../db/realm';
 import insertionSortModified from './insertionSort';
 import { unlink } from 'react-native-fs';
 import { removeTicketPath } from '../../../../includes/firebase/database';
@@ -26,13 +26,10 @@ export default class TimersList extends Component {
       refreshing: false,
       updateRows: 0,
     };
+    this._key = 0;
   }
 
   render() {
-    if (this.list.length < 1) {
-      return <View />
-    }
-
     return (
       <FlatList
         style={styles.flatlist}
@@ -41,7 +38,7 @@ export default class TimersList extends Component {
         onRefresh={this._onRefresh.bind(this)}
         refreshing={this.state.refreshing}
         renderItem={this._renderItem.bind(this)}
-        keyExtractor={this._keyExtractor} />
+        keyExtractor={this._keyExtractor.bind(this)} />
     );
   }
 
@@ -49,7 +46,7 @@ export default class TimersList extends Component {
     this.latitude = this.realm.objects('Coordinates')[0].latitude;
     this.longitude = this.realm.objects('Coordinates')[0].longitude;
     navigator.geolocation.getCurrentPosition(
-      position => {
+      position => { //console.log(this.realm.where(Coordinates.class).findFirst());
         this.latitude = parseFloat(position.coords.latitude);
         this.longitude = parseFloat(position.coords.longitude);
         this.realm.write(() => {
@@ -80,8 +77,6 @@ export default class TimersList extends Component {
     let yesterday = await AsyncStorage.getItem('@Enforce:currentDay');
     if (today > parseInt(yesterday) || today - parseInt(yesterday) < 0) {
       this._reset();
-    } else if (!yesterday) {
-      this._reset();
     }
   }
 
@@ -104,7 +99,6 @@ export default class TimersList extends Component {
         refPath && removeTicketPath(refPath, removalDate); // Delete path from Firebase.
       }
     }
-    // TODO Consider adding condition to push date only if upload data settings is on
     registerDate && dateCount.push(registerDate); // Add the previous date to the History list
     dateCount = JSON.stringify(dateCount);
     AsyncStorage.setItem('@Enforce:dateCount', dateCount);
@@ -113,7 +107,6 @@ export default class TimersList extends Component {
     let ticketList = this.realm.objects('Ticketed');
     let expiredList = this.realm.objects('Expired');
     if (timerLists.length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
-      console.log('starting reset')
       this._loopDeletion(timerLists);
       if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
       if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
@@ -124,7 +117,6 @@ export default class TimersList extends Component {
       setTimeout(() => {
         Realm.clearTestState();
         this.realm = new Realm({schema: Schema});
-        console.log('set Schema');
         this.realm.write(() => {
           this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
           this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
@@ -153,7 +145,6 @@ export default class TimersList extends Component {
           unlink(timer.mediaPath)
           .then(() => {
             console.log('FILE DELETED');
-
             this.realm.write(() => {
               this.realm.delete(timer);
             });
@@ -169,7 +160,6 @@ export default class TimersList extends Component {
     timers.forEach((timer) => {
       unlink(timer.mediaPath)
       .then(() => {
-        console.log('PICTURE REMOVED');
         this.realm.write(() => {
           this.realm.delete(timer);
         });
@@ -181,7 +171,6 @@ export default class TimersList extends Component {
         this.list[timerObj].list = {};
       }
     }
-
     setTimeout(() => {
       this.realm.write(() => {
         this.realm.delete(timers);
@@ -219,8 +208,8 @@ export default class TimersList extends Component {
     return <View style={styles.separator} />;
   }
 
-  _keyExtractor(item: object = {list: [{'createdAt': 0}]}): number {
-    return item.list[0].createdAt;
+  _keyExtractor(item): number {
+    return this._key++;
   }
 
 }
@@ -233,7 +222,6 @@ TimersList.propTypes = {
 const styles = StyleSheet.create({
   flatlist: {
     alignSelf: 'stretch',
-    marginTop: 25,
   },
   separator: {
     flex: 1,

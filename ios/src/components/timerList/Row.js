@@ -7,7 +7,16 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-
+import {
+  primaryBlue,
+  extraLargeFontSize,
+  largeFontSize,
+  mediumFontSize,
+  smallFontSize,
+  timerRowImageHeight,
+  timerRowDescContainerHeight,
+  timerRowButtonsContainerHeight,
+} from '../../styles/common';
 
 export default class Row extends Component {
   constructor() {
@@ -15,11 +24,11 @@ export default class Row extends Component {
   }
 
   render() {
-    if (this.props.data.createdAt === 0) return <View/>;
+    if (this.props.data.createdAt === 0) return <View/>
     return (
       <View style={styles.container} >
         <Image
-            style={{height: this.props.imageHeight}}
+          style={{height: this.props.imageHeight}}
           source={{uri: this.props.data.mediaUri}} />
         <View style={styles.descriptionContainer}>
           <Text style={styles.timeLeft}>{this._getTimeLeft(this.props.data)}</Text>
@@ -100,18 +109,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   timeUp: {
-    fontSize: 20,
+    fontSize: largeFontSize,
     fontWeight: 'bold',
     color:'green',
   },
   timeUpFar: {
-    fontSize: 14,
+    fontSize: smallFontSize,
     fontWeight: 'bold',
   },
   timeUpNear: {
-    fontSize: 18,
+    fontSize: mediumFontSize,
     fontWeight: 'bold',
-    color: '#4286f4',
+    color: primaryBlue,
   },
   buttonsContainer: {
     alignSelf: 'stretch',
@@ -121,11 +130,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 2,
     borderColor: 'white',
-    height: 60,
+    height: timerRowButtonsContainerHeight,//60,
   },
   rowButton: {
     flex: .5,
-    backgroundColor: '#4286f4',
+    backgroundColor: primaryBlue,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -134,42 +143,37 @@ const styles = StyleSheet.create({
     borderWidth: .5,
   },
   buttonText: {
-    fontSize: 24,
+    fontSize: largeFontSize,
     color: 'white',
   },
   descriptionContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 80,
-    padding: 15,
+    height: timerRowDescContainerHeight,//90,
+    padding: '4%',
   },
   timeContainer: {
     flexDirection: 'column',
   },
-  timeLeft: {
-    fontSize: 18,
-  },
   timeCreatedAt: {
-    color: '#4286f4',
-    fontSize: 30,
+    color: primaryBlue,
+    fontSize: extraLargeFontSize,
   },
   locationContainer: {
     position: 'absolute',
-    marginTop: 330,
+    bottom: '45%',
     alignSelf: 'center',
     backgroundColor: 'white',
     borderRadius: 50,
-    paddingTop: 2,
-    paddingBottom: 2,
   },
   location: {
     textAlign: 'center',
-    color: '#4286f4',
-    fontSize: 18,
-    paddingLeft: 8,
-    paddingRight: 8,
-    paddingBottom: 4,
-    paddingTop: 4,
+    color: primaryBlue,
+    fontSize: mediumFontSize,
+    paddingLeft: '2%',
+    paddingRight: '2%',
+    paddingBottom: '1%',
+    paddingTop: '1%',
   },
 });

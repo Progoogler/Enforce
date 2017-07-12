@@ -10,7 +10,6 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Realm from 'realm';
-import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 import Navigation from '../navigation/StaticNavigation';
 import LocationDetailsView from './LocationDetailsView';
@@ -22,7 +21,6 @@ export default class MapApp extends Component {
     super();
     this.state = {
       animating: true,
-      modalVisible: false, // pointless TODO check for removal
       showError: false,
       showLocationTip: false,
       polyline: [null],
@@ -86,48 +84,21 @@ export default class MapApp extends Component {
 
   async componentWillMount() {
     this._mounted = true;
-    let settings = await AsyncStorage.getItem('@Enforce:settings');
-    settings = JSON.parse(settings);
 
-    if (this.props.navigation.state.params) this.setModalVisible();
-
-    if (settings && settings.location) {
-      LocationServicesDialogBox.checkLocationServicesIsEnabled({
-          message: "<h2>Use Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
-          ok: "OK",
-          cancel: "Continue without"
-      }).then(() => {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            let latitude = parseFloat(position.coords.latitude);
-            let longitude = parseFloat(position.coords.longitude);
-            this._animateToCoord(latitude, longitude);
-            this.realm.write(() => {
-              this.realm.objects('Coordinates')[0].latitude = latitude;
-              this.realm.objects('Coordinates')[0].longitude = longitude;
-            });
-          }, () => {
-            this._mounted && this.setState({showError: true, animating: false});
-          },
-          {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
-        );
-      });
-    } else {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          let latitude = parseFloat(position.coords.latitude);
-          let longitude = parseFloat(position.coords.longitude);
-          this._animateToCoord(latitude, longitude);
-          this.realm.write(() => {
-            this.realm.objects('Coordinates')[0].latitude = latitude;
-            this.realm.objects('Coordinates')[0].longitude = longitude;
-          });
-        }, () => {
-          this._mounted && this.setState({showError: true, animating: false});
-        },
-        {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
-      );
-    }
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        let latitude = parseFloat(position.coords.latitude);
+        let longitude = parseFloat(position.coords.longitude);
+        this._animateToCoord(latitude, longitude);
+        this.realm.write(() => {
+          this.realm.objects('Coordinates')[0].latitude = latitude;
+          this.realm.objects('Coordinates')[0].longitude = longitude;
+        });
+      }, () => {
+        this._mounted && this.setState({showError: true, animating: false});
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
+    );
   }
 
   componentDidMount() {
@@ -172,9 +143,6 @@ export default class MapApp extends Component {
   componentWillUnmount() {
     clearTimeout(this._timeout);
     this._mounted = false;
-    if (this.state.modalVisible) {
-      this.setState({modalVisible: false});
-    }
     if (this.props.navigation.state.params) {
       // Remove params for fresh state when main Map Button is pressed
       this.props.navigation.state.params = undefined;
@@ -385,32 +353,23 @@ export default class MapApp extends Component {
   }
 
   checkLocationAndRender() {
-    LocationServicesDialogBox.checkLocationServicesIsEnabled({
-        message: "<h2>Use Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
-        ok: "OK",
-        cancel: "Continue without"
-    }).then(() => {
-      navigator.geolocation.getCurrentPosition(
-        position => {
-          let latitude = parseFloat(position.coords.latitude);
-          let longitude = parseFloat(position.coords.longitude);
-          this._animateToCoord(latitude, longitude);
-          this.realm.write(() => {
-            this.realm.objects('Coordinates')[0].latitude = latitude;
-            this.realm.objects('Coordinates')[0].longitude = longitude;
-          });
-          this._mounted && this.setState({showError: false, animating: false});
-        }, () => {
-          this._mounted && this.setState({showError: true, animating: false});
-        },
-        {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
-      );
-    });
-  }
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        let latitude = parseFloat(position.coords.latitude);
+        let longitude = parseFloat(position.coords.longitude);
+        this._animateToCoord(latitude, longitude);
+        this.realm.write(() => {
+          this.realm.objects('Coordinates')[0].latitude = latitude;
+          this.realm.objects('Coordinates')[0].longitude = longitude;
+        });
+        this._mounted && this.setState({showError: false, animating: false});
+      }, () => {
+        this._mounted && this.setState({showError: true, animating: false});
+      },
+      {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
+    );
+  });
 
-  setModalVisible() {
-    this._mounted && this.setState({modalVisible: !this.state.modalVisible});
-  }
 }
 
 MapApp.propTypes = {

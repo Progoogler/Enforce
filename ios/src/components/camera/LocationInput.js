@@ -9,6 +9,14 @@ import {
 import PropTypes from 'prop-types';
 import { AutoGrowingTextInput } from 'react-native-autogrow-textinput';
 
+import {
+  primaryBlue,
+  textInputContainerHeight,
+  navigationBarHeight,
+  largeFontSize,
+  mediumFontSize,
+} from '../../styles/common';
+
 export default class LocationInput extends Component {
   constructor() {
     super();
@@ -25,21 +33,20 @@ export default class LocationInput extends Component {
         visible={this.props.visibility}
         onRequestClose={() => this.props.setModalVisible(this.state.text)} >
         <View style={styles.container} >
-          <View style={styles.containerBorder} >
+
 
             <Text style={styles.title}>Location Details:</Text>
             <View style={styles.textInputContainer}>
               <AutoGrowingTextInput
-                //style={styles.textInput}
-                ref={(ref) => this._textInput = ref }
+                style={styles.textInput}
+                ref={(ref) => this._textInput = ref}
                 onChange={(event) => this._handleTextInput(event)}
                 underlineColorAndroid={'white'}
                 autoCorrect={false}
                 autoCapitalize={'sentences'}
                 fontSize={26}
                 maxLength={60}
-                initialHeight={120}
-                maxHeight={160}
+                minHeight={120}
                 autoFocus={true}
                 value={this.state.text} />
 
@@ -47,12 +54,12 @@ export default class LocationInput extends Component {
             <Text style={styles.count}>{60 - this.state.text.length} characters remaining</Text>
             <View style={styles.buttonRow}>
               <TouchableOpacity
-                style={styles.xButton}
+                style={styles.cancelButton}
                 onPress={() => {
                   this.setState({text: ''});
                   this.props.setModalVisible('');
                 }}>
-                <Text style={styles.x}>Cancel</Text>
+                <Text style={styles.cancelText}>Cancel</Text>
                 </TouchableOpacity>
               <TouchableOpacity
                 style={styles.doneButton}
@@ -64,7 +71,7 @@ export default class LocationInput extends Component {
                 <Text style={styles.doneText}>Done</Text>
               </TouchableOpacity>
             </View>
-          </View>
+
         </View>
       </Modal>
     );
@@ -78,54 +85,50 @@ export default class LocationInput extends Component {
 LocationInput.propTypes = {
   visibility: PropTypes.bool.isRequired,
   setModalVisible: PropTypes.func.isRequired,
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#4286f4',
-    marginTop: 60,
-  },
-  containerBorder: {
-    margin: 10,
-    padding: 5,
+    backgroundColor: primaryBlue,
+    marginTop: navigationBarHeight,
+    padding: '4%',
   },
   buttonRow: {
     flexDirection: 'row',
     alignSelf: 'flex-end',
-    margin: 15,
+    margin: '4%',
   },
-  xButton: {
+  cancelButton: {
       alignItems: 'center',
       alignSelf: 'flex-end',
-      marginRight: 40,
-      marginBottom: 6,
+      marginRight: '12%',
+      marginBottom: '2%',
   },
-  x: {
+  cancelText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: mediumFontSize,
   },
   title: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 20,
-    marginLeft: 15,
+    fontSize: largeFontSize,
+    marginLeft: '5%',
   },
   textInputContainer: {
-    marginLeft: 15,
-    //height: 120,
+    marginLeft: '5%',
+    height: textInputContainerHeight,
   },
   count: {
-    marginLeft: 25,
+    marginLeft: '8%',
   },
   doneButton: {
     alignItems: 'center',
     backgroundColor: 'green',
-    width: 60,
+    padding: '2%',
     borderRadius: 6,
   },
   doneText: {
-    fontSize: 20,
-    padding: 4,
+    fontSize: mediumFontSize,
     color: 'white',
   },
 });

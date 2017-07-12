@@ -5,20 +5,27 @@ import {
   Image,
   StyleSheet,
   ScrollView,
-  Dimensions,
   TouchableOpacity,
+  TouchableNativeFeedback,
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
 import PropTypes from 'prop-types';
-
+import {
+  primaryBlue,
+  largeFontSize,
+  mediumFontSize,
+  smallFontSize,
+  timerRowHeight,
+  timerRowWidth,
+  timerRowDescWidth,
+  timerRowDistanceWidth,
+} from '../../styles/common';
 
 /* global require */
 export default class Row extends Component {
   constructor() {
     super();
-    this.state = {
-      mounted: false,
-    }
+    this.mounted = false,
     this.distLat;
     this.distLon;
   }
@@ -32,17 +39,13 @@ export default class Row extends Component {
             directionalLockEnabled={true}
             showsHorizontalScrollIndicator={false} >
             <View style={styles.innerContainer} >
-              <TouchableOpacity
-                activeOpacity={.6}
+              <TouchableNativeFeedback
+                background={TouchableNativeFeedback.Ripple(primaryBlue, true)}
                 onPress={() => this._openTimerListPage(this.props.data.list)} >
 
-                <View style={styles.timerRow}>
+                <View style={styles.timerRowDesc}>
                   <Text style={styles.timerRowLength}>
-                    {  this.props.data.list.length < 10 ?
-                       '   ' + this.props.data.list.length + ' ' :
-                       this.props.data.list.length < 100 ?
-                       ' ' + this.props.data.list.length + ' ' :
-                       this.props.data.list.length }
+                    { this.props.data.list.length }
                   </Text>
                   <View style={styles.separator} />
                   <Text style={styles.timerRowTime}>
@@ -50,7 +53,7 @@ export default class Row extends Component {
                   </Text>
                 </View>
 
-              </TouchableOpacity>
+              </TouchableNativeFeedback>
 
               <View style={styles.distanceContainer}>
                 <TouchableOpacity
@@ -76,25 +79,43 @@ export default class Row extends Component {
   }
 
   componentWillMount() {
+    if (this.props.data.list.length < 10) {
+      var timerLengthPaddingLeft = '10%';
+    } else if (this.props.data.list.length < 100) {
+      var timerLengthPaddingLeft = '6%';
+    } else {
+      var timerLengthPaddingLeft = '3%';
+    }
+    styles.timerRowLength = {
+      fontSize: largeFontSize,
+      color: primaryBlue,
+      paddingLeft: timerLengthPaddingLeft,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    };
     this._getDistance();
     this.timer = this.props.data.list;
   }
 
   componentDidMount() {
-    const { width } = Dimensions.get('window');
-    styles.innerContainer = {
-      flexDirection: 'row',
-      alignItems: 'center',
-      width: width + 65,
-      borderTopWidth: .5,
+    this.mounted = true;
+  }
+
+  componentWillUpdate() {
+    if (this.props.data.list.length < 10) {
+      var timerLengthPaddingLeft = '10%';
+    } else if (this.props.data.list.length < 100) {
+      var timerLengthPaddingLeft = '6%';
+    } else {
+      var timerLengthPaddingLeft = '3%';
     }
-    styles.timerRow = {
-      flexDirection: 'row',
-      alignItems: 'center',
-      height: 105,
-      width: width - 95,
-    }
-    this.setState({mounted: true});
+    styles.timerRowLength = {
+      fontSize: largeFontSize,
+      fontWeight: 'bold',
+      paddingLeft: timerLengthPaddingLeft,
+      textAlign: 'center',
+      color: primaryBlue,
+    };
   }
 
   getTimeLeft(timer: object): object {
@@ -105,10 +126,9 @@ export default class Row extends Component {
       if (timeLeft < 0) {
       return <Text style={styles.timeUp}>Time is up!</Text>;
     } else if (timeLeft < 60) {
-      return<Text style={styles.timeUp}>less than a minute {'\n'}remaining</Text>;
+      return<Text style={styles.timeUpVeryNear}>less than a minute {'\n'}remaining</Text>;
     } else if (timeLeft < 3600) {
-      if (timeLeft < 300 ) return <Text style={styles.timeUp}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
-      if (timeLeft < 3600 / 4) return <Text style={styles.timeUp}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
+      if (timeLeft < 3600 / 4) return <Text style={styles.timeUpVeryNear}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
       return <Text style={styles.timeUpNear}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
     } else if (timeLeft > 3600) {
       return <Text style={styles.timeUpFar}>{Math.floor(timeLeft / 60 / 60)} hour {Math.floor((timeLeft % 3600) / 60)} minutes remaining</Text>;
@@ -188,59 +208,73 @@ Row.propTypes = {
   longitude: PropTypes.number,
 };
 
+
 const styles = StyleSheet.create({
+  innerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: timerRowWidth,
+    borderTopWidth: .5,
+  },
   innerScroll: {
     flex: 1,
     flexDirection: 'row',
+    height: timerRowHeight,
   },
-  timerRowLength: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    paddingLeft: 22,
-    textAlign: 'center',
-    color: '#4286f4',
+  timerRowDesc: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: timerRowDescWidth,
+  },
+  separator: {
+    marginLeft: '2%',
+    borderWidth: .5,
+    height: '35%',
   },
   timeUp: {
-    fontSize: 20,
+    fontSize: largeFontSize,
+    fontWeight: 'bold',
+    color:'green',
+  },
+  timeUpVeryNear: {
+    fontSize: mediumFontSize,
     fontWeight: 'bold',
     color:'green',
   },
   timeUpFar: {
-    fontSize: 14,
+    fontSize: smallFontSize,
     fontWeight: 'bold',
   },
   timeUpNear: {
-    fontSize: 16,
+    fontSize: mediumFontSize,
     fontWeight: 'bold',
-    color: '#4286f4',
+    color: primaryBlue,
   },
   timerRowTime: {
-    paddingLeft: 12,
+    paddingLeft: '5%',
+  },
+  distanceContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    width: timerRowDistanceWidth,
   },
   button: {
-    backgroundColor: '#4286f4',
+    backgroundColor: primaryBlue,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '3%',
     borderWidth: 1,
     borderRadius: 5,
-    padding: 5,
-    elevation: 2,
+    elevation: 4,
   },
   buttonText: {
     color: 'white',
   },
+  distance: {
+    marginTop: '10%',
+  },
   delete: {
     position: 'absolute',
     right: 0,
-  },
-  separator: {
-    marginLeft: 10,
-    borderWidth: .5,
-    height: 40,
-  },
-  distanceContainer: {
-    flexDirection: 'column',
-  },
-  distance: {
-    marginLeft: 10,
-    marginTop: 5,
   },
 });

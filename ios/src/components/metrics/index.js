@@ -10,8 +10,12 @@ import PropTypes from 'prop-types';
 import MapView from 'react-native-maps';
 import Realm from 'realm';
 import Navigation from '../navigation/StaticNavigation';
+import {
+  primaryBlue,
+  largeFontSize,
+} from '../../styles/common';
 
-
+/*global require*/
 export default class Metrics extends Component {
   constructor() {
     super();
@@ -20,10 +24,7 @@ export default class Metrics extends Component {
   static navigationOptions = {
     drawerLabel: 'Metrics',
     drawerIcon: () => (
-      <Image
-        source={require('../../../../shared/images/bar-icon.png')} /*global require*/
-        style={[styles.icon]}
-      />
+      <Image source={require('../../../../shared/images/bar-icon.png')} />
     )
   };
 
@@ -66,8 +67,7 @@ export default class Metrics extends Component {
               radius={1200}/>
         </MapView.Animated>
         <View style={styles.controlContainer}>
-          <Text style={styles.title}>This page is currently in progress.</Text>
-          <Text style={styles.message}>{"We'll let you know when it's ready!"}</Text>
+          <Text style={styles.message}>{"This page is currently in progress.\n We'll let you know when it's ready!"}</Text>
           <Image style={styles.image} source={require('../../../../shared/images/worker.jpg')} />
         </View>
       </View>
@@ -83,7 +83,7 @@ export default class Metrics extends Component {
       right: 0,
       bottom: 0,
       borderTopWidth: 5,
-      borderColor: '#4286f4',
+      borderColor: primaryBlue,
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: 'white',
@@ -108,17 +108,9 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0, //height / 2 - 100,
-  },
-  image: {
-    //marginTop: 200,
-  },
-  title: {
-    fontSize: 24,
-    //marginTop: 180,
+    bottom: 0,
   },
   message: {
-    fontSize: 24,
-
+    fontSize: largeFontSize,
   },
 });

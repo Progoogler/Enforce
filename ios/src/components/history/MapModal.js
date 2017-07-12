@@ -12,6 +12,10 @@ import PropTypes from 'prop-types';
 
 import MapView, { Marker } from 'react-native-maps';
 import Navigation from '../navigation/StaticNavigation';
+import {
+  primaryBlue,
+  mediumFontSize,
+} from '../../styles/common';
 
 const height = Dimensions.get('window').height;
 
@@ -118,8 +122,8 @@ const styles = StyleSheet.create({
   },
   location: {
     textAlign: 'center',
-    color: '#4286f4',
-    fontSize: 18,
+    color: primaryBlue,
+    fontSize: mediumFontSize,
     paddingLeft: 8,
     paddingRight: 8,
     paddingBottom: 4,

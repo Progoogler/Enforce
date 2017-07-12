@@ -5,6 +5,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { smallFontSize } from '../../styles/common';
 
 const Warning = (props) => (
   <View style={styles.container}>
@@ -20,7 +21,7 @@ Warning.propTypes = { warning: PropTypes.string.isRequired }
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    marginTop: -10,
+    marginTop: '-2%',
   },
   filler: {
     flex: .40,
@@ -30,6 +31,7 @@ const styles = StyleSheet.create({
   },
   text: {
     color: 'red',
+    fontSize: smallFontSize,
   },
 });
 

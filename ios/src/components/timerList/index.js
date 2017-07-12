@@ -3,6 +3,7 @@ import {
   View,
   Image,
   Dimensions,
+  //StatusBar,
   StyleSheet,
   AsyncStorage,
 } from 'react-native';
@@ -16,6 +17,7 @@ import Row from './Row';
 import Search from '../search';
 import Warning from './Warning';
 import Done from './Done';
+import { timerRowImageHeight } from '../../styles/common';
 
 import RNFetchBlob from 'react-native-fetch-blob';
 const Blob = RNFetchBlob.polyfill.Blob; // Initialize Blob for converting images into binary
@@ -23,8 +25,7 @@ window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = Blob;
 
 var { height } = Dimensions.get('window');
-var imageHeight = height - 120 - 30 - 80 - 60;
-
+//var imageHeight = timerRowImageHeight - (StatusBar.currentHeight ? StatusBar.currentHeight : 0)// - 120 - 30 - 90 - 60;
 
 /* global require */
 export default class TimerList extends Component {
@@ -98,9 +99,9 @@ export default class TimerList extends Component {
     this.props.navigation.state.params = undefined;
     this._mounted = false;
   }
-  
+
   componentDidMount() {
-    if (this.list[0].createdAt === 0) this.setState({modalVisible: true});
+    if (this.list[0].createdAt === 0) this.setState({ modalVisible: true });
   }
 
   async _getUserInfo() {

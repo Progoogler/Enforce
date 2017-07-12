@@ -10,6 +10,11 @@ import {
 import PropTypes from 'prop-types';
 
 import MapModal from './MapModal';
+import {
+  primaryBlue,
+  imageSize,
+  smallFontSize,
+} from '../../styles/common';
 
 export default class Row extends Component {
   constructor() {
@@ -131,11 +136,11 @@ export default class Row extends Component {
       } else {
         this._mounted && this.setState({
           image: [<TouchableOpacity
-                    style={styles.maximizeImage}
+                    style={styles.image}
                     activeOpacity={.8}
                     onPress={() => this.props.maximizeImage(url)}
                     key={date} >
-                      <Image style={{alignSelf: 'center', height: 400, width: 300}} source={{ uri: url }} />
+                      <Image style={{alignSelf: 'center', height: imageSize, width: imageSize}} source={{ uri: url }} />
                     </TouchableOpacity>],
           animating: false,
         });
@@ -162,51 +167,51 @@ Row.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 10
+    padding: '3%',
   },
   rowContainer: {
     flexDirection: 'row',
   },
   image: {
-    height: 100,
-    width: 100,
-    marginRight: 15,
-  },
-  maximizeImage: {
-    height: 100,
-    width: 100,
-    marginRight: 15,
+    height: imageSize,
+    width: imageSize,
+    marginRight: '4%',
   },
   label: {
     fontWeight: 'bold',
+    fontSize: smallFontSize,
   },
   activity: {
     position: 'absolute',
     alignSelf: 'center',
-    left: 40,
+    left: '10%',
     zIndex: 10,
   },
   button: {
-    backgroundColor: '#4286f4',
+    backgroundColor: primaryBlue,
+    justifyContent: 'center',
     position: 'absolute',
     bottom: 0,
     right: 0,
     borderWidth: 1,
     borderRadius: 5,
-    padding: 5,
-    height: 35,
-    elevation: 2,
+    padding: '1%',
+    height: '35%',
+    width: '20%',
+    elevation: 4,
   },
   buttonText: {
     color: 'white',
+    textAlign: 'center',
   },
   getImageButton: {
     backgroundColor: 'grey',
-    height: 100,
-    width: 100,
-    marginRight: 15,
+    height: imageSize,
+    width: imageSize,
+    marginRight: '4%',
     borderWidth: 1,
     justifyContent: 'center',
+    elevation: 4,
   },
   getImageText: {
     color: 'white',
