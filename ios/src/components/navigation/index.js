@@ -59,8 +59,8 @@ export default class Navigation extends Component {
             style={styles.searchIcon} >
             <Image source={require('../../../../shared/images/search-icon.png')} />
           </TouchableHighlight>
-          <Animated.Text style={{
-            opacity: this.state.titleOpacity,
+          <Text style={{
+            //opacity: this.state.titleOpacity,
             flex: .70,
             fontSize: titleFontSize,
             color: 'white',
@@ -70,7 +70,7 @@ export default class Navigation extends Component {
               width: 2,
               height: 1
             },
-          }}>{ this.props.title ? this.props.title : 'Enforce' }</Animated.Text>
+          }}>{ this.props.title ? this.props.title : 'Enforce' }</Text>
           <TouchableHighlight
             underlayColor={primaryBlue}
             onPress={ () => {
