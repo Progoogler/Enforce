@@ -368,7 +368,7 @@ export default class MapApp extends Component {
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
     );
-  });
+  }
 
 }
 
