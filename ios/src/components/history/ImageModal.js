@@ -4,7 +4,7 @@ import {
   StyleSheet,
   Image,
   Modal,
-  TouchableNativeFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { primaryBlue, navigationBarHeight } from '../../styles/common';
@@ -25,13 +25,13 @@ export default class ImageModal extends Component {
           <Image style={styles.image} source={{uri: this.props.uri}} />
 
           <View style={styles.buttonContainer}>
-            <TouchableNativeFeedback
-              background={TouchableNativeFeedback.Ripple('white')}
+            <TouchableOpacity
+              activeOpacity={.6}
               onPress={() => this.props.maximizeImage()} >
               <View style={styles.arrowContainer}>
                 <Image style={styles.backArrow} source={require('../../../../shared/images/backarrow.jpg')} />
               </View>
-            </TouchableNativeFeedback>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>

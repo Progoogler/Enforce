@@ -6,7 +6,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  TouchableNativeFeedback,
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
 import PropTypes from 'prop-types';
@@ -39,8 +38,8 @@ export default class Row extends Component {
             directionalLockEnabled={true}
             showsHorizontalScrollIndicator={false} >
             <View style={styles.innerContainer} >
-              <TouchableNativeFeedback
-                background={TouchableNativeFeedback.Ripple(primaryBlue, true)}
+              <TouchableOpacity
+                activeOpacity={.6}
                 onPress={() => this._openTimerListPage(this.props.data.list)} >
 
                 <View style={styles.timerRowDesc}>
@@ -53,7 +52,7 @@ export default class Row extends Component {
                   </Text>
                 </View>
 
-              </TouchableNativeFeedback>
+              </TouchableOpacity>
 
               <View style={styles.distanceContainer}>
                 <TouchableOpacity
