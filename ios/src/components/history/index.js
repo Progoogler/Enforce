@@ -272,7 +272,6 @@ const styles = StyleSheet.create({
   },
   picker: {
     width: '35%',
-    color: primaryBlue,
   },
   flatlist: {
     flex: 1,
