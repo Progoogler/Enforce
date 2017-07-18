@@ -147,7 +147,7 @@ export default class Profile extends Component {
         let refPath = `${this.state.county}/${newId}`;
         AsyncStorage.setItem('@Enforce:refPath', refPath);
         AsyncStorage.setItem('@Enforce:profileId', newId);
-        Database.transferUserData(this.state.county, newId, this.data);
+        Database.transferUserData(this.state.county, newId, this.data); // Port old data into new account
       }, 1500);
     }
   }
@@ -190,16 +190,14 @@ export default class Profile extends Component {
         }
         try { // Replace old account.
 
-          if (this.profile.email !== this.state.email || this.profile.password !== this.state.password || this.profile.state !== this.state.state) {
+          if (this.profile.email !== this.state.email || this.profile.password !== this.state.password || this.profile.county !== this.state.county) {
 
             Database.getUserTickets(this.profile.county, this.profileId, (data) => this.data = data);
-
 
             Firebase.deleteUser();
 
             AsyncStorage.setItem('@Enforce:profileSettings', settings);
 
-            // create new user, port old data, and delete old db user
             Firebase.createNewUser(this.state.email, this.state.password);
 
             this.replacedOldUser = true;
