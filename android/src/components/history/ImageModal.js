@@ -7,7 +7,7 @@ import {
   TouchableNativeFeedback,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { primaryBlue, navigationBarHeight } from '../../styles/common';
+import { primaryBlue, navBarContainerHeight } from '../../styles/common';
 
 /* global require */
 export default class ImageModal extends Component {
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   arrowContainer: {
     justifyContent: 'center',
     width: '100%',
-    height: navigationBarHeight,
+    height: navBarContainerHeight,
   },
   backArrow: {
     marginLeft: '6%',
