@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import ALPR from 'react-native-openalpr';
+//import ALPR from 'react-native-openalpr';
 import Camera from 'react-native-camera';
 import { unlink } from 'react-native-fs';
 import Realm from 'realm';
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
    camera: {
      flex: 1,
      justifyContent: 'flex-end',
-     alignItems: 'center',     
+     alignItems: 'center',
    },
    imageRecognizer: {
      height: '80%',
