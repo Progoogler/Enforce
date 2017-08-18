@@ -6,6 +6,11 @@ import Index from '../index.android.js';
 import renderer from 'react-test-renderer';
 
 it('renders correctly', () => {
+  jest.mock('react-native-camera', () => mockCamera);
+  jest.mock('realm', () => mockRealm);
+  jest.mock('react-native-push-notification', () => mockPushNotication);
+  jest.mock('react-native-fetch-blob', () => mockFetchBlob);
+  jest.mock('react-navigation', () => mockReactNavigation);
   const tree = renderer.create(
     <Index />
   );
