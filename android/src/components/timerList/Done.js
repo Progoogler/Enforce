@@ -26,9 +26,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     backgroundColor: primaryBlue,
-    height: '10%',
+    height: '6%',
     width: '20%',
-    borderRadius: 10,
+    borderRadius: 20,
     marginBottom: '6%',
   },
   text: {
