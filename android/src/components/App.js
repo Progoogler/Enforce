@@ -47,33 +47,34 @@ const AppNavigator = DrawerNavigator({
   }
 }, {
     drawerWidth: 180,
-    // contentComponent: props => (<View style={{flexDirection: 'row'}}>
-    //                             <View style={{flex: 1}}>
-    //                               <View style={{marginBottom: -3, height: 145, flexDirection: 'row', backgroundColor: 'rgba(200, 200, 200, .3)'}} >
-    //                                 <View style={{height: 145, width: 25, backgroundColor: '#4286f4'}} />
-    //                                 <View style={{flexDirection: 'column'}}>
-    //                                   <View style={{backgroundColor: '#4286f4', width: 160, height: 25, justifyContent: 'flex-end', alignItems: 'flex-end', borderBottomRightRadius: 25}} >
-    //                                     <Image style={{height: 16, width: 16, marginRight: 20,}} source={require('../../../shared/images/pin-orange.png')} />
-    //                                   </View>
-    //                                   <View style={{height: 35, width: 150}} />
-    //                                   <View style={{backgroundColor: '#4286f4', width: 150, height: 25, borderTopRightRadius: 10, borderBottomRightRadius: 10}} />
-    //                                   <View style={{height: 35, width: 150, flexDirection: 'row'}} >
-    //                                     <Image style={{height: 25, width: 25, alignSelf: 'flex-end'}} source={require('../../../shared/images/blue-pin.png')} />
-    //                                     </View>
-    //                                   <View style={{backgroundColor: '#4286f4', width: 160, height: 25, borderTopRightRadius: 25}} />
-    //                                 </View>
-    //                               </View>
-    //
-    //                               <DrawerItems {...props} />
-    //                               </View>
-    //                               <View style={{
-    //                                 position: 'absolute',
-    //                                 right: 0,
-    //                                 top: 145,
-    //                                 width: 5,
-    //                                 height: 1000,
-    //                                 backgroundColor: '#4286f4', }} />
-    //                             </View>),
+//     contentComponent: props => (
+//        <View style={{flexDirection: 'row'}}>
+//           <View style={{flex: 1}}>
+//               <View style={{marginBottom: -3, height: 145, flexDirection: 'row', backgroundColor: 'rgba(200, 200, 200, .3)'}} >
+//                     <View style={{height: 145, width: 25, backgroundColor: '#4286f4'}} />
+//                     <View style={{flexDirection: 'column'}}>
+//                           <View style={{backgroundColor: '#4286f4', width: 160, height: 25, justifyContent: 'flex-end', alignItems: 'flex-end', borderBottomRightRadius: 25}} >
+//                             <Image style={{height: 16, width: 16, marginRight: 20,}} source={require('../../../shared/images/pin-orange.png')} />
+//                           </View>
+//                           <View style={{height: 35, width: 150}} />
+//                           <View style={{backgroundColor: '#4286f4', width: 150, height: 25, borderTopRightRadius: 10, borderBottomRightRadius: 10}} />
+//                           <View style={{height: 35, width: 150, flexDirection: 'row'}} >
+//                             <Image style={{height: 25, width: 25, alignSelf: 'flex-end'}} source={require('../../../shared/images/blue-pin.png')} />
+//                           </View>
+//                       <View style={{backgroundColor: '#4286f4', width: 160, height: 25, borderTopRightRadius: 25}} />
+//                 </View>
+//           </View>
+//
+//           <DrawerItems {...props} />
+//           </View>
+//           <View style={{
+//             position: 'absolute',
+//             right: 0,
+//             top: 145,
+//             width: 5,
+//             height: 1000,
+//             backgroundColor: '#4286f4', }} />
+//         </View>),
     contentOptions: {
       activeTintColor: 'green',
     },
