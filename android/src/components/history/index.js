@@ -115,31 +115,38 @@ export default class History extends Component {
 
   async _getHistoryDates() {
     this.dateCount = await AsyncStorage.getItem('@Enforce:dateCount');
-    this.dateCount = JSON.parse(this.dateCount);
-    let dates = [];
-    dates.push(<Picker.Item style={styles.item} label="Today's Tickets" value={"Today's Tickets"} key={-2}/>);
-    dates.push(<Picker.Item style={styles.item} label="Today's Expired" value={"Today's Expired"} key={-1}/>);
-    for (let i = this.dateCount.length - 1; i >= 0; i--) {
-      let month = this.dateCount[i].slice(0, this.dateCount[i].indexOf('-'));
-      let day = this.dateCount[i].slice(this.dateCount[i].indexOf('-') + 1, this.dateCount[i].length);
-      dates.push(<Picker.Item style={styles.item} label={this._getPrettyDate(month, day)} value={this.dateCount[i]} key={i}/>);
+    var dates = [];
+    if (this.dateCount) {
+        this.dateCount = JSON.parse(this.dateCount);
+        dates.push(<Picker.Item style={styles.item} label="Today's Tickets" value={"Today's Tickets"} key={-2}/>);
+        dates.push(<Picker.Item style={styles.item} label="Today's Expired" value={"Today's Expired"} key={-1}/>);
+        for (let i = this.dateCount.length - 1; i >= 0; i--) {
+          let month = this.dateCount[i].slice(0, this.dateCount[i].indexOf('-'));
+          let day = this.dateCount[i].slice(this.dateCount[i].indexOf('-') + 1, this.dateCount[i].length);
+          dates.push(<Picker.Item style={styles.item} label={this._getPrettyDate(month, day)} value={this.dateCount[i]} key={i}/>);
+        }
+    } else {
+        dates.push(<Picker.Item style={styles.item} label="Today's Tickets" value={"Today's Tickets"} key={-2}/>);
+        dates.push(<Picker.Item style={styles.item} label="Today's Expired" value={"Today's Expired"} key={-1}/>);
     }
     this.setState({items: dates, animating: false});
   }
 
   async _getHistoryData(date: string): undefined {
-    let userSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
+    var userSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
     this.userId = await AsyncStorage.getItem('@Enforce:profileId');
     this.userSettings = JSON.parse(userSettings);
 
-    await getHistoryData(this.userSettings.county, this.userId, date, (data) => {
-      this.updating = true;
-      if (data === null) {
-        this._updateRows([]);
-        return;
-      }
-      this._updateRows(data.tickets);
-    });
+    if (this.userId && this.userSettings) {
+        await getHistoryData(this.userSettings.county, this.userId, date, (data) => {
+          this.updating = true;
+          if (data === null) {
+            this._updateRows([]);
+            return;
+          }
+          this._updateRows(data.tickets);
+        });
+    }
 
   }
 
