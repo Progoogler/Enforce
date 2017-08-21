@@ -3,18 +3,19 @@ package com.enforce;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
-import com.RNFetchBlob.RNFetchBlobPackage;
-import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
-import com.rnfs.RNFSPackage;
-import io.realm.react.RealmReactPackage;
-import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 
+import io.realm.react.RealmReactPackage;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
+import com.RNFetchBlob.RNFetchBlobPackage;
+import com.showlocationservicesdialogbox.LocationServicesDialogBoxPackage;
+import com.rnfs.RNFSPackage;
 import com.airbnb.android.react.maps.MapsPackage;
+import com.lwansbrough.RCTCamera.RCTCameraPackage;
+import com.cardash.openalpr.CameraReactPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +38,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFSPackage(),
             new RealmReactPackage(),
             new RCTCameraPackage(),
-            new MapsPackage()
+            new MapsPackage(),
+            new CameraReactPackage()
       );
     }
   };

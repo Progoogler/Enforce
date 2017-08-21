@@ -11,7 +11,19 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-    /* Push Notifications */
+    <!-- Camera Permissions -->
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+
+    <!-- Push Notifications -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <permission
         android:name="${applicationId}.permission.C2D_MESSAGE"
@@ -30,7 +42,8 @@
       android:icon="@mipmap/ic_launcher"
       android:theme="@style/AppTheme">
 
-      /* Push Notifications */
+      <!-- Push Notifications -->
+
       <receiver
         android:name="com.google.android.gms.gcm.GcmReceiver"
         android:exported="true"

@@ -124,8 +124,9 @@ android {
         }
     }
 }
-//    compile project(':react-native-maps')
+
 dependencies {
+    compile project(':react-native-openalpr')
     compile project(':react-native-push-notification')
     compile project(':react-native-fetch-blob')
     compile project(':react-native-android-location-services-dialog-box')
