@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   StyleSheet,
+  Animated,
   View,
   Image,
   Text,
@@ -10,9 +11,10 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
-import Camera from 'react-native-camera';
 import { unlink } from 'react-native-fs';
 import Realm from 'realm';
+import ALPR from 'react-native-openalpr';
+import Camera from 'react-native-camera';
 
 import Navigation from '../navigation';
 import SetTimeLimit from './SetTimeLimit';
@@ -25,7 +27,9 @@ export default class CameraApp extends Component {
     this.state = {
       modalVisible: false,
       newTimer: false,
+      captureMode: false,
     };
+    this.license = '';
     this.latitude = null;
     this.longitude = null;
     this.camera = null;
@@ -56,43 +60,43 @@ export default class CameraApp extends Component {
         <Navigation navigation={this.props.navigation} />
         <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} newTimer={this.state.newTimer} realm={this.realm} />
 
-        <View style={styles.cameraContainer} >
+        <View style={styles.cameraContainer} collapsable={false}>
+
+
+        {this.state.captureMode ?
+
           <Camera
-            ref={(cam) => this.camera = cam }
+           ref={(cam) => this.camera = cam}
+           style={styles.camera}
+           aspect={Camera.constants.Aspect.fill}/>
+
+          :
+
+          <ALPR
             style={styles.camera}
-            aspect={Camera.constants.Aspect.fill} >
-          </Camera>
-          <Capture setModalVisible={this.setModalVisible.bind(this)} takePicture={this.takePicture.bind(this)} deletePreviousPicture={this.deletePreviousPicture.bind(this)} />
+            aspect={ALPR.constants.Aspect.fill}
+            captureQuality={ALPR.constants.CaptureQuality.medium}
+            country='us'
+            onPlateRecognized={(data) => this.onPlateRecognized(data)}
+            plateOutlineColor='#ff0000'
+            showPlateOutline
+            torchMode={ALPR.constants.TorchMode.off}
+            touchToFocus/>
+        }
+
+
         </View>
+        <Capture setModalVisible={this.setModalVisible.bind(this)} takePicture={this.processPicture.bind(this)} deletePreviousPicture={this.deletePreviousPicture.bind(this)} />
       </View>
     );
 }
 
-  async componentWillMount() {
+  async componentDidMount() {
+    this._mounted = true;
     let settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);
-
-    this.success = (position) => {
-      this.latitude = position.coords.latitude;
-      this.longitude = position.coords.longitude;
-      this.realm.write(() => {
-        this.realm.objects('Coordinates')[0].latitude = this.latitude;
-        this.realm.objects('Coordinates')[0].longitude = this.longitude;
-      });
-      this.locationService = true;
-    }
-    this.error = (err) => {
-      let realmCoords = this.realm.objects('Coordinates')[0];
-      this.latitude = realmCoords.latitude;
-      this.longitude = realmCoords.longitude;
-      console.log('ERROR(' + err.code + '): ' + err.message);
-    }
-    this.options = {
-      enableHighAccuracy: true,
-      timeout: 20000,
-      maximumAge: 10000,
-      distanceFilter: 1
-    };
+    this.setCameraTime();
+    this._setTimeLimit();
 
     if (settings && settings.location) {
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
@@ -101,25 +105,15 @@ export default class CameraApp extends Component {
           cancel: "Continue without"
       }).then(() => {
         navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
-        this.setCameraTime();
-        this._setTimeLimit();
       }).catch(() => {
         this.latitude = 0;
         this.longitude = 0;
-        this.setCameraTime();
-        this._setTimeLimit();
       });
     } else {
       this.latitude = 0;
       this.longitude = 0;
       navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
-      this.setCameraTime();
-      this._setTimeLimit();
     }
-  }
-
-  componentDidMount() {
-    this._mounted = true;
   }
 
   componentWillUnmount() { console.log('camera unmounts')
@@ -127,11 +121,54 @@ export default class CameraApp extends Component {
     clearTimeout(this._timeout);
   }
 
+  success = (position) => {
+    this.latitude = position.coords.latitude;
+    this.longitude = position.coords.longitude;
+    this.realm.write(() => {
+      this.realm.objects('Coordinates')[0].latitude = this.latitude;
+      this.realm.objects('Coordinates')[0].longitude = this.longitude;
+    });
+    this.locationService = true;
+  };
+
+  error = (err) => {
+    let realmCoords = this.realm.objects('Coordinates')[0];
+    this.latitude = realmCoords.latitude;
+    this.longitude = realmCoords.longitude;
+    console.log('ERROR(' + err.code + '): ' + err.message);
+  };
+
+  this.options = {
+    enableHighAccuracy: true,
+    timeout: 20000,
+    maximumAge: 10000,
+    distanceFilter: 1
+  };
+
   setModalVisible(desc?: string = '') {
     this._mounted && this.setState({modalVisible: !this.state.modalVisible});
     this.description = desc;
   }
 
+  setCameraTime() {
+    if (!this.realm.objects('Timers')[0]) this.createNewTimerList();
+    let timerSequence = this.realm.objects('TimerSequence')[0];
+    let timeSince = new Date() - timerSequence.timeAccessedAt;
+    if (timeSince >= 900000) {
+      this.realm.write(() => {
+         timerSequence.timeAccessedAt = new Date() / 1;
+      });
+      this.setTimerCount('increment');
+      this.createNewTimerList();
+      return;
+    } else {
+      // Start a new timer group after every 15 minutes
+      this._timeout = setTimeout(this.setCameraTime.bind(this), 900000 - timeSince);
+    }
+    this.setTimerCount();
+  }
+
+  // Keep track of the length of the number of timers in each Timer list
   setTimerCount(inc: string = '') {
     let timerSequence = this.realm.objects('TimerSequence')[0];
     if (inc) {
@@ -151,53 +188,30 @@ export default class CameraApp extends Component {
     }
   }
 
-  setCameraTime() {
-    if (!this.realm.objects('Timers')[0]) this.createNewTimerList();
-    let timerSequence = this.realm.objects('TimerSequence')[0]; console.log('TIMER SEQ', timerSequence);
-    let timeSince = new Date() - timerSequence.timeAccessedAt;
-    if (timeSince >= 900000) {
-      this.realm.write(() => {
-         timerSequence.timeAccessedAt = new Date() / 1;
-      });
-      this.setTimerCount('increment');
-      this.createNewTimerList();
-      return;
-    } else {
-      this._timeout = setTimeout(this.setCameraTime.bind(this), 900000 - timeSince);
-    }
-    this.setTimerCount();
-  }
+  processPicture() {
+    this.setState(
+      {captureMode: true},
+      this.takePicture
+    );
 
-  _setTimeLimit() {
-    this.timeLimit = this.realm.objects('TimeLimit')[0].float;
-  }
-
-  _showNotification() {
-    this.setState({newTimer: true});
-    setTimeout(() => this._mounted && this.setState({newTimer: false}), 2000);
-  }
-
-  createNewTimerList() {
-    Vibration.vibrate();
-    this._showNotification();
-    this.realm.write(() => {
-      this.realm.create('Timers', {list: []});
-    });
   }
 
   takePicture() {
     this.pictureCount++;
-    console.log('TAKING PICTURE', this.pictureCount)
-    if (this.locationService) { console.log('calling navigator')
+
+    if (this.locationService) {
       navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
-    console.log('called navigator')
     }
 
-    console.log('call camera')
+    if (!this.camera) { console.log('timeout and call again')
+      setTimeout(this.takePicture, 500);
+      return;
+    }
     this.camera.capture()
-      .then((data) => { console.log('then block')
-        if (this.firstCapture) {     console.log('first capture')
-          setTimeout(() => {     console.log('calling savePicture')
+      .then((data) => {
+        this.setState({captureMode: false});
+        if (this.firstCapture) {
+          setTimeout(() => {
             this.savePicture(data);
           }, 1200);
           this.firstCapture = false;
@@ -209,8 +223,6 @@ export default class CameraApp extends Component {
   }
 
   deletePreviousPicture(pictureCount?: number) {
-    // TODO Updating most recent picture may delay the deletion order
-    // removing previous data before the most recent picture has updated to realm.
     if (!this.deleting) {
       Vibration.vibrate();
       if (this.pictureCount > 1) this.pictureCount--;
@@ -229,7 +241,6 @@ export default class CameraApp extends Component {
     if (length - 1 < 0) return;
     unlink(timer.mediaPath)
       .then(() => {
-        console.log('PICTURE REMOVED');
         this.realm.write(() => {
           this.realm.objects('Timers')[this.listIndex]['list'].splice(pictureCount ? pictureCount - 1 : this.pictureCount - 1, 1);
           this.realm.delete(timer);
@@ -250,8 +261,8 @@ export default class CameraApp extends Component {
           longitude: this.longitude,
           createdAt: new Date() / 1,
           ticketedAt: 0,
-          timeLength: this.timeLimit, // TEST LENGTH TODO Build Time Length Adjuster/Setter
-          license: '',
+          timeLength: this.timeLimit,
+          license: this.license,
           VIN: '',
           mediaUri: data.mediaUri,
           mediaPath: data.path,
@@ -267,7 +278,7 @@ export default class CameraApp extends Component {
           createdAt: new Date() / 1,
           ticketedAt: 0,
           timeLength: this.timeLimit,
-          license: '',
+          license: this.license,
           VIN: '',
           mediaUri: data.mediaUri,
           mediaPath: data.path,
@@ -276,6 +287,16 @@ export default class CameraApp extends Component {
       });
       this.description = "";
     }
+    console.log('saved data:', this.realm.objects('Timers')[this.listIndex]['list'][this.realm.objects('Timers')[this.listIndex]['list'].length - 1]);
+  }
+
+  _setTimeLimit() {
+    this.timeLimit = this.realm.objects('TimeLimit')[0].float;
+  }
+
+  _showNotification() {
+    this.setState({newTimer: true});
+    setTimeout(() => this._mounted && this.setState({newTimer: false}), 2000);
   }
 
   _onUpdateTimeLimit(newLimit: number) {
@@ -285,6 +306,23 @@ export default class CameraApp extends Component {
     this.timeLimit = newLimit;
     this.setTimerCount('increment');
     this.createNewTimerList();
+  }
+
+
+    createNewTimerList() {
+      Vibration.vibrate();
+      this._showNotification();
+      this.realm.write(() => {
+        this.realm.create('Timers', {list: []});
+      });
+    }
+
+  onPlateRecognized({ plate, confidence }) {
+
+    if (confidence > 0.9) {
+      this.license = plate;
+      console.log('plate recognized', this.license);
+    }
   }
 }
 
