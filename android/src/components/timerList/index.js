@@ -45,6 +45,7 @@ export default class TimerList extends Component {
       refreshing: false,
       warningVisibility: false,
       modalVisible: false,
+      license: '',
     };
     this.timer = null;
     this.ticketedCount = 0;
@@ -67,7 +68,14 @@ export default class TimerList extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Search navigation={this.props.navigation} timerList={true} shouldResetLicense={this.shouldResetLicense.bind(this)} addLicenseToQueue={this.addLicenseToQueue.bind(this)} />
+        <Search
+          timerList={true}
+          realm={this.realm}
+          refreshTimerList={this.onRefresh.bind(this)}
+          navigation={this.props.navigation}
+          licenseParam={this.state.license}
+          shouldResetLicense={this.shouldResetLicense.bind(this)}
+          addLicenseToQueue={this.addLicenseToQueue.bind(this)} />
         <Title limit={this.list[0] ? this.list[0].timeLength ? this.list[0].timeLength : 0 : 0} />
         <Warning timeElapsed={this.timeElapsed} visibility={this.state.warningVisibility} uponTicketed={this.uponTicketed.bind(this)} clearWarning={this.updateRows.bind(this)}/>
 
@@ -75,7 +83,7 @@ export default class TimerList extends Component {
            data={this.state.dataSource}
            ItemSeparatorComponent={this._renderSeparator}
            renderItem={this._renderItem.bind(this)}
-           onRefresh={this._onRefresh.bind(this)}
+           onRefresh={this.onRefresh.bind(this)}
            refreshing={this.state.refreshing}
            keyExtractor={this._keyExtractor}
            />
@@ -111,7 +119,11 @@ export default class TimerList extends Component {
     this.updateRows();
   }
 
-  _onRefresh() {
+  enterLicenseInSearchField(license: object) {
+    this.setState({license});
+  }
+
+  onRefresh() {
     this.setState({
       refreshing: true,
       dataSource: this.list,
@@ -265,7 +277,8 @@ export default class TimerList extends Component {
         data={data.item}
         imageHeight={imageHeight}
         expiredFunc={this.expiredFunc.bind(this)}
-        uponTicketed={this.uponTicketed.bind(this)} />
+        uponTicketed={this.uponTicketed.bind(this)}
+        enterLicenseInSearchField={this.enterLicenseInSearchField.bind(this)} />
     );
   }
 
