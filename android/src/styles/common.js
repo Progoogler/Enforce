@@ -22,16 +22,6 @@ export var timerRowDistanceWidth = responsiveWidth(25);
 export var ticketCountFontSize = responsiveFontSize(5);
 export var ticketDescFontSize = responsiveFontSize(2);
 
-/* Timer List */
-//Title
-export var timeLimitTitleContainerHeight = height * .05;
-// Row
-export var timerRowDescContainerHeight = height * .12;
-export var timerRowButtonsContainerHeight = height * .09;
-export var timerRowImageHeight = height * .565;
-// Warning
-export var warningContainerMarginTop = height * .22;
-
 /* Camera */
 // Time Limit
 export var timeLimitContainerHeight = responsiveHeight(9);
@@ -53,6 +43,16 @@ export var noResultHeight = height * .11;
 export var windowCenterPoint = Math.floor(width / 2) - 3.8;
 export var underlineWidth = responsiveWidth(40);
 export var separatorHeight = responsiveHeight(5);
+
+/* Timer List */
+//Title
+export var timeLimitTitleContainerHeight = height * .05;
+// Row
+export var timerRowDescContainerHeight = height * .12;
+export var timerRowButtonsContainerHeight = height * .09;
+export var timerRowImageHeight = height * .565;
+// Warning
+export var warningContainerMarginTop = height * .22;
 
 /* History */
 // Row
