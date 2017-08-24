@@ -35,23 +35,23 @@ export default class LocationInput extends Component {
         <View style={styles.container} >
 
 
-            <Text style={styles.title}>Location Details:</Text>
-            <View style={styles.textInputContainer}>
-              <AutoGrowingTextInput
-                style={styles.textInput}
-                ref={(ref) => this._textInput = ref}
-                onChange={(event) => this._handleTextInput(event)}
-                underlineColorAndroid={'white'}
-                autoCorrect={false}
-                autoCapitalize={'sentences'}
-                fontSize={26}
-                maxLength={60}
-                minHeight={120}
-                autoFocus={true}
-                value={this.state.text} />
+          <Text style={styles.title}>Location Details:</Text>
+          <View style={styles.textInputContainer}>
+            <AutoGrowingTextInput
+              style={styles.textInput}
+              ref={(ref) => this._textInput = ref}
+              onChange={(event) => this._handleTextInput(event)}
+              underlineColorAndroid={'white'}
+              autoCorrect={false}
+              autoCapitalize={'sentences'}
+              fontSize={26}
+              maxLength={75}
+              minHeight={120}
+              autoFocus={true}
+              value={this.state.text} />
 
             </View>
-            <Text style={styles.count}>{60 - this.state.text.length} characters remaining</Text>
+            <Text style={styles.count}>{75 - this.state.text.length} characters remaining</Text>
             <View style={styles.buttonRow}>
               <TouchableOpacity
                 style={styles.cancelButton}
