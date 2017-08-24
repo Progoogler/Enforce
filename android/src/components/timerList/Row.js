@@ -16,11 +16,13 @@ import {
   timerRowImageHeight,
   timerRowDescContainerHeight,
   timerRowButtonsContainerHeight,
+  timerRowLocationTop,
 } from '../../styles/common';
 
 export default class Row extends Component {
   constructor() {
     super();
+    this.licenseButtonPressed = 0;
   }
 
   render() {
@@ -38,10 +40,18 @@ export default class Row extends Component {
           </View>
         </View>
         { this.props.data.description ?
-        <View style={styles.locationContainer}>
-          <Text style={styles.location}>{ `${this.props.data.description}` }</Text>
-        </View>
-        : null }
+          <View style={styles.locationContainer}>
+            <Text style={styles.location}>{ `${this.props.data.description}` }</Text>
+          </View>
+          : null }
+        { this.props.data.license ?
+          <TouchableOpacity activeOpacity={1} style={styles.licenseContainer} onPress={() => {
+            this.licenseButtonPressed++;
+            this.props.enterLicenseInSearchField({license: this.props.data.license, pressed: this.licenseButtonPressed, listIndex: this.props.data.index});
+          }}>
+            <Text style={styles.license}>{this.props.data.license}</Text>
+          </TouchableOpacity>
+          : null }
         <View style={styles.buttonsContainer} >
           <View style={styles.rowButtonsContainers} >
             <TouchableOpacity
@@ -108,6 +118,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  licenseContainer: {
+    position: 'absolute',
+    bottom: timerRowDescContainerHeight + timerRowButtonsContainerHeight - 2,
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderBottomWidth: 1,
+    borderTopColor: primaryBlue,
+    borderLeftColor: primaryBlue,
+    borderRightColor: primaryBlue,
+    borderBottomColor: 'white',
+  },
+  license: {
+    fontSize: mediumFontSize,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingTop: '1%',
+    paddingLeft: '3%',
+    paddingRight: '3%',
+  },
   timeUp: {
     fontSize: largeFontSize,
     fontWeight: 'bold',
@@ -130,7 +160,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 2,
     borderColor: 'white',
-    height: timerRowButtonsContainerHeight,//60,
+    height: timerRowButtonsContainerHeight,
   },
   rowButton: {
     flex: .5,
@@ -150,8 +180,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: timerRowDescContainerHeight,//90,
+    height: timerRowDescContainerHeight,
     padding: '4%',
+    borderTopWidth: 2,
+    borderTopColor: primaryBlue,
   },
   timeContainer: {
     flexDirection: 'column',
@@ -162,17 +194,16 @@ const styles = StyleSheet.create({
   },
   locationContainer: {
     position: 'absolute',
-    bottom: '45%',
     alignSelf: 'center',
     backgroundColor: 'white',
-    borderRadius: 50,
+    width: '100%',
   },
   location: {
     textAlign: 'center',
     color: primaryBlue,
     fontSize: mediumFontSize,
-    paddingLeft: '2%',
-    paddingRight: '2%',
+    paddingLeft: '4%',
+    paddingRight: '4%',
     paddingBottom: '1%',
     paddingTop: '1%',
   },
