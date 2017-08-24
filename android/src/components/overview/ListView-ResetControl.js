@@ -46,7 +46,7 @@ export default class TimersList extends Component {
     this.latitude = this.realm.objects('Coordinates')[0].latitude;
     this.longitude = this.realm.objects('Coordinates')[0].longitude;
     navigator.geolocation.getCurrentPosition(
-      position => { //console.log(this.realm.where(Coordinates.class).findFirst());
+      position => {
         this.latitude = parseFloat(position.coords.latitude);
         this.longitude = parseFloat(position.coords.longitude);
         this.realm.write(() => {
@@ -75,6 +75,8 @@ export default class TimersList extends Component {
   async _checkReset() {
     let today = new Date().getDate();
     let yesterday = await AsyncStorage.getItem('@Enforce:currentDay');
+    if (!yesterday) AsyncStorage.setItem('@Enforce:currentDay', `${today}`);
+    // If today is a different day than yesterday, reset app; i.e., 24th > 23rd || 2nd - 24th < 0
     if (today > parseInt(yesterday) || today - parseInt(yesterday) < 0) {
       this._reset();
     }
@@ -90,11 +92,11 @@ export default class TimersList extends Component {
     AsyncStorage.setItem('@Enforce:registerDate', date); // Set for next reset
     AsyncStorage.setItem('@Enforce:currentDay', day); // Set for checkReset()
 
-    if (dateCount === null) { // Initialize the dateCount for first instance.
+    if (dateCount === null) { // Initialize the dateCount for very first instance.
       dateCount = [];
     } else {
       dateCount = JSON.parse(dateCount);
-      if (dateCount.length >= 45) {
+      if (dateCount.length >= 45) { // Keep at a maxium range of 45 days of history available to search
         let removalDate = dateCount.shift();
         refPath && removeTicketPath(refPath, removalDate); // Delete path from Firebase.
       }
@@ -107,13 +109,15 @@ export default class TimersList extends Component {
     let ticketList = this.realm.objects('Ticketed');
     let expiredList = this.realm.objects('Expired');
     if (timerLists.length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
+
+      // Delete corresponding images in the DCIM directory
       this._loopDeletion(timerLists);
       if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
       if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
 
-      this.list = [{list: [{'createdAt': 0}]}];
-      this.props.resetTicketCounter();
+      this.list = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
       this._mounted && this.setState({dataSource: this.list});
+      this.props.resetTicketCounter();
       setTimeout(() => {
         Realm.clearTestState();
         this.realm = new Realm({schema: Schema});
@@ -129,7 +133,7 @@ export default class TimersList extends Component {
   }
 
   _loopDeletion(timerLists: object, once?: boolean) {
-    if (once) {
+    if (once) { // Single loop for linear list
       timerLists[0].list.forEach((timer) => {
         unlink(timer.mediaPath)
         .then(() => {
@@ -168,6 +172,7 @@ export default class TimersList extends Component {
 
     for (let timerObj in this.list) {
       if (this.list[timerObj].list === timers) {
+        // Reassign the list property to empty object to nullify its reference
         this.list[timerObj].list = {};
       }
     }
