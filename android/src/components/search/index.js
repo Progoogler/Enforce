@@ -107,7 +107,6 @@ export default class Search extends Component {
 
         <Animated.View style={{
             opacity: this.state.buttonOpacity,
-            // height: '8%',
             flex: 1,
             flexDirection: 'row', }} >
 
@@ -193,12 +192,19 @@ export default class Search extends Component {
     this.keyboardDidHideListener.remove();
   }
 
-  componentWillUpdate() {
+  componentWillReceiveProps(nextProps) {
     if (this.props.timerList) {
       if (this.props.shouldResetLicense()) {
         this.setState({license: '', underlineMargin: new Animated.Value(windowCenterPoint)});
         this.marginValue = windowCenterPoint;
         this.props.shouldResetLicense(true);
+      } else if (this.props.licenseParam.pressed !== nextProps.licenseParam.pressed) {
+        this.setState({license: '', underlineMargin: new Animated.Value(windowCenterPoint)});
+        this.marginValue = windowCenterPoint;
+        let license = nextProps.licenseParam.license;
+        this.marginValue = this.marginValue - (license.length * 6.65);
+        this.setState({license, underlineMargin: new Animated.Value(this.marginValue)});
+
       }
     }
   }
@@ -207,28 +213,38 @@ export default class Search extends Component {
     this.state.result !== null && this.minimizeResultContainer();
     this.props.minimizeMenuContainer && this.props.minimizeMenuContainer();
 
-    this.myTextInput.isFocused() && Keyboard.dismiss();
+    if (this.props.timerList) {
+      if (this.state.license.length > 0 && this.myTextInput.isFocused()) {
+        this.setState({ license: '', underlineMargin: new Animated.Value(windowCenterPoint) });
+        this.marginValue = windowCenterPoint;
+        Keyboard.dismiss();
+      } else if (this.myTextInput.isFocused()) {
+        Keyboard.dismiss();
+      } else if (!this.myTextInput.isFocused()) {
+        this.myTextInput.focus();
+      }
 
-    this.props.timerList && this.myTextInput.focus();
-    !this.props.timerList && Keyboard.dismiss();
-    !this.props.timerList && this._fadeContainer();
-    !this.props.timerList && setTimeout(() => this._mounted && this.props.closeSearch(), 500);
+      return;
+    }
+    this.myTextInput.isFocused() && Keyboard.dismiss();
+    this._fadeContainer();
+    setTimeout(() => this._mounted && this.props.closeSearch(), 500);
 
     this.setState({ license: '', underlineMargin: new Animated.Value(windowCenterPoint) });
     this.marginValue = windowCenterPoint;
   }
 
   _handleHistorySearch() {
+
     if (this.state.license.length === 0) {
       this.myTextInput.focus();
     } else {
+
       let prevResult = this.state.result;
       let result = historySearch(this.state.license);
 
       if (result === undefined && prevResult !== 'unfound') {
-
         this.noResultNotification(); // TODO QUICK FIX FOR EMPTY BLOCK -- Figure out what goes here!
-
       }
 
       result = result === undefined ? 'unfound' : result;
@@ -238,17 +254,23 @@ export default class Search extends Component {
       if (result !== 'unfound') {
         // Case for extending the container of Search in any component.
         this.extendResultContainer();
-
         // Case for extending the Menu container of Overview.
         this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
         Keyboard.dismiss();
+
       } else if (result === 'unfound') {
         this.props.noResultNotificationForMenu && this.props.noResultNotificationForMenu();
         this.noResultNotification();
       }
 
       // Add license to current Timer in queue in TimerList if in TimerList.
-      this.props.timerList && this.props.addLicenseToQueue(this.state.license);
+      if (this.props.timerList) {
+        if (!this.props.licenseParam.license) {
+          this.props.addLicenseToQueue(this.state.license);
+        } else {
+          this._updateLicenseOfTimer();
+        }
+      }
     }
   }
 
@@ -256,9 +278,20 @@ export default class Search extends Component {
     if (this.state.license.length === 0) {
       this.myTextInput.focus();
     } else {
-
       this.props.timerList && this.props.addLicenseToQueue(this.state.license);
     }
+  }
+
+  _updateLicenseOfTimer() {
+    var timerList = this.props.realm.objects('Timers')[this.props.licenseParam.listIndex].list;
+    for (let i = 0; i < timerList.length; i++) {
+      if (timerList[i].license === this.props.licenseParam.license) {
+        this.props.realm.write(() => {
+        timerList[i].license = this.state.license;
+        });
+      }
+    }
+    this.props.refreshTimerList();
   }
 
   noResultNotification() {
