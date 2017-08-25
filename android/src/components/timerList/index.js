@@ -159,6 +159,15 @@ export default class TimerList extends Component {
     }
   }
 
+  checkUpdatedLicenseValidity(originalLicense: string, updatedLicense: string): string {
+    var validity = 0;
+    for (var i = 0; i < originalLicense.length; i ++) {
+      let check = updatedLicense.includes(originalLicense[i]);
+      if (check) validity++;
+    }
+    return validity > 0 ? updatedLicense : originalLicense;
+  }
+
   uponTicketed(timer: object, force?: string): undefined { // Handle updates to Realm for regular and forced.
     if (Array.isArray(timer)) timer = this._timer;
     let now = new Date();
@@ -167,7 +176,12 @@ export default class TimerList extends Component {
       if (timers['0'].createdAt === timer.createdAt) {
         this.realm.write(() => {
           timer.ticketedAt = now / 1;
-          timer.license = this.license;
+          // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
+          if (timer.license && this.license) {
+            timer.license = checkUpdatedLicenseValidity(timer.license, this.license);
+          } else {
+            timer.license = timer.license ? timer.license : this.license;
+          }
           timer.VIN = this.VIN;
           this.realm.objects('Ticketed')[0]['list'].push(timer);
           timers.shift();
@@ -183,7 +197,12 @@ export default class TimerList extends Component {
         if (indexOfTimer) {
           this.realm.write(() => {
             timer.ticketedAt = new Date() / 1;
-            timer.license = this.license;
+            // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
+            if (timer.license && this.license) {
+              timer.license = checkUpdatedLicenseValidity(timer.license, this.license);
+            } else {
+              timer.license = timer.license ? timer.license : this.license;
+            }
             timer.VIN = this.VIN;
             this.realm.objects('Ticketed')[0]['list'].push(timer);
             timers.splice(parseInt(indexOfTimer), 1);
@@ -218,13 +237,15 @@ export default class TimerList extends Component {
     let timers = this.realm.objects('Timers')[timer.index]['list'];
     if (timers['0'] === timer) {
       this.realm.write(() => {
-        if (this.license) timer.license = this.license;
+        // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
+        if (timer.license && this.license) {
+          timer.license = checkUpdatedLicenseValidity(timer.license, this.license);
+        } else {
+          timer.license = timer.license ? timer.license : this.license;
+        }
         this.realm.objects('Expired')[0]['list'].push(timer);
         timers.shift();
       });
-      if (this.license) this.resetLicenseAndVIN();
-      this.updateRows();
-      return;
     } else {
       let indexOfTimer;
       for (let index in timers) {
@@ -235,14 +256,19 @@ export default class TimerList extends Component {
       }
       if (indexOfTimer) {
         this.realm.write(() => {
-          if (this.license) timer.license = this.license;
+          // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
+          if (timer.license && this.license) {
+            timer.license = checkUpdatedLicenseValidity(timer.license, this.license);
+          } else {
+            timer.license = timer.license ? timer.license : this.license;
+          }
           this.realm.objects('Expired')[0]['list'].push(timer);
           timers.splice(parseInt(indexOfTimer), 1);
         });
-        if (this.license) this.resetLicenseAndVIN();
-        this.updateRows();
       }
     }
+    if (this.license) this.resetLicenseAndVIN();
+    this.updateRows();
   }
 
   addLicenseToQueue(license: string) {
