@@ -76,7 +76,7 @@ export default class CameraApp extends Component {
           <ALPR
             style={styles.camera}
             aspect={ALPR.constants.Aspect.fill}
-            captureQuality={ALPR.constants.CaptureQuality.medium}
+            captureQuality={ALPR.constants.CaptureQuality.low}
             country='us'
             onPlateRecognized={(data) => this.onPlateRecognized(data)}
             plateOutlineColor='#ff0000'
