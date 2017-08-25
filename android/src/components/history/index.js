@@ -7,6 +7,7 @@ import {
   AsyncStorage,
   ActivityIndicator,
   StyleSheet,
+  NetInfo,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import FlatList from 'react-native/Libraries/Lists/FlatList';
@@ -18,6 +19,7 @@ import { getHistoryData, getTicketImage } from '../../../../includes/firebase/da
 import Navigation from '../navigation';
 import Row from './Row';
 import ImageModal from './ImageModal';
+import ThrowConnectionMessage from '../profile/ThrowConnectionMessage';
 import {
   primaryBlue,
   titleTextShadow,
@@ -33,10 +35,12 @@ export default class History extends Component {
     this.state = {
       dataSource: this.list,
       items: [],
+      pickerWidth: 25 + 120,
       selected: "Today's Tickets",
       animating: true,
       dateTransition: false,
       showMaximizedImage: false,
+      isConnected: true,
       uri: '',
     }
     this.userSettings = null;
@@ -61,7 +65,12 @@ export default class History extends Component {
         <Text style={styles.title}>History</Text>
         <View style={styles.pickerActivityRow}>
           <Picker
-            style={styles.picker}
+            style={{
+
+              width: this.state.pickerWidth,
+              color: primaryBlue,
+
+            }}
             selectedValue={this.state.selected}
             onValueChange={(val) => this._onValueChange(val)} >
 
@@ -80,6 +89,8 @@ export default class History extends Component {
            ItemSeparatorComponent={this._renderSeparator}
            renderItem={this._renderItem.bind(this)}
            keyExtractor={this._keyExtractor} />
+
+        { this.state.isConnected ? null : <ThrowConnectionMessage /> }
 
       </View>
     );
@@ -110,7 +121,12 @@ export default class History extends Component {
   }
 
   componentWillMount() {
+    this._mounted = true;
     this._getHistoryDates();
+  }
+
+  componentWillUnmount() {
+    this._mounted = false;
   }
 
   async _getHistoryDates() {
@@ -136,43 +152,56 @@ export default class History extends Component {
     var userSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
     this.userId = await AsyncStorage.getItem('@Enforce:profileId');
     this.userSettings = JSON.parse(userSettings);
+    var month = date.slice(0, date.indexOf('-'));
+    var day = date.slice(date.indexOf('-') + 1, date.length);
+    var prettyDate = this._getPrettyDate(month, day);
 
     if (this.userId && this.userSettings) {
         await getHistoryData(this.userSettings.county, this.userId, date, (data) => {
           this.updating = true;
           if (data === null) {
-            this._updateRows([]);
+            this._updateRows([], prettyDate.length);
             return;
           }
-          this._updateRows(data.tickets);
+          this._updateRows(data.tickets, prettyDate.length);
         });
+    } else {
+      this._updateRows([], prettyDate.length);
     }
-
   }
 
   _onValueChange(value: string): undefined {
     this.setState({animating: true, dateTransition: true});
+    this.selected = value;
     if (value === "Today's Tickets") {
-      this.selected = value;
-      this._updateRows(this.ticketedList);
+      this._updateRows(this.ticketedList, value.length);
       return;
     } else if (value === "Today's Expired") {
       this.list = this._reverseRealmList(this.realm.objects('Expired')[0]['list']);
-      this.selected = value;
-      this._updateRows(this.list);
+      this._updateRows(this.list, value.length);
       return;
     }
-    this._getHistoryData(value);
-    this.selected = value;
+    NetInfo.isConnected.fetch().then(isConnected => {
+      if (isConnected) {
+        this._getHistoryData(value);
+      } else {
+        this.setState({animating: false, isConnected: false});
+        setTimeout(() => {
+          this._mounted && this.setState({isConnected: true});
+        }, 5000);
+      }
+    });
   }
 
-  _updateRows(list: object): undefined {
+  _updateRows(list: object, length: number): undefined {
     if (!list) list = this.list;
     this.setState({
       dataSource: list,
       selected: this.selected,
       dateTransition: false,
       animating: false,
+      isConnected: true,
+      pickerWidth: 25 + length * 8,
     });
   }
 
@@ -277,10 +306,10 @@ const styles = StyleSheet.create({
   pickerActivityRow: {
     flexDirection: 'row',
   },
-  picker: {
-    width: '35%',
-    color: primaryBlue,
-  },
+  // picker: {
+  //   width: '35%',
+  //   color: primaryBlue,
+  // },
   flatlist: {
     flex: 1,
     alignSelf: 'stretch',
