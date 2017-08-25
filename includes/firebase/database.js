@@ -22,8 +22,8 @@ class Database {
 
     }
 
-    static transferUserData(cityId, userId, data) {
-      return firebase.database().ref(`/${cityId}/${userId}`).set(
+    static transferUserData(countyId, userId, data) {
+      return firebase.database().ref(`/${countyId}/${userId}`).set(
         data
       );
     }
@@ -53,8 +53,8 @@ class Database {
         });
     }
 
-    static getUserTickets(cityId, userId, callback) {
-      let userTicketPath = `/${cityId}/${userId}/`;
+    static getUserTickets(countyId, userId, callback) {
+      let userTicketPath = `/${countyId}/${userId}/`;
       let tickets;
       firebase.database().ref(userTicketPath).on('value', (snapshot) => {
 
@@ -63,8 +63,8 @@ class Database {
       });
   }
 
-    static deleteUserTickets(cityId, userId) {
-      let userTicketPath = `/${cityId}/${userId}/`;
+    static deleteUserTickets(countyId, userId) {
+      let userTicketPath = `/${countyId}/${userId}/`;
       firebase.database().ref(userTicketPath).remove();
     }
 
@@ -86,7 +86,8 @@ class Database {
     static getTicketImage(refPath, createdAtId, callback) {
       firebase.storage()
         .ref(`${refPath}/${createdAtId}`)
-        .getDownloadURL().then(url => {
+        .getDownloadURL()
+        .then(url => {
           callback(url);
         })
         .catch((err) => {
