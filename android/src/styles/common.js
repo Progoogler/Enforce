@@ -54,6 +54,9 @@ export var timerRowImageHeight = height * .565;
 // Warning
 export var warningContainerMarginTop = height * .22;
 
+/* Profile */
+export var textInputWidth = width - 100;
+
 /* History */
 // Row
 export var imageSize = responsiveWidth(20);
