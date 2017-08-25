@@ -266,7 +266,7 @@ export default class Search extends Component {
       // Add license to current Timer in queue in TimerList if in TimerList.
       if (this.props.timerList) {
         if (!this.props.licenseParam.license) {
-          this.props.addLicenseToQueue(this.state.license);
+          this.props.addLicenseToQueue(this.state.license); // TODO Decide if a historySearch() press should warrant adding license to queue
         } else {
           this._updateLicenseOfTimer();
         }
@@ -277,8 +277,13 @@ export default class Search extends Component {
   _handleVINSearch() {
     if (this.state.license.length === 0) {
       this.myTextInput.focus();
-    } else {
-      this.props.timerList && this.props.addLicenseToQueue(this.state.license);
+    } else if (this.props.timerList) {
+      // Add license to current Timer in queue in TimerList if in TimerList.
+      if (!this.props.licenseParam.license) {
+        this.props.addLicenseToQueue(this.state.license);
+      } else {
+        this._updateLicenseOfTimer();
+      }
     }
   }
 
