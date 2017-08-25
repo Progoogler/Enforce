@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  KeyboardAvoidingView,
   View,
   Text,
   Image,
@@ -24,6 +25,7 @@ import {
   xxlargeFontSize,
   largeFontSize,
   mediumFontSize,
+  textInputWidth,
 } from '../../styles/common';
 
 /* global require */
@@ -50,6 +52,7 @@ export default class Profile extends Component {
     this.profileId = '';
     this.createdNewUser = false;
     this.replacedOldUser = false;
+    this._mounted = true;
   }
   static navigationOptions = {
     drawerLabel: 'Profile',
@@ -60,16 +63,19 @@ export default class Profile extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={styles.container} behavior={'padding'}>
         <Navigation navigation={this.props.navigation} title={'Profile'} />
         <Text style={styles.title}>Account Settings</Text>
+
+        <KeyboardAvoidingView behavior={'padding'}>
         <View style={styles.row} >
-          <Text style={styles.designator}>Email</Text>
+
           <TextInput
-            style={{ backgroundColor: this.state.emailBackground, borderColor: this.state.emailColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
+            style={{ backgroundColor: this.state.emailBackground, borderColor: this.state.emailColor, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
             autoCorrect={false}
             autoCapitalize={'words'}
             keyboardType={'email-address'}
+            placeholder={'Email'}
             fontSize={mediumFontSize}
             underlineColorAndroid={'transparent'}
             onFocus={() => this._onEmailFocus()}
@@ -81,34 +87,37 @@ export default class Profile extends Component {
         { this.state.emailWarning ? <Warning warning={'Enter valid email address'} /> : null }
 
         <View style={styles.row} >
-          <Text style={styles.designator}>Password</Text>
+
           <TextInput
-            style={{ backgroundColor: this.state.passwordBackground, borderColor: this.state.passwordColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
+            style={{ backgroundColor: this.state.passwordBackground, borderColor: this.state.passwordColor, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
             autoCorrect={false}
             secureTextEntry={true}
             fontSize={mediumFontSize}
+            placeholder={'Password'}
             underlineColorAndroid={'transparent'}
             onFocus={() => this._onPasswordFocus()}
             onBlur={() => this._onPasswordBlur()}
-            onChangeText={(text) => { this.setState({ password: text })}}
+            onChangeText={(text) => this._onPasswordChangeText(text)}
             value={this.state.password} />
         </View>
 
         { this.state.passwordWarning ? <Warning warning={'Must be at least 6 characters'} /> : null }
 
         <View style={styles.row} >
-          <Text style={styles.designator}>County</Text>
+
           <TextInput
-            style={{ backgroundColor: this.state.countyBackground, borderColor: this.state.countyColor, borderWidth: 1, width: 220, paddingLeft: 15, position: 'absolute', right: 0 }}
+            style={{ backgroundColor: this.state.countyBackground, borderColor: this.state.countyColor, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
             autoCorrect={false}
             autoCapitalize={'words'}
             fontSize={mediumFontSize}
+            placeholder={'County'}
             underlineColorAndroid={'transparent'}
             onFocus={() => this._onCountyFocus()}
             onBlur={() => this._onCountyBlur()}
             onChangeText={(text) => { this.setState({ county: text })}}
             value={this.state.county} />
         </View>
+        </KeyboardAvoidingView>
         <TouchableHighlight
           style={styles.button}
           underlayColor='green'
@@ -125,10 +134,12 @@ export default class Profile extends Component {
   }
 
   componentWillMount() {
+    this._mounted = true;
     this._getProfileFromAsyncStorage();
   }
 
   componentWillUnmount() {
+    this._mounted = false;
     if (this.createdNewUser) {
       Firebase.signInUser(this.state.email, this.state.password);
       setTimeout(() => {
@@ -169,12 +180,12 @@ export default class Profile extends Component {
   }
 
   async _setNewProfile() {
+    if (this.state.emailWarning || this.state.passwordWarning) return;
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
-        if (this.state.emailWarning || this.state.passwordWarning) return;
         this.setState({animating: true, profileStatus: 'Creating Profile', isConnected: true});
         setTimeout(() => {
-          this.setState({animating: false, profileStatus: 'Create Profile'});
+          this._mounted && this.setState({animating: false, profileStatus: 'Create Profile'});
         }, 3000);
         let settings = {
           email: this.state.email,
@@ -183,18 +194,35 @@ export default class Profile extends Component {
         };
         settings = JSON.stringify(settings);
         if (!this.profileId) { // Create first new account.
+          Firebase.signInUser(this.state.email, this.state.password, (errorResponse) => {
+            // If this account exists in Firebase, just sign in.
+            if (errorResponse) {
+              // Otherwise create a new user
+              Firebase.createNewUser(this.state.email, this.state.password);
+            }
+          });
           AsyncStorage.setItem('@Enforce:profileSettings', settings);
-          Firebase.createNewUser(this.state.email, this.state.password);
           this.createdNewUser = true;
           return;
         }
         try { // Replace old account.
 
-          if (this.profile.email !== this.state.email || this.profile.password !== this.state.password || this.profile.county !== this.state.county) {
+          // Only changing user password.
+          if (this.profile.password !== this.state.password && this.profile.email === this.state.email && this.profile.county === this.state.county) {
+            Firebase.changeUserPassword(this.state.password);
+            AsyncStorage.setItem('@Enforce:profileSettings', settings);
+            return;
+          }
 
-            Database.getUserTickets(this.profile.county, this.profileId, (data) => this.data = data);
+          // Change Firebase account if either email or county IDs change.
+          if (this.profile.email !== this.state.email || this.profile.county !== this.state.county) {
 
-            Firebase.deleteUser();
+            // TODO Check if user wants to retain old records first
+            Database.getUserTickets(this.profile.county, this.profileId, (data) => {
+              this.data = data;
+              Firebase.deleteUser();
+            });
+
 
             AsyncStorage.setItem('@Enforce:profileSettings', settings);
 
@@ -207,6 +235,9 @@ export default class Profile extends Component {
         }
       } else {
         this.setState({isConnected: false});
+        setTimeout(() => {
+          this._mounted && this.setState({isConnected: true});
+        }, 5000);
       }
     });
   }
@@ -217,7 +248,7 @@ export default class Profile extends Component {
 
   _onEmailBlur() {
     let email = this.state.email;
-    let regexForCom = /.(?=com$)/g;
+    let regexForCom = /.(?=\.com$)/g;
     let regexForAt = /@{1}/g;
     let com = regexForCom.test(email);
     let at = regexForAt.test(email);
@@ -226,6 +257,14 @@ export default class Profile extends Component {
       return;
     }
     this.setState({emailColor: 'black', emailWarning: false, emailBackground: 'white'});
+  }
+
+  _onPasswordChangeText(text) {
+    if (this.state.passwordWarning && text.length >= 6) {
+      this.setState({passwordWarning: false, password: text});
+      return;
+    }
+    this.setState({password: text});
   }
 
   _onPasswordFocus() {
@@ -255,6 +294,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    alignItems: 'center',
   },
   title: {
     textAlign: 'center',
@@ -270,22 +310,15 @@ const styles = StyleSheet.create({
     },
   },
   row: {
-    flexDirection: 'row',
-    margin: '7%',
-  },
-  designator: {
-    fontSize: mediumFontSize,
-    marginLeft: '5%',
-    marginTop: '4%',
-    fontWeight: 'bold',
+    margin: '4%',
   },
   button: {
     width: '50%',
-    justifyContent: 'center',
+    justifyContent: 'flex-end',
     alignItems: 'center',
     alignSelf: 'center',
-    marginTop: '15%',
-    padding: '3%',
+    marginTop: '30%',
+    padding: '4%',
     borderRadius: 10,
     backgroundColor: primaryBlue,
   },
