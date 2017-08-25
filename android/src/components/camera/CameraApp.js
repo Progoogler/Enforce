@@ -202,11 +202,11 @@ export default class CameraApp extends Component {
       navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
     }
 
-    console.log('this.camera:', this.camera)
     if (!this.camera) { console.log('timeout and call again')
-      setTimeout(this._takePicture, 500);
+      setTimeout(this._takePicture, 1000);
       return;
     }
+
     this.camera.capture()
       .then((data) => {
         this.setState({captureMode: false});
