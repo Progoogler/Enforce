@@ -30,10 +30,17 @@ class Firebase {
       });
     }
 
-    static signInUser(userId, password) {
+    static signInUser(userId, password, response) {
       firebase.auth().signInWithEmailAndPassword(userId, password).catch((err) => {
+
+        response && response('Cannot sign in.');
         console.error(`Error signing in: [ERROR ${err.code}] ${err.message}`);
       })
+    }
+
+    static changeUserPassword(newPassword) {
+      let user = firebase.auth().currentUser;
+      user.updatePassword(newPassword);
     }
 
     static getCurrentUser() {
