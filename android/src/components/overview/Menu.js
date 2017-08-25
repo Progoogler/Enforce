@@ -127,13 +127,13 @@ export default class Menu extends Component {
     if (extend) {
       Animated.timing(
         this.state.containerHeight,
-        { toValue: resultContainerHeight, // 250
+        { toValue: resultContainerHeight,
           duration: 500, },
         ).start();
       } else {
         Animated.timing(
           this.state.containerHeight,
-          { toValue: searchContainerHeight, //120
+          { toValue: searchContainerHeight,
             duration: 500, },
         ).start();
       }
@@ -142,7 +142,7 @@ export default class Menu extends Component {
     noResultNotificationForMenu() {
       Animated.timing(
         this.state.containerHeight, {
-          toValue: noResultContainerHeight, //200,
+          toValue: noResultContainerHeight,
           duration: 600,
         },
       ).start();
