@@ -16,7 +16,6 @@ import Result from './Result';
 import {
   primaryBlue,
   smallFontSize,
-  navBarContainerHeight,
   searchContainerHeight,
   resultContainerHeight,
   resultHeight,
@@ -34,7 +33,7 @@ export default class Search extends Component {
     super();
     this.state = {
       buttonOpacity: new Animated.Value(1),
-      containerHeight: new Animated.Value(navBarContainerHeight),
+      containerHeight: new Animated.Value(searchContainerHeight),
       underlineMargin: new Animated.Value(windowCenterPoint),
       underlineOpacity: new Animated.Value(1),
       separatorHeight: new Animated.Value(0),
@@ -438,7 +437,7 @@ export default class Search extends Component {
       ),
       Animated.timing(
         this.state.containerHeight,{
-          toValue: navBarContainerHeight,
+          toValue: searchContainerHeight,
           duration: 700,
         },
       ),
