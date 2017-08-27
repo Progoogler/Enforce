@@ -480,13 +480,14 @@ const styles = StyleSheet.create({
   headerContainer: {
     flex: 1,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   searchIcon: {
-    marginTop: '1%',
+    marginLeft: '2%',
   },
   headerNavigation: {
     position: 'absolute',
-    right: 1,
+    right: '1%',
   },
   button: {
     flex: .5,
