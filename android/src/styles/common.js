@@ -12,12 +12,13 @@ export var mediumFontSize = responsiveFontSize(2.2);
 export var smallFontSize = responsiveFontSize(1.8);
 
 /* Overview */
+// MainButtons
+export var mainButtonsHeight = responsiveHeight(10);
 // Row
 export var timerRowHeight = responsiveHeight(14);
 export var timerRowWidth = responsiveWidth(115);
 export var timerRowDescWidth = responsiveWidth(75);
 export var timerRowDistanceWidth = responsiveWidth(25);
-
 // TicketCounter
 export var ticketCountFontSize = responsiveFontSize(5);
 export var ticketDescFontSize = responsiveFontSize(2);
