@@ -32,7 +32,6 @@ class Firebase {
 
     static signInUser(userId, password, response) {
       firebase.auth().signInWithEmailAndPassword(userId, password).catch((err) => {
-
         response && response('Cannot sign in.');
         console.error(`Error signing in: [ERROR ${err.code}] ${err.message}`);
       })
@@ -45,18 +44,12 @@ class Firebase {
 
     static getCurrentUser() {
       let user = firebase.auth().currentUser;
-      console.log('get user', user.uid)
       return user.uid;
     }
 
     static deleteUser() {
       let user = firebase.auth().currentUser;
-      console.log('FIREBASE DELETEUSER()', user)
-      user.delete().then(() => {
-        console.log('FIREBASE: USER DELETED');
-      }, (err) => {
-        console.warn(`FIREBASE: USER DELETION FAILED! ERROR: ${err}`);
-      });
+      user.delete();
     }
 
 }
