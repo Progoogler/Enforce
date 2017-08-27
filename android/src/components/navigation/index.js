@@ -63,6 +63,7 @@ export default class Navigation extends Component {
             opacity: this.state.titleOpacity,
             flex: .70,
             fontSize: titleFontSize,
+            marginLeft: '2%',
             color: 'white',
             textAlignVertical: 'center',
             textShadowColor: blueTextShadow,
@@ -120,6 +121,7 @@ Navigation.propTypes = {
 const styles = StyleSheet.create({
   container: {
     alignSelf: 'stretch',
+    alignItems: 'center',
     backgroundColor: primaryBlue,
   },
   headerContainer: {
@@ -127,11 +129,10 @@ const styles = StyleSheet.create({
     height: navBarContainerHeight,
   },
   searchIcon: {
-    marginTop: '1%',
-    flex: .15,
+    alignSelf: 'center',
+    marginLeft: '2%',
   },
   headerNavigation: {
-    flex: .15,
     position: 'absolute',
     right: '1%',
   },

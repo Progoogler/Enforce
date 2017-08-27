@@ -26,7 +26,7 @@ export default class StaticNavigation extends Component {
       <View style={styles.container} >
         <TouchableWithoutFeedback style={styles.back} onPress={() => this._handleArrow()} >
           <Image
-            style={styles.icon}
+            style={styles.searchIcon}
             source={require('../../../../shared/images/backarrow.jpg')} />
         </TouchableWithoutFeedback>
         <Text style={styles.title}>{ this.props.title ? this.props.title : 'Enforce' }</Text>
@@ -67,13 +67,13 @@ const styles = StyleSheet.create({
     backgroundColor: primaryBlue,
     height: navBarContainerHeight,
   },
-  icon: {
-    marginLeft: '4%',
+  searchIcon: {
+    marginLeft: '2%',
   },
   title: {
     flex: .70,
     fontSize: titleFontSize,
-    marginLeft: '5%',
+    marginLeft: '2%',
     color: 'white',
     textAlignVertical: 'center',
     textShadowColor: blueTextShadow,

@@ -6,17 +6,19 @@ import {
   TouchableHighlight,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { primaryBlue } from '../../styles/common';
+import { primaryBlue, mainButtonsHeight } from '../../styles/common';
 
 /* global require */
 export default class MainButtons extends Component {
   constructor() {
     super();
     this.state = {
-      map: false,
-      camera: false,
-      mapUnderline: false,
-      cameraUnderline: false,
+      // map: false,
+      // camera: false,
+      // mapUnderline: false,
+      // cameraUnderline: false,
+      mapBorder: primaryBlue,
+      cameraBorder: primaryBlue,
     }
   }
 
@@ -26,7 +28,14 @@ export default class MainButtons extends Component {
 
         <View style={styles.buttonColumn}>
           <TouchableHighlight
-            style={styles.button}
+            style={{
+              height: mainButtonsHeight, //70,
+              borderBottomWidth: 4,
+              borderBottomColor: this.state.mapBorder,
+              // paddingBottom: '2%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             underlayColor={primaryBlue}
             onHideUnderlay={() => {this._onHideUnderlay('map')}}
             onShowUnderlay={() => {this._onShowUnderlay('map')}}
@@ -40,7 +49,14 @@ export default class MainButtons extends Component {
 
         <View style={styles.buttonColumn}>
           <TouchableHighlight
-            style={ styles.button }
+            style={{
+              height: mainButtonsHeight, //70,
+              borderBottomWidth: 4,
+              borderBottomColor: this.state.cameraBorder,
+              // paddingBottom: '2%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
             underlayColor={primaryBlue}
             onHideUnderlay={() => {this._onHideUnderlay('camera')}}
             onShowUnderlay={() => {this._onShowUnderlay('camera')}}
@@ -55,11 +71,11 @@ export default class MainButtons extends Component {
   }
 
   _onShowUnderlay(button: string) {
-    button === 'map' ? this.setState({mapUnderline: true}) : this.setState({cameraUnderline: true});
+    button === 'map' ? this.setState({mapBorder: 'white'}) : this.setState({cameraBorder: 'white'});
   }
 
   _onHideUnderlay(button: string) {
-    button === 'map' ? this.setState({mapUnderline: false}) : this.setState({cameraUnderline: false});
+    button === 'map' ? this.setState({mapBorder: primaryBlue}) : this.setState({cameraBorder: primaryBlue});
   }
 }
 
@@ -75,16 +91,16 @@ const styles = StyleSheet.create({
     flex: .5,
     flexDirection: 'column',
   },
-  underline: {
-    width: '100%',
-    position: 'absolute',
-    bottom: 0,
-    borderWidth: 3,
-    borderColor: 'white',
-  },
+  // underline: {
+  //   width: '100%',
+  //   position: 'absolute',
+  //   bottom: 0,
+  //   borderWidth: 4,
+  //   borderColor: 'white',
+  // },
   button: {
-    height: 70,
-    paddingBottom: '2%',
+    // height: mainButtonsHeight, //70,
+    // paddingBottom: '2%',
     alignItems: 'center',
     justifyContent: 'center',
   },

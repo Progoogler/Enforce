@@ -78,7 +78,7 @@ export default class Menu extends Component {
               flex: .70,
               fontSize: titleFontSize,
               color: 'white',
-              marginLeft: '5%',
+              marginLeft: '2%',
               textAlignVertical: 'center',
               textShadowColor: blueTextShadow,
               textShadowOffset: {
@@ -187,9 +187,11 @@ Menu.propTypes = {
 const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: '2%'
   },
   searchIcon: {
-    marginTop: '1%',
+    marginLeft: '2%',
   },
   headerNavigation: {
     position: 'absolute',
