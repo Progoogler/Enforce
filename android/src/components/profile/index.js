@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  KeyboardAvoidingView,
   View,
   Text,
   Image,
@@ -67,63 +66,63 @@ export default class Profile extends Component {
         <Navigation navigation={this.props.navigation} title={'Profile'} />
         <Text style={styles.title}>Account Settings</Text>
 
-        <KeyboardAvoidingView behavior={'padding'}>
-        <View style={styles.row} >
+          <View style={styles.row}>
 
-          <TextInput
-            style={{ backgroundColor: this.state.emailBackground, borderColor: this.state.emailColor, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
-            autoCorrect={false}
-            autoCapitalize={'words'}
-            keyboardType={'email-address'}
-            placeholder={'Email'}
-            fontSize={mediumFontSize}
-            underlineColorAndroid={'transparent'}
-            onFocus={() => this._onEmailFocus()}
-            onBlur={() => this._onEmailBlur()}
-            onChangeText={(text) => { this.setState({ email: text })}}
-            value={this.state.email} />
-        </View>
+            <TextInput
+              style={{ backgroundColor: this.state.emailBackground, borderColor: this.state.emailColor, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
+              autoCorrect={false}
+              autoCapitalize={'words'}
+              keyboardType={'email-address'}
+              placeholder={'Email'}
+              fontSize={mediumFontSize}
+              underlineColorAndroid={'transparent'}
+              onFocus={() => this._onEmailFocus()}
+              onBlur={() => this._onEmailBlur()}
+              onChangeText={(text) => { this.setState({ email: text })}}
+              value={this.state.email} />
+          </View>
 
-        { this.state.emailWarning ? <Warning warning={'Enter valid email address'} /> : null }
+          { this.state.emailWarning ? <Warning warning={'Enter valid email address'} /> : null }
 
-        <View style={styles.row} >
+          <View style={styles.row}>
 
-          <TextInput
-            style={{ backgroundColor: this.state.passwordBackground, borderColor: this.state.passwordColor, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
-            autoCorrect={false}
-            secureTextEntry={true}
-            fontSize={mediumFontSize}
-            placeholder={'Password'}
-            underlineColorAndroid={'transparent'}
-            onFocus={() => this._onPasswordFocus()}
-            onBlur={() => this._onPasswordBlur()}
-            onChangeText={(text) => this._onPasswordChangeText(text)}
-            value={this.state.password} />
-        </View>
+            <TextInput
+              style={{ backgroundColor: this.state.passwordBackground, borderColor: this.state.passwordColor, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
+              autoCorrect={false}
+              secureTextEntry={true}
+              fontSize={mediumFontSize}
+              placeholder={'Password'}
+              underlineColorAndroid={'transparent'}
+              onFocus={() => this._onPasswordFocus()}
+              onBlur={() => this._onPasswordBlur()}
+              onChangeText={(text) => this._onPasswordChangeText(text)}
+              value={this.state.password} />
+          </View>
 
-        { this.state.passwordWarning ? <Warning warning={'Must be at least 6 characters'} /> : null }
+          { this.state.passwordWarning ? <Warning warning={'Must be at least 6 characters'} /> : null }
 
-        <View style={styles.row} >
+          <View style={styles.row}>
 
-          <TextInput
-            style={{ backgroundColor: this.state.countyBackground, borderColor: this.state.countyColor, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
-            autoCorrect={false}
-            autoCapitalize={'words'}
-            fontSize={mediumFontSize}
-            placeholder={'County'}
-            underlineColorAndroid={'transparent'}
-            onFocus={() => this._onCountyFocus()}
-            onBlur={() => this._onCountyBlur()}
-            onChangeText={(text) => { this.setState({ county: text })}}
-            value={this.state.county} />
-        </View>
-        </KeyboardAvoidingView>
+            <TextInput
+              style={{ backgroundColor: this.state.countyBackground, borderColor: this.state.countyColor, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
+              autoCorrect={false}
+              autoCapitalize={'words'}
+              fontSize={mediumFontSize}
+              placeholder={'County'}
+              underlineColorAndroid={'transparent'}
+              onFocus={() => this._onCountyFocus()}
+              onBlur={() => this._onCountyBlur()}
+              onChangeText={(text) => { this.setState({ county: text })}}
+              value={this.state.county} />
+          </View>
+
         <TouchableHighlight
           style={styles.button}
           underlayColor='green'
           onPress={() => this._setNewProfile() }>
           <Text style={styles.buttonText}>{ this.state.profileStatus }</Text>
         </TouchableHighlight>
+
         { this.state.isConnected ? null : <ThrowConnectionMessage /> }
         <ActivityIndicator
           animating={this.state.animating}
@@ -219,6 +218,7 @@ export default class Profile extends Component {
 
             // TODO Check if user wants to retain old records first
             Database.getUserTickets(this.profile.county, this.profileId, (data) => {
+              // Gather all the data on current account to ready for port.
               this.data = data;
               Firebase.deleteUser();
             });
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   },
   activity: {
     position: 'absolute',
-    bottom: '4%',
+    bottom: '2%',
     alignSelf: 'center',
   },
 });
