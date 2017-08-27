@@ -49,6 +49,8 @@ class Firebase {
 
     static deleteUser() {
       let user = firebase.auth().currentUser;
+
+      // Returns a promise but we ignore the catch and finish without a resolve
       user.delete();
     }
 
