@@ -26,8 +26,9 @@ export default class CameraApp extends Component {
     this.state = {
       modalVisible: false,
       newTimer: false,
-      captureMode: false,
+      captureMode: true,
     };
+    this._retry = 0;
     this.license = '';
     this.latitude = null;
     this.longitude = null;
@@ -195,31 +196,38 @@ export default class CameraApp extends Component {
     );
   }
 
-  _takePicture() {
-    this.pictureCount++;
+  _takePicture(retry) {
+    if (!retry) {
+      this.pictureCount++;
 
-    if (this.locationService) {
-      navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
-    }
-
-    if (!this.camera) { console.log('timeout and call again')
-      setTimeout(this._takePicture, 1000);
-      return;
+      if (this.locationService) {
+        navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
+      }
     }
 
     this.camera.capture()
       .then((data) => {
-        this.setState({captureMode: false});
+        this._mounted && this.setState({captureMode: false});
         if (this.firstCapture) {
           setTimeout(() => {
             this.savePicture(data);
           }, 1200);
+          this._retry = 0;
           this.firstCapture = false;
           return;
         }
         this.savePicture(data);
+        this._retry = 0;
       })
-      .catch(err => console.error(err));
+      .catch(err => { console.log('retrying', this.camera)
+        this._retry++;
+        if (this._retry !== 3) {
+          this._takePicture('retry');
+        } else {
+          this._retry = 0;
+        }
+        // console.error(err)
+      });
   }
 
   deletePreviousPicture(pictureCount?: number) {
@@ -287,6 +295,7 @@ export default class CameraApp extends Component {
       });
       this.description = "";
     }
+    this.license = '';
     console.log('saved data:', this.realm.objects('Timers')[this.listIndex]['list'][this.realm.objects('Timers')[this.listIndex]['list'].length - 1]);
   }
 
@@ -295,7 +304,7 @@ export default class CameraApp extends Component {
   }
 
   _showNotification() {
-    this.setState({newTimer: true});
+    this._mounted && this.setState({newTimer: true});
     setTimeout(() => this._mounted && this.setState({newTimer: false}), 2000);
   }
 
