@@ -17,7 +17,7 @@ import Row from './Row';
 import Search from '../search';
 import Warning from './Warning';
 import Done from './Done';
-import { timerRowImageHeight } from '../../styles/common';
+import { timerRowImageHeight, timerFlatListHeight } from '../../styles/common';
 
 import RNFetchBlob from 'react-native-fetch-blob';
 const Blob = RNFetchBlob.polyfill.Blob; // Initialize Blob for converting images into binary
@@ -53,6 +53,11 @@ export default class TimerList extends Component {
     this.license = '';
     this.timeElapsed = '';
     this._reset = false;
+    this.licenseList = [];
+    this._currentLicense = 0;
+    this._flatListHeight = Math.ceil(timerFlatListHeight);
+    this._halvedFlatListHeight = Math.ceil(timerFlatListHeight / 2)
+    this._index = this.list[0].index;
   }
 
   static navigationOptions = {
@@ -86,6 +91,7 @@ export default class TimerList extends Component {
            onRefresh={this.onRefresh.bind(this)}
            refreshing={this.state.refreshing}
            keyExtractor={this._keyExtractor}
+           onScroll={this._handleScroll.bind(this)}
            />
 
         { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : <View /> }
@@ -97,7 +103,6 @@ export default class TimerList extends Component {
   componentWillMount() {
     this._getUserInfo();
     this.ticketCount = this.realm.objects('Ticketed')[0]['list'].length;
-    this._mounted = true;
   }
 
   componentWillUnmount() {
@@ -109,7 +114,20 @@ export default class TimerList extends Component {
   }
 
   componentDidMount() {
-    if (this.list[0].createdAt === 0) this.setState({ modalVisible: true });
+    this._mounted = true;
+    if (this.list[0].createdAt === 0) {
+      this.setState({ modalVisible: true });
+    } else {
+      // Keep a local array of licenses to update the search input field as FlatList scrolls
+      for (let i = 0; i < this.list.length; i++) {
+        this.licenseList.push(this.list[i].license);
+      }
+      this.enterLicenseInSearchField({
+        license: this.licenseList[0],
+        pressed: 0,
+        listIndex: 0,
+      });
+    }
   }
 
   async _getUserInfo() {
@@ -174,6 +192,7 @@ export default class TimerList extends Component {
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000 || force) {
       let timers = this.realm.objects('Timers')[timer.index]['list'];
       if (timers['0'].createdAt === timer.createdAt) {
+        this.licenseList.shift();
         this.realm.write(() => {
           timer.ticketedAt = now / 1;
           // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
@@ -195,6 +214,7 @@ export default class TimerList extends Component {
           }
         }
         if (indexOfTimer) {
+          this.licenseList.splice(indexOfTimer, 1);
           this.realm.write(() => {
             timer.ticketedAt = new Date() / 1;
             // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
@@ -236,6 +256,7 @@ export default class TimerList extends Component {
   expiredFunc(timer: object): undefined {
     let timers = this.realm.objects('Timers')[timer.index]['list'];
     if (timers['0'] === timer) {
+      this.licenseList.shift();
       this.realm.write(() => {
         // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
         if (timer.license && this.license) {
@@ -255,6 +276,7 @@ export default class TimerList extends Component {
         }
       }
       if (indexOfTimer) {
+        this.licenseList.splice(indexOfTimer, 1);
         this.realm.write(() => {
           // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
           if (timer.license && this.license) {
@@ -314,6 +336,29 @@ export default class TimerList extends Component {
 
   _keyExtractor(item: object = {'createdAt': 0}): number {
     return item.createdAt;
+  }
+
+  _handleScroll(event) {
+    // Update the license value of the current timer on the FlatList view to the search input field as user scrolls
+    if (event.nativeEvent.contentOffset.y > this._halvedFlatListHeight) {
+      let idx = Math.ceil(event.nativeEvent.contentOffset.y / this._flatListHeight);
+      if (idx !== this._currentLicense) {
+        if (this.licenseList[idx] === undefined) return;
+        this._currentLicense = idx;
+        this.enterLicenseInSearchField({
+          license: this.licenseList[idx],
+          pressed: 0,
+          listIndex: this._index,
+        });
+      }
+    } else {
+      this._currentLicense = 0;
+      this.enterLicenseInSearchField({
+        license: this.licenseList[0],
+        pressed: 0,
+        listIndex: this._index,
+      });
+    }
   }
 
 }
