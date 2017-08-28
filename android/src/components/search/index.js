@@ -197,13 +197,13 @@ export default class Search extends Component {
         this.setState({license: '', underlineMargin: new Animated.Value(windowCenterPoint)});
         this.marginValue = windowCenterPoint;
         this.props.shouldResetLicense(true);
-      } else if (this.props.licenseParam.pressed !== nextProps.licenseParam.pressed) {
+      } else if (this.props.licenseParam.pressed !== nextProps.licenseParam.pressed ||
+        (this.props.licenseParam.pressed === 0 && this.props.licenseParam.license !== nextProps.licenseParam.license)) {
         this.setState({license: '', underlineMargin: new Animated.Value(windowCenterPoint)});
         this.marginValue = windowCenterPoint;
         let license = nextProps.licenseParam.license;
         this.marginValue = this.marginValue - (license.length * 6.65);
         this.setState({license, underlineMargin: new Animated.Value(this.marginValue)});
-
       }
     }
   }
