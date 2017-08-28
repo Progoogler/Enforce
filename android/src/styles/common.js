@@ -52,6 +52,7 @@ export var timeLimitTitleContainerHeight = height * .05;
 export var timerRowDescContainerHeight = height * .12;
 export var timerRowButtonsContainerHeight = height * .09;
 export var timerRowImageHeight = height * .565;
+export var timerFlatListHeight = timerRowDescContainerHeight + timerRowButtonsContainerHeight + timerRowImageHeight;
 // Warning
 export var warningContainerMarginTop = height * .22;
 
