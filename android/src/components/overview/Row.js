@@ -32,7 +32,6 @@ export default class Row extends Component {
 
   render() {
     if (this.props.data.list.length <= 1 && !this.props.data.list[0].createdAt) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
-    console.log('overview row', this.props.data)
     return (
           <ScrollView
             style={styles.innerScroll}
