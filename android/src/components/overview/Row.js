@@ -41,7 +41,7 @@ export default class Row extends Component {
             <View style={styles.innerContainer} >
               <TouchableNativeFeedback
                 background={TouchableNativeFeedback.Ripple(primaryBlue, true)}
-                onPress={() => this._openTimerListPage(this.props.data.list)} >
+                onPress={() => this._openTimerListPage(this.props.data.list[0].index)} >
 
                 <View style={styles.timerRowDesc}>
                   <Text style={styles.timerRowLength}>
