@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import FlatList from 'react-native/Libraries/Lists/FlatList';
 import Realm from 'realm';
 import { setUserTickets, setTicketImage } from '../../../../includes/firebase/database';
+import coordinatesBound from './coordinatesBound';
 
 import Title from './Title';
 import Row from './Row';
@@ -38,7 +39,7 @@ export default class TimerList extends Component {
       this.props.navigation.state.params = {};
       this.props.navigation.state.params.timers = this.list;
     } else {
-      this.list = this.props.navigation.state.params.timers ? this.props.navigation.state.params.timers : [{list: [{'createdAt': 0}]}];
+      this.list = this.props.navigation.state.params.timers ? this.realm.objects('Timers')[this.props.navigation.state.params.timers].list : [{'createdAt': 0}];
     }
     this.state = {
       dataSource: this.list,
@@ -46,6 +47,7 @@ export default class TimerList extends Component {
       warningVisibility: false,
       modalVisible: false,
       license: '',
+      bound: undefined,
     };
     this.timer = null;
     this.ticketedCount = 0;
@@ -56,8 +58,7 @@ export default class TimerList extends Component {
     this.licenseList = [];
     this._currentLicense = 0;
     this._flatListHeight = Math.ceil(timerFlatListHeight);
-    this._halvedFlatListHeight = Math.ceil(timerFlatListHeight / 2)
-    this._index = this.list[0].index;
+    this._halvedFlatListHeight = Math.ceil(timerFlatListHeight / 2);
   }
 
   static navigationOptions = {
@@ -81,7 +82,7 @@ export default class TimerList extends Component {
           licenseParam={this.state.license}
           shouldResetLicense={this.shouldResetLicense.bind(this)}
           addLicenseToQueue={this.addLicenseToQueue.bind(this)} />
-        <Title limit={this.list[0] ? this.list[0].timeLength ? this.list[0].timeLength : 0 : 0} />
+        <Title limit={this.list[0] ? this.list[0].timeLength ? this.list[0].timeLength : 0 : 0} bound={this.state.bound} getDirectionBound={this.getDirectionBound.bind(this)}/>
         <Warning timeElapsed={this.timeElapsed} visibility={this.state.warningVisibility} uponTicketed={this.uponTicketed.bind(this)} clearWarning={this.updateRows.bind(this)}/>
 
         <FlatList
@@ -128,6 +129,21 @@ export default class TimerList extends Component {
         listIndex: 0,
       });
     }
+    this.getDirectionBound();
+  }
+
+  getDirectionBound() {
+    var avgLat = 0;
+    var avgLong = 0;
+    for (let i = 1; i < Math.min(5, this.list.length); i++) {
+      avgLat += this.list[i].latitude;
+      avgLong += this.list[i].longitude;
+    }
+    avgLat = avgLat / Math.min(5, this.list.length);
+    avgLong = avgLong / Math.min(5, this.list.length);
+    var bound = coordinatesBound(this.list[0].latitude, this.list[0].longitude, avgLat, avgLong);
+    this.setState({bound});
+    setTimeout(() => this.setState({bound: undefined}), 5000);
   }
 
   async _getUserInfo() {
@@ -158,8 +174,7 @@ export default class TimerList extends Component {
       });
     } else if (this.list.length === 0) {
       this._mounted && this.setState({
-        //dataSource: this.list,
-        modalVisible: true, // Show Done sign. TODO Change UI
+        modalVisible: true,
       });
     } else if (clearWarning && only) { // Extra transaction handler for displaying the warning sign.
       this._mounted && this.setState({
@@ -348,7 +363,7 @@ export default class TimerList extends Component {
         this.enterLicenseInSearchField({
           license: this.licenseList[idx],
           pressed: 0,
-          listIndex: this._index,
+          listIndex: this.list[idx].index,
         });
       }
     } else {
@@ -356,7 +371,7 @@ export default class TimerList extends Component {
       this.enterLicenseInSearchField({
         license: this.licenseList[0],
         pressed: 0,
-        listIndex: this._index,
+        listIndex: this.list[0].index,
       });
     }
   }

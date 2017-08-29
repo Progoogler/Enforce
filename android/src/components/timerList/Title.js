@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  TouchableWithoutFeedback,
   View,
   Text,
   StyleSheet,
@@ -14,9 +15,11 @@ class Title extends Component {
   }
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.text}>{this._getTimeLimitResponse(this.props.limit)} Queue </Text>
-      </View>
+      <TouchableWithoutFeedback onPress={this.props.getDirectionBound}>
+        <View style={styles.container}>
+          <Text style={styles.text}>{this._getTimeLimitResponse(this.props.limit)} Queue {this.props.bound ? ` [ ${this.props.bound} ]` : ''}</Text>
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 
