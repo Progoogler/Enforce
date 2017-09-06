@@ -26,7 +26,7 @@ export default class CameraApp extends Component {
     this.state = {
       modalVisible: false,
       newTimer: false,
-      captureMode: true,
+      imageRecognition: true,
     };
     this._retry = 0;
     this.license = '';
@@ -41,6 +41,7 @@ export default class CameraApp extends Component {
     this.locationService = false;
     this.deleting = false;
     this._mounted = undefined;
+    this.settings = null;
     this.realm = new Realm();
   }
 
@@ -64,7 +65,21 @@ export default class CameraApp extends Component {
         <View style={styles.cameraContainer}>
 
 
-        {this.state.captureMode ?
+        {this.state.imageRecognition ?
+
+          <ALPR
+            ref={(cam) => this.camera = cam}
+            style={styles.camera}
+            aspect={ALPR.constants.Aspect.fill}
+            captureQuality={ALPR.constants.CaptureQuality.medium}
+            country='us'
+            onPlateRecognized={(data) => this.onPlateRecognized(data)}
+            plateOutlineColor='#ff0000'
+            showPlateOutline
+            torchMode={ALPR.constants.TorchMode.off}
+            touchToFocus/>
+
+          :
 
           <Camera
            ref={(cam) => this.camera = cam}
@@ -72,35 +87,27 @@ export default class CameraApp extends Component {
            aspect={Camera.constants.Aspect.fill}
            captureQuality={Camera.constants.CaptureQuality.high}/>
 
-          :
-
-          <ALPR
-            style={styles.camera}
-            aspect={ALPR.constants.Aspect.fill}
-            captureQuality={ALPR.constants.CaptureQuality.low}
-            country='us'
-            onPlateRecognized={(data) => this.onPlateRecognized(data)}
-            plateOutlineColor='#ff0000'
-            showPlateOutline
-            torchMode={ALPR.constants.TorchMode.off}
-            touchToFocus/>
         }
 
 
         </View>
-        <Capture setModalVisible={this.setModalVisible.bind(this)} takePicture={this.processPicture.bind(this)} deletePreviousPicture={this.deletePreviousPicture.bind(this)} />
+        <Capture setModalVisible={this.setModalVisible.bind(this)} takePicture={this.takePicture.bind(this)} deletePreviousPicture={this.deletePreviousPicture.bind(this)} />
       </View>
     );
 }
 
-  async componentDidMount() {
+  async componentWillMount() {
+    this.settings = await AsyncStorage.getItem('@Enforce:settings');
+    this.settings = JSON.parse(this.settings);
+    if (this.settings && !this.settings.imageRecognition) this.setState({imageRecognition: false});
+  }
+
+  componentDidMount() {
     this._mounted = true;
     this._setCameraTime();
     this._setTimeLimit();
-    let settings = await AsyncStorage.getItem('@Enforce:settings');
-    settings = JSON.parse(settings);
 
-    if (settings && settings.location) {
+    if (this.settings && this.settings.location) {
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
           message: "<h2>Turn On Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
           ok: "OK",
@@ -118,7 +125,7 @@ export default class CameraApp extends Component {
     }
   }
 
-  componentWillUnmount() { console.log('camera unmounts')
+  componentWillUnmount() {
     this._mounted = false;
     clearTimeout(this._timeout);
   }
@@ -189,14 +196,7 @@ export default class CameraApp extends Component {
     }
   }
 
-  processPicture() {
-    this.setState(
-      {captureMode: true},
-      this._takePicture
-    );
-  }
-
-  _takePicture(retry) {
+  takePicture(retry) {
     if (!retry) {
       this.pictureCount++;
 
@@ -205,9 +205,12 @@ export default class CameraApp extends Component {
       }
     }
 
+    if (this.camera === null) {
+      setTimeout(() => this.takePicture(), 500);
+      return;
+    }
     this.camera.capture()
       .then((data) => {
-        this._mounted && this.setState({captureMode: false});
         if (this.firstCapture) {
           setTimeout(() => {
             this.savePicture(data);
@@ -222,7 +225,7 @@ export default class CameraApp extends Component {
       .catch(err => { console.log('retrying', this.camera)
         this._retry++;
         if (this._retry !== 3) {
-          this._takePicture('retry');
+          this.takePicture('retry');
         } else {
           this._retry = 0;
         }
@@ -296,7 +299,7 @@ export default class CameraApp extends Component {
       this.description = "";
     }
     this.license = '';
-    console.log('saved data:', this.realm.objects('Timers')[this.listIndex]['list'][this.realm.objects('Timers')[this.listIndex]['list'].length - 1]);
+    // console.log('saved data:', this.realm.objects('Timers')[this.listIndex]['list'][this.realm.objects('Timers')[this.listIndex]['list'].length - 1]);
   }
 
   _setTimeLimit() {
