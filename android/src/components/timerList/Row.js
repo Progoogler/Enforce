@@ -30,9 +30,13 @@ export default class Row extends Component {
     if (this.props.data.createdAt === 0) return <View/>
     return (
       <View style={styles.container} >
+        <View style={{height: this.props.imageHeight, backgroundColor: 'black'}}>
         <Image
-          style={{height: this.props.imageHeight}}
-          source={{uri: this.props.data.mediaUri}} />
+          style={styles.image}
+          source={{uri: this.props.data.mediaUri}}
+          resizeMode="contain"
+        />
+        </View>
         <View style={styles.descriptionContainer}>
           <Text style={styles.timeLeft}>{this._getTimeLeft(this.props.data)}</Text>
           <View style={styles.timeContainer}>
@@ -118,6 +122,11 @@ Row.propTypes = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  image: {
+    flex:1,
+    height: undefined,
+    width: undefined,
   },
   licenseContainer: {
     position: 'absolute',
