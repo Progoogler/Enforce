@@ -24,6 +24,7 @@ import {
   windowCenterPoint,
   underlineWidth,
   separatorHeight,
+  textInputOffset,
  } from '../../styles/common';
 
 
@@ -34,7 +35,7 @@ export default class Search extends Component {
     this.state = {
       buttonOpacity: new Animated.Value(1),
       containerHeight: new Animated.Value(searchContainerHeight),
-      underlineMargin: new Animated.Value(windowCenterPoint),
+      cursorMarginLeft: new Animated.Value(windowCenterPoint),
       underlineOpacity: new Animated.Value(1),
       separatorHeight: new Animated.Value(0),
       underline: new Animated.Value(0),
@@ -64,12 +65,13 @@ export default class Search extends Component {
           <Image source={require('../../../../shared/images/search-icon.png')} />
         </TouchableHighlight>
 
-          <Animated.View style={{
-                            position: 'absolute',
-                            top: '35%',
-                            width: '30%',
-                            marginLeft: this.state.underlineMargin,
-                          }}>
+          <Animated.View
+            style={{
+              position: 'absolute',
+              top: '35%',
+              width: '30%',
+              marginLeft: this.state.cursorMarginLeft,
+          }}>
             <TextInput
               ref={(ref) => { this.myTextInput = ref }}
               onChangeText={(license) => { this._handleTextInput(license) }}
@@ -95,14 +97,14 @@ export default class Search extends Component {
         </View>
 
 
-        <Animated.View style={{
-                        alignSelf: 'center',
-                        borderWidth: .35,
-                        borderColor: 'white',
-                        width: this.state.underline,
-                        opacity: this.state.underlineOpacity, }}>
-        </Animated.View>
-
+        <Animated.View
+          style={{
+            alignSelf: 'center',
+            borderWidth: .35,
+            borderColor: 'white',
+            width: this.state.underline,
+            opacity: this.state.underlineOpacity,
+        }}/>
 
         <Animated.View style={{
             opacity: this.state.buttonOpacity,
@@ -140,13 +142,20 @@ export default class Search extends Component {
           height: this.state.resultHeight,
           alignSelf: 'stretch',
           }}>
-          { this.state.result ? <Result
-                                  data={this.state.result}
-                                  navigation={this.props.navigation}
-                                  license={this.state.license}
-                                  resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
-                                  minimizeResultContainer={this.minimizeResultContainer.bind(this)}
-                                  closeSearch={this.props.closeSearch} /> : null }
+          { this.state.result ?
+
+            <Result
+              data={this.state.result}
+              navigation={this.props.navigation}
+              license={this.state.license}
+              resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
+              minimizeResultContainer={this.minimizeResultContainer.bind(this)}
+              closeSearch={this.props.closeSearch} />
+
+              :
+
+            null
+          }
         </Animated.View>
 
       </Animated.View>
@@ -194,16 +203,16 @@ export default class Search extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.timerList) {
       if (this.props.shouldResetLicense()) {
-        this.setState({license: '', underlineMargin: new Animated.Value(windowCenterPoint)});
+        this.setState({license: '', cursorMarginLeft: new Animated.Value(windowCenterPoint)});
         this.marginValue = windowCenterPoint;
-        this.props.shouldResetLicense(true);
+        this.props.shouldResetLicense(true); // Sets the return value of this._reset to false in TimerList to prevent resetting the search field until a uponTicketed() or expiredFunc() is performed.
       } else if (this.props.licenseParam.pressed !== nextProps.licenseParam.pressed ||
         (this.props.licenseParam.pressed === 0 && this.props.licenseParam.license !== nextProps.licenseParam.license)) {
-        this.setState({license: '', underlineMargin: new Animated.Value(windowCenterPoint)});
+        this.setState({license: '', cursorMarginLeft: new Animated.Value(windowCenterPoint)});
         this.marginValue = windowCenterPoint;
         let license = nextProps.licenseParam.license;
-        this.marginValue = this.marginValue - (license.length * 6.65);
-        this.setState({license, underlineMargin: new Animated.Value(this.marginValue)});
+        this.marginValue = this.marginValue - (license.length * textInputOffset);
+        this.setState({license, cursorMarginLeft: new Animated.Value(this.marginValue)});
       }
     }
   }
@@ -214,7 +223,7 @@ export default class Search extends Component {
 
     if (this.props.timerList) {
       if (this.state.license.length > 0 && this.myTextInput.isFocused()) {
-        this.setState({ license: '', underlineMargin: new Animated.Value(windowCenterPoint) });
+        this.setState({ license: '', cursorMarginLeft: new Animated.Value(windowCenterPoint) });
         this.marginValue = windowCenterPoint;
         Keyboard.dismiss();
       } else if (this.myTextInput.isFocused()) {
@@ -229,7 +238,7 @@ export default class Search extends Component {
     this._fadeContainer();
     setTimeout(() => this._mounted && this.props.closeSearch(), 500);
 
-    this.setState({ license: '', underlineMargin: new Animated.Value(windowCenterPoint) });
+    this.setState({ license: '', cursorMarginLeft: new Animated.Value(windowCenterPoint) });
     this.marginValue = windowCenterPoint;
   }
 
@@ -237,6 +246,7 @@ export default class Search extends Component {
 
     if (this.state.license.length === 0) {
       this.myTextInput.focus();
+      return;
     } else {
 
       let prevResult = this.state.result;
@@ -276,6 +286,7 @@ export default class Search extends Component {
   _handleVINSearch() {
     if (this.state.license.length === 0) {
       this.myTextInput.focus();
+      return;
     } else if (this.props.timerList) {
       // Add license to current Timer in queue in TimerList if in TimerList.
       if (!this.props.licenseParam.license) {
@@ -391,7 +402,7 @@ export default class Search extends Component {
       ),
     ]).start();
     Keyboard.dismiss();
-    this.setState({license: '', result: null, underlineMargin: new Animated.Value(windowCenterPoint)});
+    this.setState({license: '', result: null, cursorMarginLeft: new Animated.Value(windowCenterPoint)});
   }
 
    _keyboardDidHideForTimerList() {
@@ -401,7 +412,7 @@ export default class Search extends Component {
   _handleTextInput(license: string) {
     if (license.length === 0) {
       Animated.timing(
-        this.state.underlineMargin, {
+        this.state.cursorMarginLeft, {
           toValue: windowCenterPoint,
         },
       ).start();
@@ -410,16 +421,16 @@ export default class Search extends Component {
       return;
     }
     if (license.length < this.state.license.length) {
-      this.marginValue += 6.65;
+      this.marginValue += textInputOffset;
       Animated.timing(
-        this.state.underlineMargin, {
+        this.state.cursorMarginLeft, {
           toValue: this.marginValue,
         },
       ).start();
     } else {
-      this.marginValue -= 6.65;
+      this.marginValue -= textInputOffset;
       Animated.timing(
-        this.state.underlineMargin, {
+        this.state.cursorMarginLeft, {
           toValue: this.marginValue,
         },
       ).start();
