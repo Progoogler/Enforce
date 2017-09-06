@@ -26,6 +26,7 @@ export default class Settings extends Component {
       location: true,
       imageUpload: true,
       dataUpload: true,
+      imageRecognition: true,
     }
   }
   static navigationOptions = {
@@ -72,6 +73,19 @@ export default class Settings extends Component {
         </View>
 
         <View style={styles.row}>
+          <Text style={styles.settingDesc}>Use image recognition with camera</Text>
+          <View style={styles.slider}>
+            <Switch
+              onValueChange={(value) => this.setState({imageRecognition: value})}
+              onTintColor="green"
+              style={{marginBottom: 10}}
+              thumbTintColor={primaryBlue}
+              tintColor="#808080"
+              value={this.state.imageRecognition} />
+          </View>
+        </View>
+
+        <View style={styles.row}>
           <Text style={styles.settingDesc}>Backup images to the cloud database</Text>
           <View style={styles.slider}>
             <Switch
@@ -109,6 +123,7 @@ export default class Settings extends Component {
       location: settings.location,
       imageUpload: settings.imageUpload,
       dataUpload: settings.dataUpload,
+      imageRecognition: settings.imageRecognition,
     });
   }
 
