@@ -188,7 +188,7 @@ export default class Row extends Component {
     this.props.navigation.dispatch(navigateAction);
   }
 
-  _openTimerListPage(timerList: object): undefined {
+  _openTimerListPage(timerList: number): undefined {
     const navigateAction = NavigationActions.navigate({
       routeName: 'Timers',
       params: {timers: timerList},
