@@ -286,7 +286,6 @@ export default class Search extends Component {
   _handleVINSearch() {
     if (this.state.license.length === 0) {
       this.myTextInput.focus();
-      return;
     } else if (this.props.timerList) {
       // Add license to current Timer in queue in TimerList if in TimerList.
       if (!this.props.licenseParam.license) {
