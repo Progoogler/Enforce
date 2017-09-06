@@ -1,5 +1,5 @@
 import { responsiveHeight, responsiveWidth, responsiveFontSize } from 'react-native-responsive-dimensions';
-import { Dimensions } from 'react-native';
+import { Dimensions, PixelRatio } from 'react-native';
 var { height, width } = Dimensions.get('window');
 
 export var primaryBlue = '#4286f4';
@@ -41,9 +41,15 @@ export var resultContainerHeight = height * .34;
 export var resultHeight = height * .14;
 export var noResultContainerHeight = height * .27;
 export var noResultHeight = height * .11;
-export var windowCenterPoint = Math.floor(width / 2) - 3.8;
+
+// Switched from a constant 3.8 to PixelRatio.getFontScale() which returns 3.5 -- Coincidence??
+// TODO Check whether this scale "fix" holds up with lower dpi devices
+export var windowCenterPoint = (width / 2) - PixelRatio.get() - 1;
+
+export var textInputOffset = PixelRatio.get() * 2;
 export var underlineWidth = responsiveWidth(40);
 export var separatorHeight = responsiveHeight(5);
+// export var searchInputMarginValue = responsive
 
 /* Timer List */
 //Title
