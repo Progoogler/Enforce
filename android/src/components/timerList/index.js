@@ -256,7 +256,8 @@ export default class TimerList extends Component {
       });
     }
   }
-  await expiredFunc(timer: object): undefined {
+
+  async expiredFunc(timer: object): undefined {
     let timers = this.realm.objects('Timers')[timer.index]['list'];
     let indexOfTimer;
     if (timers['0'] === timer) {
