@@ -20,6 +20,7 @@
     "react-native-fs": "^2.3.2",
     "react-native-maps": "0.13.1",
     "react-native-openalpr": "^1.0.6",
+    "react-native-photo-view": "1.2.0",
     "react-native-push-notification": "^3.0.0",
     "react-native-responsive-dimensions": "^1.0.1",
     "react-native-status-bar-size": "^0.3.2",

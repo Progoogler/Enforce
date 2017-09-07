@@ -16,6 +16,7 @@ import com.rnfs.RNFSPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.cardash.openalpr.CameraReactPackage;
+import com.reactnative.photoview.PhotoViewPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,7 +40,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RealmReactPackage(),
             new RCTCameraPackage(),
             new MapsPackage(),
-            new CameraReactPackage()
+            new CameraReactPackage(),
+            new PhotoViewPackage()
       );
     }
   };

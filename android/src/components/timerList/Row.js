@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  Image,
+  // Image,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import PhotoView from 'react-native-photo-view';
 import {
   primaryBlue,
   extraLargeFontSize,
@@ -31,10 +32,10 @@ export default class Row extends Component {
     return (
       <View style={styles.container} >
         <View style={{height: this.props.imageHeight, backgroundColor: 'black'}}>
-        <Image
+        <PhotoView
           style={styles.image}
           source={{uri: this.props.data.mediaUri}}
-          resizeMode="contain"
+          androidScaleType="fitCenter"
         />
         </View>
         <View style={styles.descriptionContainer}>
