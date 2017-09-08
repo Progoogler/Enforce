@@ -25,7 +25,6 @@ const Blob = RNFetchBlob.polyfill.Blob; // Initialize Blob for converting images
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = Blob;
 
-var { height } = Dimensions.get('window');
 var imageHeight = timerRowImageHeight - (StatusBar.currentHeight ? StatusBar.currentHeight : 0);
 
 /* global require */
@@ -48,13 +47,15 @@ export default class TimerList extends Component {
       bound: undefined,
     };
     this.timer = null;
-    this.ticketedCount = 0;
     this.VIN = '';
     this.license = '';
     this.timeElapsed = '';
     this._reset = false;
     this.licenseList = [];
+    this.ticketCount = undefined;
     this._currentLicense = 0;
+
+    // These variables are used to calculate the index of the Timer currently in the scroll view
     this._flatListHeight = Math.ceil(timerFlatListHeight);
     this._halvedFlatListHeight = Math.ceil(timerFlatListHeight / 2);
   }
@@ -101,15 +102,14 @@ export default class TimerList extends Component {
   }
 
   componentWillMount() {
-    this._getUserInfo();
     this.ticketCount = this.realm.objects('Ticketed')[0]['list'].length;
   }
 
   componentWillUnmount() {
-    if (this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length && this.settings.dataUpload) {
+    if (this.settings.dataUpload && this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) {
       setUserTickets(this.refPath, this.realm.objects('Ticketed')[0]['list']);
     }
-    this.props.navigation.state.params = undefined;
+    this.props.navigation.state.params = undefined; // TODO check if resetting this is really necessary
     this._mounted = false;
   }
 
@@ -117,6 +117,7 @@ export default class TimerList extends Component {
     this._mounted = true;
     if (this.list[0].createdAt === 0) {
       this.setState({ modalVisible: true });
+      return;
     } else {
       // Keep a local array of licenses to update the search input field as FlatList scrolls
       for (let i = 0; i < this.list.length; i++) {
@@ -129,6 +130,7 @@ export default class TimerList extends Component {
       });
     }
     if (this.list[0].latitude) this.getDirectionBound();
+    this._getUserInfo();
   }
 
   getDirectionBound() {
@@ -227,7 +229,7 @@ export default class TimerList extends Component {
         }
       }
       if (this.license) this.resetLicenseAndVIN();
-      if (this.settings.imageUpload) {
+      if (this.settings.imageUpload) { // Uploads the image to the user's Firebase account
         let rnfbURI = RNFetchBlob.wrap(timer.mediaPath);
         Blob
           .build(rnfbURI, {type: 'image/jpg;'})
