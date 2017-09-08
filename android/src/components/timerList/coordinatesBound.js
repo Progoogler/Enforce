@@ -4,24 +4,6 @@
 
   General direction for the first timer of a row // In description or title
   - - compute delta between the first coordinate with the average of the next five coordinates to generate a bound
-
-  { this.props.data.description ?
-    <View style={styles.locationContainer}>
-      <Text style={styles.location}>{ `${this.props.data.description} ${coordinatesBound(this.props.data.latitude,
-        this.props.data.longitude,
-        this.boundLat,
-        this.boundLong)}` }</Text>
-    </View>
-    : null }
-
-    componentWillMount() {
-      var nextNeighbor = this.props.realm.objects('Timers')[this.props.data.index].list[this.props.index + 1]
-      if (nextNeighbor) {
-        this.boundLat = nextNeighbor.latitude;
-        this.boundLong = nextNeighbor.longitude;
-      }
-    }
-
 */
 
 var coordinatesBound = function(latS, longS, latE, longE) {
@@ -46,7 +28,7 @@ var coordinatesBound = function(latS, longS, latE, longE) {
   }
 }
 
-function negate(decimal) { console.log(decimal)
+function negate(decimal) {
   if (decimal === 0) return false;
   var str = decimal.toString();
 
