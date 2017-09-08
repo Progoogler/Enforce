@@ -144,8 +144,8 @@ export default class TimerList extends Component {
     avgLat = avgLat / Math.min(5, this.list.length - 1);
     avgLong = avgLong / Math.min(5, this.list.length - 1);
     var bound = coordinatesBound(this.list[0].latitude, this.list[0].longitude, avgLat, avgLong);
-    this.setState({bound});
-    setTimeout(() => this.setState({bound: undefined}), 5000);
+    this._mounted && this.setState({bound});
+    setTimeout(() => this._mounted && this.setState({bound: undefined}), 5000);
   }
 
   async _getUserInfo() {
