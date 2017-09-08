@@ -133,8 +133,12 @@ export default class Profile extends Component {
   }
 
   componentWillMount() {
-    this._mounted = true;
     this._getProfileFromAsyncStorage();
+  }
+
+  componentDidMount() {
+    this._mounted = true;
+    this._signInUser();
   }
 
   componentWillUnmount() {
@@ -163,19 +167,18 @@ export default class Profile extends Component {
   }
 
   async _getProfileFromAsyncStorage() {
-    try {
-      this.profile = await AsyncStorage.getItem('@Enforce:profileSettings');
-      this.profile = JSON.parse(this.profile);
-      this.profile && this.setState({
-        email: this.profile.email ? this.profile.email : '',
-        password: this.profile.password ? this.profile.password : '',
-        county: this.profile.county ? this.profile.county : '',
-      });
-      this.profileId = await AsyncStorage.getItem('@Enforce:profileId');
-      this.profileId && Firebase.signInUser(this.profile.email, this.profile.password);
-    } catch (err) {
-      console.warn('Error fetching Profile Settings from AsyncStorage', err);
-    }
+    this.profile = await AsyncStorage.getItem('@Enforce:profileSettings');
+    this.profile = JSON.parse(this.profile);
+    this.profile && this.setState({
+      email: this.profile.email ? this.profile.email : '',
+      password: this.profile.password ? this.profile.password : '',
+      county: this.profile.county ? this.profile.county : '',
+    });
+  }
+
+  async _signInUser() {
+    this.profileId = await AsyncStorage.getItem('@Enforce:profileId');
+    this.profileId && Firebase.signInUser(this.profile.email, this.profile.password);
   }
 
   async _setNewProfile() {
