@@ -33,6 +33,7 @@ export default class MapApp extends Component {
     this.animatedMap = undefined;
     this._dragTimerIndex = undefined;
     this._timerSecondaryIndex = undefined;
+    this._accessedLocation = false;
     this.realm = new Realm();
   }
 
@@ -83,35 +84,10 @@ export default class MapApp extends Component {
     );
   }
 
-  async componentWillMount() {
-    this._mounted = true;
-    let settings = await AsyncStorage.getItem('@Enforce:settings');
-    settings = JSON.parse(settings);
-
-    if (settings && settings.location) {
-      LocationServicesDialogBox.checkLocationServicesIsEnabled({
-          message: "<h2>Use Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
-          ok: "OK",
-          cancel: "Continue without"
-      }).then(() => {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            let latitude = parseFloat(position.coords.latitude);
-            let longitude = parseFloat(position.coords.longitude);
-            this._animateToCoord(latitude, longitude);
-            this.realm.write(() => {
-              this.realm.objects('Coordinates')[0].latitude = latitude;
-              this.realm.objects('Coordinates')[0].longitude = longitude;
-            });
-          }, () => {
-            this._mounted && this.setState({showError: true, animating: false});
-          },
-          {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
-        );
-      });
-    } else {
+  componentWillMount() {
       navigator.geolocation.getCurrentPosition(
         position => {
+          this._accessedLocation = true;
           let latitude = parseFloat(position.coords.latitude);
           let longitude = parseFloat(position.coords.longitude);
           this._animateToCoord(latitude, longitude);
@@ -119,15 +95,40 @@ export default class MapApp extends Component {
             this.realm.objects('Coordinates')[0].latitude = latitude;
             this.realm.objects('Coordinates')[0].longitude = longitude;
           });
-        }, () => {
-          this._mounted && this.setState({showError: true, animating: false});
-        },
+        }, () => {},
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
       );
     }
   }
 
   componentDidMount() {
+    this._mounted = true;
+    this._checkAndGetCoordinates();
+    this._checkAndDrawPolyline();
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this._timeout);
+    this._mounted = false;
+    if (this.props.navigation.state.params) {
+      // Remove params for fresh state when main Map Button is pressed
+      this.props.navigation.state.params = undefined;
+    }
+  }
+
+  async _checkAndGetCoordinates() {
+    if (this.props.navigation.state.params && this.props.navigation.state.params.timers[0].latitude) {
+      this._animateToCoord(this.props.navigation.state.params.timers[0].latitude, this.props.navigation.state.params.timers[0].longitude);
+      return;
+    }
+
+    let settings = await AsyncStorage.getItem('@Enforce:settings');
+    settings = JSON.parse(settings);
+    if (settings && settings.location && !this._accessedLocation) this.checkLocationAndRender();
+
+  }
+
+  _checkAndDrawPolyline() {
     if (this.props.navigation.state.params) {
       let coords = [];
       this.props.navigation.state.params.timers.forEach( timer => {
@@ -163,15 +164,6 @@ export default class MapApp extends Component {
           ],
         });
       }
-    }
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this._timeout);
-    this._mounted = false;
-    if (this.props.navigation.state.params) {
-      // Remove params for fresh state when main Map Button is pressed
-      this.props.navigation.state.params = undefined;
     }
   }
 
@@ -305,7 +297,7 @@ export default class MapApp extends Component {
     if (!this.props.navigation.state.params) {
       let lists = this.realm.objects('Timers');
       let i = 0;
-      this.realm.objects('Timers').forEach(timerList => {
+      lists.forEach(timerList => {
         if (timerList.list.length > 0) {
           aux = timerList.list[0].createdAt + (timerList.list[0].timeLength * 60 * 60 * 1000);
           if (aux < soonest) {
@@ -332,6 +324,7 @@ export default class MapApp extends Component {
         }
         i++;
       });
+      return markers;
     } else {
 
       if (this.props.navigation.state.params.historyView) {
@@ -393,7 +386,7 @@ export default class MapApp extends Component {
             this.realm.objects('Coordinates')[0].latitude = latitude;
             this.realm.objects('Coordinates')[0].longitude = longitude;
           });
-          this._mounted && this.setState({showError: false, animating: false});
+          if (this._mounted && this.state.showError) this.setState({showError: false, animating: false});
         }, () => {
           this._mounted && this.setState({showError: true, animating: false});
         },
