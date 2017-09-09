@@ -14,19 +14,9 @@ export default class CustomCallout extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={ this.props.secondary ? (this.props.timer.description ? (this._checkTimedUp(this.props.timer) ? styles.green : styles.blue) : null) :
-                        (this._checkTimedUp(this.props.timer) ? styles.green : styles.blue) }>
-
+        <View style={ this.props.title ? (this._checkTimedUp(this.props.timer) ? styles.green : styles.blue) : null }>
           <Text style={styles.message}>
-            {
-              this.props.secondary ?
-
-              (this.props.timer.description ? this._prettyMessage(this.props.timer.description) : null) :
-
-             (this._checkTimedUp(this.props.timer) ?
-
-             'Ready' : 'Expires at ' + this._getExpiration(this.props.timer) + '\n' + this._prettyMessage(this.props.timer.description))
-            }
+            { this.props.title ? (this._checkTimedUp(this.props.timer) ? 'Ready' : 'Expires at ' + this._getExpiration(this.props.timer)) : null }
           </Text>
         </View>
         <View style={ this._checkTimedUp(this.props.timer) ? styles.greenTriangle : styles.blueTriangle } />
@@ -52,19 +42,6 @@ export default class CustomCallout extends Component {
     let period = (hour < 12) ? 'AM' : 'PM';
     hour = (hour <= 12) ? hour : hour - 12;
     return `${hour}:${minutes} ${period}`;
-  }
-
-  _prettyMessage(string) {
-    if (string.length > 45) {
-      let arr = string.split('');
-      for (let i = 40; i < arr.length; i++) {
-        if (arr[i] === ' ') {
-          arr.splice(i, 0, '\n');
-          return arr.join('');
-        }
-      }
-    }
-    return string;
   }
 }
 
