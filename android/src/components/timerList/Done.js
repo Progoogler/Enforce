@@ -1,6 +1,8 @@
 import React from 'react';
 import {
+  View,
   Text,
+  Image,
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
@@ -13,7 +15,13 @@ const Done = (props) => (
     style={styles.container}
     onPress={() => {props.navigation.navigate('Overview')}} >
 
-    <Text style={styles.text}>Done</Text>
+    <View style={styles.row}>
+      <Image
+        source={require('../../../../shared/images/checkmark.jpg')}
+        style={styles.image}
+        />
+      <Text style={styles.text}>Done</Text>
+    </View>
 
   </TouchableOpacity>
 );
@@ -30,6 +38,10 @@ const styles = StyleSheet.create({
     zIndex: 10,
     borderTopWidth: 2,
     borderColor: primaryBlue,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   text: {
     padding: '5%',
