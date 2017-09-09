@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  Dimensions,
   StatusBar,
   StyleSheet,
   AsyncStorage,
@@ -82,7 +81,9 @@ export default class TimerList extends Component {
           licenseParam={this.state.license}
           shouldResetLicense={this.shouldResetLicense.bind(this)}
           addLicenseToQueue={this.addLicenseToQueue.bind(this)} />
+
         <Title limit={this.list[0] ? this.list[0].timeLength ? this.list[0].timeLength : 0 : 0} bound={this.state.bound} getDirectionBound={this.getDirectionBound.bind(this)}/>
+
         <Warning timeElapsed={this.timeElapsed} visibility={this.state.warningVisibility} uponTicketed={this.uponTicketed.bind(this)} clearWarning={this.updateRows.bind(this)}/>
 
         <FlatList
@@ -117,7 +118,6 @@ export default class TimerList extends Component {
     this._mounted = true;
     if (this.list[0].createdAt === 0) {
       this.setState({ modalVisible: true });
-      return;
     } else {
       // Keep a local array of licenses to update the search input field as FlatList scrolls
       for (let i = 0; i < this.list.length; i++) {
