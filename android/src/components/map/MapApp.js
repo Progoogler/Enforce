@@ -13,6 +13,7 @@ import Realm from 'realm';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 
 import Navigation from '../navigation/StaticNavigation';
+import LocationView from './LocationView';
 import LocationDetailsView from './LocationDetailsView';
 import CustomCallout from './CustomCallout';
 import ErrorMessage from './ErrorMessage';
@@ -26,14 +27,14 @@ export default class MapApp extends Component {
     this.state = {
       animating: true,
       showError: false,
-      showLocationTip: false,
       polyline: [],
+      description: '',
     };
     this.animated = false;
-    this.animatedMap = undefined;
     this._accessedLocation = false;
-    this.realm = new Realm();
+    this.animatedMap = undefined;
     this._marker = undefined;
+    this.realm = new Realm();
   }
 
   static navigationOptions = {
@@ -46,6 +47,8 @@ export default class MapApp extends Component {
   render() {
     return (
       <View style={styles.container} >
+
+        <LocationView description={this.state.description}/>
 
         <MapView.Animated
           ref={ref => { this.animatedMap = ref; }}
@@ -68,8 +71,6 @@ export default class MapApp extends Component {
           route={'Map'}
           imageSource={require('../../../../shared/images/white-pin.jpg')} />
 
-         {this.state.showLocationTip ? <LocationDetailsView /> : null }
-
         <ActivityIndicator
           animating={this.state.animating}
           style={styles.activity}
@@ -89,15 +90,23 @@ export default class MapApp extends Component {
         this._accessedLocation = true;
         let latitude = parseFloat(position.coords.latitude);
         let longitude = parseFloat(position.coords.longitude);
-        if (this.animatedMap) {
-          this._animateToCoord(latitude, longitude);
-        } else {
-          setTimeout(() => this._animatedToCoord(latitude, longitude), 1500);
-        }
-        this.realm.write(() => {
-          this.realm.objects('Coordinates')[0].latitude = latitude;
-          this.realm.objects('Coordinates')[0].longitude = longitude;
-        });
+
+        if (!this.props.navigation.state.params  ||
+             ((this.props.navigation.state.params && !this.props.navigation.state.params.timers[0].latitude) ||
+             (this.props.navigation.state.params && !this.props.navigation.state.params.timers.latitude))) {
+           if (this.animatedMap) {
+             this._animateToCoord(latitude, longitude);
+           } else {
+             setTimeout(() => this._mounted && this._animateToCoord(latitude, longitude), 1500);
+           }
+         }
+
+        setTimeout(() => { // Write the coordinates to Realm later after component has finished loading
+          this.realm.write(() => {
+            this.realm.objects('Coordinates')[0].latitude = latitude;
+            this.realm.objects('Coordinates')[0].longitude = longitude;
+          });
+        }, 5000);
       }, () => {},
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
     );
@@ -120,15 +129,28 @@ export default class MapApp extends Component {
   }
 
   async _checkAndGetCoordinates() {
-    if (this.props.navigation.state.params && this.props.navigation.state.params.timers[0].latitude) {
-      this._animateToCoord(this.props.navigation.state.params.timers[0].latitude, this.props.navigation.state.params.timers[0].longitude);
-      return;
+    if (this.props.navigation.state.params) {
+      if (this.props.navigation.state.params.historyView && this.props.navigation.state.params.timers.latitude) {
+        this._mounted && this._animateToCoord(this.props.navigation.state.params.timers.latitude, this.props.navigation.state.params.timers.longitude);
+        return;
+      } else if (this.props.navigation.state.params.timers && this.props.navigation.state.params.timers[0].latitude) {
+        this._mounted && this._animateToCoord(this.props.navigation.state.params.timers[0].latitude, this.props.navigation.state.params.timers[0].longitude);
+        return;
+      } else {
+        for (let i = 1; i < this.props.navigation.state.params.timers.length; i++) {
+          if (this.props.navigation.state.params.timers[i].latitude) {
+            this._timeout = setTimeout(() => {
+              this._mounted && this._animateToCoord(this.props.navigation.state.params.timers[i].latitude, this.props.navigation.state.params.timers[i].longitude);
+            }, 1500);
+            return;
+          }
+        }
+      }
     }
 
     let settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);
     if (settings && settings.location && !this._accessedLocation) this.checkLocationAndRender();
-
   }
 
   _checkAndDrawPolyline() {
@@ -140,57 +162,29 @@ export default class MapApp extends Component {
           'longitude': timer.longitude,
         });
       });
-      if (!this.props.navigation.state.params.timers[0].description) {
-        this,_mounted && this.setState({
-          polyline: [
-            <MapView.Polyline
-              coordinates={coords}
-              strokeWidth={5}
-              strokeColor='red'
-              key={1}
-              />
-          ],
-          showLocationTip: true,
-        });
-        setTimeout(() => {
-          this._mounted && this.setState({showLocationTip: false});
-        }, 5000);
-      } else {
-        this._mounted && this.setState({
-          polyline: [
-            <MapView.Polyline
-              coordinates={coords}
-              strokeWidth={5}
-              strokeColor='red'
-              key={1}
-              />
-          ],
-        });
-      }
-    }
-  }
-
-  getLocationDetails() {
-    if (this.props.navigation.state.params) {
-      let details = "", i = 0;
-      while (details.length === 0 && i < this.props.navigation.state.params.timers.length) {
-        details = this.props.navigation.state.params.timers[i].description;
-        i++;
-      }
-      if (!details) return (<LocationDetailsView />);
+      this._mounted && this.setState({
+        polyline: [
+          <MapView.Polyline
+            coordinates={coords}
+            strokeWidth={5}
+            strokeColor='red'
+            key={1}
+          />
+        ]
+      });
     }
   }
 
   _animateToCoord(lat: number, long: number) {
-      this._mounted && this.animatedMap._component.animateToCoordinate({
-        latitude: lat,
-        longitude: long,
-      }, 1500);
-      if (!this.animated) {
-        this.animated = true;
-        this._mounted && this.setState({animating: false});
-      }
+    this._mounted && this.animatedMap._component.animateToCoordinate({
+      latitude: lat,
+      longitude: long,
+    }, 1500);
+    if (!this.animated) {
+      this.animated = true;
+      this._mounted && this.setState({animating: false});
     }
+  }
 
   setMarkers(markers) { // TODO Unused function: Fix it or ditch it.
     this.animatedMap._component.fitToSuppliedMarkers(markers);
@@ -201,6 +195,10 @@ export default class MapApp extends Component {
       this.realm.objects('Timers')[index].list[secondaryIndex !== null ? secondaryIndex : 0].latitude = coords.latitude;
       this.realm.objects('Timers')[index].list[secondaryIndex !== null ? secondaryIndex : 0].longitude = coords.longitude;
     });
+  }
+
+  _displayDescription(description) {
+    this.setState({description});
   }
 
   getMarkers() {
@@ -221,9 +219,10 @@ export default class MapApp extends Component {
           markers.push(
             <Marker draggable
               coordinate={{latitude: timerList.list[0].latitude, longitude: timerList.list[0].longitude}}
+              onPress={() => this._displayDescription(timerList.list[0].description)}
               onDragEnd={(e) => this._resetTimerCoords(timerList.list[0].index, e.nativeEvent.coordinate, null)}
               key={timerList.list[0].createdAt} >
-              <CustomCallout timer={timerList.list[0]} title="1st" />
+              <CustomCallout timer={timerList.list[0]} title="1st"/>
             </Marker>
           );
         }
@@ -238,7 +237,6 @@ export default class MapApp extends Component {
       });
       return markers;
     } else {
-
       if (this.props.navigation.state.params.historyView) {
         let dataObj = this.props.navigation.state.params.timers;
         markers.push(<Marker draggable
@@ -272,10 +270,19 @@ export default class MapApp extends Component {
            );
          }
       });
-      if (arr[0].latitude > 0) { // TODO else...
+      if (arr[0].latitude > 0) {
         this._timeout = setTimeout(() => {
           this._animateToCoord(arr[0].latitude, arr[0].longitude);
         }, 1500);
+      } else { // Try to find the first timer with recorded coordinates and animate there
+        for (let i = 1; i < arr.length; i++) {
+          if (arr[i].latitude) {
+            this._timeout = setTimeout(() => {
+              this._animateToCoord(arr[i].latitude, arr[i].longitude);
+            }, 1500);
+            break;
+          }
+        }
       }
     }
     return markers;
@@ -286,12 +293,13 @@ export default class MapApp extends Component {
         message: "<h2>Use Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
         ok: "OK",
         cancel: "Continue without"
-    }).then(() => {
+    })
+    .then(() => {
       navigator.geolocation.getCurrentPosition(
         position => {
           let latitude = parseFloat(position.coords.latitude);
           let longitude = parseFloat(position.coords.longitude);
-          this._animateToCoord(latitude, longitude);
+          this._mounted && this._animateToCoord(latitude, longitude);
           this.realm.write(() => {
             this.realm.objects('Coordinates')[0].latitude = latitude;
             this.realm.objects('Coordinates')[0].longitude = longitude;
