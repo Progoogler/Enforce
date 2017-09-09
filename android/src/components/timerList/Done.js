@@ -24,19 +24,35 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'center',
-    backgroundColor: primaryBlue,
-    height: '6%',
-    width: '20%',
-    borderRadius: 20,
-    marginBottom: '6%',
+    backgroundColor: 'white',
+    width: '100%',
+    bottom: 0,
+    zIndex: 10,
+    borderTopWidth: 2,
+    borderColor: primaryBlue,
   },
   text: {
-    padding: '2%',
+    padding: '5%',
     fontSize: largeFontSize,
-    color: 'white',
-    fontWeight: 'bold',
-  },
+    color: primaryBlue,
+  }
 });
+
+// container: {
+//   justifyContent: 'center',
+//   alignItems: 'center',
+//   alignSelf: 'center',
+//   backgroundColor: primaryBlue,
+//   height: '6%',
+//   width: '20%',
+//   borderRadius: 20,
+//   marginBottom: '6%',
+// },
+// text: {
+//   padding: '2%',
+//   fontSize: largeFontSize,
+//   color: 'white',
+//   fontWeight: 'bold',
+// },
 
 export default Done;
