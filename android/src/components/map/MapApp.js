@@ -14,7 +14,6 @@ import LocationServicesDialogBox from "react-native-android-location-services-di
 
 import Navigation from '../navigation/StaticNavigation';
 import LocationView from './LocationView';
-import LocationDetailsView from './LocationDetailsView';
 import CustomCallout from './CustomCallout';
 import ErrorMessage from './ErrorMessage';
 
@@ -29,12 +28,18 @@ export default class MapApp extends Component {
       showError: false,
       polyline: [],
       description: '',
+      fadeDescription: false,
     };
     this.animated = false;
     this._accessedLocation = false;
+    this.animatedToMarker = false;
+    this.errorDescription = 'No location details were found. Remember to either turn on GPS or input location details before taking pictures.';
+    this.description = '';
     this.animatedMap = undefined;
     this._marker = undefined;
     this.realm = new Realm();
+    this.timersArray = [];
+    this.markers = [];
   }
 
   static navigationOptions = {
@@ -47,8 +52,13 @@ export default class MapApp extends Component {
   render() {
     return (
       <View style={styles.container} >
+        <Navigation
+          navigation={this.props.navigation}
+          title={'Map View'}
+          route={'Map'}
+          imageSource={require('../../../../shared/images/white-pin.jpg')} />
 
-        <LocationView description={this.state.description}/>
+        <LocationView description={this.state.description} fadeDescription={this.state.fadeDescription}/>
 
         <MapView.Animated
           ref={ref => { this.animatedMap = ref; }}
@@ -61,15 +71,9 @@ export default class MapApp extends Component {
             latitudeDelta: 0.0108,
             longitudeDelta: 0.0060,
           }} >
-            { this.getMarkers() }
+            { this.markers.length ? this.markers : this.getMarkers() }
             { this.state.polyline[0] }
         </MapView.Animated>
-
-        <Navigation
-          navigation={this.props.navigation}
-          title={'Map View'}
-          route={'Map'}
-          imageSource={require('../../../../shared/images/white-pin.jpg')} />
 
         <ActivityIndicator
           animating={this.state.animating}
@@ -77,9 +81,6 @@ export default class MapApp extends Component {
           size='large' />
 
         { this.state.showError ? <ErrorMessage checkLocationAndRender={this.checkLocationAndRender.bind(this)} /> : <View /> }
-        <View style={styles.logoContainer}>
-          <Text style={styles.logo}>Enforce</Text>
-        </View>
       </View>
     );
   }
@@ -91,9 +92,7 @@ export default class MapApp extends Component {
         let latitude = parseFloat(position.coords.latitude);
         let longitude = parseFloat(position.coords.longitude);
 
-        if (!this.props.navigation.state.params  ||
-             ((this.props.navigation.state.params && !this.props.navigation.state.params.timers[0].latitude) ||
-             (this.props.navigation.state.params && !this.props.navigation.state.params.timers.latitude))) {
+        if (!this.props.navigation.state.params  || !this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list[0].latitude) {
            if (this.animatedMap) {
              this._animateToCoord(latitude, longitude);
            } else {
@@ -117,6 +116,15 @@ export default class MapApp extends Component {
     this._mounted = true;
     this._checkAndGetCoordinates();
     this._checkAndDrawPolyline();
+    setTimeout(() => {
+      if (!this.animatedToMarker && !this.description) {
+        this._displayDescription(this.errorDescription, true);
+      } else if (!this.animatedToMarker && this.description) {
+        this._displayDescription(this.description);
+      } else if (this.props.navigation.state.params && this.description) {
+        this._displayDescription(this.description);
+      }
+    }, 3000);
   }
 
   componentWillUnmount() {
@@ -129,18 +137,18 @@ export default class MapApp extends Component {
   }
 
   async _checkAndGetCoordinates() {
-    if (this.props.navigation.state.params) {
-      if (this.props.navigation.state.params.historyView && this.props.navigation.state.params.timers.latitude) {
-        this._mounted && this._animateToCoord(this.props.navigation.state.params.timers.latitude, this.props.navigation.state.params.timers.longitude);
-        return;
-      } else if (this.props.navigation.state.params.timers && this.props.navigation.state.params.timers[0].latitude) {
-        this._mounted && this._animateToCoord(this.props.navigation.state.params.timers[0].latitude, this.props.navigation.state.params.timers[0].longitude);
+    if (this.props.navigation.state.params && typeof this.props.navigation.state.params.timersIndex === 'number') {
+      this.timersArray = this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list;
+      if (this.timersArray[0].latitude) {
+        this._mounted && this._animateToCoord(this.timersArray[0].latitude, this.timersArray[0].longitude);
+        this.animatedToMarker = true;
         return;
       } else {
-        for (let i = 1; i < this.props.navigation.state.params.timers.length; i++) {
-          if (this.props.navigation.state.params.timers[i].latitude) {
+        for (let i = 1; i < this.timersArray.length; i++) {
+          if (this.timersArray[i].latitude) {
+            this.animatedToMarker = true;
             this._timeout = setTimeout(() => {
-              this._mounted && this._animateToCoord(this.props.navigation.state.params.timers[i].latitude, this.props.navigation.state.params.timers[i].longitude);
+              this._mounted && this._animateToCoord(this.timersArray[i].latitude, this.timersArray[i].longitude);
             }, 1500);
             return;
           }
@@ -154,9 +162,9 @@ export default class MapApp extends Component {
   }
 
   _checkAndDrawPolyline() {
-    if (this.props.navigation.state.params) {
+    if (this.timersArray.length) {
       let coords = [];
-      this.props.navigation.state.params.timers.forEach( timer => {
+      this.timersArray.forEach( timer => {
         coords.push({
           'latitude': timer.latitude,
           'longitude': timer.longitude,
@@ -197,26 +205,27 @@ export default class MapApp extends Component {
     });
   }
 
-  _displayDescription(description) {
-    this.setState({description});
+  _displayDescription(description, fadeDescription) {
+    this._mounted && this.setState({description, fadeDescription});
+    if (this.state.fadeDescription) setTimeout(() => this._mounted && this.setState({fadeDescription: false}), 7800);
   }
 
   getMarkers() {
-    const markers = [];
     let lat, long, aux;
     let soonest = Number.POSITIVE_INFINITY;
     if (!this.props.navigation.state.params) {
       let lists = this.realm.objects('Timers');
-      let i = 0;
-      lists.forEach(timerList => {
+      lists.forEach((timerList, idx) => {
         if (timerList.list.length > 0) {
           aux = timerList.list[0].createdAt + (timerList.list[0].timeLength * 60 * 60 * 1000);
-          if (aux < soonest) {
+          if (aux < soonest && timerList.list[0].latitude !== 0) {
             soonest = aux;
-            lat = timerList.list[0].latitude !== 0 ? timerList.list[0].latitude : lat;
-            long = timerList.list[0].longitude !== 0 ? timerList.list[0].longitude : long;
+            lat = timerList.list[0].latitude;
+            long = timerList.list[0].longitude;
+          } else if (aux < soonest) {
+            this.description = timerList.list[0].description;
           }
-          markers.push(
+          this.markers.push(
             <Marker draggable
               coordinate={{latitude: timerList.list[0].latitude, longitude: timerList.list[0].longitude}}
               onPress={() => this._displayDescription(timerList.list[0].description)}
@@ -226,66 +235,64 @@ export default class MapApp extends Component {
             </Marker>
           );
         }
-        if (lists[i+1] === undefined) {
+
+        if (lists[idx+1] === undefined) {
           if (lat > 0) {
+            this.animatedToMarker = true;
             this._timeout = setTimeout(() => {
               this._animateToCoord(lat, long);
             }, 1500);
           }
         }
-        i++;
       });
-      return markers;
+      return this.markers;
     } else {
-      if (this.props.navigation.state.params.historyView) {
-        let dataObj = this.props.navigation.state.params.timers;
-        markers.push(<Marker draggable
-            coordinate={{latitude: dataObj.latitude, longitude: dataObj.longitude}}
-            key={dataObj.createdAt} />
-        );
-        if (dataObj.latitude > 0) {
-          this._timeout = setTimeout(() => {
-            this._animateToCoord(dataObj.latitude, dataObj.longitude);
-          }, 1500);
-        }
-        return markers;
-      }
       // Else check timers in params
-      let arr = this.props.navigation.state.params.timers;
-      markers.push(<Marker draggable
-          coordinate={{latitude: arr[0].latitude, longitude: arr[0].longitude}}
-          onDragEnd={(e) => this._resetTimerCoords(arr[0].index, e.nativeEvent.coordinate, 0)}
-          key={arr[0].createdAt} >
-          <CustomCallout timer={arr[0]} title="1st" />
+      if (!this.timersArray.length) this.timersArray = this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list;
+      this.description = this.timersArray[0].description ? this.timersArray[0].description : '';
+
+      this.markers.push(<Marker draggable
+          coordinate={{latitude: this.timersArray[0].latitude, longitude: this.timersArray[0].longitude}}
+          onPress={() => this._displayDescription(this.timersArray[0].description)}
+          onDragEnd={(e) => this._resetTimerCoords(this.timersArray[0].index, e.nativeEvent.coordinate, 0)}
+          key={this.timersArray[0].createdAt} >
+          <CustomCallout timer={this.timersArray[0]} title="1st" />
         </Marker>
       );
-      arr.forEach((timer, idx) => {
+      this.timersArray.forEach((timer, idx) => {
          if (idx !== 0) {
-           markers.push(<Marker draggable
-             coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
-             onDragEnd={(e) => this._resetTimerCoords(arr[idx].index, e.nativeEvent.coordinate, idx)}
-             key={timer.createdAt} >
-             <CustomCallout timer={arr[idx]} secondary={true}/>
-            </Marker>
-           );
+           if (!this.description && timer.description) this.description = timer.description;
+           if (timer.latitude) {
+             this.markers.push(<Marker draggable
+               coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
+               onPress={() => this._displayDescription(timer.description)}
+               onDragEnd={(e) => this._resetTimerCoords(this.timersArray[idx].index, e.nativeEvent.coordinate, idx)}
+               key={timer.createdAt} >
+               <CustomCallout timer={timer} secondary={true}/>
+               </Marker>
+             );
+           }
          }
       });
-      if (arr[0].latitude > 0) {
+
+      if (this.timersArray[0].latitude) {
+        this.animatedToMarker = true;
         this._timeout = setTimeout(() => {
-          this._animateToCoord(arr[0].latitude, arr[0].longitude);
+          this._animateToCoord(this.timersArray[0].latitude, this.timersArray[0].longitude);
         }, 1500);
       } else { // Try to find the first timer with recorded coordinates and animate there
-        for (let i = 1; i < arr.length; i++) {
-          if (arr[i].latitude) {
+        for (let i = 1; i < this.timersArray.length; i++) {
+          if (this.timersArray[i].latitude) {
+            this.animatedToMarker = true;
             this._timeout = setTimeout(() => {
-              this._animateToCoord(arr[i].latitude, arr[i].longitude);
+              this._animateToCoord(this.timersArray[i].latitude, this.timersArray[i].longitude);
             }, 1500);
             break;
           }
         }
       }
     }
-    return markers;
+    return this.markers;
   }
 
   checkLocationAndRender() {
@@ -339,21 +346,5 @@ const styles = StyleSheet.create({
   activity: {
     flex: 1,
     zIndex: 10,
-  },
-  logoContainer: {
-    position: 'absolute',
-    bottom: 7,
-    right: 10,
-  },
-  logo: {
-    color: 'white',
-    fontSize: smallFontSize,
-    fontWeight: '400',
-    textShadowColor: 'grey',
-    textShadowRadius: 5,
-    textShadowOffset: {
-      width: 2,
-      height: 1
-    }
   },
 });
