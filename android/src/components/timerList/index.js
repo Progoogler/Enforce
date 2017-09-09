@@ -250,7 +250,8 @@ export default class TimerList extends Component {
         warningVisibility: true,
       });
     }
-    if (indexOfTimer !== undefined) {
+    if (indexOfTimer !== undefined && this.list[indexOfTimer] !== undefined) {
+      // Handles updating license input field for the last timer that is not also the first
       this.enterLicenseInSearchField({
         license: this.licenseList[indexOfTimer], // The current indexOfTimer here has replaced the previous one
         pressed: 0,
@@ -290,7 +291,7 @@ export default class TimerList extends Component {
     }
     if (this.license) this.resetLicenseAndVIN();
     this.updateRows();
-    if (indexOfTimer !== undefined) {
+    if (indexOfTimer !== undefined && this.list[indexOfTimer] !== undefined) {
       this.enterLicenseInSearchField({
         license: this.licenseList[indexOfTimer], // The current indexOfTimer here has replaced the previous one
         pressed: 0,
