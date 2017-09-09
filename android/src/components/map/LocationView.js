@@ -28,7 +28,7 @@ export default class LocationView extends Component {
           top: this.top,
           left: 0,
           right: 0,
-          zIndex: 10,
+          zIndex: 9,
         }}>
 
           <TouchableWithoutFeedback style={styles.touchable} onPress={() => this._hideAnimatedView()}>
@@ -72,7 +72,7 @@ export default class LocationView extends Component {
 
 const styles = StyleSheet.create({
   textContainer: {
-    zIndex: 11,
+    zIndex: 9,
     height: navBarContainerHeight,
     backgroundColor: 'white',
     justifyContent: 'center',
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     paddingRight: '3%',
   },
   fadeContainer: {
-    zIndex: 11,
+    zIndex: 9,
     height: fadeContainerHeight,
     backgroundColor: 'white',
     justifyContent: 'center',
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   },
   circle: {
     alignSelf: 'center',
-    zIndex: 10,
+    zIndex: 8,
     marginTop: -20,
     width: 30,
     height: 30,
