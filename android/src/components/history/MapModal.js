@@ -12,7 +12,9 @@ import PropTypes from 'prop-types';
 
 import MapView, { Marker } from 'react-native-maps';
 import Navigation from '../navigation/StaticNavigation';
+import LocationView from '../map/LocationView';
 import {
+  navBarContainerHeight,
   primaryBlue,
   mediumFontSize,
 } from '../../styles/common';
@@ -23,6 +25,9 @@ const height = Dimensions.get('window').height;
 export default class MapModal extends Component {
   constructor() {
     super();
+    this.state = {
+      description: ''
+    };
   }
 
   render() {
@@ -42,7 +47,10 @@ export default class MapModal extends Component {
 
         </TouchableOpacity>
 
+        <LocationView description={this.state.description}/>
+
         <View style={styles.mapContainer}>
+
           <MapView.Animated
             ref={ref => { this.animatedMap = ref; }}
             style={styles.map}
@@ -63,11 +71,7 @@ export default class MapModal extends Component {
             </Marker>
 
           </MapView.Animated>
-          { this.props.description ?
-              <View style={styles.locationContainer}>
-                <Text style={styles.location}>{this.props.description}</Text>
-              </View>
-            : null }
+
         </View>
       </Modal>
     );
@@ -75,12 +79,17 @@ export default class MapModal extends Component {
 
   componentWillMount() {
     styles.closeContainer = {
+      zIndex: 11,
       position: 'absolute',
       top: 0,
       left: 0,
       right: 0,
       bottom: height - 100,
     }
+  }
+
+  componentDidMount() {
+    if (this.props.description) this.setState({description: this.props.description});
   }
 
 }
@@ -96,7 +105,7 @@ MapModal.propTypes = {
 const styles = StyleSheet.create({
   mapContainer: {
     position: 'absolute',
-    top: 60,
+    top: navBarContainerHeight,
     left: 0,
     right: 0,
     bottom: 0,
@@ -109,24 +118,5 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-  },
-  locationContainer: {
-    position: 'absolute',
-    bottom: 30,
-    alignSelf: 'center',
-    backgroundColor: 'white',
-    borderRadius: 50,
-    paddingTop: 2,
-    paddingBottom: 2,
-    zIndex: 100,
-  },
-  location: {
-    textAlign: 'center',
-    color: primaryBlue,
-    fontSize: mediumFontSize,
-    paddingLeft: 8,
-    paddingRight: 8,
-    paddingBottom: 4,
-    paddingTop: 4,
   },
 });
