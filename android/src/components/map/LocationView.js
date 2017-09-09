@@ -8,14 +8,16 @@ import {
 } from 'react-native';
 
 import { mediumFontSize, navBarContainerHeight, primaryBlue } from '../../styles/common';
+var fadeContainerHeight = navBarContainerHeight + 20;
 
 export default class LocationView extends Component {
   constructor() {
     super();
     this.state = {
       description: '',
+      fadeDescription: false,
     };
-    this.top = new Animated.Value(0);
+    this.top = new Animated.Value(-30);
   }
 
   render() {
@@ -23,31 +25,31 @@ export default class LocationView extends Component {
       <Animated.View
         style={{
           position: 'absolute',
-          height: navBarContainerHeight,
-          backgroundColor: 'white',
-          justifyContent: 'center',
-          borderBottomWidth: 2,
-          borderColor: primaryBlue,
           top: this.top,
           left: 0,
           right: 0,
-          zIndex: 9,
-          paddingLeft: '2%',
-          paddingRight: '2%',
+          zIndex: 10,
         }}>
-        <TouchableWithoutFeedback
-          onPress={() => this._hideAnimatedView()}
-          >
-        <View><Text style={styles.description}> { this.state.description } </Text></View>
-        </TouchableWithoutFeedback>
+
+          <TouchableWithoutFeedback style={styles.touchable} onPress={() => this._hideAnimatedView()}>
+            <View style={this.state.fadeDescription ? styles.fadeContainer : styles.textContainer}>
+              <Text style={styles.description}> { this.state.description } </Text>
+            </View>
+          </TouchableWithoutFeedback>
+
+          <TouchableWithoutFeedback onPress={() => this._hideAnimatedView()}>
+            <View style={styles.circle}></View>
+          </TouchableWithoutFeedback>
+
       </Animated.View>
     );
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.description.length !== 0) {
-      this.setState({description: nextProps.description});
-      this._displayAnimatedView();
+      this.setState({description: nextProps.description, fadeDescription: nextProps.fadeDescription});
+      this._displayAnimatedView()
+      if (nextProps.fadeDescription) setTimeout(() => this._hideAnimatedView(), 8000);
     }
   }
 
@@ -62,29 +64,54 @@ export default class LocationView extends Component {
   _hideAnimatedView() {
     Animated.timing(
       this.top,
-      { toValue: 0,
+      { toValue: -30,
         duration: 1000 },
     ).start();
   }
-
-  // _prettyMessage(string) { // Breaks a line around ~40 characters
-  //   if (string.length > 45) {
-  //     let arr = string.split('');
-  //     for (let i = 40; i < arr.length; i++) {
-  //       if (arr[i] === ' ') {
-  //         arr.splice(i, 0, '\n');
-  //         return arr.join('');
-  //       }
-  //     }
-  //   }
-  //   return string;
-  // }
 }
 
 const styles = StyleSheet.create({
+  textContainer: {
+    zIndex: 11,
+    height: navBarContainerHeight,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 2,
+    borderColor: primaryBlue,
+    paddingLeft: '3%',
+    paddingRight: '3%',
+  },
+  fadeContainer: {
+    zIndex: 11,
+    height: fadeContainerHeight,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderBottomWidth: 2,
+    borderColor: primaryBlue,
+    paddingLeft: '3%',
+    paddingRight: '3%',
+  },
   description: {
     textAlign: 'center',
     fontSize: mediumFontSize,
     color: primaryBlue,
+  },
+  touchable: {
+    height: navBarContainerHeight + 10,
+    width: '100%',
+  },
+  circle: {
+    alignSelf: 'center',
+    zIndex: 10,
+    marginTop: -20,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: primaryBlue,
+    transform: [
+      {scaleX: 2}
+    ],
   }
-})
+});
