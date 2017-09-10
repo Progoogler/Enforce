@@ -75,8 +75,6 @@ export default class Row extends Component {
         </View>
 
         { this.state.modalVisible ? <MapModal
-                                      data={this.props.data}
-                                      navigation={this.props.navigation}
                                       visibility={this.state.modalVisible}
                                       latitude={this.props.data.latitude}
                                       longitude={this.props.data.longitude}
