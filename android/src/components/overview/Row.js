@@ -59,7 +59,7 @@ export default class Row extends Component {
                 <TouchableOpacity
                   style={styles.button}
                   activeOpacity={.8}
-                  onPress={() => this._openMapPage(this.props.data.list)} >
+                  onPress={() => this._openMapPage(this.props.data.list[0].index)} >
                   <View>
                     <Text style={styles.buttonText}>Show Map</Text>
                   </View>
@@ -180,10 +180,10 @@ export default class Row extends Component {
     return deg * (Math.PI/180)
   }
 
-  _openMapPage(timerList: object): undefined {
+  _openMapPage(timersIndex: number): undefined {
     const navigateAction = NavigationActions.navigate({
       routeName: 'Map',
-      params: {timers: timerList, navigation: this.props.navigation},
+      params: {timersIndex, navigation: this.props.navigation},
     });
     this.props.navigation.dispatch(navigateAction);
   }
