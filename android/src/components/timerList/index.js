@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Image,
-  StatusBar,
   StyleSheet,
   AsyncStorage,
 } from 'react-native';
@@ -17,14 +16,12 @@ import Row from './Row';
 import Search from '../search';
 import Warning from './Warning';
 import Done from './Done';
-import { timerRowImageHeight, timerFlatListHeight } from '../../styles/common';
+import { timerFlatListHeight } from '../../styles/common';
 
 import RNFetchBlob from 'react-native-fetch-blob';
 const Blob = RNFetchBlob.polyfill.Blob; // Initialize Blob for converting images into binary
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest;
 window.Blob = Blob;
-
-var imageHeight = timerRowImageHeight - (StatusBar.currentHeight ? StatusBar.currentHeight : 0);
 
 /* global require */
 export default class TimerList extends Component {
@@ -344,7 +341,6 @@ export default class TimerList extends Component {
     return (
       <Row
         data={data.item}
-        imageHeight={imageHeight}
         expiredFunc={this.expiredFunc.bind(this)}
         uponTicketed={this.uponTicketed.bind(this)}
         enterLicenseInSearchField={this.enterLicenseInSearchField.bind(this)} />
