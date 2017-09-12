@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  // Image,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
@@ -31,12 +30,12 @@ export default class Row extends Component {
     if (this.props.data.createdAt === 0) return <View/>
     return (
       <View style={styles.container} >
-        <View style={{height: this.props.imageHeight, backgroundColor: 'black'}}>
-        <PhotoView
-          style={styles.image}
-          source={{uri: this.props.data.mediaUri}}
-          androidScaleType="fitCenter"
-        />
+        <View style={{height: timerRowImageHeight, backgroundColor: 'black'}}>
+          <PhotoView
+            style={styles.image}
+            source={{uri: this.props.data.mediaUri}}
+            androidScaleType="fitCenter"
+          />
         </View>
         <View style={styles.descriptionContainer}>
           <Text style={styles.timeLeft}>{this._getTimeLeft(this.props.data)}</Text>
@@ -131,6 +130,7 @@ const styles = StyleSheet.create({
   },
   licenseContainer: {
     position: 'absolute',
+    // Position the License Container above both the Description Container and the Buttons Container minus the border width
     bottom: timerRowDescContainerHeight + timerRowButtonsContainerHeight - 2,
     alignSelf: 'center',
     backgroundColor: 'white',
