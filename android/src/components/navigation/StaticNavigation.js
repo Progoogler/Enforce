@@ -47,8 +47,7 @@ export default class StaticNavigation extends Component {
   }
 
   _handleArrow() {
-    this.props.navigation && this.props.navigation.navigate('Overview');
-    !this.props.navigation && this.props.closeModal();
+    this.props.navigation ? this.props.navigation.navigate('Overview') : this.props.closeModal();
   }
 
 }
