@@ -1,5 +1,5 @@
 import { responsiveHeight, responsiveWidth, responsiveFontSize } from 'react-native-responsive-dimensions';
-import { Dimensions, PixelRatio } from 'react-native';
+import { Dimensions, PixelRatio, StatusBar } from 'react-native';
 var { height, width } = Dimensions.get('window');
 
 export var primaryBlue = '#4286f4';
@@ -57,7 +57,7 @@ export var timeLimitTitleContainerHeight = height * .05;
 // Row
 export var timerRowDescContainerHeight = height * .12;
 export var timerRowButtonsContainerHeight = height * .09;
-export var timerRowImageHeight = height * .565;
+export var timerRowImageHeight = height * .564 - (StatusBar.currentHeight ? StatusBar.currentHeight : 0);
 export var timerFlatListHeight = timerRowDescContainerHeight + timerRowButtonsContainerHeight + timerRowImageHeight;
 // Warning
 export var warningContainerMarginTop = height * .22;
@@ -68,3 +68,7 @@ export var textInputWidth = width - 100;
 /* History */
 // Row
 export var imageSize = responsiveWidth(20);
+
+/* Map */
+// LocationView
+export var fadeContainerHeight = height * .11;
