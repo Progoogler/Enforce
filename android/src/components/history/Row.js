@@ -34,7 +34,7 @@ export default class Row extends Component {
         <View style={styles.rowContainer}>
           {
             (this.props.selected === "Today's Tickets" || this.props.selected === "Today's Expired") ?
-            <TouchableOpacity activeOpacity={.4} onPress={() => this.props.maximizeImage(this.props.data.mediaUri)}>
+            <TouchableOpacity activeOpacity={.4} onPress={() => this.props.maximizeOrMinimizeImage(this.props.data.mediaUri)}>
               <Image style={styles.image} source={{uri: this.props.data.mediaUri}} />
             </TouchableOpacity>
             :
@@ -136,7 +136,7 @@ export default class Row extends Component {
           image: [<TouchableOpacity
                     style={styles.image}
                     activeOpacity={.8}
-                    onPress={() => this.props.maximizeImage(url)}
+                    onPress={() => this.props.maximizeOrMinimizeImage(url)}
                     key={date} >
                       <Image style={{alignSelf: 'center', height: imageSize, width: imageSize}} source={{ uri: url }} />
                     </TouchableOpacity>],
@@ -154,7 +154,7 @@ export default class Row extends Component {
 
 Row.propTypes = {
   data: PropTypes.object.isRequired,
-  maximizeImage: PropTypes.func.isRequired,
+  maximizeOrMinimizeImage: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
   dateTransition: PropTypes.bool.isRequired,
   userSettings: PropTypes.object,
