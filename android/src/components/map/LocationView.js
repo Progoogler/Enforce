@@ -7,8 +7,8 @@ import {
   StyleSheet
 } from 'react-native';
 
-import { mediumFontSize, navBarContainerHeight, primaryBlue } from '../../styles/common';
-var fadeContainerHeight = navBarContainerHeight + 20;
+import { mediumFontSize, navBarContainerHeight, fadeContainerHeight, primaryBlue } from '../../styles/common';
+// var fadeContainerHeight = navBarContainerHeight + 20;
 
 export default class LocationView extends Component {
   constructor() {
