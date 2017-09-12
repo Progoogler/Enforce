@@ -61,7 +61,7 @@ export default class History extends Component {
     return (
       <View style={styles.container}>
         <Navigation navigation={this.props.navigation} />
-        <ImageModal uri={this.state.uri} visibility={this.state.showMaximizedImage} maximizeImage={this.maximizeImage.bind(this)}/>
+        <ImageModal uri={this.state.uri} visibility={this.state.showMaximizedImage} maximizeOrMinimizeImage={this.maximizeOrMinimizeImage.bind(this)}/>
         <Text style={styles.title}>History</Text>
         <View style={styles.pickerActivityRow}>
           <Picker
@@ -103,7 +103,7 @@ export default class History extends Component {
         NavigationActions={NavigationActions}
         navigation={this.props.navigation}
         selected={this.state.selected}
-        maximizeImage={this.maximizeImage.bind(this)}
+        maximizeOrMinimizeImage={this.maximizeOrMinimizeImage.bind(this)}
         userId={this.userId}
         userSettings={this.userSettings}
         getTicketImage={getTicketImage}
@@ -213,7 +213,7 @@ export default class History extends Component {
     return reversedList;
   }
 
-  maximizeImage(uri?: string): undefined {
+  maximizeOrMinimizeImage(uri?: string): undefined {
     if (uri) {
       this.setState({showMaximizedImage: true, uri: uri});
     } else {
