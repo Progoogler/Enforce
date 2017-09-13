@@ -73,7 +73,7 @@ export default class CameraApp extends Component {
             aspect={ALPR.constants.Aspect.fill}
             captureQuality={ALPR.constants.CaptureQuality.medium}
             country='us'
-            onPlateRecognized={(data) => this.onPlateRecognized(data)}
+            onPlateRecognized={(data) => this._onPlateRecognized(data)}
             plateOutlineColor='#ff0000'
             showPlateOutline
             torchMode={ALPR.constants.TorchMode.off}
@@ -222,14 +222,13 @@ export default class CameraApp extends Component {
         this.savePicture(data);
         this._retry = 0;
       })
-      .catch(err => { console.log('retrying', this.camera)
+      .catch(err => {
         this._retry++;
         if (this._retry !== 3) {
           this.takePicture('retry');
         } else {
           this._retry = 0;
         }
-        // console.error(err)
       });
   }
 
@@ -329,7 +328,7 @@ export default class CameraApp extends Component {
       });
     }
 
-  onPlateRecognized({ plate, confidence }) {
+  _onPlateRecognized({ plate, confidence }) {
 
     if (confidence > 0.9) {
       this.license = plate;
