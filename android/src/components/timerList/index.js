@@ -47,7 +47,6 @@ export default class TimerList extends Component {
     this.license = '';
     this.timeElapsed = '';
     this._reset = false;
-    this.licenseList = [];
     this.ticketCount = undefined;
     this._currentLicense = 0;
 
@@ -72,7 +71,6 @@ export default class TimerList extends Component {
       <View style={styles.container}>
         <Search
           timerList={true}
-          realm={this.realm}
           refreshTimerList={this.onRefresh.bind(this)}
           navigation={this.props.navigation}
           licenseParam={this.state.license}
@@ -117,11 +115,12 @@ export default class TimerList extends Component {
       this.setState({ modalVisible: true });
     } else {
       // Keep a local array of licenses to update the search input field as FlatList scrolls
-      for (let i = 0; i < this.list.length; i++) {
-        this.licenseList.push(this.list[i].license);
-      }
+      // for (let i = 0; i < this.list.length; i++) {
+      //   this.list.push(this.list[i].license);
+      // }
+      console.log('li', this.list[0]);
       this.enterLicenseInSearchField({
-        license: this.licenseList[0],
+        license: this.list[0].license,
         pressed: 0,
         listIndex: 0,
       });
@@ -192,36 +191,33 @@ export default class TimerList extends Component {
     let now = new Date();
     let indexOfTimer;
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000 || force) {
-      let timers = this.realm.objects('Timers')[timer.index]['list'];
-      if (timers['0'].createdAt === timer.createdAt) {
+      if (this.list['0'].createdAt === timer.createdAt) {
         // Ticket the first timer in the list
         indexOfTimer = 0;
-        this.licenseList.shift();
         await this.realm.write(() => {
           timer.ticketedAt = now / 1;
           // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
           if (this.license) timer.license = this.license;
           timer.VIN = this.VIN;
           this.realm.objects('Ticketed')[0]['list'].push(timer);
-          timers.shift();
+          this.list.shift();
         });
       } else {
-        for (let index in timers) {
+        for (let index in this.list) {
           // Search for the index of the timer which was selected
-          if (timers[index].createdAt === timer.createdAt) {
+          if (this.list[index].createdAt === timer.createdAt) {
             indexOfTimer = index;
             break;
           }
         }
         if (indexOfTimer) {
-          this.licenseList.splice(indexOfTimer, 1);
           await this.realm.write(() => {
             timer.ticketedAt = new Date() / 1;
             // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
             if (this.license) timer.license = this.license;
             timer.VIN = this.VIN;
             this.realm.objects('Ticketed')[0]['list'].push(timer);
-            timers.splice(parseInt(indexOfTimer), 1);
+            this.list.splice(parseInt(indexOfTimer), 1);
           });
         }
       }
@@ -250,7 +246,7 @@ export default class TimerList extends Component {
     if (indexOfTimer !== undefined && this.list[indexOfTimer] !== undefined) {
       // Handles updating license input field for the last timer that is not also the first
       this.enterLicenseInSearchField({
-        license: this.licenseList[indexOfTimer], // The current indexOfTimer here has replaced the previous one
+        license: this.list[indexOfTimer].license, // The current indexOfTimer here has replaced the previous one
         pressed: 0,
         listIndex: this.list[indexOfTimer].index,
       });
@@ -258,31 +254,28 @@ export default class TimerList extends Component {
   }
 
   async expiredFunc(timer: object): undefined {
-    let timers = this.realm.objects('Timers')[timer.index]['list'];
     let indexOfTimer;
-    if (timers['0'] === timer) {
+    if (this.list['0'] === timer) {
       indexOfTimer = 0;
-      this.licenseList.shift();
       await this.realm.write(() => {
         // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
         if (this.license) timer.license = this.license;
         this.realm.objects('Expired')[0]['list'].push(timer);
-        timers.shift();
+        this.list.shift();
       });
     } else {
-      for (let index in timers) {
-        if (timers[index].createdAt === timer.createdAt) {
+      for (let index in this.list) {
+        if (this.list[index].createdAt === timer.createdAt) {
           indexOfTimer = index;
           break;
         }
       }
       if (indexOfTimer) {
-        this.licenseList.splice(indexOfTimer, 1);
         await this.realm.write(() => {
           // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
           if (this.license) timer.license = this.license;
           this.realm.objects('Expired')[0]['list'].push(timer);
-          timers.splice(parseInt(indexOfTimer), 1);
+          this.list.splice(parseInt(indexOfTimer), 1);
         });
       }
     }
@@ -290,7 +283,7 @@ export default class TimerList extends Component {
     this.updateRows();
     if (indexOfTimer !== undefined && this.list[indexOfTimer] !== undefined) {
       this.enterLicenseInSearchField({
-        license: this.licenseList[indexOfTimer], // The current indexOfTimer here has replaced the previous one
+        license: this.list[indexOfTimer].license, // The current indexOfTimer here has replaced the previous one
         pressed: 0,
         listIndex: this.list[indexOfTimer].index,
       });
@@ -360,10 +353,10 @@ export default class TimerList extends Component {
     if (event.nativeEvent.contentOffset.y > this._halvedFlatListHeight) {
       let idx = Math.ceil(event.nativeEvent.contentOffset.y / this._flatListHeight);
       if (idx !== this._currentLicense) {
-        if (this.licenseList[idx] === undefined) return;
+        if (this.list[idx] === undefined) return;
         this._currentLicense = idx;
         this.enterLicenseInSearchField({
-          license: this.licenseList[idx],
+          license: this.list[idx],
           pressed: 0,
           listIndex: this.list[idx].index,
         });
@@ -371,7 +364,7 @@ export default class TimerList extends Component {
     } else {
       this._currentLicense = 0;
       this.enterLicenseInSearchField({
-        license: this.licenseList[0],
+        license: this.list[0],
         pressed: 0,
         listIndex: this.list[0].index,
       });
