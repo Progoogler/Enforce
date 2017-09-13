@@ -78,7 +78,7 @@ export default class MapApp extends Component {
             latitudeDelta: 0.0108,
             longitudeDelta: 0.0060,
           }} >
-            { this.markers.length ? this.markers : this.getMarkers() }
+            { this.markers.length ? this.markers : this._getMarkers() }
             { this.state.polyline[0] }
         </MapView.Animated>
 
@@ -201,7 +201,7 @@ export default class MapApp extends Component {
     if (!this.state.animating) this._mounted && this.setState({animating: false});
   }
 
-  setMarkers(markers) { // TODO Unused function: Fix it or ditch it.
+  _setMarkers(markers) { // TODO Unused function: Fix it or ditch it.
     this.animatedMap._component.fitToSuppliedMarkers(markers);
   }
 
@@ -217,7 +217,7 @@ export default class MapApp extends Component {
     if (this.state.fadeDescription) setTimeout(() => this._mounted && this.setState({fadeDescription: false}), 7800);
   }
 
-  getMarkers() {
+  _getMarkers() {
     let lat, long, aux;
     let soonest = Number.POSITIVE_INFINITY;
     if (!this.props.navigation.state.params) {
