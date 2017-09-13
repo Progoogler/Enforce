@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import {
   View,
-  Text,
   Image,
   Modal,
   StyleSheet,
-  TouchableOpacity,
-  Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -19,14 +17,13 @@ import {
   mediumFontSize,
 } from '../../styles/common';
 
-const height = Dimensions.get('window').height;
-
 /*global require*/
 export default class MapModal extends Component {
   constructor() {
     super();
     this.state = {
-      description: ''
+      description: '',
+      animating: true,
     };
   }
 
@@ -38,16 +35,14 @@ export default class MapModal extends Component {
         onRequestClose={() => this.props.closeModal()}
         visible={this.props.visibility} >
 
-        <TouchableOpacity
-          activeOpacity={1}
-          style={styles.closeContainer}
-          onPress={() => this.props.closeModal()}>
-
-          <Navigation title={'Map View'} closeModal={this.props.closeModal} />
-
-        </TouchableOpacity>
+        <Navigation title={'History'} closeModal={this.props.closeModal} />
 
         <LocationView description={this.state.description}/>
+
+        <ActivityIndicator
+          animating={this.state.animating}
+          style={styles.activity}
+          size='large' />
 
         <View style={styles.mapContainer}>
 
@@ -64,6 +59,7 @@ export default class MapModal extends Component {
             }} >
 
             <Marker
+              mapModalAnimating={this.mapModalAnimating.bind(this)}
               coordinate={{
                 latitude: this.props.latitude,
                 longitude: this.props.longitude}} >
@@ -77,19 +73,12 @@ export default class MapModal extends Component {
     );
   }
 
-  componentWillMount() {
-    styles.closeContainer = {
-      zIndex: 11,
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: height - 100,
-    }
-  }
-
   componentDidMount() {
     if (this.props.description) this.setState({description: this.props.description});
+  }
+
+  mapModalAnimating() {
+    this.setState({animating: false});
   }
 
 }
@@ -118,5 +107,10 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    zIndex: 8,
+  },
+  activity: {
+    flex: 1,
+    zIndex: 8,
   },
 });
