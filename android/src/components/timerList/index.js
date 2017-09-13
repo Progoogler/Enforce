@@ -356,7 +356,7 @@ export default class TimerList extends Component {
         if (this.list[idx] === undefined) return;
         this._currentLicense = idx;
         this.enterLicenseInSearchField({
-          license: this.list[idx],
+          license: this.list[idx].license,
           pressed: 0,
           listIndex: this.list[idx].index,
         });
@@ -364,7 +364,7 @@ export default class TimerList extends Component {
     } else {
       this._currentLicense = 0;
       this.enterLicenseInSearchField({
-        license: this.list[0],
+        license: this.list[0].license,
         pressed: 0,
         listIndex: this.list[0].index,
       });
