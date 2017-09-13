@@ -1,9 +1,6 @@
-import Realm from 'realm';
-
-const historySearch = (license: string): object => {
+const historySearch = (license: string, realm): object => {
   if (typeof license !== 'string') return;
   if (license.length > 7) return;
-  const realm = new Realm();
   let result = {};
   let ticketed = realm.objects('Ticketed')[0]['list'];
   for (let i = 0; i < ticketed.length; i++) {
