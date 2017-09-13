@@ -10,6 +10,7 @@ import {
   Animated,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import Realm from 'realm';
 
 import historySearch from './historySearch';
 import Result from './Result';
@@ -33,26 +34,27 @@ export default class Search extends Component {
   constructor() {
     super();
     this.state = {
-      buttonOpacity: new Animated.Value(1),
-      containerHeight: new Animated.Value(searchContainerHeight),
-      cursorMarginLeft: new Animated.Value(windowCenterPoint),
-      underlineOpacity: new Animated.Value(1),
-      separatorHeight: new Animated.Value(0),
-      underline: new Animated.Value(0),
-      textFade: new Animated.Value(0),
-      resultHeight: new Animated.Value(0),
-      resultOpacity: new Animated.Value(0),
       license: '',
       result: null,
     }
+    this.realm = new Realm();
     this.marginValue = windowCenterPoint;
+    this.buttonOpacity = new Animated.Value(1);
+    this.containerHeight = new Animated.Value(searchContainerHeight);
+    this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
+    this.underlineOpacity = new Animated.Value(1);
+    this.separatorHeight = new Animated.Value(0);
+    this.underline = new Animated.Value(0);
+    this.textFade = new Animated.Value(0);
+    this.resultHeight = new Animated.Value(0);
+    this.resultOpacity = new Animated.Value(0);
   }
 
   render() {
     return (
       <Animated.View style={{
         zIndex: 10,
-        height: this.state.containerHeight,
+        height: this.containerHeight,
         alignSelf: 'stretch',
         backgroundColor: primaryBlue, }} >
 
@@ -68,13 +70,13 @@ export default class Search extends Component {
           <Animated.View
             style={{
               position: 'absolute',
-              top: '35%',
+              top: '35%', // TODO Fix this percentage into a responsive percentage of height of device
               width: '30%',
-              marginLeft: this.state.cursorMarginLeft,
+              marginLeft: this.cursorMarginLeft,
           }}>
             <TextInput
               ref={(ref) => { this.myTextInput = ref }}
-              onChangeText={(license) => { this._handleTextInput(license) }}
+              onChangeText={(license) => { this._handleTextInput(this.state.license) }}
               maxLength={7}
               fontSize={24}
               autoCapitalize={'characters'}
@@ -102,12 +104,12 @@ export default class Search extends Component {
             alignSelf: 'center',
             borderWidth: .35,
             borderColor: 'white',
-            width: this.state.underline,
-            opacity: this.state.underlineOpacity,
+            width: this.underline,
+            opacity: this.underlineOpacity,
         }}/>
 
         <Animated.View style={{
-            opacity: this.state.buttonOpacity,
+            opacity: this.buttonOpacity,
             flex: 1,
             flexDirection: 'row', }} >
 
@@ -118,13 +120,13 @@ export default class Search extends Component {
             <Animated.Text style={{
               color: 'white',
               fontSize: smallFontSize,
-              opacity: this.state.textFade, }}>History</Animated.Text>
+              opacity: this.textFade, }}>History</Animated.Text>
           </TouchableOpacity>
 
           <Animated.View style={{
             borderColor: 'white',
             borderWidth: .35,
-            height: this.state.separatorHeight, }} />
+            height: this.separatorHeight, }} />
 
           <TouchableOpacity
             style={styles.button}
@@ -133,13 +135,13 @@ export default class Search extends Component {
             <Animated.Text style={{
             color: 'white',
             fontSize: smallFontSize,
-            opacity: this.state.textFade, }}>VIN</Animated.Text>
+            opacity: this.textFade, }}>VIN</Animated.Text>
           </TouchableOpacity>
         </Animated.View>
 
         <Animated.View style={{
-          opacity: this.state.resultOpacity,
-          height: this.state.resultHeight,
+          opacity: this.resultOpacity,
+          height: this.resultHeight,
           alignSelf: 'stretch',
           }}>
           { this.state.result ?
@@ -165,22 +167,22 @@ export default class Search extends Component {
   componentDidMount() {
     Animated.parallel([
       Animated.timing(
-        this.state.underline,
+        this.underline,
         { toValue: underlineWidth,
           duration: 500 },
       ),
       Animated.timing(
-        this.state.textFade,
+        this.textFade,
         { toValue: 1,
           duration: 500, },
       ),
       Animated.timing(
-        this.state.separatorHeight,
+        this.separatorHeight,
         { toValue: separatorHeight,
           duration: 250, },
       ),
       Animated.timing(
-        this.state.containerHeight,
+        this.containerHeight,
         { toValue: searchContainerHeight,
           duration: 500, },
       ),
@@ -250,10 +252,10 @@ export default class Search extends Component {
     } else {
 
       let prevResult = this.state.result;
-      let result = historySearch(this.state.license);
+      let result = historySearch(this.state.license, this.realm);
 
       if (result === undefined && prevResult !== 'unfound') {
-        this.noResultNotification(); // TODO QUICK FIX FOR EMPTY BLOCK -- Figure out what goes here!
+        this._noResultNotification(); // TODO QUICK FIX FOR EMPTY BLOCK -- Figure out what goes here!
       }
 
       result = result === undefined ? 'unfound' : result;
@@ -262,14 +264,14 @@ export default class Search extends Component {
 
       if (result !== 'unfound') {
         // Case for extending the container of Search in any component.
-        this.extendResultContainer();
+        this._extendResultContainer();
         // Case for extending the Menu container of Overview.
         this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
         Keyboard.dismiss();
 
       } else if (result === 'unfound') {
         this.props.noResultNotificationForMenu && this.props.noResultNotificationForMenu();
-        this.noResultNotification();
+        this._noResultNotification();
       }
 
       // Add license to current Timer in queue in TimerList if in TimerList.
@@ -297,10 +299,10 @@ export default class Search extends Component {
   }
 
   _updateLicenseOfTimer() {
-    var timerList = this.props.realm.objects('Timers')[this.props.licenseParam.listIndex].list;
+    var timerList = this.realm.objects('Timers')[this.props.licenseParam.listIndex].list;
     for (let i = 0; i < timerList.length; i++) {
       if (timerList[i].license === this.props.licenseParam.license) {
-        this.props.realm.write(() => {
+        this.realm.write(() => {
         timerList[i].license = this.state.license;
         });
       }
@@ -308,22 +310,22 @@ export default class Search extends Component {
     this.props.refreshTimerList();
   }
 
-  noResultNotification() {
+  _noResultNotification() {
     Animated.parallel([
       Animated.timing(
-        this.state.containerHeight, {
+        this.containerHeight, {
           toValue: noResultContainerHeight,
           duration: 600,
         },
       ),
       Animated.timing(
-        this.state.resultHeight, {
+        this.resultHeight, {
           toValue: noResultHeight,
           duration: 1000,
         },
       ),
       Animated.timing(
-        this.state.resultOpacity, {
+        this.resultOpacity, {
           toValue: 1,
           duration: 1000,
         },
@@ -334,19 +336,19 @@ export default class Search extends Component {
 
       Animated.parallel([
         Animated.timing(
-          this.state.containerHeight, {
+          this.containerHeight, {
             toValue: searchContainerHeight,
             duration: 600,
           },
         ),
         Animated.timing(
-          this.state.resultHeight, {
+          this.resultHeight, {
             toValue: 0,
             duration: 400,
           },
         ),
         Animated.timing(
-          this.state.resultOpacity, {
+          this.resultOpacity, {
             toValue: 0,
             duration: 1000,
           },
@@ -355,22 +357,22 @@ export default class Search extends Component {
     }, 1800);
   }
 
-  extendResultContainer() {
+  __extendResultContainer() {
     Animated.parallel([
       Animated.timing(
-        this.state.containerHeight, {
+        this.containerHeight, {
           toValue: resultContainerHeight,
           duration: 600,
         },
       ),
       Animated.timing(
-        this.state.resultHeight, {
+        this.resultHeight, {
           toValue: resultHeight,//115,
           duration: 1000,
         },
       ),
       Animated.timing(
-        this.state.resultOpacity, {
+        this.resultOpacity, {
           toValue: 1,
           duration: 1000,
         },
@@ -382,19 +384,19 @@ export default class Search extends Component {
   minimizeResultContainer() {
     Animated.parallel([
       Animated.timing(
-        this.state.containerHeight, {
+        this.containerHeight, {
           toValue: searchContainerHeight,
           duration: 600,
         },
       ),
       Animated.timing(
-        this.state.resultHeight, {
+        this.resultHeight, {
           toValue: 0,
           duration: 1000,
         },
       ),
       Animated.timing(
-        this.state.resultOpacity, {
+        this.resultOpacity, {
           toValue: 0,
           duration: 1000,
         },
@@ -411,7 +413,7 @@ export default class Search extends Component {
   _handleTextInput(license: string) {
     if (license.length === 0) {
       Animated.timing(
-        this.state.cursorMarginLeft, {
+        this.cursorMarginLeft, {
           toValue: windowCenterPoint,
         },
       ).start();
@@ -419,17 +421,17 @@ export default class Search extends Component {
       this.setState({license});
       return;
     }
-    if (license.length < this.state.license.length) {
+    if (license.length < this.license.length) {
       this.marginValue += textInputOffset;
       Animated.timing(
-        this.state.cursorMarginLeft, {
+        this.cursorMarginLeft, {
           toValue: this.marginValue,
         },
       ).start();
     } else {
       this.marginValue -= textInputOffset;
       Animated.timing(
-        this.state.cursorMarginLeft, {
+        this.cursorMarginLeft, {
           toValue: this.marginValue,
         },
       ).start();
@@ -440,31 +442,31 @@ export default class Search extends Component {
   _fadeContainer() {
     Animated.parallel([
       Animated.timing(
-        this.state.buttonOpacity,{
+        this.buttonOpacity,{
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
-        this.state.containerHeight,{
+        this.containerHeight,{
           toValue: searchContainerHeight,
           duration: 700,
         },
       ),
       Animated.timing(
-        this.state.underlineOpacity,{
+        this.underlineOpacity,{
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
-        this.state.underline,{
+        this.underline,{
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
-        this.state.resultOpacity,{
+        this.resultOpacity,{
           toValue: 0,
           duration: 700,
         },
