@@ -55,7 +55,7 @@ export default class TimersList extends Component {
         });
         this._mounted && this.setState({ updatedLocation: true }) && this._onRefresh();
       }, error => {
-        console.log('Error loading geolocation:', error);
+        console.log('Error loading geolocation:', error); // TODO Remove for production build
       },
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
     );
@@ -82,7 +82,7 @@ export default class TimersList extends Component {
     }
   }
 
-  async _reset() { console.log('RESET')
+  async _reset() {
     let refPath = await AsyncStorage.getItem('@Enforce:refPath');
     let dateCount = await AsyncStorage.getItem('@Enforce:dateCount');
     let registerDate = await AsyncStorage.getItem('@Enforce:registerDate');
@@ -137,7 +137,6 @@ export default class TimersList extends Component {
       timerLists[0].list.forEach((timer) => {
         unlink(timer.mediaPath)
         .then(() => {
-          console.log('FILE DELETED');
             this.realm.write(() => {
               this.realm.delete(timer);
             });
@@ -148,7 +147,6 @@ export default class TimersList extends Component {
         timerList.list.forEach((timer) => {
           unlink(timer.mediaPath)
           .then(() => {
-            console.log('FILE DELETED');
             this.realm.write(() => {
               this.realm.delete(timer);
             });
