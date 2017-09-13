@@ -306,10 +306,6 @@ const styles = StyleSheet.create({
   pickerActivityRow: {
     flexDirection: 'row',
   },
-  // picker: {
-  //   width: '35%',
-  //   color: primaryBlue,
-  // },
   flatlist: {
     flex: 1,
     alignSelf: 'stretch',
