@@ -46,10 +46,6 @@ export default class Overview extends Component {
     );
   }
 
-  resetTicketCounter() {
-    this.setState({zero: true});
-  }
-
   componentDidMount() {
     PushNotification.configure({
       onNotification: function(notification) {
@@ -89,6 +85,10 @@ export default class Overview extends Component {
         this._openMapPage(info.tag);
       }
     });
+  }
+
+  resetTicketCounter() {
+    this.setState({zero: true});
   }
 
   _openMapPage(index: number): undefined {
