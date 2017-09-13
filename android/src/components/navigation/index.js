@@ -22,9 +22,9 @@ export default class Navigation extends Component {
   constructor() {
     super();
     this.state = {
-      titleOpacity: new Animated.Value(0),
       search: false,
     };
+    this.titleOpacity = new Animated.Value(0);
   }
 
   render() {
@@ -45,22 +45,19 @@ export default class Navigation extends Component {
           <TouchableHighlight
             onPress={ () => {
               Animated.timing(
-                this.state.titleOpacity,
+                this.titleOpacity,
                 { toValue: 0,
                   duration: 500, },
               ).start();
               this.props.toggleSearching ? this.props.toggleSearching() : null;
-              this.setState({
-                search: !this.state.search,
-                titleOpacity: new Animated.Value(0),
-              });
+              this.setState({ search: !this.state.search });
             }}
             underlayColor={primaryBlue}
             style={styles.searchIcon} >
             <Image source={require('../../../../shared/images/search-icon.png')} />
           </TouchableHighlight>
           <Animated.Text style={{
-            opacity: this.state.titleOpacity,
+            opacity: this.titleOpacity,
             flex: .70,
             fontSize: titleFontSize,
             marginLeft: '2%',
@@ -93,17 +90,16 @@ export default class Navigation extends Component {
 
   componentDidMount() {
     Animated.timing(
-      this.state.titleOpacity,
+      this.titleOpacity,
       { toValue: 1,
         duration: 500, },
     ).start();
-    setTimeout(() => this.setState({ titleOpacity: new Animated.Value(1) }), 550);
   }
 
   closeSearch() {
     this.setState({ search: !this.state.search });
     Animated.timing(
-      this.state.titleOpacity,
+      this.titleOpacity,
       { toValue: 1,
         duration: 500, },
     ).start();
