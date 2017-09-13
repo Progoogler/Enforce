@@ -49,7 +49,7 @@ export default class Row extends Component {
                   </Text>
                   <View style={styles.separator} />
                   <Text style={styles.timerRowTime}>
-                    { this.props.updateRows ? this.getTimeLeft(this.props.data.list[0]) : this.getTimeLeft(this.props.data.list[0]) }
+                    { this.props.updateRows ? this._getTimeLeft(this.props.data.list[0]) : this._getTimeLeft(this.props.data.list[0]) }
                   </Text>
                 </View>
 
@@ -118,7 +118,7 @@ export default class Row extends Component {
     };
   }
 
-  getTimeLeft(timer: object): object {
+  _getTimeLeft(timer: object): object {
     if (!timer) return;
     let timeLength = timer.timeLength * 60 * 60 * 1000;
     let timeSince = new Date() - timer.createdAt;
@@ -146,10 +146,10 @@ export default class Row extends Component {
        }
       i++;
     }
-    return this.getDistanceFromLatLon(this.props.latitude, this.props.longitude, this.distLat, this.distLong);
+    return this._getDistanceFromLatLon(this.props.latitude, this.props.longitude, this.distLat, this.distLong);
   }
 
-  getDistanceFromLatLon(lat1: number, lon1: number, lat2: number, lon2: number): string {
+  _getDistanceFromLatLon(lat1: number, lon1: number, lat2: number, lon2: number): string {
 
     if (lat1 && lon1 && lat2 && lon2) {
       var R = 6371; // Radius of the earth in km
@@ -157,7 +157,7 @@ export default class Row extends Component {
       var dLon = this.deg2rad(lon2-lon1);
       var a =
         Math.sin(dLat/2) * Math.sin(dLat/2) +
-        Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+        Math.cos(this._deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
         Math.sin(dLon/2) * Math.sin(dLon/2)
         ;
       var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
@@ -176,7 +176,7 @@ export default class Row extends Component {
     }
   }
 
-  deg2rad(deg: number): number {
+  _deg2rad(deg: number): number {
     return deg * (Math.PI/180)
   }
 
