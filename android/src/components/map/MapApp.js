@@ -34,7 +34,7 @@ export default class MapApp extends Component {
     this.animated = false;
     this._accessedLocation = false;
     this.animatedToMarker = false;
-    this.errorDescription = 'No location details were found. Remember to turn on GPS or input location details before taking pictures.';
+    this.errorDescription = 'No location details were found.';
     this.description = '';
     this.animatedMap = undefined;
     this._marker = undefined;
@@ -320,7 +320,7 @@ export default class MapApp extends Component {
             this.realm.objects('Coordinates')[0].latitude = latitude;
             this.realm.objects('Coordinates')[0].longitude = longitude;
           });
-          if (this._mounted && this.state.showError) this.setState({showError: false, mapPositionBottom: 0});
+          if (this._mounted && (this.state.showError || this.state.animating)) this.setState({showError: false, mapPositionBottom: 0, animating: false});
         }, () => {
           if (!this.state.showError) this._mounted && this.setState({showError: true, animating: false, mapPositionBottom: 10});
         },

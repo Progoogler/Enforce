@@ -32,7 +32,7 @@ export default class LocationView extends Component {
         }}>
 
           <TouchableWithoutFeedback style={styles.touchable} onPress={() => this._hideAnimatedView()}>
-            <View style={this.state.fadeDescription ? styles.fadeContainer : styles.textContainer}>
+            <View style={styles.textContainer}>
               <Text style={styles.description}> { this.state.description } </Text>
             </View>
           </TouchableWithoutFeedback>
@@ -74,17 +74,6 @@ const styles = StyleSheet.create({
   textContainer: {
     zIndex: 9,
     height: navBarContainerHeight,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderBottomWidth: 2,
-    borderColor: primaryBlue,
-    paddingLeft: '3%',
-    paddingRight: '3%',
-  },
-  fadeContainer: {
-    zIndex: 9,
-    height: fadeContainerHeight,
     backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
