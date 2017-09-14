@@ -13,10 +13,6 @@ export default class MainButtons extends Component {
   constructor() {
     super();
     this.state = {
-      // map: false,
-      // camera: false,
-      // mapUnderline: false,
-      // cameraUnderline: false,
       mapBorder: primaryBlue,
       cameraBorder: primaryBlue,
     }
@@ -29,10 +25,9 @@ export default class MainButtons extends Component {
         <View style={styles.buttonColumn}>
           <TouchableHighlight
             style={{
-              height: mainButtonsHeight, //70,
+              height: mainButtonsHeight,
               borderBottomWidth: 4,
               borderBottomColor: this.state.mapBorder,
-              // paddingBottom: '2%',
               alignItems: 'center',
               justifyContent: 'center',
             }}
@@ -50,10 +45,9 @@ export default class MainButtons extends Component {
         <View style={styles.buttonColumn}>
           <TouchableHighlight
             style={{
-              height: mainButtonsHeight, //70,
+              height: mainButtonsHeight,
               borderBottomWidth: 4,
               borderBottomColor: this.state.cameraBorder,
-              // paddingBottom: '2%',
               alignItems: 'center',
               justifyContent: 'center',
             }}
@@ -91,16 +85,7 @@ const styles = StyleSheet.create({
     flex: .5,
     flexDirection: 'column',
   },
-  // underline: {
-  //   width: '100%',
-  //   position: 'absolute',
-  //   bottom: 0,
-  //   borderWidth: 4,
-  //   borderColor: 'white',
-  // },
   button: {
-    // height: mainButtonsHeight, //70,
-    // paddingBottom: '2%',
     alignItems: 'center',
     justifyContent: 'center',
   },

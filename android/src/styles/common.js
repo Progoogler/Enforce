@@ -13,7 +13,7 @@ export var smallFontSize = responsiveFontSize(1.8);
 
 /* Overview */
 // MainButtons
-export var mainButtonsHeight = responsiveHeight(10);
+export var mainButtonsHeight = responsiveHeight(9);
 // Row
 export var timerRowHeight = responsiveHeight(14);
 export var timerRowWidth = responsiveWidth(115);
