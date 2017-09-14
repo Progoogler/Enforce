@@ -68,7 +68,3 @@ export var textInputWidth = width - 100;
 /* History */
 // Row
 export var imageSize = responsiveWidth(20);
-
-/* Map */
-// LocationView
-export var fadeContainerHeight = height * .11;
