@@ -34,7 +34,6 @@ export default class MapApp extends Component {
     this.animated = false;
     this._accessedLocation = false;
     this.animatedToMarker = false;
-    this.errorDescription = 'No location details were found.';
     this.description = '';
     this.animatedMap = undefined;
     this._marker = undefined;
@@ -125,7 +124,7 @@ export default class MapApp extends Component {
     this._checkAndDrawPolyline();
     setTimeout(() => {
       if (!this.animatedToMarker && !this.description) {
-        this._displayDescription(this.errorDescription, true);
+        this._displayDescription('No location details were found.', 'fadeDescriptionAfterSetTimeout');
       } else if (!this.animatedToMarker && this.description) {
         this._displayDescription(this.description);
       } else if (this.props.navigation.state.params && this.description) {
@@ -198,7 +197,7 @@ export default class MapApp extends Component {
       longitude: long,
     }, 1500);
     if (!this.animated) this.animated = true;
-    if (!this.state.animating) this._mounted && this.setState({animating: false});
+    if (this.state.animating) this._mounted && this.setState({animating: false});
   }
 
   _setMarkers(markers) { // TODO Unused function: Fix it or ditch it.
@@ -320,9 +319,9 @@ export default class MapApp extends Component {
             this.realm.objects('Coordinates')[0].latitude = latitude;
             this.realm.objects('Coordinates')[0].longitude = longitude;
           });
-          if (this._mounted && (this.state.showError || this.state.animating)) this.setState({showError: false, mapPositionBottom: 0, animating: false});
+          if (this._mounted && this.state.showError) this.setState({showError: false, mapPositionBottom: 0});
         }, () => {
-          if (!this.state.showError) this._mounted && this.setState({showError: true, animating: false, mapPositionBottom: 10});
+          if (!this.state.showError) this._mounted && this.setState({showError: true, mapPositionBottom: 10});
         },
         {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
       );
