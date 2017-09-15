@@ -54,9 +54,7 @@ export default class TimersList extends Component {
           this.realm.objects('Coordinates')[0].longitude = this.longitude;
         });
         this._mounted && this.setState({ updatedLocation: true }) && this._onRefresh();
-      }, error => {
-        console.log('Error loading geolocation:', error); // TODO Remove for production build
-      },
+      }, () => {},
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
     );
   }
@@ -64,7 +62,7 @@ export default class TimersList extends Component {
   componentDidMount() {
     this._checkReset();
     this._mounted = true;
-    this._timeoutRefresh = setTimeout(() => this._onRefresh(), 300000);
+    this._timeoutRefresh = this.list.length > 0 ? setTimeout(() => this._onRefresh(), 300000) : null;
   }
 
   componentWillUnmount() {
