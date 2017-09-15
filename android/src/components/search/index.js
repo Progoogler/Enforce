@@ -76,7 +76,7 @@ export default class Search extends Component {
           }}>
             <TextInput
               ref={(ref) => { this.myTextInput = ref }}
-              onChangeText={(license) => { this._handleTextInput(this.state.license) }}
+              onChangeText={(license) => { this._handleTextInput(license) }}
               maxLength={7}
               fontSize={24}
               autoCapitalize={'characters'}
@@ -208,13 +208,16 @@ export default class Search extends Component {
         this.setState({license: '', cursorMarginLeft: new Animated.Value(windowCenterPoint)});
         this.marginValue = windowCenterPoint;
         this.props.shouldResetLicense(true); // Sets the return value of this._reset to false in TimerList to prevent resetting the search field until a uponTicketed() or expiredFunc() is performed.
-      } else if (this.props.licenseParam.pressed !== nextProps.licenseParam.pressed ||
-        (this.props.licenseParam.pressed === 0 && this.props.licenseParam.license !== nextProps.licenseParam.license)) {
-        this.setState({license: '', cursorMarginLeft: new Animated.Value(windowCenterPoint)});
+      } else if (this.props.licenseParam.license !== nextProps.licenseParam.license) {
         this.marginValue = windowCenterPoint;
         let license = nextProps.licenseParam.license;
-        this.marginValue = this.marginValue - (license.length * textInputOffset);
-        this.setState({license, cursorMarginLeft: new Animated.Value(this.marginValue)});
+        this.marginValue -= license.length * textInputOffset;
+        this.setState({license});
+        Animated.timing(
+          this.cursorMarginLeft, {
+            toValue: this.marginValue,
+          },
+        ).start();
       }
     }
   }
@@ -367,7 +370,7 @@ export default class Search extends Component {
       ),
       Animated.timing(
         this.resultHeight, {
-          toValue: resultHeight,//115,
+          toValue: resultHeight,
           duration: 1000,
         },
       ),
@@ -410,7 +413,7 @@ export default class Search extends Component {
      if (this.state.license) this.props.addLicenseToQueue(this.state.license);
    }
 
-  _handleTextInput(license: string) {
+  _handleTextInput(license: string) { console.log('handle text input:', license, 'state.license:', this.state.license);
     if (license.length === 0) {
       Animated.timing(
         this.cursorMarginLeft, {
@@ -421,7 +424,7 @@ export default class Search extends Component {
       this.setState({license});
       return;
     }
-    if (license.length < this.license.length) {
+    if (license.length < this.state.license.length) {
       this.marginValue += textInputOffset;
       Animated.timing(
         this.cursorMarginLeft, {
