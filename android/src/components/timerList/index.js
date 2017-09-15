@@ -75,7 +75,8 @@ export default class TimerList extends Component {
           navigation={this.props.navigation}
           licenseParam={this.state.license}
           shouldResetLicense={this.shouldResetLicense.bind(this)}
-          addLicenseToQueue={this.addLicenseToQueue.bind(this)} />
+          addLicenseToQueue={this.addLicenseToQueue.bind(this)}
+        />
 
         <Title limit={this.list[0] ? this.list[0].timeLength ? this.list[0].timeLength : 0 : 0} bound={this.state.bound} getDirectionBound={this.getDirectionBound.bind(this)}/>
 
@@ -89,7 +90,7 @@ export default class TimerList extends Component {
            refreshing={this.state.refreshing}
            keyExtractor={this._keyExtractor}
            onScroll={this._handleScroll.bind(this)}
-           />
+        />
 
         { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : <View /> }
 
@@ -118,10 +119,8 @@ export default class TimerList extends Component {
       // for (let i = 0; i < this.list.length; i++) {
       //   this.list.push(this.list[i].license);
       // }
-      console.log('li', this.list[0]);
       this.enterLicenseInSearchField({
         license: this.list[0].license,
-        pressed: 0,
         listIndex: 0,
       });
     }
@@ -247,7 +246,6 @@ export default class TimerList extends Component {
       // Handles updating license input field for the last timer that is not also the first
       this.enterLicenseInSearchField({
         license: this.list[indexOfTimer].license, // The current indexOfTimer here has replaced the previous one
-        pressed: 0,
         listIndex: this.list[indexOfTimer].index,
       });
     }
@@ -284,7 +282,6 @@ export default class TimerList extends Component {
     if (indexOfTimer !== undefined && this.list[indexOfTimer] !== undefined) {
       this.enterLicenseInSearchField({
         license: this.list[indexOfTimer].license, // The current indexOfTimer here has replaced the previous one
-        pressed: 0,
         listIndex: this.list[indexOfTimer].index,
       });
     }
@@ -336,7 +333,8 @@ export default class TimerList extends Component {
         data={data.item}
         expiredFunc={this.expiredFunc.bind(this)}
         uponTicketed={this.uponTicketed.bind(this)}
-        enterLicenseInSearchField={this.enterLicenseInSearchField.bind(this)} />
+        enterLicenseInSearchField={this.enterLicenseInSearchField.bind(this)}
+      />
     );
   }
 
@@ -357,7 +355,6 @@ export default class TimerList extends Component {
         this._currentLicense = idx;
         this.enterLicenseInSearchField({
           license: this.list[idx].license,
-          pressed: 0,
           listIndex: this.list[idx].index,
         });
       }
@@ -365,7 +362,6 @@ export default class TimerList extends Component {
       this._currentLicense = 0;
       this.enterLicenseInSearchField({
         license: this.list[0].license,
-        pressed: 0,
         listIndex: this.list[0].index,
       });
     }

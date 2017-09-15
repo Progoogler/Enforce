@@ -51,8 +51,7 @@ export default class Row extends Component {
           : null }
         { this.props.data.license ?
           <TouchableOpacity activeOpacity={1} style={styles.licenseContainer} onPress={() => {
-            this.licenseButtonPressed++;
-            this.props.enterLicenseInSearchField({license: this.props.data.license, pressed: this.licenseButtonPressed, listIndex: this.props.data.index});
+            this.props.enterLicenseInSearchField({license: this.props.data.license, listIndex: this.props.data.index});
           }}>
             <Text style={styles.license}>{this.props.data.license}</Text>
           </TouchableOpacity>
