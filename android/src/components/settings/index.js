@@ -73,7 +73,7 @@ export default class Settings extends Component {
         </View>
 
         <View style={styles.row}>
-          <Text style={styles.settingDesc}>Use image recognition with camera</Text>
+          <Text style={styles.settingDesc}>Use license recognition with camera</Text>
           <View style={styles.slider}>
             <Switch
               onValueChange={(value) => this.setState({imageRecognition: value})}
