@@ -26,8 +26,7 @@ export default class Row extends Component {
   constructor() {
     super();
     this.mounted = false,
-    this.distLat;
-    this.distLon;
+    this.distance;
   }
 
   render() {
@@ -139,14 +138,16 @@ export default class Row extends Component {
 
   _getDistance(): string {
     let i = 0;
+    var distLat;
+    var distLong;
     while (i < this.props.data.list.length) {
       if (this.props.data.list[i].latitude !== 0) {
-         this.distLat = this.props.data.list[i].latitude;
-         this.distLong = this.props.data.list[i].longitude;
+         distLat = this.props.data.list[i].latitude;
+         distLong = this.props.data.list[i].longitude;
        }
       i++;
     }
-    return this._getDistanceFromLatLon(this.props.latitude, this.props.longitude, this.distLat, this.distLong);
+    return this._getDistanceFromLatLon(this.props.latitude, this.props.longitude, distLat, distLong);
   }
 
   _getDistanceFromLatLon(lat1: number, lon1: number, lat2: number, lon2: number): string {
