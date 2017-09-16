@@ -11,9 +11,9 @@ import {
 import PropTypes from 'prop-types';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
 import { unlink } from 'react-native-fs';
-import Realm from 'realm';
 import ALPR from 'react-native-openalpr';
 import Camera from 'react-native-camera';
+import Realm from 'realm';
 
 import Navigation from '../navigation';
 import SetTimeLimit from './SetTimeLimit';
@@ -28,19 +28,19 @@ export default class CameraApp extends Component {
       newTimer: false,
       imageRecognition: true,
     };
-    this._retry = 0;
     this.license = '';
+    this.description = '';
     this.latitude = null;
     this.longitude = null;
     this.camera = null;
-    this.firstCapture = true;
+    this._retry = 0;
     this.listIndex = 0;
     this.pictureCount = 0;
     this.timeLimit = 1;
-    this.description = "";
+    this.firstCapture = true;
     this.locationService = false;
     this.deleting = false;
-    this._mounted = undefined;
+    this._mounted = false;
     this.settings = null;
     this.realm = new Realm();
   }
@@ -57,7 +57,7 @@ export default class CameraApp extends Component {
 
   render() {
     return (
-      <View style={styles.container} >
+      <View style={styles.container}>
         <LocationInput visibility={this.state.modalVisible} setModalVisible={this.setModalVisible.bind(this)} />
         <Navigation navigation={this.props.navigation} />
         <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} newTimer={this.state.newTimer} realm={this.realm} />
@@ -213,13 +213,13 @@ export default class CameraApp extends Component {
       .then((data) => {
         if (this.firstCapture) {
           setTimeout(() => {
-            this.savePicture(data);
+            this._savePicture(data);
           }, 1200);
           this._retry = 0;
           this.firstCapture = false;
           return;
         }
-        this.savePicture(data);
+        this._savePicture(data);
         this._retry = 0;
       })
       .catch(err => {
@@ -262,41 +262,23 @@ export default class CameraApp extends Component {
     this.deleting = false;
   }
 
-  savePicture(data: object) {
-    if (this.description && this.description.length === 0) {
-      this.realm.write(() => {
-        this.realm.objects('Timers')[this.listIndex]['list'].push({
-          index: this.listIndex,
-          latitude: this.latitude,
-          longitude: this.longitude,
-          createdAt: new Date() / 1,
-          ticketedAt: 0,
-          timeLength: this.timeLimit,
-          license: this.license,
-          VIN: '',
-          mediaUri: data.mediaUri,
-          mediaPath: data.path,
-          description: "",
-        });
+  _savePicture(data: object) {
+    this.realm.write(() => {
+      this.realm.objects('Timers')[this.listIndex]['list'].push({
+        index: this.listIndex,
+        latitude: this.latitude,
+        longitude: this.longitude,
+        createdAt: new Date() / 1,
+        ticketedAt: 0,
+        timeLength: this.timeLimit,
+        license: this.license,
+        VIN: '',
+        mediaUri: data.mediaUri,
+        mediaPath: data.path,
+        description: this.description,
       });
-    } else {
-      this.realm.write(() => {
-        this.realm.objects('Timers')[this.listIndex]['list'].push({
-          index: this.listIndex,
-          latitude: this.latitude,
-          longitude: this.longitude,
-          createdAt: new Date() / 1,
-          ticketedAt: 0,
-          timeLength: this.timeLimit,
-          license: this.license,
-          VIN: '',
-          mediaUri: data.mediaUri,
-          mediaPath: data.path,
-          description: this.description,
-        });
-      });
-      this.description = "";
-    }
+    });
+    this.description = '';
     this.license = '';
     // console.log('saved data:', this.realm.objects('Timers')[this.listIndex]['list'][this.realm.objects('Timers')[this.listIndex]['list'].length - 1]);
   }
@@ -342,11 +324,11 @@ CameraApp.propTypes = { navigation: PropTypes.object.isRequired };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
+    // flexDirection: 'column',
   },
   cameraContainer: {
     flex: .8,
-    flexDirection: 'column',
+    // flexDirection: 'column',
   },
   camera: {
     flex: 1,
