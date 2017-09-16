@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 
 import { mediumFontSize, navBarContainerHeight, fadeContainerHeight, primaryBlue } from '../../styles/common';
-// var fadeContainerHeight = navBarContainerHeight + 20;
 
 export default class LocationView extends Component {
   constructor() {
@@ -48,7 +47,7 @@ export default class LocationView extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.description.length !== 0) {
       this.setState({description: nextProps.description, fadeDescription: nextProps.fadeDescription});
-      this._displayAnimatedView()
+      this._displayAnimatedView();
       if (nextProps.fadeDescription) setTimeout(() => this._hideAnimatedView(), 8000);
     }
   }
