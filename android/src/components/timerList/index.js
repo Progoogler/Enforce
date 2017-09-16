@@ -36,16 +36,16 @@ export default class TimerList extends Component {
     }
     this.state = {
       dataSource: this.list,
-      refreshing: false,
       warningVisibility: false,
       modalVisible: false,
-      license: '',
+      refreshing: false,
       bound: undefined,
+      license: '',
     };
-    this.timer = null;
     this.VIN = '';
     this.license = '';
     this.timeElapsed = '';
+    this.timer = null;
     this._reset = false;
     this.ticketCount = undefined;
     this._currentLicense = 0;
@@ -106,7 +106,7 @@ export default class TimerList extends Component {
     if (this.settings.dataUpload && this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) {
       setUserTickets(this.refPath, this.realm.objects('Ticketed')[0]['list']);
     }
-    this.props.navigation.state.params = undefined; // TODO check if resetting this is really necessary
+    this.props.navigation.state.params = undefined; // Reset params so constructor finds earliest ending Timer upon opening from Navigation menu
     this._mounted = false;
   }
 
@@ -115,10 +115,6 @@ export default class TimerList extends Component {
     if (this.list[0].createdAt === 0) {
       this.setState({ modalVisible: true });
     } else {
-      // Keep a local array of licenses to update the search input field as FlatList scrolls
-      // for (let i = 0; i < this.list.length; i++) {
-      //   this.list.push(this.list[i].license);
-      // }
       this.enterLicenseInSearchField({
         license: this.list[0].license,
         listIndex: 0,
@@ -185,10 +181,10 @@ export default class TimerList extends Component {
     }
   }
 
-  async uponTicketed(timer: object, force?: string): undefined { // Handle updates to Realm for regular and forced.
+  async uponTicketed(timer: object, force?: string): undefined { // Handle updates to Realm for regular and forced
     if (Array.isArray(timer)) timer = this._timer;
-    let now = new Date();
-    let indexOfTimer;
+    var now = new Date();
+    var indexOfTimer; // Keep track of the index so that the next timer's license can be inserted into the search field
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000 || force) {
       if (this.list['0'].createdAt === timer.createdAt) {
         // Ticket the first timer in the list
@@ -252,7 +248,7 @@ export default class TimerList extends Component {
   }
 
   async expiredFunc(timer: object): undefined {
-    let indexOfTimer;
+    var indexOfTimer;
     if (this.list['0'] === timer) {
       indexOfTimer = 0;
       await this.realm.write(() => {
@@ -371,7 +367,6 @@ export default class TimerList extends Component {
 
 TimerList.propTypes = {
   navigation: PropTypes.object.isRequired,
-
 }
 
 const styles = StyleSheet.create({
