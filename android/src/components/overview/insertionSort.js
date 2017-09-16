@@ -7,13 +7,13 @@ export default function insertionSortModified(arr: object): array {
       let n = arr.length,
           temp;
 
-          for(var i=1;i<n;i++) {
+          for(let i = 1; i < n; i++) {
 
               temp = aux[i];
               if (temp.list[0].createdAt === undefined) continue;
               let tempElapsed = new Date() - temp.list[0].createdAt;
 
-              for(var j=i-1;j>=0;j--) {
+              for(let j = i - 1; j >= 0; j--) {
                 if (aux[j].list[0].createdAt === undefined) continue;
                 let earlyElapased = new Date() - aux[j].list[0].createdAt;
 
