@@ -32,11 +32,10 @@ export default class MapApp extends Component {
       mapPositionBottom: 0,
     };
     this.animated = false;
-    this._accessedLocation = false;
+    this.accessedLocation = false;
     this.animatedToMarker = false;
     this.description = '';
     this.animatedMap = undefined;
-    this._marker = undefined;
     this.realm = new Realm();
     this.timersArray = [];
     this.markers = [];
@@ -94,15 +93,15 @@ export default class MapApp extends Component {
   componentWillMount() {
     navigator.geolocation.getCurrentPosition(
       position => {
-        this._accessedLocation = true;
+        this.accessedLocation = true;
         let latitude = parseFloat(position.coords.latitude);
         let longitude = parseFloat(position.coords.longitude);
 
         if (!this.props.navigation.state.params  || !this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list[0].latitude) {
            if (this.animatedMap) {
-             this._animateToCoord(latitude, longitude);
+             this._animateToCoords(latitude, longitude);
            } else {
-             setTimeout(() => this._mounted && this._animateToCoord(latitude, longitude), 1500);
+             setTimeout(() => this._mounted && this._animateToCoords(latitude, longitude), 1500);
            }
          }
 
@@ -131,7 +130,7 @@ export default class MapApp extends Component {
         this._displayDescription(this.description);
       }
 
-      if (!this.animatedToMarker && !this._accessedLocation) this._mounted && this.setState({showError: true, animating: false, mapPositionBottom: 10});
+      if (!this.animatedToMarker && !this.accessedLocation) this._mounted && this.setState({showError: true, animating: false, mapPositionBottom: 10});
     }, 3000);
   }
 
@@ -148,7 +147,7 @@ export default class MapApp extends Component {
     if (this.props.navigation.state.params && typeof this.props.navigation.state.params.timersIndex === 'number') {
       this.timersArray = this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list;
       if (this.timersArray[0].latitude) {
-        this._mounted && this._animateToCoord(this.timersArray[0].latitude, this.timersArray[0].longitude);
+        this._mounted && this._animateToCoords(this.timersArray[0].latitude, this.timersArray[0].longitude);
         this.animatedToMarker = true;
         return;
       } else {
@@ -156,7 +155,7 @@ export default class MapApp extends Component {
           if (this.timersArray[i].latitude) {
             this.animatedToMarker = true;
             this._timeout = setTimeout(() => {
-              this._mounted && this._animateToCoord(this.timersArray[i].latitude, this.timersArray[i].longitude);
+              this._mounted && this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
             }, 1500);
             return;
           }
@@ -166,7 +165,7 @@ export default class MapApp extends Component {
 
     let settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);
-    if (settings && settings.location && !this._accessedLocation) this.checkLocationAndRender();
+    if (settings && settings.location && !this.accessedLocation) this.checkLocationAndRender();
   }
 
   _checkAndDrawPolyline() {
@@ -191,7 +190,7 @@ export default class MapApp extends Component {
     }
   }
 
-  _animateToCoord(lat: number, long: number) {
+  _animateToCoords(lat: number, long: number) {
     this._mounted && this.animatedMap._component.animateToCoordinate({
       latitude: lat,
       longitude: long,
@@ -246,7 +245,7 @@ export default class MapApp extends Component {
           if (lat > 0) {
             this.animatedToMarker = true;
             this._timeout = setTimeout(() => {
-              this._animateToCoord(lat, long);
+              this._animateToCoords(lat, long);
             }, 1500);
           }
         }
@@ -284,14 +283,14 @@ export default class MapApp extends Component {
       if (this.timersArray[0].latitude) {
         this.animatedToMarker = true;
         this._timeout = setTimeout(() => {
-          this._animateToCoord(this.timersArray[0].latitude, this.timersArray[0].longitude);
+          this._animateToCoords(this.timersArray[0].latitude, this.timersArray[0].longitude);
         }, 1500);
       } else { // Try to find the first timer with recorded coordinates and animate there
         for (let i = 1; i < this.timersArray.length; i++) {
           if (this.timersArray[i].latitude) {
             this.animatedToMarker = true;
             this._timeout = setTimeout(() => {
-              this._animateToCoord(this.timersArray[i].latitude, this.timersArray[i].longitude);
+              this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
             }, 1500);
             break;
           }
@@ -311,10 +310,10 @@ export default class MapApp extends Component {
       navigator.geolocation.getCurrentPosition(
         position => {
           if (!this.state.animating) this._mounted && this.setState({animating: true});
-          this._accessedLocation = true;
+          this.accessedLocation = true;
           let latitude = parseFloat(position.coords.latitude);
           let longitude = parseFloat(position.coords.longitude);
-          this._mounted && this._animateToCoord(latitude, longitude);
+          this._mounted && this._animateToCoords(latitude, longitude);
           this.realm.write(() => {
             this.realm.objects('Coordinates')[0].latitude = latitude;
             this.realm.objects('Coordinates')[0].longitude = longitude;
