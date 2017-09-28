@@ -324,11 +324,9 @@ CameraApp.propTypes = { navigation: PropTypes.object.isRequired };
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // flexDirection: 'column',
   },
   cameraContainer: {
     flex: .8,
-    // flexDirection: 'column',
   },
   camera: {
     flex: 1,
