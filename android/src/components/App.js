@@ -90,7 +90,7 @@ export default class App extends Component {
   componentWillMount() {
     FirebaseInitialize();
     this._checkFirstTimeAccess();
-    this.signIn();
+    this._signIn();
   }
 
   async _checkFirstTimeAccess() {
@@ -116,7 +116,7 @@ export default class App extends Component {
     });
   }
 
-  async signIn() {
+  async _signIn() {
     let profile = await AsyncStorage.getItem('@Enforce:profileSettings');
     profile = JSON.parse(profile);
     if (profile && (profile.email && profile.password)) FirebaseSignIn(profile.email, profile.password);
