@@ -12,6 +12,7 @@ import {
 import PropTypes from 'prop-types';
 import Realm from 'realm';
 
+import CheckSearchTypeModal from './CheckSearchTypeModal';
 import historySearch from './historySearch';
 import Result from './Result';
 import {
@@ -36,6 +37,7 @@ export default class Search extends Component {
     this.state = {
       license: '',
       result: null,
+      showTypeOfSearchModal: false,
     }
     this.realm = new Realm();
     this.marginValue = windowCenterPoint;
@@ -73,7 +75,7 @@ export default class Search extends Component {
               top: '35%', // TODO Fix this percentage into a responsive percentage of height of device
               width: '30%',
               marginLeft: this.cursorMarginLeft,
-          }}>
+            }}>
             <TextInput
               ref={(ref) => { this.myTextInput = ref }}
               onChangeText={(license) => { this._handleTextInput(license) }}
@@ -159,6 +161,8 @@ export default class Search extends Component {
             null
           }
         </Animated.View>
+
+        { this.state.showTypeOfSearchModal ? <CheckSearchTypeModal handleHistorySearchWith={this.handleHistorySearchWith.bind(this)}/> : null }
 
       </Animated.View>
     );
@@ -247,15 +251,40 @@ export default class Search extends Component {
     this.marginValue = windowCenterPoint;
   }
 
-  _handleHistorySearch() {
+  handleHistorySearchWith(type) {
+    if (type === 'license') {
+      this._handleHistorySearch(this.state.license, 'license');
+    } else if (type === 'VIN') {
+      this._handleHistorySearch(this.state.license, 'VIN');
+    }
+    this.setState({showTypeOfSearchModal: false});
+  }
 
-    if (this.state.license.length === 0) {
+  _checkForTypeOfSearch() {
+    this._mounted && this.setState({showTypeOfSearchModal: true});
+  }
+
+  // Look through the history of Realm ( TODO: and Firebase??) for a record
+  // @PARAM typeOfSearch - Signfy the difference between a VIN and license when input is 4 characters long
+  _handleHistorySearch(license: string, typeOfSearch: string) { console.log('len', this.state.license.length, !typeOfSearch, typeOfSearch)
+
+    if (license.length === 0) {
       this.myTextInput.focus();
       return;
-    } else {
+    } else if (license.length === 4 && typeOfSearch === undefined) { console.log('why return?')
 
+      this._checkForTypeOfSearch();
+      return;
+
+    } else {
+      let result;
       let prevResult = this.state.result;
-      let result = historySearch(this.state.license, this.realm);
+
+      if (typeOfSearch === 'VIN') {
+        result = historySearch(license, "vinSearch");
+      } else {
+        result = historySearch(license);
+      }
 
       if (result === undefined && prevResult !== 'unfound') {
         this._noResultNotification(); // TODO QUICK FIX FOR EMPTY BLOCK -- Figure out what goes here!
@@ -280,7 +309,7 @@ export default class Search extends Component {
       // Add license to current Timer in queue in TimerList if in TimerList.
       if (this.props.timerList) {
         if (!this.props.licenseParam.license) {
-          this.props.addLicenseToQueue(this.state.license); // TODO Decide if a historySearch() press should warrant adding license to queue
+          this.props.addLicenseToQueue(license); // TODO Decide if a historySearch() press should warrant adding license to queue
         } else {
           this._updateLicenseOfTimer();
         }
