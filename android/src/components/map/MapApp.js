@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MapView, { Marker } from 'react-native-maps';
+import { Animated as AnimatedMap, Marker } from 'react-native-maps';
 import {
   View,
   Text,
@@ -59,7 +59,7 @@ export default class MapApp extends Component {
 
         <LocationView description={this.state.description} fadeDescription={this.state.fadeDescription}/>
 
-        <MapView.Animated
+        <AnimatedMap
           ref={ref => { this.animatedMap = ref; }}
           style={{
             position: 'absolute',
@@ -78,7 +78,7 @@ export default class MapApp extends Component {
           }} >
             { this.markers.length ? this.markers : this._getMarkers() }
             { this.state.polyline[0] }
-        </MapView.Animated>
+        </AnimatedMap>
 
         <ActivityIndicator
           animating={this.state.animating}
