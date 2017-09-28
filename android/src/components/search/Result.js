@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import MapModal from './MapModal';
+import MapModal from '../history/MapModal';
 import ImageModal from '../history/ImageModal';
 import Unfound from './Unfound';
 
