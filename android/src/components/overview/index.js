@@ -49,7 +49,6 @@ export default class Overview extends Component {
   componentDidMount() {
     PushNotification.configure({
       onNotification: function(notification) {
-        console.log( 'NOTIFICATION:', notification );
       },
 
       requestPermissions: true,
