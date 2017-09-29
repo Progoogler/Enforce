@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { DrawerItems, DrawerNavigator } from 'react-navigation';
-import { View, Image, AsyncStorage } from 'react-native';
+import { DrawerItems, DrawerNavigator, NavigationActions } from 'react-navigation';
+import { View, Image, Text, AsyncStorage, TouchableNativeFeedback, StyleSheet } from 'react-native';
 
 import CameraApp from './camera/CameraApp';
 import MapApp from './map/MapApp';
@@ -12,11 +12,21 @@ import Metrics from './metrics';
 import Settings from './settings';
 import FAQs from './faq';
 
+import { screenHeight } from '../styles/common';
+
 import Realm from 'realm';
 import Schema from '../db/realm';
 import { initialize as FirebaseInitialize, signInUser as FirebaseSignIn }  from '../../../includes/firebase/firebase';
 
 /* global require */
+const navigateToOverviewAndReset = (navigation) => {
+  const navigationAction = NavigationActions.navigate({
+    routeName: 'Overview',
+    params: {reset: true}
+  });
+  navigation.dispatch(navigationAction);
+};
+
 const AppNavigator = DrawerNavigator({
   Overview: {
     screen: Overview
@@ -47,35 +57,21 @@ const AppNavigator = DrawerNavigator({
   }
 }, {
     drawerWidth: 180,
-//     contentComponent: props => (
-//        <View style={{flexDirection: 'row'}}>
-//           <View style={{flex: 1}}>
-//               <View style={{marginBottom: -3, height: 145, flexDirection: 'row', backgroundColor: 'rgba(200, 200, 200, .3)'}} >
-//                     <View style={{height: 145, width: 25, backgroundColor: '#4286f4'}} />
-//                     <View style={{flexDirection: 'column'}}>
-//                           <View style={{backgroundColor: '#4286f4', width: 160, height: 25, justifyContent: 'flex-end', alignItems: 'flex-end', borderBottomRightRadius: 25}} >
-//                             <Image style={{height: 16, width: 16, marginRight: 20,}} source={require('../../../shared/images/pin-orange.png')} />
-//                           </View>
-//                           <View style={{height: 35, width: 150}} />
-//                           <View style={{backgroundColor: '#4286f4', width: 150, height: 25, borderTopRightRadius: 10, borderBottomRightRadius: 10}} />
-//                           <View style={{height: 35, width: 150, flexDirection: 'row'}} >
-//                             <Image style={{height: 25, width: 25, alignSelf: 'flex-end'}} source={require('../../../shared/images/blue-pin.png')} />
-//                           </View>
-//                       <View style={{backgroundColor: '#4286f4', width: 160, height: 25, borderTopRightRadius: 25}} />
-//                 </View>
-//           </View>
-//
-//           <DrawerItems {...props} />
-//           </View>
-//           <View style={{
-//             position: 'absolute',
-//             right: 0,
-//             top: 145,
-//             width: 5,
-//             height: 1000,
-//             backgroundColor: '#4286f4', }} />
-//         </View>),
-    contentOptions: {
+    contentComponent: props => (
+      <View style={{height: screenHeight}}>
+          <DrawerItems {...props}/>
+          <TouchableNativeFeedback 
+            background={TouchableNativeFeedback.Ripple()}
+            onPress={() => navigateToOverviewAndReset(props.navigation)}>
+            <View style={styles.resetContainer}>
+              <View style={styles.icon}>
+                <Image source={require('../../../shared/images/reset-icon.png')}/>
+              </View>
+              <Text style={styles.label}>Reset</Text>
+            </View>
+          </TouchableNativeFeedback>
+      </View>),
+    contentOptions: { 
       activeTintColor: 'green',
     },
 });
@@ -83,7 +79,7 @@ const AppNavigator = DrawerNavigator({
 export default class App extends Component {
   render() {
     return (
-        <AppNavigator />
+        <AppNavigator/>
     );
   }
 
@@ -123,3 +119,24 @@ export default class App extends Component {
   }
 
 }
+
+const styles = StyleSheet.create({
+  resetContainer: {
+    alignItems: 'center',
+    bottom: 25,
+    flexDirection: 'row',
+    position: 'absolute', 
+    width: 180,
+  },
+  icon: {
+    alignItems: 'center',
+    marginHorizontal: 16,
+    opacity: .62,
+    width: 24,
+  },
+  label: {
+    color: 'black', 
+    fontWeight: 'bold',
+    margin: 16,
+  }
+});
