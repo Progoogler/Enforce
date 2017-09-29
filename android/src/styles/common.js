@@ -10,6 +10,7 @@ export var extraLargeFontSize = responsiveFontSize(3.4);
 export var largeFontSize = responsiveFontSize(2.8);
 export var mediumFontSize = responsiveFontSize(2.2);
 export var smallFontSize = responsiveFontSize(1.8);
+export var screenHeight = height;
 
 /* Overview */
 // MainButtons
