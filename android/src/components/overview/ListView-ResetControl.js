@@ -77,6 +77,9 @@ export default class TimersList extends Component {
     // If today is a different day than yesterday, reset app; i.e., 24th > 23rd || 2nd - 24th < 0
     if (today > parseInt(yesterday) || today - parseInt(yesterday) < 0) {
       this._reset();
+    } else if (this.props.navigation.state.params && this.props.navigation.state.params.reset) {
+      this._hardReset();
+      this.props.navigation.state.params = undefined;
     }
   }
 
@@ -151,6 +154,34 @@ export default class TimersList extends Component {
           });
         });
       });
+    }
+  }
+
+  _hardReset() { // Only removes current pictures and resets Realm state
+    let timerLists = this.realm.objects('Timers');
+    let ticketList = this.realm.objects('Ticketed');
+    let expiredList = this.realm.objects('Expired');
+    if (timerLists.length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
+
+      // Delete corresponding images in the DCIM directory
+      this._loopDeletion(timerLists);
+      if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
+      if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
+
+      this.list = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
+      this._mounted && this.setState({dataSource: this.list});
+      this.props.resetTicketCounter();
+      setTimeout(() => {
+        Realm.clearTestState();
+        this.realm = new Realm({schema: Schema});
+        this.realm.write(() => {
+          this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
+          this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
+          this.realm.create('Coordinates', {latitude: 0, longitude: 0});
+          this.realm.create('Ticketed', {list: []});
+          this.realm.create('Expired', {list: []});
+        });
+      }, 3000);
     }
   }
 
