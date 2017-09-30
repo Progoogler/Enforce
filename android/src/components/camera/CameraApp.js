@@ -3,10 +3,8 @@ import {
   StyleSheet,
   View,
   Image,
-  Text,
   AsyncStorage,
   Vibration,
-  TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import LocationServicesDialogBox from "react-native-android-location-services-dialog-box";
@@ -24,25 +22,27 @@ export default class CameraApp extends Component {
   constructor() {
     super();
     this.state = {
+      imageRecognition: true,
       modalVisible: false,
       newTimer: false,
-      imageRecognition: true,
     };
-    this.license = '';
-    this.description = '';
-    this.latitude = null;
-    this.longitude = null;
-    this.camera = null;
-    this._retry = 0;
-    this.listIndex = 0;
-    this.pictureCount = 0;
-    this.timeLimit = 1;
-    this.firstCapture = true;
-    this.locationService = false;
-    this.deleting = false;
     this._mounted = false;
-    this.settings = null;
+    this.camera = null;
+    this.deleting = false;
+    this.description = '';
+    this.firstCapture = true;
+    this.latitude = null;
+    this.license = '';
+    this.listIndex = 0;
+    this.locationService = false;
+    this.longitude = null;
+    this.pictureCount = 0;
+    this.profileSettings = null;
+    this.profileState = '';
     this.realm = new Realm();
+    this.retry = 0;
+    this.settings = null;
+    this.timeLimit = 1;
   }
 
   static navigationOptions = {
@@ -99,6 +99,9 @@ export default class CameraApp extends Component {
   async componentWillMount() {
     this.settings = await AsyncStorage.getItem('@Enforce:settings');
     this.settings = JSON.parse(this.settings);
+    this.profileSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
+    this.profileSettings = JSON.parse(this.profileSettings);
+    this.profileState = this.profileSettings.state;
     if (this.settings && !this.settings.imageRecognition) this.setState({imageRecognition: false});
   }
 
@@ -140,7 +143,7 @@ export default class CameraApp extends Component {
     this.locationService = true;
   }
 
-  error = (err) => {
+  error = () => {
     let realmCoords = this.realm.objects('Coordinates')[0];
     this.latitude = realmCoords.latitude;
     this.longitude = realmCoords.longitude;
@@ -215,19 +218,19 @@ export default class CameraApp extends Component {
           setTimeout(() => {
             this._savePicture(data);
           }, 1200);
-          this._retry = 0;
+          this.retry = 0;
           this.firstCapture = false;
           return;
         }
         this._savePicture(data);
-        this._retry = 0;
+        this.retry = 0;
       })
       .catch(err => {
-        this._retry++;
-        if (this._retry !== 3) {
+        this.retry++;
+        if (this.retry !== 3) {
           this.takePicture('retry');
         } else {
-          this._retry = 0;
+          this.retry = 0;
         }
       });
   }
@@ -273,6 +276,7 @@ export default class CameraApp extends Component {
         timeLength: this.timeLimit,
         license: this.license,
         VIN: '',
+        state: this.profileState,
         mediaUri: data.mediaUri,
         mediaPath: data.path,
         description: this.description,
@@ -311,10 +315,8 @@ export default class CameraApp extends Component {
     }
 
   _onPlateRecognized({ plate, confidence }) {
-
     if (confidence > 0.9) {
       this.license = plate;
-      console.log('plate recognized', this.license);
     }
   }
 }
