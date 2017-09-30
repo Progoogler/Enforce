@@ -17,7 +17,8 @@ import {
   primaryBlue,
   smallFontSize,
   closeButtonSize,
-  pinSize,
+  pinHeight,
+  pinWidth,
 } from '../../styles/common';
 
 /* global require */
@@ -39,12 +40,12 @@ export default class Result extends Component {
           <ImageModal
             uri={this.state.uri}
             visibility={this.state.showMaximizedImage}
-            maximizeImage={this.maximizeImage.bind(this)} /> : null }
+            maximizeOrMinimizeImage={this.maximizeOrMinimizeImage.bind(this)} /> : null }
 
         {
           typeof this.props.data.data === 'object' ?
           <View style={styles.container}>
-            <TouchableOpacity onPress={() => this.maximizeImage(this.props.data.data.mediaUri)}>
+            <TouchableOpacity onPress={() => this.maximizeOrMinimizeImage(this.props.data.data.mediaUri)}>
               <Image source={{uri: this.props.data.data.mediaUri}} style={styles.image} />
             </TouchableOpacity>
               <View style={styles.dataContainer}>
@@ -57,11 +58,16 @@ export default class Result extends Component {
                 { this.props.data.data.ticketedAt !== 0 ? <Text><Text style={styles.label}>Ticketed:</Text> {this._getPrettyTimeFormat(this.props.data.data.ticketedAt)}</Text> : null }
                 <Text><Text style={styles.label}>Time limit:</Text> {this._getTimeLimitDesc(this.props.data.data.timeLength)}</Text>
               </View>
-              <TouchableOpacity
-                style={styles.mapButton}
-                onPress={() => this._openMapPage()} >
-                <Image source={require('../../../../shared/images/blue-pin.png')} style={styles.mapIcon} />
-              </TouchableOpacity>
+              {
+                this.props.data.data.latitude || this.props.data.data.description ?  
+                <TouchableOpacity
+                  style={styles.mapButton}
+                  onPress={() => this._openMapPage()} >
+                  <Image source={require('../../../../shared/images/blue-pin.png')} style={styles.mapIcon} />
+                </TouchableOpacity>
+                :
+                null
+              }
               <TouchableOpacity
                 opacity={.8}
                 style={styles.closeResultButton}
@@ -111,7 +117,7 @@ export default class Result extends Component {
     this.setState({modalVisible: true})
   }
 
-  maximizeImage(uri) {
+  maximizeOrMinimizeImage(uri) {
     if (uri) {
       this.setState({showMaximizedImage: true, uri: uri});
     } else {
@@ -179,7 +185,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   mapIcon: {
-    height: pinSize,
-    width: pinSize,
+    height: pinHeight,
+    width: pinWidth,
   },
 });
