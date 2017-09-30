@@ -4,7 +4,6 @@ import {
   Text,
   Image,
   StyleSheet,
-  Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import MapView from 'react-native-maps';
@@ -13,6 +12,7 @@ import Navigation from '../navigation/StaticNavigation';
 import {
   primaryBlue,
   largeFontSize,
+  screenHeight,
 } from '../../styles/common';
 
 /*global require*/
@@ -75,10 +75,9 @@ export default class Metrics extends Component {
   }
 
   componentWillMount() {
-    const { height } = Dimensions.get('window');
     styles.controlContainer = {
       position: 'absolute',
-      top: height / 2 + 50,
+      top: screenHeight / 2 + 50,
       left: 0,
       right: 0,
       bottom: 0,
