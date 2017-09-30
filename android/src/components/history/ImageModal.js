@@ -3,7 +3,6 @@ import {
   View,
   StyleSheet,
   Modal,
-  TouchableNativeFeedback,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import PhotoView from 'react-native-photo-view';
@@ -23,7 +22,7 @@ export default class ImageModal extends Component {
         onRequestClose={() => this.props.maximizeOrMinimizeImage()}
         visible={this.props.visibility} >
         <View style={styles.container}>
-          <Navigation title={'Map View'} closeModal={this.props.maximizeOrMinimizeImage} />
+          <Navigation title={'Enforce'} closeModal={this.props.maximizeOrMinimizeImage} />
           <PhotoView style={styles.image}
             source={{uri: this.props.uri}}
             androidScaleType="fitXY"
@@ -48,17 +47,5 @@ const styles = StyleSheet.create({
     flex: 1,
     height: undefined,
     width: undefined,
-  },
-  buttonContainer: {
-    backgroundColor: primaryBlue,
-    alignSelf: 'stretch',
-  },
-  arrowContainer: {
-    justifyContent: 'center',
-    width: '100%',
-    height: navBarContainerHeight,
-  },
-  backArrow: {
-    marginLeft: '6%',
   },
 });
