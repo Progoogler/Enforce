@@ -5,8 +5,8 @@ const historySearch = (license: string, type?: string): object => {
   if (typeof license !== 'string') return;
   if (license.length > 7) return;
 
-  let result = {};
-  let ticketed = realm.objects('Ticketed')[0]['list'];
+  const result = {};
+  var ticketed = realm.objects('Ticketed')[0]['list'];
 
   if (type === 'vinSearch') {
     for (let i = 0; i < ticketed.length; i++) {
@@ -41,17 +41,6 @@ const historySearch = (license: string, type?: string): object => {
       }
     }
   }
-  // let timing = this.realm.objects('Timers');
-  // for (let i = 0; i < timing.length; i++) {
-  //   if (timing[i].list.length === 1) continue;
-  //   for (let j = 0; j < timing[i].list.length; j++) {
-  //     if (timing[i].list[j].license === license) {
-  //       result['type'] = 'timing';
-  //       result['data'] = timing[i].list[j];
-  //       return result;
-  //     }
-  //   }
-  // }
 };
 
 export default historySearch;
