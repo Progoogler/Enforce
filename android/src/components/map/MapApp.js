@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Animated as AnimatedMap, Marker } from 'react-native-maps';
+import { Animated as AnimatedMap, Marker, Polyline } from 'react-native-maps';
 import {
   View,
   Text,
@@ -179,7 +179,7 @@ export default class MapApp extends Component {
       });
       this._mounted && this.setState({
         polyline: [
-          <MapView.Polyline
+          <Polyline
             coordinates={coords}
             strokeWidth={5}
             strokeColor='red'
