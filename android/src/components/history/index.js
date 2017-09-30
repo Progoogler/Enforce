@@ -60,7 +60,7 @@ export default class History extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Navigation navigation={this.props.navigation} />
+        <Navigation navigation={this.props.navigation}/>
         <ImageModal uri={this.state.uri} visibility={this.state.showMaximizedImage} maximizeOrMinimizeImage={this.maximizeOrMinimizeImage.bind(this)}/>
         <Text style={styles.title}>History</Text>
         <View style={styles.pickerActivityRow}>
@@ -72,7 +72,8 @@ export default class History extends Component {
 
             }}
             selectedValue={this.state.selected}
-            onValueChange={(val) => this._onValueChange(val)} >
+            onValueChange={(val) => this._onValueChange(val)} 
+          >
 
             { this.state.items.map((item) => item) }
 
@@ -80,7 +81,8 @@ export default class History extends Component {
           <ActivityIndicator
             animating={this.state.animating}
             color={'green'}
-            size='small' />
+            size='small' 
+          />
         </View>
 
         <FlatList
@@ -88,9 +90,10 @@ export default class History extends Component {
            data={this.state.dataSource}
            ItemSeparatorComponent={this._renderSeparator}
            renderItem={this._renderItem.bind(this)}
-           keyExtractor={this._keyExtractor} />
+           keyExtractor={this._keyExtractor} 
+        />
 
-        { this.state.isConnected ? null : <ThrowConnectionMessage /> }
+        { this.state.isConnected ? null : <ThrowConnectionMessage/> }
 
       </View>
     );
@@ -134,16 +137,16 @@ export default class History extends Component {
     var dates = [];
     if (this.dateCount) {
         this.dateCount = JSON.parse(this.dateCount);
-        dates.push(<Picker.Item style={styles.item} label="Today's Tickets" value={"Today's Tickets"} key={-2}/>);
-        dates.push(<Picker.Item style={styles.item} label="Today's Expired" value={"Today's Expired"} key={-1}/>);
+        dates.push(<Picker.Item label="Today's Tickets" value="Today's Tickets" key={-2}/>);
+        dates.push(<Picker.Item label="Today's Expired" value="Today's Expired" key={-1}/>);
         for (let i = this.dateCount.length - 1; i >= 0; i--) {
           let month = this.dateCount[i].slice(0, this.dateCount[i].indexOf('-'));
           let day = this.dateCount[i].slice(this.dateCount[i].indexOf('-') + 1, this.dateCount[i].length);
-          dates.push(<Picker.Item style={styles.item} label={this._getPrettyDate(month, day)} value={this.dateCount[i]} key={i}/>);
+          dates.push(<Picker.Item label={this._getPrettyDate(month, day)} value={this.dateCount[i]} key={i}/>);
         }
     } else {
-        dates.push(<Picker.Item style={styles.item} label="Today's Tickets" value={"Today's Tickets"} key={-2}/>);
-        dates.push(<Picker.Item style={styles.item} label="Today's Expired" value={"Today's Expired"} key={-1}/>);
+        dates.push(<Picker.Item label="Today's Tickets" value="Today's Tickets" key={-2}/>);
+        dates.push(<Picker.Item label="Today's Expired" value="Today's Expired" key={-1}/>);
     }
     this.setState({items: dates, animating: false});
   }
@@ -157,7 +160,7 @@ export default class History extends Component {
     var prettyDate = this._getPrettyDate(month, day);
 
     if (this.userId && this.userSettings) {
-        await getHistoryData(this.userSettings.county, this.userId, date, (data) => {
+        await getHistoryData(this.userSettings.state, this.userSettings.county, this.userId, date, (data) => {
           this.updating = true;
           if (data === null) {
             this._updateRows([], prettyDate.length);
