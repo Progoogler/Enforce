@@ -34,7 +34,8 @@ export var textInputContainerHeight = responsiveHeight(18);
 
 /* Search/Navigation */
 export var titleFontSize = responsiveFontSize(3.5);
-export var pinSize = responsiveHeight(5);
+export var pinHeight = responsiveHeight(5.5);
+export var pinWidth = responsiveWidth(6);
 export var closeButtonSize = responsiveHeight(3);
 export var navBarContainerHeight = height * .09;
 export var searchContainerHeight = height * .18;
