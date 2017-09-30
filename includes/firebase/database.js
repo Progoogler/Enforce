@@ -22,8 +22,8 @@ class Database {
 
     }
 
-    static transferUserData(countyId, userId, data) {
-      return firebase.database().ref(`/${countyId}/${userId}`).set(
+    static transferUserData(refPath, data) {
+      return firebase.database().ref(`/${refPath}`).set(
         data
       );
     }
@@ -53,18 +53,17 @@ class Database {
         });
     }
 
-    static getUserTickets(countyId, userId, callback) {
-      let userTicketPath = `/${countyId}/${userId}/`;
+    static getUserTickets(refPath, callback) {
       let tickets;
-      firebase.database().ref(userTicketPath).on('value', (snapshot) => {
+      firebase.database().ref(refPath).on('value', (snapshot) => {
 
         tickets = snapshot.val();
         callback(tickets);
       });
   }
 
-    static deleteUserTickets(countyId, userId) {
-      let userTicketPath = `/${countyId}/${userId}/`;
+    static deleteUserTickets(stateId, countyId, userId) {
+      let userTicketPath = `/${stateId}/${countyId}/${userId}/`;
       firebase.database().ref(userTicketPath).remove();
     }
 
@@ -95,8 +94,8 @@ class Database {
         });
     }
 
-    static getHistoryData(countyId, userId, dateId, callback) {
-      let refPath = `${countyId}/${userId}/${dateId}`;
+    static getHistoryData(stateId, countyId, userId, dateId, callback) {
+      let refPath = `${stateId}/${countyId}/${userId}/${dateId}`;
       firebase.database().ref(refPath).once('value').then((snapshot) => {
         callback(snapshot.val());
       });
