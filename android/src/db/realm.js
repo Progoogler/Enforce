@@ -12,6 +12,7 @@ TimerSchema.schema = {
     ticketedAt: 'int',
     license: 'string',
     VIN: 'string',
+    state: 'string',
     mediaUri: 'string',
     mediaPath: 'string',
     description: 'string'
