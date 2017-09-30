@@ -6,7 +6,6 @@ import {
   Modal,
   StyleSheet,
   TouchableOpacity,
-  Dimensions,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
@@ -14,10 +13,10 @@ import MapView, { Marker } from 'react-native-maps';
 import {
   primaryBlue,
   mediumFontSize,
-  pinSize,
+  pinHeight,
+  pinWidth,
+  screenHeight,
 } from '../../styles/common';
-
-const height = Dimensions.get('window').height;
 
 /* global require */
 export default class MapModal extends Component {
@@ -55,7 +54,7 @@ export default class MapModal extends Component {
                 longitude: this.props.longitude}} >
               <Image
                 source={require('../../../../shared/images/blue-pin.png')}
-                style={{ width: pinSize, height: pinSize }} />
+                style={styles.pinIcon}/>
             </Marker>
 
           </MapView.Animated>
@@ -75,7 +74,7 @@ export default class MapModal extends Component {
       top: 0,
       left: 0,
       right: 0,
-      bottom: height - 250,
+      bottom: screenHeight - 250,
     }
   }
 
@@ -121,5 +120,9 @@ const styles = StyleSheet.create({
     paddingRight: '3%',
     paddingBottom: '1.5%',
     paddingTop: '1.5%',
+  },
+  pinIcon: {
+    height: pinHeight,
+    width: pinWidth, 
   },
 });
