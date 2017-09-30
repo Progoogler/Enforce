@@ -65,6 +65,14 @@ export default class TimersList extends Component {
     this._timeoutRefresh = this.list.length > 0 ? setTimeout(() => this._onRefresh(), 300000) : null;
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.navigation.state !== this.props.navigation.state) {
+      if (this.props.navigation.state.params && this.props.navigation.state.params.reset) {
+        this._hardReset();
+      }
+    }
+  }
+
   componentWillUnmount() {
     clearTimeout(this._timeoutRefresh);
     this._mounted = false;
