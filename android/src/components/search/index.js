@@ -12,7 +12,6 @@ import {
 import PropTypes from 'prop-types';
 import Realm from 'realm';
 
-import CheckSearchTypeModal from './CheckSearchTypeModal';
 import historySearch from './historySearch';
 import Result from './Result';
 import {
@@ -37,7 +36,6 @@ export default class Search extends Component {
     this.state = {
       license: '',
       result: null,
-      showTypeOfSearchModal: false,
     }
     this.realm = new Realm();
     this.marginValue = windowCenterPoint;
@@ -161,9 +159,6 @@ export default class Search extends Component {
             null
           }
         </Animated.View>
-
-        { this.state.showTypeOfSearchModal ? <CheckSearchTypeModal handleHistorySearchWith={this.handleHistorySearchWith.bind(this)}/> : null }
-
       </Animated.View>
     );
   }
@@ -209,7 +204,8 @@ export default class Search extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.timerList) {
       if (this.props.shouldResetLicense()) {
-        this.setState({license: '', cursorMarginLeft: new Animated.Value(windowCenterPoint)});
+        this.setState({license: ''});
+        this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
         this.marginValue = windowCenterPoint;
         this.props.shouldResetLicense(true); // Sets the return value of this._reset to false in TimerList to prevent resetting the search field until a uponTicketed() or expiredFunc() is performed.
       } else if (this.props.licenseParam.license !== nextProps.licenseParam.license) {
@@ -232,7 +228,8 @@ export default class Search extends Component {
 
     if (this.props.timerList) {
       if (this.state.license.length > 0 && this.myTextInput.isFocused()) {
-        this.setState({ license: '', cursorMarginLeft: new Animated.Value(windowCenterPoint) });
+        this.setState({ license: '' });
+        this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
         this.marginValue = windowCenterPoint;
         Keyboard.dismiss();
       } else if (this.myTextInput.isFocused()) {
@@ -247,40 +244,29 @@ export default class Search extends Component {
     this._fadeContainer();
     setTimeout(() => this._mounted && this.props.closeSearch(), 500);
 
-    this.setState({ license: '', cursorMarginLeft: new Animated.Value(windowCenterPoint) });
+    this.setState({ license: '' });
+    this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
     this.marginValue = windowCenterPoint;
-  }
-
-  handleHistorySearchWith(type) {
-    if (type === 'license') {
-      this._handleHistorySearch(this.state.license, 'license');
-    } else if (type === 'VIN') {
-      this._handleHistorySearch(this.state.license, 'VIN');
-    }
-    this.setState({showTypeOfSearchModal: false});
-  }
-
-  _checkForTypeOfSearch() {
-    this._mounted && this.setState({showTypeOfSearchModal: true});
   }
 
   // Look through the history of Realm ( TODO: and Firebase??) for a record
   // @PARAM typeOfSearch - Signfy the difference between a VIN and license when input is 4 characters long
-  _handleHistorySearch(license: string, typeOfSearch: string) { console.log('len', this.state.license.length, !typeOfSearch, typeOfSearch)
+  _handleHistorySearch(license: string) {
+    
+    var vinCheck;
+    if (license.length === 4) {
+      vinCheck = parseInt(license) + '';
+      vinCheck = vinCheck.length === 4 ? true : false;
+    }
 
     if (license.length === 0) {
       this.myTextInput.focus();
       return;
-    } else if (license.length === 4 && typeOfSearch === undefined) { console.log('why return?')
-
-      this._checkForTypeOfSearch();
-      return;
-
     } else {
       let result;
       let prevResult = this.state.result;
-
-      if (typeOfSearch === 'VIN') {
+      
+      if (vinCheck) {
         result = historySearch(license, "vinSearch");
       } else {
         result = historySearch(license);
@@ -389,7 +375,7 @@ export default class Search extends Component {
     }, 1800);
   }
 
-  __extendResultContainer() {
+  _extendResultContainer() {
     Animated.parallel([
       Animated.timing(
         this.containerHeight, {
@@ -435,14 +421,16 @@ export default class Search extends Component {
       ),
     ]).start();
     Keyboard.dismiss();
-    this.setState({license: '', result: null, cursorMarginLeft: new Animated.Value(windowCenterPoint)});
+    this.setState({license: '', result: null});
+    this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
+    this.marginValue = windowCenterPoint;
   }
 
    _keyboardDidHideForTimerList() {
      if (this.state.license) this.props.addLicenseToQueue(this.state.license);
    }
 
-  _handleTextInput(license: string) { console.log('handle text input:', license, 'state.license:', this.state.license);
+  _handleTextInput(license: string) {
     if (license.length === 0) {
       Animated.timing(
         this.cursorMarginLeft, {
@@ -518,6 +506,11 @@ Search.propTypes = {
   noResultNotificationForMenu: PropTypes.func,
   closeSearch: PropTypes.func,
   addLicenseToQueue: PropTypes.func,
+  refreshTimerList: PropTypes.func,
+  licenseParam: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.string
+  ]),
 };
 
 const styles = StyleSheet.create({
