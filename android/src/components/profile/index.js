@@ -3,9 +3,11 @@ import {
   View,
   Text,
   Image,
+  Picker,
   StyleSheet,
-  TouchableHighlight,
+  TouchableOpacity,
   TextInput,
+  Keyboard,
   ActivityIndicator,
   AsyncStorage,
   NetInfo,
@@ -17,6 +19,8 @@ import Database from '../../../../includes/firebase/database';
 import Navigation from '../navigation/StaticNavigation';
 import Warning from './Warning';
 import ThrowConnectionMessage from './ThrowConnectionMessage';
+
+import States from '../../../../shared/statesList';
 
 import {
   primaryBlue,
@@ -34,21 +38,25 @@ export default class Profile extends Component {
     this.state = {
       email: '',
       password: '',
-      county: '',
-      emailColor: 'black',
-      passwordColor: 'black',
-      countyColor: 'black',
       emailBackground: 'white',
       passwordBackground: 'white',
-      countyBackground: 'white',
+      emailBorder: 'black',
+      passwordBorder: 'black',
+      stateBorder: 'black',
+      countyBorder: 'black',
       emailWarning: false,
       passwordWarning: false,
       profileStatus: 'Create Profile',
       animating: false,
       isConnected: true,
+      buttonColor: primaryBlue,
+      states: [],
+      counties: [],
+      selectedState: '',
+      selectedCounty: 'Select your county',
     };
     this.profile = {};
-    this.profileId = '';
+    this.profileId = null;
     this.createdNewUser = false;
     this.replacedOldUser = false;
     this._mounted = true;
@@ -69,7 +77,7 @@ export default class Profile extends Component {
           <View style={styles.row}>
 
             <TextInput
-              style={{ backgroundColor: this.state.emailBackground, borderColor: this.state.emailColor, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
+              style={{ backgroundColor: this.state.emailBackground, borderColor: this.state.emailBorder, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
               autoCorrect={false}
               autoCapitalize={'words'}
               keyboardType={'email-address'}
@@ -87,7 +95,7 @@ export default class Profile extends Component {
           <View style={styles.row}>
 
             <TextInput
-              style={{ backgroundColor: this.state.passwordBackground, borderColor: this.state.passwordColor, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
+              style={{ backgroundColor: this.state.passwordBackground, borderColor: this.state.passwordBorder, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
               autoCorrect={false}
               secureTextEntry={true}
               fontSize={mediumFontSize}
@@ -102,26 +110,51 @@ export default class Profile extends Component {
           { this.state.passwordWarning ? <Warning warning={'Must be at least 6 characters'} /> : null }
 
           <View style={styles.row}>
+            <View style={{ borderColor: this.state.stateBorder, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}>  
+              <Picker
+                style={styles.picker}
+                selectedValue={this.state.selectedState}
+                onValueChange={(val) => this._onStateChange(val)} 
+              >
 
-            <TextInput
-              style={{ backgroundColor: this.state.countyBackground, borderColor: this.state.countyColor, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
-              autoCorrect={false}
-              autoCapitalize={'words'}
-              fontSize={mediumFontSize}
-              placeholder={'County'}
-              underlineColorAndroid={'transparent'}
-              onFocus={() => this._onCountyFocus()}
-              onBlur={() => this._onCountyBlur()}
-              onChangeText={(text) => { this.setState({ county: text })}}
-              value={this.state.county} />
+                { this.state.states }
+
+              </Picker>
+            </View>
           </View>
 
-        <TouchableHighlight
-          style={styles.button}
-          underlayColor='green'
-          onPress={() => this._setNewProfile() }>
-          <Text style={styles.buttonText}>{ this.state.profileStatus }</Text>
-        </TouchableHighlight>
+          <View style={styles.row}>
+            <View style={{ borderColor: this.state.countyBorder, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}>
+              <Picker
+                style={styles.picker}
+                selectedValue={this.state.selectedCounty}
+                onValueChange={(val) => this._onCountyChange(val)} 
+              >
+
+                { this.state.counties }
+
+              </Picker>
+            </View>
+          </View>
+
+        <TouchableOpacity
+          style={{ 
+            backgroundColor: this.state.buttonColor,
+            width: '50%',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            alignSelf: 'center',
+            marginTop: '15%',
+            padding: '4%',
+            borderRadius: 10, 
+          }}
+          activeOpacity={.9}
+          onPress={() => this._setNewProfile()}
+        >
+          <View>
+            <Text style={styles.buttonText}>{ this.state.profileStatus }</Text>
+          </View>
+        </TouchableOpacity>
 
         { this.state.isConnected ? null : <ThrowConnectionMessage /> }
         <ActivityIndicator
@@ -132,8 +165,10 @@ export default class Profile extends Component {
     );
   }
 
-  componentWillMount() {
-    this._getProfileFromAsyncStorage();
+  async componentWillMount() {
+    await this._getProfileFromAsyncStorage();
+    this._setStatesPicker();
+    this._setCountiesPickerAndSelectedState();
   }
 
   componentDidMount() {
@@ -142,26 +177,29 @@ export default class Profile extends Component {
   }
 
   componentWillUnmount() {
+    let id = Firebase.getCurrentUser();
+    let refPath = `${this.state.selectedState}/${this.state.selectedCounty}/${id}`;
+    AsyncStorage.setItem('@Enforce:refPath', refPath);
     this._mounted = false;
     if (this.createdNewUser) {
       Firebase.signInUser(this.state.email, this.state.password);
       setTimeout(() => {
         let id = Firebase.getCurrentUser();
-        let refPath = `${this.state.county}/${id}`;
+        let refPath = `${this.state.selectedState}/${this.state.selectedCounty}/${id}`;
         AsyncStorage.setItem('@Enforce:refPath', refPath);
         AsyncStorage.setItem('@Enforce:profileId', id);
       }, 1500);
       return;
     }
     if (this.replacedOldUser) {
-      Database.deleteUserTickets(this.profile.county, this.profileId);
+      Database.deleteUserTickets(this.profile.state, this.profile.county, this.profileId);
       Firebase.signInUser(this.state.email, this.state.password);
       setTimeout(() => {
         let newId = Firebase.getCurrentUser();
-        let refPath = `${this.state.county}/${newId}`;
+        let refPath = `${this.state.selectedState}/${this.state.selectedCounty}/${newId}`;
         AsyncStorage.setItem('@Enforce:refPath', refPath);
         AsyncStorage.setItem('@Enforce:profileId', newId);
-        Database.transferUserData(this.state.county, newId, this.data); // Port old data into new account
+        Database.transferUserData(refPath, this.data); // Port old data into new account
       }, 1500);
     }
   }
@@ -172,7 +210,7 @@ export default class Profile extends Component {
     this.profile && this.setState({
       email: this.profile.email ? this.profile.email : '',
       password: this.profile.password ? this.profile.password : '',
-      county: this.profile.county ? this.profile.county : '',
+      selectedCounty: this.profile.county ? this.profile.county : 'Select your county',
     });
   }
 
@@ -183,16 +221,25 @@ export default class Profile extends Component {
 
   async _setNewProfile() {
     if (this.state.emailWarning || this.state.passwordWarning) return;
+    if (this.state.selectedState === 'Select your state' || this.state.selectedCounty === 'Select your county') {
+      if (this.state.selectedState === 'Select your state') this.setState({stateBorder: 'red'});
+      if (this.state.selectedCounty === 'Select your county') this.setState({countyBorder: 'red'});
+      return;
+    }
     NetInfo.isConnected.fetch().then(isConnected => {
       if (isConnected) {
-        this.setState({animating: true, profileStatus: 'Creating Profile', isConnected: true});
+        this.setState({animating: true, profileStatus: 'Creating Profile', isConnected: true, buttonColor: 'green'});
         setTimeout(() => {
-          this._mounted && this.setState({animating: false, profileStatus: 'Create Profile'});
+          this._mounted && this.setState({animating: false, profileStatus: 'Done', buttonColor: primaryBlue});
+          setTimeout(() => {
+            this._mounted && this.setState({profileStatus: 'Create Profile'});
+          }, 1500);
         }, 3000);
         let settings = {
           email: this.state.email,
           password: this.state.password,
-          county: this.state.county,
+          state: States[this.state.selectedState]['abbr'],
+          county: this.state.selectedCounty,
         };
         settings = JSON.stringify(settings);
         if (!this.profileId) { // Create first new account.
@@ -217,10 +264,11 @@ export default class Profile extends Component {
           }
 
           // Change Firebase account if either email or county IDs change.
-          if (this.profile.email !== this.state.email || this.profile.county !== this.state.county) {
+          if (this.profile.email !== this.state.email || this.profile.county !== this.state.selectedCounty) {
 
+            var refPath = `/${this.profile.state}/${this.profile.county}/${this.profielId}/`;
             // TODO Check if user wants to retain old records first
-            Database.getUserTickets(this.profile.county, this.profileId, (data) => {
+            Database.getUserTickets(refPath, (data) => {
               // Gather all the data on current account to ready for port.
               this.data = data;
               Firebase.deleteUser();
@@ -234,7 +282,7 @@ export default class Profile extends Component {
             this.replacedOldUser = true;
           }
         } catch (err) {
-          console.warn('Error updating profile setting', err);
+          //console.warn('Error updating profile setting', err);
         }
       } else {
         this.setState({isConnected: false});
@@ -245,8 +293,47 @@ export default class Profile extends Component {
     });
   }
 
+  _setStatesPicker() {
+    var states = [],
+        key = 0;
+
+    states.push(<Picker.Item label={'Select your state'} value={'Select your state'} key={key - 1}/>);
+    for (let state in States) {
+      states.push(<Picker.Item label={state} value={state} key={key}/>);
+      key++;
+    }
+    this._mounted && this.setState({states});
+  }
+
+  _setCountiesPickerAndSelectedState() {
+    var counties = [],
+        savedState = undefined;
+
+    counties.push(<Picker.Item label={'Select your county'} value={'Select your county'} key={-1}/>);
+    if (this.profile.state) {
+  
+      for (let state in States) {
+        if (States[state]['abbr'] === this.profile.state) {
+          savedState = state;
+          break;
+        }
+      }
+
+      counties.push(<Picker.Item label={'Select your county'} value={'Select your county'} key={-1}/>);
+      for (let i = 0; i < States[savedState]['counties'].length; i++) {
+        counties.push(<Picker.Item label={States[savedState]['counties'][i]} value={States[savedState]['counties'][i]} key={i}/>);
+      }
+    }
+
+    if (savedState) {
+      this._mounted && this.setState({counties, selectedState: savedState});
+    } else {
+      this._mounted && this.setState({counties});
+    }
+  }
+
   _onEmailFocus() {
-    this.setState({emailColor: primaryBlue, emailBackground: '#e8eae9'});
+    this.setState({emailBorder: primaryBlue, emailBackground: '#e8eae9'});
   }
 
   _onEmailBlur() {
@@ -256,10 +343,10 @@ export default class Profile extends Component {
     let com = regexForCom.test(email);
     let at = regexForAt.test(email);
     if (!com || !at) {
-      this.setState({emailColor: 'red', emailWarning: true, emailBackground: 'white'});
+      this.setState({emailBorder: 'red', emailWarning: true, emailBackground: 'white'});
       return;
     }
-    this.setState({emailColor: 'black', emailWarning: false, emailBackground: 'white'});
+    this.setState({emailBorder: 'black', emailWarning: false, emailBackground: 'white'});
   }
 
   _onPasswordChangeText(text) {
@@ -271,15 +358,15 @@ export default class Profile extends Component {
   }
 
   _onPasswordFocus() {
-    this.setState({passwordColor: primaryBlue, passwordBackground: '#e8eae9'});
+    this.setState({passwordBorder: primaryBlue, passwordBackground: '#e8eae9'});
   }
 
   _onPasswordBlur() {
     if (this.state.password.length < 6) {
-      this.setState({passwordColor: 'red', passwordWarning: true, passwordBackground: 'white'});
+      this.setState({passwordBorder: 'red', passwordWarning: true, passwordBackground: 'white'});
       return;
     }
-    this.setState({passwordColor: 'black', passwordWarning: false, passwordBackground: 'white'});
+    this.setState({passwordBorder: 'black', passwordWarning: false, passwordBackground: 'white'});
   }
 
   _onCountyFocus() {
@@ -288,6 +375,33 @@ export default class Profile extends Component {
 
   _onCountyBlur() {
     this.setState({countyColor: 'black', countyBackground: 'white'});
+  }
+
+  _onStateChange(selectedState) {
+    Keyboard.dismiss();
+    if (this.state.selectedState !== selectedState && selectedState !== 'Select your state') {
+      var counties = [];
+      
+      counties.push(<Picker.Item label={'Select your county'} value={'Select your county'} key={-1}/>);
+      for (let i = 0; i < States[selectedState]['counties'].length; i++) {
+        counties.push(<Picker.Item label={States[selectedState]['counties'][i]} value={States[selectedState]['counties'][i]} key={i}/>);
+      }
+
+      if (this.state.stateBorder !== 'black') { // Read error first
+        this._mounted && this.setState({selectedState, counties, selectedCounty: 'Select your county'});
+      } else {
+        this._mounted && this.setState({selectedState, counties, selectedCounty: 'Select your county', stateBorder: 'black'});
+      }
+      return;
+    }
+  }
+
+  _onCountyChange(selectedCounty) {
+    if (this.state.countyBorder !== 'black' && selectedCounty !== 'Select your county') {
+      this.setState({selectedCounty, countyBorder: 'black'});
+      return;
+    }
+    this.setState({selectedCounty});
   }
 }
 
@@ -315,19 +429,13 @@ const styles = StyleSheet.create({
   row: {
     margin: '4%',
   },
-  button: {
-    width: '50%',
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    alignSelf: 'center',
-    marginTop: '30%',
-    padding: '4%',
-    borderRadius: 10,
-    backgroundColor: primaryBlue,
-  },
   buttonText: {
     fontSize: largeFontSize,
     color: 'white',
+  },
+  picker: {
+    color: primaryBlue,
+    width: textInputWidth,
   },
   activity: {
     position: 'absolute',
