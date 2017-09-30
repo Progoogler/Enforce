@@ -21,9 +21,21 @@ export default class Result extends Component {
   }
 
   render() {
+
+    var vinCheck;
+    if (this.props.license.length === 4) {
+      vinCheck = parseInt(this.props.license) + '';
+      vinCheck = vinCheck.length === 4 ? true : false;
+    }
+
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>No results for license #  <Text style={styles.license}>{ this.props.license }</Text></Text>
+        {
+          vinCheck ? 
+          <Text style={styles.text}>No results for VIN #  <Text style={styles.license}>{ this.props.license }</Text></Text> 
+          :
+          <Text style={styles.text}>No results for license #  <Text style={styles.license}>{ this.props.license }</Text></Text>
+        }
       </View>
     );
   }
