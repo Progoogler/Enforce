@@ -129,6 +129,7 @@ export default class Profile extends Component {
                 style={styles.picker}
                 selectedValue={this.state.selectedCounty}
                 onValueChange={(val) => this._onCountyChange(val)} 
+                enabled={this.state.selectedState === 'Select your state' ? false: true}
               >
 
                 { this.state.counties }
@@ -177,15 +178,12 @@ export default class Profile extends Component {
   }
 
   componentWillUnmount() {
-    let id = Firebase.getCurrentUser();
-    let refPath = `${this.state.selectedState}/${this.state.selectedCounty}/${id}`;
-    AsyncStorage.setItem('@Enforce:refPath', refPath);
     this._mounted = false;
     if (this.createdNewUser) {
       Firebase.signInUser(this.state.email, this.state.password);
       setTimeout(() => {
         let id = Firebase.getCurrentUser();
-        let refPath = `${this.state.selectedState}/${this.state.selectedCounty}/${id}`;
+        let refPath = `${States[this.state.selectedState]['abbr']}/${this.state.selectedCounty}/${id}`;
         AsyncStorage.setItem('@Enforce:refPath', refPath);
         AsyncStorage.setItem('@Enforce:profileId', id);
       }, 1500);
@@ -196,7 +194,7 @@ export default class Profile extends Component {
       Firebase.signInUser(this.state.email, this.state.password);
       setTimeout(() => {
         let newId = Firebase.getCurrentUser();
-        let refPath = `${this.state.selectedState}/${this.state.selectedCounty}/${newId}`;
+        let refPath = `${States[this.state.selectedState]['abbr']}/${this.state.selectedCounty}/${newId}`;
         AsyncStorage.setItem('@Enforce:refPath', refPath);
         AsyncStorage.setItem('@Enforce:profileId', newId);
         Database.transferUserData(refPath, this.data); // Port old data into new account
@@ -235,10 +233,11 @@ export default class Profile extends Component {
             this._mounted && this.setState({profileStatus: 'Create Profile'});
           }, 1500);
         }, 3000);
-        let settings = {
+        var settings = {
           email: this.state.email,
           password: this.state.password,
           state: States[this.state.selectedState]['abbr'],
+          spelledState: this.state.selectedState,
           county: this.state.selectedCounty,
         };
         settings = JSON.stringify(settings);
@@ -310,15 +309,17 @@ export default class Profile extends Component {
         savedState = undefined;
 
     counties.push(<Picker.Item label={'Select your county'} value={'Select your county'} key={-1}/>);
-    if (this.profile.state) {
-  
-      for (let state in States) {
-        if (States[state]['abbr'] === this.profile.state) {
-          savedState = state;
-          break;
+    if (this.profile.state || this.profile.spelledState) {
+      if (this.profile.spelledState) {
+        savedState = this.profile.spelledState;
+      } else {
+        for (let state in States) {
+          if (States[state]['abbr'] === this.profile.state) {
+            savedState = state;
+            break;
+          }
         }
       }
-
       counties.push(<Picker.Item label={'Select your county'} value={'Select your county'} key={-1}/>);
       for (let i = 0; i < States[savedState]['counties'].length; i++) {
         counties.push(<Picker.Item label={States[savedState]['counties'][i]} value={States[savedState]['counties'][i]} key={i}/>);
@@ -362,19 +363,12 @@ export default class Profile extends Component {
   }
 
   _onPasswordBlur() {
+    Keyboard.dismiss();
     if (this.state.password.length < 6) {
       this.setState({passwordBorder: 'red', passwordWarning: true, passwordBackground: 'white'});
       return;
     }
     this.setState({passwordBorder: 'black', passwordWarning: false, passwordBackground: 'white'});
-  }
-
-  _onCountyFocus() {
-    this.setState({countyColor: primaryBlue, countyBackground: '#e8eae9'});
-  }
-
-  _onCountyBlur() {
-    this.setState({countyColor: 'black', countyBackground: 'white'});
   }
 
   _onStateChange(selectedState) {
@@ -387,17 +381,19 @@ export default class Profile extends Component {
         counties.push(<Picker.Item label={States[selectedState]['counties'][i]} value={States[selectedState]['counties'][i]} key={i}/>);
       }
 
-      if (this.state.stateBorder !== 'black') { // Read error first
-        this._mounted && this.setState({selectedState, counties, selectedCounty: 'Select your county'});
-      } else {
+      if (this.state.stateBorder === 'red') { // Read error first
         this._mounted && this.setState({selectedState, counties, selectedCounty: 'Select your county', stateBorder: 'black'});
+      } else {
+        this._mounted && this.setState({selectedState, counties, selectedCounty: 'Select your county'});
       }
       return;
+    } else {
+      this._mounted && this.setState({selectedState, selectedCounty: 'Select your county'}); // User can select "Select your state" to reset both Pickers
     }
   }
 
   _onCountyChange(selectedCounty) {
-    if (this.state.countyBorder !== 'black' && selectedCounty !== 'Select your county') {
+    if (this.state.countyBorder === 'red' && selectedCounty !== 'Select your county') {
       this.setState({selectedCounty, countyBorder: 'black'});
       return;
     }
