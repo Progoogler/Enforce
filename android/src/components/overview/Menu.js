@@ -18,6 +18,7 @@ import {
   searchContainerHeight,
   resultContainerHeight,
   noResultContainerHeight,
+  verificationContainerHeight,
  } from '../../styles/common';
 
 /* global require */
@@ -45,7 +46,12 @@ export default class Menu extends Component {
 
         this.state.search ?
 
-        <Search navigation={this.props.navigation} noResultNotificationForMenu={this.noResultNotificationForMenu.bind(this)} resizeMenuContainer={this.resizeMenuContainer.bind(this)} closeSearch={this.closeSearch.bind(this)}/> :
+        <Search 
+          navigation={this.props.navigation} 
+          noResultNotificationForMenu={this.noResultNotificationForMenu.bind(this)} 
+          resizeMenuContainer={this.resizeMenuContainer.bind(this)} 
+          toggleVerifyContainer={this.toggleVerifyContainer.bind(this)}
+          closeSearch={this.closeSearch.bind(this)}/> :
 
         <View>
           <View style={styles.headerContainer} >
@@ -126,36 +132,56 @@ export default class Menu extends Component {
   resizeMenuContainer(extend: boolean) {
     if (extend) {
       Animated.timing(
-        this.state.containerHeight,
-        { toValue: resultContainerHeight,
-          duration: 500, },
-        ).start();
-      } else {
-        Animated.timing(
-          this.state.containerHeight,
-          { toValue: searchContainerHeight,
-            duration: 500, },
-        ).start();
-      }
+        this.state.containerHeight, { 
+          toValue: resultContainerHeight,
+          duration: 500, 
+        },
+      ).start();
+    } else {
+      Animated.timing(
+        this.state.containerHeight, { 
+          toValue: searchContainerHeight,
+          duration: 500, 
+        },
+      ).start();
     }
+  }
 
-    noResultNotificationForMenu() {
+  noResultNotificationForMenu() {
+    Animated.timing(
+      this.state.containerHeight, {
+        toValue: noResultContainerHeight,
+        duration: 600,
+      },
+    ).start();
+
+    setTimeout(() => {
       Animated.timing(
         this.state.containerHeight, {
-          toValue: noResultContainerHeight,
+          toValue: searchContainerHeight,
           duration: 600,
         },
       ).start();
+    }, 1800);
+  }
 
-      setTimeout(() => {
-        Animated.timing(
-          this.state.containerHeight, {
-            toValue: searchContainerHeight,
-            duration: 600,
-          },
-        ).start();
-      }, 1800);
+  toggleVerifyContainer(open) {
+    if (open) {
+      Animated.timing(
+        this.state.containerHeight, {
+          toValue: verificationContainerHeight,
+          duration: 600,
+        },
+      ).start();
+    } else {
+      Animated.timing(
+        this.state.containerHeight, {
+          toValue: searchContainerHeight,
+          duration: 1000,
+        },
+      ).start();
     }
+  }
 
   closeSearch() {
     this._mounted && this.setState({ search: !this.state.search });
