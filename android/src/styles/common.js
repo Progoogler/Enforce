@@ -11,6 +11,7 @@ export var largeFontSize = responsiveFontSize(2.8);
 export var mediumFontSize = responsiveFontSize(2.2);
 export var smallFontSize = responsiveFontSize(1.8);
 export var screenHeight = height;
+export var screenWidth = width;
 
 /* Overview */
 // MainButtons
@@ -43,6 +44,8 @@ export var resultContainerHeight = height * .34;
 export var resultHeight = height * .14;
 export var noResultContainerHeight = height * .27;
 export var noResultHeight = height * .11;
+// Verification
+export var verificationContainerHeight = responsiveHeight(42);
 
 // Switched from a constant 3.8 to PixelRatio.getFontScale() which returns 3.5 -- Coincidence??
 // TODO Check whether this scale "fix" holds up with lower dpi devices
