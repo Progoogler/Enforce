@@ -14,6 +14,7 @@ import Realm from 'realm';
 
 import historySearch from './historySearch';
 import Result from './Result';
+import VerifyModal from './VerifyModal';
 import {
   primaryBlue,
   smallFontSize,
@@ -26,6 +27,7 @@ import {
   underlineWidth,
   separatorHeight,
   textInputOffset,
+  verificationContainerHeight,
  } from '../../styles/common';
 
 
@@ -47,7 +49,8 @@ export default class Search extends Component {
     this.underline = new Animated.Value(0);
     this.textFade = new Animated.Value(0);
     this.resultHeight = new Animated.Value(0);
-    this.resultOpacity = new Animated.Value(0);
+    this.containerOpacity = new Animated.Value(0);
+    this.verifyHeight = new Animated.Value(0);
   }
 
   render() {
@@ -76,7 +79,7 @@ export default class Search extends Component {
             }}>
             <TextInput
               ref={(ref) => { this.myTextInput = ref }}
-              onChangeText={(license) => { this._handleTextInput(license) }}
+              onChangeText={(license) => { this.handleTextInput(license) }}
               maxLength={7}
               fontSize={24}
               autoCapitalize={'characters'}
@@ -116,7 +119,7 @@ export default class Search extends Component {
           <TouchableOpacity
             style={styles.button}
             activeOpacity={.6}
-            onPress={ () => { this._handleHistorySearch(this.state.license) }} >
+            onPress={ () => { this.handleHistorySearch(this.state.license) }} >
             <Animated.Text style={{
               color: 'white',
               fontSize: smallFontSize,
@@ -126,7 +129,8 @@ export default class Search extends Component {
           <Animated.View style={{
             borderColor: 'white',
             borderWidth: .35,
-            height: this.separatorHeight, }} />
+            height: this.separatorHeight, }} 
+          />
 
           <TouchableOpacity
             style={styles.button}
@@ -139,11 +143,13 @@ export default class Search extends Component {
           </TouchableOpacity>
         </Animated.View>
 
-        <Animated.View style={{
-          opacity: this.resultOpacity,
-          height: this.resultHeight,
-          alignSelf: 'stretch',
-          }}>
+        <Animated.View 
+          style={{
+            opacity: this.resultOpacity,
+            height: this.resultHeight,
+            alignSelf: 'stretch',
+          }}
+        >
           { this.state.result ?
 
             <Result
@@ -152,13 +158,27 @@ export default class Search extends Component {
               license={this.state.license}
               resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
               minimizeResultContainer={this.minimizeResultContainer.bind(this)}
-              closeSearch={this.props.closeSearch} />
-
-              :
-
-            null
+              closeSearch={this.props.closeSearch} 
+            /> : null
           }
         </Animated.View>
+
+        <Animated.View 
+          style={{
+            opacity: this.resultOpacity,
+            height: this.verifyHeight,
+            alignSelf: 'stretch',
+          }}
+        >
+
+          <VerifyModal 
+            minimizeVerifyContainer={this.minimizeVerifyContainer.bind(this)}
+            minimizeVerifyContainerForMenu={this.props.toggleVerifyContainer}
+            license={this.state.license}
+          /> 
+      
+        </Animated.View>
+
       </Animated.View>
     );
   }
@@ -251,7 +271,7 @@ export default class Search extends Component {
 
   // Look through the history of Realm ( TODO: and Firebase??) for a record
   // @PARAM typeOfSearch - Signfy the difference between a VIN and license when input is 4 characters long
-  _handleHistorySearch(license: string) {
+  handleHistorySearch(license: string) {
     
     var vinCheck;
     if (license.length === 4) {
@@ -304,6 +324,13 @@ export default class Search extends Component {
   }
 
   _handleVINSearch() {
+
+    this.setState({verifyVisibility: true});
+    if (this.props.toggleVerifyContainer) this.props.toggleVerifyContainer('open');
+    this._extendVerifyContainer();
+
+    // this.props.toggleVerification(this.state.license);
+
     if (this.state.license.length === 0) {
       this.myTextInput.focus();
     } else if (this.props.timerList) {
@@ -375,6 +402,53 @@ export default class Search extends Component {
     }, 1800);
   }
 
+  _extendVerifyContainer() {
+    Keyboard.dismiss();
+    Animated.parallel([
+      Animated.timing(
+        this.containerHeight, {
+          toValue: verificationContainerHeight,
+          duration: 600,
+        },
+      ),
+      Animated.timing(
+        this.verifyHeight, {
+          toValue: verificationContainerHeight,
+          duration: 1000,
+        },
+      ),
+      Animated.timing(
+        this.containerOpacity, {
+          toValue: 1,
+          duration: 1000,
+        },
+      ),
+    ]).start();
+  }
+
+  minimizeVerifyContainer() {
+    Animated.parallel([
+      Animated.timing(
+        this.containerHeight, {
+          toValue: searchContainerHeight,
+          duration: 1000,
+        },
+      ),
+      Animated.timing(
+        this.verifyHeight, {
+          toValue: 0,
+          duration: 1000,
+        },
+      ),
+      Animated.timing(
+        this.containerOpacity, {
+          toValue: 0,
+          duration: 1000,
+        },
+      ),
+    ]).start();
+  }
+
   _extendResultContainer() {
     Animated.parallel([
       Animated.timing(
@@ -390,7 +464,7 @@ export default class Search extends Component {
         },
       ),
       Animated.timing(
-        this.resultOpacity, {
+        this.containerOpacity, {
           toValue: 1,
           duration: 1000,
         },
@@ -414,7 +488,7 @@ export default class Search extends Component {
         },
       ),
       Animated.timing(
-        this.resultOpacity, {
+        this.containerOpacity, {
           toValue: 0,
           duration: 1000,
         },
@@ -430,7 +504,7 @@ export default class Search extends Component {
      if (this.state.license) this.props.addLicenseToQueue(this.state.license);
    }
 
-  _handleTextInput(license: string) {
+  handleTextInput(license: string) {
     if (license.length === 0) {
       Animated.timing(
         this.cursorMarginLeft, {
@@ -441,6 +515,9 @@ export default class Search extends Component {
       this.setState({license});
       return;
     }
+
+    if (/\W/.test(license)) return;
+
     if (license.length < this.state.license.length) {
       this.marginValue += textInputOffset;
       Animated.timing(
@@ -486,7 +563,7 @@ export default class Search extends Component {
         },
       ),
       Animated.timing(
-        this.resultOpacity,{
+        this.containerOpacity,{
           toValue: 0,
           duration: 700,
         },
@@ -505,6 +582,7 @@ Search.propTypes = {
   resizeMenuContainer: PropTypes.func,
   noResultNotificationForMenu: PropTypes.func,
   closeSearch: PropTypes.func,
+  toggleVerifyContainer: PropTypes.func,
   addLicenseToQueue: PropTypes.func,
   refreshTimerList: PropTypes.func,
   licenseParam: PropTypes.oneOfType([
@@ -518,6 +596,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    height: 100,
   },
   searchIcon: {
     marginLeft: '2%',
