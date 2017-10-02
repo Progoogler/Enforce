@@ -92,7 +92,7 @@ export default class TimerList extends Component {
            onScroll={this._handleScroll.bind(this)}
         />
 
-        { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : <View /> }
+        { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : null }
 
       </View>
     );
