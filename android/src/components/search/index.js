@@ -14,7 +14,7 @@ import Realm from 'realm';
 
 import historySearch from './historySearch';
 import Result from './Result';
-import VerifyModal from './VerifyModal';
+import VerifyModal from './Verify';
 import {
   primaryBlue,
   smallFontSize,
@@ -145,7 +145,7 @@ export default class Search extends Component {
 
         <Animated.View 
           style={{
-            opacity: this.resultOpacity,
+            opacity: this.containerOpacity,
             height: this.resultHeight,
             alignSelf: 'stretch',
           }}
@@ -165,7 +165,7 @@ export default class Search extends Component {
 
         <Animated.View 
           style={{
-            opacity: this.resultOpacity,
+            opacity: this.containerOpacity,
             height: this.verifyHeight,
             alignSelf: 'stretch',
           }}
@@ -370,7 +370,7 @@ export default class Search extends Component {
         },
       ),
       Animated.timing(
-        this.resultOpacity, {
+        this.containerOpacity, {
           toValue: 1,
           duration: 1000,
         },
@@ -393,7 +393,7 @@ export default class Search extends Component {
           },
         ),
         Animated.timing(
-          this.resultOpacity, {
+          this.containerOpacity, {
             toValue: 0,
             duration: 1000,
           },
