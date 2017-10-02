@@ -26,19 +26,19 @@ export default class Menu extends Component {
   constructor() {
     super();
     this.state = {
-      containerHeight: new Animated.Value(searchContainerHeight),
-      containerOpacity: new Animated.Value(1),
-      buttonOpacity: new Animated.Value(1),
-      titleOpacity: new Animated.Value(0),
       search: false,
     };
+    this.containerHeight = new Animated.Value(searchContainerHeight);
+    this.containerOpacity = new Animated.Value(1);
+    this.buttonOpacity = new Animated.Value(1);
+    this.titleOpacity = new Animated.Value(0);
   }
 
   render() {
     return (
 
       <Animated.View style={{
-        height: this.state.containerHeight,
+        height: this.containerHeight,
         alignSelf: 'stretch',
         backgroundColor: primaryBlue,
       }}>
@@ -59,28 +59,24 @@ export default class Menu extends Component {
               onPress={() => {
                 Animated.parallel([
                   Animated.timing(
-                    this.state.titleOpacity,
+                    this.titleOpacity,
                     { toValue: 0,
                       duration: 500, },
                   ),
                   Animated.timing(
-                    this.state.buttonOpacity,
+                    this.buttonOpacity,
                     { toValue: 0,
                       duration: 500, },
                   ),
                 ]).start();
-                this._mounted && this.setState({
-                  search: !this.state.search,
-                  titleOpacity: new Animated.Value(0),
-                  buttonOpacity: new Animated.Value(0),
-                });
+                this._mounted && this.setState({search: !this.state.search});
               }}
               underlayColor={primaryBlue}
               style={styles.searchIcon} >
               <Image source={require('../../../../shared/images/search-icon.png')} />
             </TouchableHighlight>
             <Animated.Text style={{
-              opacity: this.state.titleOpacity,
+              opacity: this.titleOpacity,
               flex: .70,
               fontSize: titleFontSize,
               color: 'white',
@@ -106,7 +102,7 @@ export default class Menu extends Component {
               <Image source={require('../../../../shared/images/menu-icon.jpg')} />
             </TouchableHighlight>
           </View>
-          <Animated.View style={{ opacity: this.state.buttonOpacity, marginTop: '2%', }} >
+          <Animated.View style={{ opacity: this.buttonOpacity, marginTop: '2%', }} >
             <MainButtons navigation={this.props.navigation} searching={this.state.search} />
           </Animated.View>
         </View>
@@ -116,13 +112,12 @@ export default class Menu extends Component {
   }
 
   componentDidMount() {
+    this._mounted = true;
     Animated.timing(
-      this.state.titleOpacity,
+      this.titleOpacity,
       { toValue: 1,
         duration: 500, },
     ).start();
-    this._mounted = true;
-    setTimeout(() => this._mounted && this.setState({ titleOpacity: new Animated.Value(1) }), 550);
   }
 
   componentWillUnmount() {
@@ -132,14 +127,14 @@ export default class Menu extends Component {
   resizeMenuContainer(extend: boolean) {
     if (extend) {
       Animated.timing(
-        this.state.containerHeight, { 
+        this.containerHeight, { 
           toValue: resultContainerHeight,
           duration: 500, 
         },
       ).start();
     } else {
       Animated.timing(
-        this.state.containerHeight, { 
+        this.containerHeight, { 
           toValue: searchContainerHeight,
           duration: 500, 
         },
@@ -149,7 +144,7 @@ export default class Menu extends Component {
 
   noResultNotificationForMenu() {
     Animated.timing(
-      this.state.containerHeight, {
+      this.containerHeight, {
         toValue: noResultContainerHeight,
         duration: 600,
       },
@@ -157,7 +152,7 @@ export default class Menu extends Component {
 
     setTimeout(() => {
       Animated.timing(
-        this.state.containerHeight, {
+        this.containerHeight, {
           toValue: searchContainerHeight,
           duration: 600,
         },
@@ -168,14 +163,14 @@ export default class Menu extends Component {
   toggleVerifyContainer(open) {
     if (open) {
       Animated.timing(
-        this.state.containerHeight, {
+        this.containerHeight, {
           toValue: verificationContainerHeight,
           duration: 600,
         },
       ).start();
     } else {
       Animated.timing(
-        this.state.containerHeight, {
+        this.containerHeight, {
           toValue: searchContainerHeight,
           duration: 1000,
         },
@@ -187,17 +182,17 @@ export default class Menu extends Component {
     this._mounted && this.setState({ search: !this.state.search });
     Animated.parallel([
       Animated.timing(
-        this.state.titleOpacity,
+        this.titleOpacity,
         { toValue: 1,
           duration: 1000, },
       ),
       Animated.timing(
-        this.state.buttonOpacity,
+        this.buttonOpacity,
         { toValue: 1,
           duration: 1000, },
       ),
       Animated.timing(
-        this.state.containerHeight,
+        this.containerHeight,
         { toValue: searchContainerHeight,
           duration: 350, },
       ),
