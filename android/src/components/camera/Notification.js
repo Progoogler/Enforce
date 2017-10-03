@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
   Animated,
+  StyleSheet,
   Text,
 } from 'react-native';
 import { extraLargeFontSize } from '../../styles/common';
@@ -23,9 +23,9 @@ export default class Notification extends Component {
   }
 
   componentDidMount() {
-    Animated.timing(  // Animate over time
-      this.fadeAnim,  // The animated value to drive
-      { toValue: 1 },  // Animate to opacity: 1, or fully opaque
+    Animated.timing(
+      this.fadeAnim,
+      { toValue: 1 },
     ).start();
     setTimeout(() => {
       Animated.timing(
