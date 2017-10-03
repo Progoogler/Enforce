@@ -77,7 +77,7 @@ export default class MapModal extends Component {
       bottom: screenHeight - 250,
     }
   }
-
+ 
 }
 
 MapModal.propTypes = {

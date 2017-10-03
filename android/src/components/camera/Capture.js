@@ -5,9 +5,9 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from 'react-native';
+} from 'react-native'; 
 import { captureContainerHeight, mediumFontSize } from '../../styles/common';
-
+ 
 var buttonSize = captureContainerHeight - 10;
 
 export default class Capture extends Component {

@@ -5,7 +5,7 @@ import {
   Text,
 } from 'react-native';
 import { extraLargeFontSize } from '../../styles/common';
-
+ 
 export default class Notification extends Component {
   constructor() {
     super();

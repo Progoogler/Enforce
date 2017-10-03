@@ -12,7 +12,7 @@ const Warning = (props) => (
     <Text style={styles.text}>{props.warning}</Text>
   </View>
 );
-
+ 
 Warning.propTypes = { warning: PropTypes.string.isRequired }
 
 const styles = StyleSheet.create({

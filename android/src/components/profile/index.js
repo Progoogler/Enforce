@@ -21,7 +21,6 @@ import States from '../../../../shared/statesList';
 import ThrowConnectionMessage from './ThrowConnectionMessage';
 import Warning from './Warning';
 
-
 import {
   largeFontSize,
   mediumFontSize,

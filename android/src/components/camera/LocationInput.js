@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { AutoGrowingTextInput } from 'react-native-autogrow-textinput';
 import PropTypes from 'prop-types';
-
+ 
 import {
   largeFontSize,
   mediumFontSize,

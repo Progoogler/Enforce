@@ -13,7 +13,7 @@ export default class ImageModal extends Component {
   constructor() {
     super();
   }
-
+ 
   render() {
     return (
       <Modal animationType={"fade"}

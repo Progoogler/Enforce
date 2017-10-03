@@ -15,7 +15,7 @@ import {
   primaryBlue,
   titleFontSize,
 } from '../../styles/common';
-
+ 
 /* global require */
 export default class StaticNavigation extends Component {
   constructor() {

@@ -11,7 +11,7 @@ const ThrowConnectionMessage = () => (
     <Text style={styles.message}>Must be connected to the Internet.</Text>
   </View>
 );
-
+ 
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',

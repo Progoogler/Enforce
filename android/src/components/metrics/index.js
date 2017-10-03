@@ -9,7 +9,7 @@ import MapView from 'react-native-maps';
 import Navigation from '../navigation/StaticNavigation';
 import PropTypes from 'prop-types';
 import Realm from 'realm';
-
+ 
 import {
   largeFontSize,
   primaryBlue,

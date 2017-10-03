@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { mediumFontSize, primaryBlue } from '../../styles/common';
-
+ 
 class ErrorMessage extends Component {
   constructor() {
     super();

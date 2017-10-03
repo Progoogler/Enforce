@@ -34,7 +34,7 @@ class Title extends Component {
   }
 
 }
-
+ 
 Title.propTypes = { 
   getDirectionBound: PropTypes.func.isRequired,
   limit: PropTypes.number.isRequired,
