@@ -4,7 +4,7 @@ import { View, Image, Text, AsyncStorage, TouchableNativeFeedback, StyleSheet } 
 
 import Overview from './overview';
 import MapApp from './map';
-import CameraApp from './camera';
+import CameraApp from './camera/CameraApp';
 import TimerList from './timerList';
 import History from './history';
 import Metrics from './metrics';
