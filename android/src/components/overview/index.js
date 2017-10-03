@@ -12,7 +12,7 @@ import Realm from 'realm';
 
 import Menu from './Menu';
 import TicketCounter from './TicketCounter';
-import TimersList from './ListView-ResetControl';
+import TimersList from './TimersList';
 
 
 /* global require */
