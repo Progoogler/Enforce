@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import {
+  StyleSheet,
+  Text,
   TouchableWithoutFeedback,
   View,
-  Text,
-  StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { primaryBlue, mediumFontSize, timeLimitTitleContainerHeight } from '../../styles/common';
+import { mediumFontSize, primaryBlue, timeLimitTitleContainerHeight } from '../../styles/common';
 
 
 class Title extends Component {
@@ -35,7 +35,10 @@ class Title extends Component {
 
 }
 
-Title.propTypes = { limit: PropTypes.number.isRequired };
+Title.propTypes = { 
+  getDirectionBound: PropTypes.func.isRequired,
+  limit: PropTypes.number.isRequired,
+};
 
 const styles = StyleSheet.create({
   container: {
