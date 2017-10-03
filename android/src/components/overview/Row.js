@@ -27,7 +27,8 @@ export default class Row extends Component {
   constructor() {
     super();
     this.distance;
-    this.mounted = false,
+    this.mounted = false;
+    this.timerLengthPaddingLeft = '10%';
   }
 
   render() {
@@ -80,16 +81,16 @@ export default class Row extends Component {
 
   componentWillMount() {
     if (this.props.data.list.length < 10) {
-      var timerLengthPaddingLeft = '10%';
+      this.timerLengthPaddingLeft = '10%';
     } else if (this.props.data.list.length < 100) {
-      var timerLengthPaddingLeft = '6%';
+      this.timerLengthPaddingLeft = '6%';
     } else {
-      var timerLengthPaddingLeft = '3%';
+      this.timerLengthPaddingLeft = '3%';
     }
     styles.timerRowLength = {
       fontSize: largeFontSize,
       color: primaryBlue,
-      paddingLeft: timerLengthPaddingLeft,
+      paddingLeft: this.timerLengthPaddingLeft,
       fontWeight: 'bold',
       textAlign: 'center',
     };
@@ -103,16 +104,16 @@ export default class Row extends Component {
 
   componentWillUpdate() {
     if (this.props.data.list.length < 10) {
-      var timerLengthPaddingLeft = '10%';
+      this.timerLengthPaddingLeft = '10%';
     } else if (this.props.data.list.length < 100) {
-      var timerLengthPaddingLeft = '6%';
+      this.timerLengthPaddingLeft = '6%';
     } else {
-      var timerLengthPaddingLeft = '3%';
+      this.timerLengthPaddingLeft = '3%';
     }
     styles.timerRowLength = {
       fontSize: largeFontSize,
       fontWeight: 'bold',
-      paddingLeft: timerLengthPaddingLeft,
+      paddingLeft: this.timerLengthPaddingLeft,
       textAlign: 'center',
       color: primaryBlue,
     };
