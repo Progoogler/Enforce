@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
-import PropTypes from 'prop-types';
 import PhotoView from 'react-native-photo-view';
+import PropTypes from 'prop-types';
+
 import {
-  primaryBlue,
   extraLargeFontSize,
   largeFontSize,
   mediumFontSize,
+  primaryBlue,
   smallFontSize,
-  timerRowImageHeight,
-  timerRowDescContainerHeight,
   timerRowButtonsContainerHeight,
+  timerRowDescContainerHeight,
+  timerRowImageHeight,
   timerRowLocationTop,
 } from '../../styles/common';
 
@@ -114,6 +115,7 @@ export default class Row extends Component {
 
 Row.propTypes = {
   data: PropTypes.object.isRequired,
+  enterLicenseInSearchField: PropTypes.func.isRequired,
   expiredFunc: PropTypes.func.isRequired,
   uponTicketed: PropTypes.func.isRequired,
 }
