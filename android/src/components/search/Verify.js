@@ -1,29 +1,29 @@
 import React, { Component } from 'react';
 import {
-	View,
-	Text,
-	Picker,
-	TextInput,
 	Animated,
-	TouchableOpacity,
 	AsyncStorage,
+	Picker,
 	StyleSheet,
+	Text,
+	TextInput,
+	TouchableOpacity,
+	View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
+import States from '../../../../shared/statesList';
 import {
-  primaryBlue,
 	largeFontSize,
 	mainButtonsHeight,
 	mediumFontSize,
 	navBarContainerHeight,
+  primaryBlue,
 	screenHeight,
 	screenWidth,
-	verifyPickerInputWidth,
 	verificationContainerHeight,
+	verifyPickerInputWidth,
 } from '../../styles/common';
 
-import States from '../../../../shared/statesList';
 
 
 export default class VerifyModal extends Component {
@@ -36,8 +36,8 @@ export default class VerifyModal extends Component {
 			state: '',
 			states: [],
 		};
-		this._mounted = false;
 		this.animatedBottom = new Animated.Value(-320);
+		this.mounted = false;
 	}
 
 	render() {
@@ -103,7 +103,11 @@ export default class VerifyModal extends Component {
 							<TouchableOpacity 
 								style={styles.confirmButton}
 								activeOpacity={.9}
-								onPress={() => {}}
+								onPress={() => {
+									this.props.handleVINSearch(this.state.license, this.state.state);
+									if (this.props.minimizeVerifyContainerForMenu) this.props.minimizeVerifyContainerForMenu();
+									this.props.minimizeVerifyContainer();
+								}}
 							>
 								<Text style={styles.confirmText}>Confirm</Text>
 							</TouchableOpacity>
@@ -118,22 +122,19 @@ export default class VerifyModal extends Component {
 	}
 
 	componentDidMount() {
-		this._mounted = true;
+		this.mounted = true;
 		this._animateContainer();
 		this._buildPicker();
 		this._getAndSetState();
-		// this.props.license && this.setState({license: this.props.license});
-		console.log('lic', this.props.license);
 	}
 
 	componentWillUnmount() {
-		this._mounted = false;
+		this.mounted = false;
 	}
 
 	_animateContainer() {
 		Animated.timing(
-			this.animatedBottom,
-			{
+			this.animatedBottom, {
 				toValue: screenHeight - (mainButtonsHeight + navBarContainerHeight + 320),
 				duration: 1000
 			}
@@ -142,11 +143,11 @@ export default class VerifyModal extends Component {
 
 	async _getAndSetState() {
 		if (this.props.state) {
-			this._mounted && this.setState({state: this.props.state});
+			this.mounted && this.setState({state: this.props.state});
 		} else {
 			var profileSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
 			profileSettings = JSON.parse(profileSettings);
-			this._mounted && this.setState({state: profileSettings.spelledState ? profileSettings.spelledState : 'Alabama'});
+			this.mounted && this.setState({state: profileSettings.spelledState ? profileSettings.spelledState : 'Alabama'});
 		}
 	}
 
@@ -158,7 +159,7 @@ export default class VerifyModal extends Component {
 			states.push(<Picker.Item label={state} value={state} key={key}/>);
 			key++;
 		}
-		this._mounted && this.setState({states});
+		this.mounted && this.setState({states});
 	}
 
 	_onLicenseChangeText(license) {
@@ -173,11 +174,11 @@ export default class VerifyModal extends Component {
 	}
 
 	_onLicenseFocus() {
-		this._mounted && this.setState({licenseBackground: primaryBlue, licenseText: 'white'});
+		this.mounted && this.setState({licenseBackground: primaryBlue, licenseText: 'white'});
 	}
 
 	_onLicenseBlur() {
-		this._mounted && this.setState({licenseBackground: 'white', licenseText: primaryBlue});
+		this.mounted && this.setState({licenseBackground: 'white', licenseText: primaryBlue});
 	}
 
 
@@ -187,6 +188,7 @@ export default class VerifyModal extends Component {
 }
 
 VerifyModal.propTypes = {
+	handleVINSearch: PropTypes.func.isRequired,
 	license: PropTypes.string, 
 	minimizeVerifyContainer: PropTypes.func.isRequired,
 	minimizeVerifyContainerForMenu: PropTypes.func,
