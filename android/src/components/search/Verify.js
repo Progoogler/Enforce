@@ -25,7 +25,6 @@ import {
 } from '../../styles/common';
 
 
-
 export default class VerifyModal extends Component {
 	constructor() {
 		super();
@@ -91,10 +90,7 @@ export default class VerifyModal extends Component {
 						<View style={styles.buttonsContainer}>
 							<TouchableOpacity 
 								activeOpacity={.9}
-								onPress={() => {
-									if (this.props.minimizeVerifyContainerForMenu) this.props.minimizeVerifyContainerForMenu();
-									this.props.minimizeVerifyContainer();
-								}}
+								onPress={() => this._handleCancel()}
 							>
 								<View style={styles.cancelButton}>
 									<Text style={styles.cancelText}>Cancel</Text>
@@ -103,11 +99,7 @@ export default class VerifyModal extends Component {
 							<TouchableOpacity 
 								style={styles.confirmButton}
 								activeOpacity={.9}
-								onPress={() => {
-									this.props.handleVINSearch(this.state.license, this.state.state);
-									if (this.props.minimizeVerifyContainerForMenu) this.props.minimizeVerifyContainerForMenu();
-									this.props.minimizeVerifyContainer();
-								}}
+								onPress={() => this._handleConfirm()}
 							>
 								<Text style={styles.confirmText}>Confirm</Text>
 							</TouchableOpacity>
@@ -164,6 +156,7 @@ export default class VerifyModal extends Component {
 
 	_onLicenseChangeText(license) {
 		if (/\W/.test(license)) return;
+		this.props.handleTextInput(license);
 		if (license.length === 0) {
 			this.setState({license, licenseBorder: 'red'});
 		} else if (this.state.licenseBorder === 'red') {
@@ -171,6 +164,17 @@ export default class VerifyModal extends Component {
 		} else {
 			this.setState({license});
 		}
+	}
+
+	_handleCancel() {
+		if (this.props.minimizeVerifyContainerForMenu) this.props.minimizeVerifyContainerForMenu();
+		this.props.minimizeVerifyContainer();
+	}
+
+	_handleConfirm() {
+		this.props.handleVINSearch(this.state.license, this.state.state);
+		if (this.props.minimizeVerifyContainerForMenu) this.props.minimizeVerifyContainerForMenu();
+		this.props.minimizeVerifyContainer(this.state.license);
 	}
 
 	_onLicenseFocus() {
@@ -188,6 +192,7 @@ export default class VerifyModal extends Component {
 }
 
 VerifyModal.propTypes = {
+	handleTextInput: PropTypes.func.isRequired,
 	handleVINSearch: PropTypes.func.isRequired,
 	license: PropTypes.string, 
 	minimizeVerifyContainer: PropTypes.func.isRequired,
