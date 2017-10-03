@@ -173,6 +173,7 @@ export default class Search extends Component {
         >
 
           <VerifyModal 
+            handleTextInput={this.handleTextInput.bind(this)}
             handleVINSearch={this.handleVINSearch.bind(this)}
             license={this.state.license}
             minimizeVerifyContainer={this.minimizeVerifyContainer.bind(this)}
@@ -431,7 +432,7 @@ export default class Search extends Component {
     ]).start();
   }
 
-  minimizeVerifyContainer() {
+  minimizeVerifyContainer(updatedLicense) {
     Animated.parallel([
       Animated.timing(
         this.containerHeight, {
