@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import {
-  View,
   Image,
   StyleSheet,
   TouchableHighlight,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
+
 import { primaryBlue, mainButtonsHeight } from '../../styles/common';
 
 /* global require */
@@ -13,8 +14,8 @@ export default class MainButtons extends Component {
   constructor() {
     super();
     this.state = {
-      mapBorder: primaryBlue,
       cameraBorder: primaryBlue,
+      mapBorder: primaryBlue,
     }
   }
 
@@ -84,10 +85,6 @@ const styles = StyleSheet.create({
   buttonColumn: {
     flex: .5,
     flexDirection: 'column',
-  },
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   separator: {
     borderColor: 'white',
