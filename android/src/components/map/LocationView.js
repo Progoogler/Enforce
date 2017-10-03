@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
   Animated,
-  View,
   Text,
   TouchableWithoutFeedback,
-  StyleSheet
+  StyleSheet,
+  View,
 } from 'react-native';
-
-import { mediumFontSize, navBarContainerHeight, fadeContainerHeight, primaryBlue } from '../../styles/common';
+import PropTypes from 'prop-types';
+import { mediumFontSize, navBarContainerHeight, primaryBlue } from '../../styles/common';
 
 export default class LocationView extends Component {
   constructor() {
@@ -67,6 +67,11 @@ export default class LocationView extends Component {
         duration: 1000 },
     ).start();
   }
+}
+
+LocationView.propTypes = {
+  description: PropTypes.string.isRequired,
+  fadeDescription: PropTypes.boolean.isRequired,
 }
 
 const styles = StyleSheet.create({
