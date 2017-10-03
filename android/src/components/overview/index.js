@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import {
-  View,
+  DeviceEventEmitter,
   Image,
   StyleSheet,
-  DeviceEventEmitter,
+  View,
 } from 'react-native';
-import PropTypes from 'prop-types';
 import { NavigationActions } from 'react-navigation';
-import Realm from 'realm';
+import PropTypes from 'prop-types';
 import PushNotification from 'react-native-push-notification';
+import Realm from 'realm';
+
 import Menu from './Menu';
 import TicketCounter from './TicketCounter';
 import TimersList from './ListView-ResetControl';
@@ -48,7 +49,8 @@ export default class Overview extends Component {
 
   componentDidMount() {
     PushNotification.configure({
-      onNotification: function(notification) {
+      onNotification: function() {
+        // @Param notification is an argument passed to this callback
       },
 
       requestPermissions: true,
