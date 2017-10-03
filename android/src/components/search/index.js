@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
-  View,
+  Animated,
   Image,
+  Keyboard,
+  StyleSheet,
   TextInput,
   TouchableHighlight,
   TouchableOpacity,
-  StyleSheet,
-  Keyboard,
-  Animated,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Realm from 'realm';
@@ -16,18 +16,18 @@ import historySearch from './historySearch';
 import Result from './Result';
 import VerifyModal from './Verify';
 import {
-  primaryBlue,
-  smallFontSize,
-  searchContainerHeight,
-  resultContainerHeight,
-  resultHeight,
   noResultContainerHeight,
   noResultHeight,
-  windowCenterPoint,
-  underlineWidth,
+  primaryBlue,
+  resultContainerHeight,
+  resultHeight,
+  searchContainerHeight,
   separatorHeight,
+  smallFontSize,
   textInputOffset,
+  underlineWidth,
   verificationContainerHeight,
+  windowCenterPoint,
  } from '../../styles/common';
 
 
@@ -39,17 +39,18 @@ export default class Search extends Component {
       license: '',
       result: null,
     }
-    this.realm = new Realm();
-    this.marginValue = windowCenterPoint;
     this.buttonOpacity = new Animated.Value(1);
     this.containerHeight = new Animated.Value(searchContainerHeight);
-    this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
-    this.underlineOpacity = new Animated.Value(1);
-    this.separatorHeight = new Animated.Value(0);
-    this.underline = new Animated.Value(0);
-    this.textFade = new Animated.Value(0);
-    this.resultHeight = new Animated.Value(0);
     this.containerOpacity = new Animated.Value(0);
+    this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
+    this.marginValue = windowCenterPoint;
+    this.mounted = false;
+    this.realm = new Realm();
+    this.resultHeight = new Animated.Value(0);
+    this.separatorHeight = new Animated.Value(0);
+    this.textFade = new Animated.Value(0);
+    this.underline = new Animated.Value(0);
+    this.underlineOpacity = new Animated.Value(1);
     this.verifyHeight = new Animated.Value(0);
   }
 
@@ -135,7 +136,7 @@ export default class Search extends Component {
           <TouchableOpacity
             style={styles.button}
             activeOpacity={.6}
-            onPress={ () => { this._handleVINSearch(this.state.license) }} >
+            onPress={ () => { this.handleVINSearch(this.state.license) }} >
             <Animated.Text style={{
             color: 'white',
             fontSize: smallFontSize,
@@ -172,9 +173,10 @@ export default class Search extends Component {
         >
 
           <VerifyModal 
+            handleVINSearch={this.handleVINSearch.bind(this)}
+            license={this.state.license}
             minimizeVerifyContainer={this.minimizeVerifyContainer.bind(this)}
             minimizeVerifyContainerForMenu={this.props.toggleVerifyContainer}
-            license={this.state.license}
           /> 
       
         </Animated.View>
@@ -207,7 +209,7 @@ export default class Search extends Component {
       ),
     ]).start();
     if (this.props.timerList) this.keyboardDidHideForTimerListListener = Keyboard.addListener('keyboardDidHideForTimerList', this._keyboardDidHideForTimerList.bind(this));
-    this._mounted = true;
+    this.mounted = true;
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
   }
 
@@ -216,7 +218,7 @@ export default class Search extends Component {
   }
 
   componentWillUnmount() {
-    this._mounted = false;
+    this.mounted = false;
     this.props.timerList && this.keyboardDidHideForTimerListListener.remove();
     this.keyboardDidHideListener.remove();
   }
@@ -262,7 +264,7 @@ export default class Search extends Component {
     }
     this.myTextInput.isFocused() && Keyboard.dismiss();
     this._fadeContainer();
-    setTimeout(() => this._mounted && this.props.closeSearch(), 500);
+    setTimeout(() => this.mounted && this.props.closeSearch(), 500);
 
     this.setState({ license: '' });
     this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
@@ -323,22 +325,25 @@ export default class Search extends Component {
     }
   }
 
-  _handleVINSearch() {
+  handleVINSearch(license: string, state: string, verified: boolean) {
 
-    this.setState({verifyVisibility: true});
+    // TODO Delegate this to error callback of API
+    // Remove automatic opening of Verify after Autocheck API is implemented
     if (this.props.toggleVerifyContainer) this.props.toggleVerifyContainer('open');
     this._extendVerifyContainer();
 
-    // this.props.toggleVerification(this.state.license);
-
-    if (this.state.license.length === 0) {
-      this.myTextInput.focus();
-    } else if (this.props.timerList) {
-      // Add license to current Timer in queue in TimerList if in TimerList.
-      if (!this.props.licenseParam.license) {
-        this.props.addLicenseToQueue(this.state.license);
-      } else {
-        this._updateLicenseOfTimer();
+    if (verified) {
+      if (license && license.length === 0) return;
+    } else {
+      if (this.state.license.length === 0) {
+        this.myTextInput.focus();
+      } else if (this.props.timerList) {
+        // Add license to current Timer in queue in TimerList if in TimerList.
+        if (!this.props.licenseParam.license) {
+          this.props.addLicenseToQueue(this.state.license);
+        } else {
+          this._updateLicenseOfTimer();
+        }
       }
     }
   }
