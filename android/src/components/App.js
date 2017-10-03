@@ -4,7 +4,7 @@ import { View, Image, Text, AsyncStorage, TouchableNativeFeedback, StyleSheet } 
 
 import Overview from './overview';
 import MapApp from './map';
-import CameraApp from './camera/CameraApp';
+import CameraApp from './camera';
 import TimerList from './timerList';
 import History from './history';
 import Metrics from './metrics';
@@ -91,7 +91,7 @@ export default class App extends Component {
 
   async _checkFirstTimeAccess() {
     let firstTimeAccess = await AsyncStorage.getItem('@Enforce:registerDate');
-    if (!firstTimeAccess) {
+    if (!firstTimeAccess) { // Establish realm schema if user is opening app for the first time
       this._resetRealmState();
       let today = new Date();
       let day = today.getDate() + '';
@@ -100,8 +100,8 @@ export default class App extends Component {
     }
   }
 
-  _resetRealmState() { // For beta testing only TODO remove this
-    Realm.clearTestState(); // Uncomment to drop/recreate database
+  _resetRealmState() { 
+    Realm.clearTestState();
     this.realm = new Realm({schema: Schema});
     this.realm.write(() => {
       this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1000, count: 0});
