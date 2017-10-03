@@ -17,7 +17,6 @@ import {
   timerRowButtonsContainerHeight,
   timerRowDescContainerHeight,
   timerRowImageHeight,
-  timerRowLocationTop,
 } from '../../styles/common';
 
 
