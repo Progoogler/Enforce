@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
   Modal,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
+
 import {
-  primaryBlue,
   largeFontSize,
   mediumFontSize,
+  primaryBlue,
   warningContainerMarginTop,
 } from '../../styles/common';
 

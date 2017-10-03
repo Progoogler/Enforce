@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
+  Image,
   StyleSheet,
+  Text,
   TouchableHighlight,
   TouchableWithoutFeedback,
-  Image,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
+
 import {
-  titleFontSize,
-  primaryBlue,
   blueTextShadow,
   navBarContainerHeight,
+  primaryBlue,
+  titleFontSize,
 } from '../../styles/common';
 
 /* global require */

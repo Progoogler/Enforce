@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
+  ActivityIndicator,
   Image,
   StyleSheet,
-  ActivityIndicator,
+  Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import MapModal from './MapModal';
 import {
-  primaryBlue,
   imageSize,
+  primaryBlue,
   smallFontSize,
 } from '../../styles/common';
 
@@ -20,12 +20,12 @@ export default class Row extends Component {
   constructor() {
     super();
     this.state = {
+      animating: false,
       getImageText: `Get${'\n'}Photo`,
       image: [],
-      animating: false,
       modalVisible: false,
     }
-    this._mounted;
+    this.mounted = false;
   }
 
   render() {
@@ -65,7 +65,7 @@ export default class Row extends Component {
             <TouchableOpacity
               style={styles.button}
               activeOpacity={.9}
-              onPress={() => this._mounted && this.setState({modalVisible: true}) } >
+              onPress={() => this.mounted && this.setState({modalVisible: true}) } >
               <View>
                 <Text style={styles.buttonText}>Show Map</Text>
               </View>
@@ -86,17 +86,17 @@ export default class Row extends Component {
   }
 
   componentDidMount() {
-    this._mounted = true;
+    this.mounted = true;
   }
 
   componentWillUpdate() {
     if (this.props.dateTransition) {
-      this._mounted && this.setState({image: []});
+      this.mounted && this.setState({image: []});
     }
   }
 
   componentWillUnmount() {
-    this._mounted = false;
+    this.mounted = false;
   }
 
   _getTimeLimitDesc = (timeLimit) => {
@@ -120,19 +120,19 @@ export default class Row extends Component {
   }
 
   _getImageFromDatabase() {
-    this._mounted && this.setState({animating: true});
+    this.mounted && this.setState({animating: true});
     let date = new Date(this.props.data.createdAt);
     let datePath=`${date.getMonth() + 1}-${date.getDate()}`;
     let refPath = `${this.props.userSettings.county}/${this.props.userId}/${datePath}`;
     let time = this.props.data.createdAt + '';
     this.props.getTicketImage(refPath, time, (url) => {
       if (url === null) {
-        this._mounted && this.setState({
+        this.mounted && this.setState({
           image: [<View style={styles.getImageButton} key={date}><Text style={styles.getImageText}>Photo {'\n'}not{'\n'}available</Text></View>],
           animating: false,
         });
       } else {
-        this._mounted && this.setState({
+        this.mounted && this.setState({
           image: [<TouchableOpacity
                     style={styles.image}
                     activeOpacity={.8}
@@ -147,7 +147,7 @@ export default class Row extends Component {
   }
 
   closeModal() {
-    this._mounted && this.setState({modalVisible: false});
+    this.mounted && this.setState({modalVisible: false});
   }
 
 }

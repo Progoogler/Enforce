@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
   Modal,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
-import PropTypes from 'prop-types';
 import { AutoGrowingTextInput } from 'react-native-autogrow-textinput';
+import PropTypes from 'prop-types';
 
 import {
-  primaryBlue,
-  textInputContainerHeight,
-  navigationBarHeight,
   largeFontSize,
   mediumFontSize,
+  navigationBarHeight,
+  primaryBlue,
+  textInputContainerHeight,
 } from '../../styles/common';
 
 export default class LocationInput extends Component {
@@ -23,7 +23,6 @@ export default class LocationInput extends Component {
     this.state = {
       text: '',
     }
-    this._textInput;
   }
 
   render() {
@@ -39,7 +38,6 @@ export default class LocationInput extends Component {
           <View style={styles.textInputContainer}>
             <AutoGrowingTextInput
               style={styles.textInput}
-              ref={(ref) => this._textInput = ref}
               onChange={(event) => this._handleTextInput(event)}
               underlineColorAndroid={'white'}
               autoCorrect={false}

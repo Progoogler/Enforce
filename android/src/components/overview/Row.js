@@ -1,32 +1,33 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
   Image,
-  StyleSheet,
   ScrollView,
-  TouchableOpacity,
+  StyleSheet,
+  Text,
   TouchableNativeFeedback,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { NavigationActions } from'react-navigation';
 import PropTypes from 'prop-types';
+
 import {
-  primaryBlue,
   largeFontSize,
   mediumFontSize,
-  smallFontSize,
+  primaryBlue,
   timerRowHeight,
-  timerRowWidth,
   timerRowDescWidth,
   timerRowDistanceWidth,
+  timerRowWidth,
+  smallFontSize,
 } from '../../styles/common';
 
 /* global require */
 export default class Row extends Component {
   constructor() {
     super();
-    this.mounted = false,
     this.distance;
+    this.mounted = false,
   }
 
   render() {

@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import {
-  primaryBlue,
-  mediumFontSize,
-} from '../../styles/common';
+import { mediumFontSize, primaryBlue } from '../../styles/common';
 
 export default class Result extends Component {
   constructor() {

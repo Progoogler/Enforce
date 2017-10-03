@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
   Image,
   Modal,
   StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import PropTypes from 'prop-types';
 
-import MapView, { Marker } from 'react-native-maps';
 import {
-  primaryBlue,
   mediumFontSize,
   pinHeight,
   pinWidth,
+  primaryBlue,
   screenHeight,
 } from '../../styles/common';
 

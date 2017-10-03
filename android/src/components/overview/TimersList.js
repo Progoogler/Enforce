@@ -24,9 +24,9 @@ export default class TimersList extends Component {
         updateRows: 0,
         updatedLocation: false,
       };
+    this.realm = new Realm();
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
     this.list = insertionSortModified(this.list);
-    this.realm = new Realm();
     this.key = 0;
   }
 

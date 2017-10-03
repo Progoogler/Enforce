@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import {
-  View,
-  StyleSheet,
-  TouchableHighlight,
+  Animated,
   Image,
   Keyboard,
-  Animated,
+  TouchableHighlight,
+  StyleSheet,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Search from '../search';
 import {
-  titleFontSize,
-  primaryBlue,
   blueTextShadow,
   navBarContainerHeight,
+  primaryBlue,
+  titleFontSize,
 } from '../../styles/common';
 
 /* global require */

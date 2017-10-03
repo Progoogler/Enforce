@@ -1,34 +1,34 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  Image,
-  Picker,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
-  Keyboard,
   ActivityIndicator,
   AsyncStorage,
+  Image,
+  Keyboard,
   NetInfo,
+  View,
+  Text,
+  Picker,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import Firebase from '../../../../includes/firebase/firebase';
+
 import Database from '../../../../includes/firebase/database';
-
+import Firebase from '../../../../includes/firebase/firebase';
 import Navigation from '../navigation/StaticNavigation';
-import Warning from './Warning';
-import ThrowConnectionMessage from './ThrowConnectionMessage';
-
 import States from '../../../../shared/statesList';
+import ThrowConnectionMessage from './ThrowConnectionMessage';
+import Warning from './Warning';
+
 
 import {
-  primaryBlue,
-  titleTextShadow,
-  xxlargeFontSize,
   largeFontSize,
   mediumFontSize,
+  primaryBlue,
   textInputWidth,
+  titleTextShadow,
+  xxlargeFontSize,
 } from '../../styles/common';
 
 /* global require */
@@ -36,30 +36,30 @@ export default class Profile extends Component {
   constructor() {
     super();
     this.state = {
-      email: '',
-      password: '',
-      emailBackground: 'white',
-      passwordBackground: 'white',
-      emailBorder: 'black',
-      passwordBorder: 'black',
-      stateBorder: 'black',
+      animating: false,
+      buttonColor: primaryBlue,
+      counties: [],
       countyBorder: 'black',
+      email: '',
+      emailBackground: 'white',
+      emailBorder: 'black',
       emailWarning: false,
+      isConnected: true,
+      password: '',
+      passwordBackground: 'white',
+      passwordBorder: 'black',
       passwordWarning: false,
       profileStatus: 'Create Profile',
-      animating: false,
-      isConnected: true,
-      buttonColor: primaryBlue,
-      states: [],
-      counties: [],
       selectedState: '',
       selectedCounty: 'Select your county',
+      stateBorder: 'black',
+      states: [],
     };
+    this.createdNewUser = false;
+    this.mounted = true;
     this.profile = {};
     this.profileId = null;
-    this.createdNewUser = false;
     this.replacedOldUser = false;
-    this._mounted = true;
   }
   static navigationOptions = {
     drawerLabel: 'Profile',
@@ -173,12 +173,12 @@ export default class Profile extends Component {
   }
 
   componentDidMount() {
-    this._mounted = true;
+    this.mounted = true;
     this._signInUser();
   }
 
   componentWillUnmount() {
-    this._mounted = false;
+    this.mounted = false;
     if (this.createdNewUser) {
       Firebase.signInUser(this.state.email, this.state.password);
       setTimeout(() => {
@@ -228,9 +228,9 @@ export default class Profile extends Component {
       if (isConnected) {
         this.setState({animating: true, profileStatus: 'Creating Profile', isConnected: true, buttonColor: 'green'});
         setTimeout(() => {
-          this._mounted && this.setState({animating: false, profileStatus: 'Done', buttonColor: primaryBlue});
+          this.mounted && this.setState({animating: false, profileStatus: 'Done', buttonColor: primaryBlue});
           setTimeout(() => {
-            this._mounted && this.setState({profileStatus: 'Create Profile'});
+            this.mounted && this.setState({profileStatus: 'Create Profile'});
           }, 1500);
         }, 3000);
         var settings = {
@@ -286,7 +286,7 @@ export default class Profile extends Component {
       } else {
         this.setState({isConnected: false});
         setTimeout(() => {
-          this._mounted && this.setState({isConnected: true});
+          this.mounted && this.setState({isConnected: true});
         }, 5000);
       }
     });
@@ -301,7 +301,7 @@ export default class Profile extends Component {
       states.push(<Picker.Item label={state} value={state} key={key}/>);
       key++;
     }
-    this._mounted && this.setState({states});
+    this.mounted && this.setState({states});
   }
 
   _setCountiesPickerAndSelectedState() {
@@ -327,9 +327,9 @@ export default class Profile extends Component {
     }
 
     if (savedState) {
-      this._mounted && this.setState({counties, selectedState: savedState});
+      this.mounted && this.setState({counties, selectedState: savedState});
     } else {
-      this._mounted && this.setState({counties});
+      this.mounted && this.setState({counties});
     }
   }
 
@@ -382,13 +382,13 @@ export default class Profile extends Component {
       }
 
       if (this.state.stateBorder === 'red') { // Read error first
-        this._mounted && this.setState({selectedState, counties, selectedCounty: 'Select your county', stateBorder: 'black'});
+        this.mounted && this.setState({selectedState, counties, selectedCounty: 'Select your county', stateBorder: 'black'});
       } else {
-        this._mounted && this.setState({selectedState, counties, selectedCounty: 'Select your county'});
+        this.mounted && this.setState({selectedState, counties, selectedCounty: 'Select your county'});
       }
       return;
     } else {
-      this._mounted && this.setState({selectedState, selectedCounty: 'Select your county'}); // User can select "Select your state" to reset both Pickers
+      this.mounted && this.setState({selectedState, selectedCounty: 'Select your county'}); // User can select "Select your state" to reset both Pickers
     }
   }
 

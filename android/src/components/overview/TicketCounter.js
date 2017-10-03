@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
+  Text,
   TouchableWithoutFeedback,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { ticketCountFontSize, ticketDescFontSize } from '../../styles/common';

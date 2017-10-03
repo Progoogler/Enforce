@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import {
-  View,
-  StyleSheet,
   Modal,
+  StyleSheet,
+  View,
 } from 'react-native';
-import PropTypes from 'prop-types';
-import PhotoView from 'react-native-photo-view';
 import Navigation from '../navigation/StaticNavigation';
-import { primaryBlue, navBarContainerHeight } from '../../styles/common';
+import PhotoView from 'react-native-photo-view';
+import PropTypes from 'prop-types';
 
 /* global require */
 export default class ImageModal extends Component {

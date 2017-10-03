@@ -1,29 +1,25 @@
 import React, { Component } from 'react';
 import {
-  View,
+  ActivityIndicator,
   Image,
   Modal,
   StyleSheet,
-  ActivityIndicator,
+  View,
 } from 'react-native';
-import PropTypes from 'prop-types';
-
 import { Animated as AnimatedMap, Marker } from 'react-native-maps';
 import Navigation from '../navigation/StaticNavigation';
+import PropTypes from 'prop-types';
+
 import LocationView from '../map/LocationView';
-import {
-  navBarContainerHeight,
-  primaryBlue,
-  mediumFontSize,
-} from '../../styles/common';
+import { navBarContainerHeight } from '../../styles/common';
 
 /*global require*/
 export default class MapModal extends Component {
   constructor() {
     super();
     this.state = {
-      description: '',
       animating: true,
+      description: '',
     };
   }
 

@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import {
-  primaryBlue,
-  smallFontSize,
-} from '../../styles/common';
+import { primaryBlue, smallFontSize } from '../../styles/common';
 
 export default class CustomCallout extends Component {
   render() {
@@ -47,6 +44,7 @@ export default class CustomCallout extends Component {
 
 CustomCallout.propTypes = {
   timer: PropTypes.object.isRequired,
+  title: PropTypes.string,
   secondary: PropTypes.bool,
 };
 

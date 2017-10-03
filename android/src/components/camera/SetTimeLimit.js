@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  TextInput,
   Keyboard,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Notification from './Notification';
 import {
-  timeLimitContainerHeight,
   extraLargeFontSize,
   largeFontSize,
   mediumFontSize,
+  timeLimitContainerHeight,
 } from '../../styles/common';
 
 export default class SetTimeLimit extends Component {

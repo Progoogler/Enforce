@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
-  TouchableWithoutFeedback,
   Animated,
-  View,
   Text,
+  TouchableWithoutFeedback,
   StyleSheet,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { primaryBlue, mediumFontSize } from '../../styles/common';
+import { mediumFontSize, primaryBlue } from '../../styles/common';
 
 class ErrorMessage extends Component {
   constructor() {

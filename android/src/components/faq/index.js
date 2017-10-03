@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import {
-  ScrollView,
-  View,
-  Text,
   Image,
+  ScrollView,
   StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Navigation from '../navigation/StaticNavigation';
 
 import {
-  primaryBlue,
   largeFontSize,
   mediumFontSize,
+  primaryBlue,
   smallFontSize,
 } from '../../styles/common';
 

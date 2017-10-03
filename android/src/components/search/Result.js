@@ -1,24 +1,24 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
   Image,
-  TouchableOpacity,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import MapModal from '../history/MapModal';
 import ImageModal from '../history/ImageModal';
+import MapModal from '../history/MapModal';
 import Unfound from './Unfound';
 
 import {
-  imageSize,
-  primaryBlue,
-  smallFontSize,
   closeButtonSize,
+  imageSize,
   pinHeight,
   pinWidth,
+  primaryBlue,
+  smallFontSize,
 } from '../../styles/common';
 
 /* global require */

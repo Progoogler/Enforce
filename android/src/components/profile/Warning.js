@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { smallFontSize, textInputWidth } from '../../styles/common';

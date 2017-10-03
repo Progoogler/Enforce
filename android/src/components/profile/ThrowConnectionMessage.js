@@ -1,13 +1,10 @@
 import React from 'react';
 import {
-  View,
-  Text,
   StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import {
-  primaryBlue,
-  smallFontSize,
-} from '../../styles/common';
+import { primaryBlue, smallFontSize } from '../../styles/common';
 
 const ThrowConnectionMessage = () => (
   <View style={styles.container}>

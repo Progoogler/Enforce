@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
 import {
-  View,
+  AsyncStorage,
   Image,
   StyleSheet,
-  AsyncStorage,
+  View,
 } from 'react-native';
-import PropTypes from 'prop-types';
 import FlatList from 'react-native/Libraries/Lists/FlatList';
+import PropTypes from 'prop-types';
 import Realm from 'realm';
-import { setUserTickets, setTicketImage } from '../../../../includes/firebase/database';
-import coordinatesBound from './coordinatesBound';
 
-import Title from './Title';
+import coordinatesBound from './coordinatesBound';
+import { setUserTickets, setTicketImage } from '../../../../includes/firebase/database';
+import Done from './Done';
 import Row from './Row';
 import Search from '../search';
+import Title from './Title';
 import Warning from './Warning';
-import Done from './Done';
 import { timerFlatListHeight } from '../../styles/common';
 
 import RNFetchBlob from 'react-native-fetch-blob';
@@ -35,20 +35,21 @@ export default class TimerList extends Component {
       this.list = this.props.navigation.state.params.timers !== undefined ? this.realm.objects('Timers')[this.props.navigation.state.params.timers].list : [{'createdAt': 0}];
     }
     this.state = {
+      bound: undefined,
       dataSource: this.list,
-      warningVisibility: false,
+      license: '',
       modalVisible: false,
       refreshing: false,
-      bound: undefined,
-      license: '',
+      warningVisibility: false,
     };
-    this.VIN = '';
+    this.currentLicense = 0;
     this.license = '';
+    this.mounted = false;
+    this.reset = false;
+    this.ticketCount = undefined;
     this.timeElapsed = '';
     this.timer = null;
-    this._reset = false;
-    this.ticketCount = undefined;
-    this._currentLicense = 0;
+    this.VIN = '';
 
     // These variables are used to calculate the index of the Timer currently in the scroll view
     this._flatListHeight = Math.ceil(timerFlatListHeight);
@@ -107,11 +108,11 @@ export default class TimerList extends Component {
       setUserTickets(this.refPath, this.realm.objects('Ticketed')[0]['list']);
     }
     this.props.navigation.state.params = undefined; // Reset params so constructor finds earliest ending Timer upon opening from Navigation menu
-    this._mounted = false;
+    this.mounted = false;
   }
 
   componentDidMount() {
-    this._mounted = true;
+    this.mounted = true;
     if (this.list[0].createdAt === 0) {
       this.setState({ modalVisible: true });
     } else {
@@ -135,8 +136,8 @@ export default class TimerList extends Component {
     avgLat = avgLat / Math.min(5, this.list.length - 1);
     avgLong = avgLong / Math.min(5, this.list.length - 1);
     var bound = coordinatesBound(this.list[0].latitude, this.list[0].longitude, avgLat, avgLong);
-    this._mounted && this.setState({bound});
-    setTimeout(() => this._mounted && this.setState({bound: undefined}), 5000);
+    this.mounted && this.setState({bound});
+    setTimeout(() => this.mounted && this.setState({bound: undefined}), 5000);
   }
 
   async _getUserInfo() {
@@ -151,31 +152,31 @@ export default class TimerList extends Component {
       refreshing: true,
       dataSource: this.list,
     });
-    setTimeout(() => { this._mounted && this.setState({refreshing: false})}, 1500);
+    setTimeout(() => { this.mounted && this.setState({refreshing: false})}, 1500);
   }
 
   updateRows(clearWarning: string, only?: string): undefined {
     if (this.list.length === 0 && clearWarning) {
-      this._mounted && this.setState({
+      this.mounted && this.setState({
         dataSource: this.list,
         modalVisible: true, // Show the "Done" button to indicate end of list.
         warningVisibility: false,
       });
     } else if (this.list.length === 0) {
-      this._mounted && this.setState({
+      this.mounted && this.setState({
         modalVisible: true,
       });
     } else if (clearWarning && only) { // Extra transaction handler for displaying the warning sign.
-      this._mounted && this.setState({
+      this.mounted && this.setState({
         warningVisibility: false,
       });
     } else if (clearWarning) {
-      this._mounted && this.setState({
+      this.mounted && this.setState({
         dataSource: this.list,
         warningVisibility: false,
       });
     } else {
-      this._mounted && this.setState({
+      this.mounted && this.setState({
         dataSource: this.list,
       });
     }
@@ -234,7 +235,7 @@ export default class TimerList extends Component {
       this._timer = timer;
       let timeElapsed = (new Date() - timer.createdAt) / 1000 / 60;
       this.timeElapsed = `${(timeElapsed / 60 + '')[0] !== '0' ? (timeElapsed / 60 + '')[0] + ' hour' : ''} ${Math.floor(timeElapsed % 60)} minutes`;
-      this._mounted && this.setState({
+      this.mounted && this.setState({
         warningVisibility: true,
       });
     }
@@ -311,14 +312,14 @@ export default class TimerList extends Component {
 
   shouldResetLicense(setToFalse: boolean) {
     if (setToFalse) {
-      this._reset = false;
+      this.reset = false;
       return;
     }
-    return this._reset;
+    return this.reset;
   }
 
   resetLicenseAndVIN() {
-    this._reset = true;
+    this.reset = true;
     this.license = '';
     this.VIN = '';
   }
@@ -346,16 +347,16 @@ export default class TimerList extends Component {
     // Update the license value of the current timer on the FlatList view to the search input field as user scrolls
     if (event.nativeEvent.contentOffset.y > this._halvedFlatListHeight) {
       let idx = Math.ceil(event.nativeEvent.contentOffset.y / this._flatListHeight);
-      if (idx !== this._currentLicense) {
+      if (idx !== this.currentLicense) {
         if (this.list[idx] === undefined) return;
-        this._currentLicense = idx;
+        this.currentLicense = idx;
         this.enterLicenseInSearchField({
           license: this.list[idx].license,
           listIndex: this.list[idx].index,
         });
       }
     } else {
-      this._currentLicense = 0;
+      this.currentLicense = 0;
       this.enterLicenseInSearchField({
         license: this.list[0].license,
         listIndex: this.list[0].index,

@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { DrawerItems, DrawerNavigator, NavigationActions } from 'react-navigation';
 import { View, Image, Text, AsyncStorage, TouchableNativeFeedback, StyleSheet } from 'react-native';
 
-import CameraApp from './camera/CameraApp';
-import MapApp from './map/MapApp';
 import Overview from './overview';
-import Profile from './profile';
+import MapApp from './map';
+import CameraApp from './camera';
 import TimerList from './timerList';
 import History from './history';
 import Metrics from './metrics';
+import Profile from './profile';
 import Settings from './settings';
 import FAQs from './faq';
 

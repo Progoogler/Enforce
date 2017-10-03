@@ -1,24 +1,24 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  Image,
-  Picker,
-  AsyncStorage,
   ActivityIndicator,
-  StyleSheet,
+  AsyncStorage,
+  Image,
   NetInfo,
+  Picker,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import PropTypes from 'prop-types';
 import FlatList from 'react-native/Libraries/Lists/FlatList';
-
-import Realm from 'realm';
 import { NavigationActions } from'react-navigation';
+import PropTypes from 'prop-types';
+import Realm from 'realm';
+
 import { getHistoryData, getTicketImage } from '../../../../includes/firebase/database';
 
+import ImageModal from './ImageModal';
 import Navigation from '../navigation';
 import Row from './Row';
-import ImageModal from './ImageModal';
 import ThrowConnectionMessage from '../profile/ThrowConnectionMessage';
 import {
   primaryBlue,
@@ -33,18 +33,18 @@ export default class History extends Component {
     this.list = this._reverseRealmList(this.realm.objects('Ticketed')[0]['list']); // Display most recent first.
     this.ticketedList = this.list;
     this.state = {
+      animating: true,
       dataSource: this.list,
+      dateTransition: false,
+      uri: '',
+      isConnected: true,
       items: [],
       pickerWidth: 25 + 120,
       selected: "Today's Tickets",
-      animating: true,
-      dateTransition: false,
       showMaximizedImage: false,
-      isConnected: true,
-      uri: '',
     }
-    this.userSettings = null;
     this.userId = null;
+    this.userSettings = null;
   }
 
   static navigationOptions = {

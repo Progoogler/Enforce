@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
   Image,
-  TouchableOpacity,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import {
-  captureContainerHeight,
-  mediumFontSize,
-} from '../../styles/common';
+import { captureContainerHeight, mediumFontSize } from '../../styles/common';
 
 var buttonSize = captureContainerHeight - 10;
 

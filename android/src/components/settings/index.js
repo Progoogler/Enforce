@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
-  Image,
-  Switch,
-  StyleSheet,
   AsyncStorage,
+  Image,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import Navigation from '../navigation/StaticNavigation';
 import {
   primaryBlue,
+  smallFontSize,
   titleTextShadow,
   xxlargeFontSize,
-  smallFontSize,
 } from '../../styles/common';
 
 /* global require */
@@ -22,11 +22,11 @@ export default class Settings extends Component {
   constructor() {
     super();
     this.state = {
-      notifications: true,
-      location: true,
-      imageUpload: true,
       dataUpload: true,
+      imageUpload: true,
       imageRecognition: true,
+      location: true,
+      notifications: true,
     }
   }
   static navigationOptions = {

@@ -1,12 +1,12 @@
 import React from 'react';
 import {
-  Text,
   Image,
-  TouchableOpacity,
   StyleSheet,
+  Text,
+  TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { primaryBlue, largeFontSize } from '../../styles/common';
+import { largeFontSize, primaryBlue } from '../../styles/common';
 
 const Done = (props) => (
   <TouchableOpacity

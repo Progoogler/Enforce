@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
 import {
-  View,
-  StyleSheet,
-  TouchableHighlight,
+  Animated,
   Image,
   Keyboard,
-  Animated,
+  TouchableHighlight,
+  StyleSheet,
+  View,
 } from 'react-native';
 import PropTypes from 'prop-types';
 
 import MainButtons from './MainButtons';
 import Search from '../search';
 import {
-  primaryBlue,
   blueTextShadow,
-  titleFontSize,
-  searchContainerHeight,
-  resultContainerHeight,
   noResultContainerHeight,
+  primaryBlue,
+  resultContainerHeight,
+  searchContainerHeight,
+  titleFontSize,
   verificationContainerHeight,
  } from '../../styles/common';
 
@@ -28,9 +28,10 @@ export default class Menu extends Component {
     this.state = {
       search: false,
     };
+    this.buttonOpacity = new Animated.Value(1);
     this.containerHeight = new Animated.Value(searchContainerHeight);
     this.containerOpacity = new Animated.Value(1);
-    this.buttonOpacity = new Animated.Value(1);
+    this.mounted = false;
     this.titleOpacity = new Animated.Value(0);
   }
 
@@ -69,7 +70,7 @@ export default class Menu extends Component {
                       duration: 500, },
                   ),
                 ]).start();
-                this._mounted && this.setState({search: !this.state.search});
+                this.mounted && this.setState({search: !this.state.search});
               }}
               underlayColor={primaryBlue}
               style={styles.searchIcon} >
@@ -112,7 +113,7 @@ export default class Menu extends Component {
   }
 
   componentDidMount() {
-    this._mounted = true;
+    this.mounted = true;
     Animated.timing(
       this.titleOpacity,
       { toValue: 1,
@@ -121,7 +122,7 @@ export default class Menu extends Component {
   }
 
   componentWillUnmount() {
-    this._mounted = false;
+    this.mounted = false;
   }
 
   resizeMenuContainer(extend: boolean) {
@@ -179,7 +180,7 @@ export default class Menu extends Component {
   }
 
   closeSearch() {
-    this._mounted && this.setState({ search: !this.state.search });
+    this.mounted && this.setState({ search: !this.state.search });
     Animated.parallel([
       Animated.timing(
         this.titleOpacity,

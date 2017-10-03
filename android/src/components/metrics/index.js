@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import {
-  View,
-  Text,
   Image,
   StyleSheet,
+  Text,
+  View,
 } from 'react-native';
-import PropTypes from 'prop-types';
 import MapView from 'react-native-maps';
-import Realm from 'realm';
 import Navigation from '../navigation/StaticNavigation';
+import PropTypes from 'prop-types';
+import Realm from 'realm';
+
 import {
-  primaryBlue,
   largeFontSize,
+  primaryBlue,
   screenHeight,
 } from '../../styles/common';
 
