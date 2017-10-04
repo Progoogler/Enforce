@@ -77,9 +77,15 @@ const AppNavigator = DrawerNavigator({
 });
 
 export default class App extends Component {
+  constructor() {
+    super();
+    this.state = {
+      imageRecognition: false,
+    };
+  }
   render() {
     return (
-        <AppNavigator/>
+        <AppNavigator screenProps={{imageRecognition: this.state.imageRecognition, updateImageRecognition: this.getCameraType.bind(this)}}/>
     );
   }
 
@@ -87,6 +93,17 @@ export default class App extends Component {
     FirebaseInitialize();
     this._checkFirstTimeAccess();
     this._signIn();
+    this.getCameraType();
+  }
+
+  async getCameraType(settingsUpdate: boolean) {
+    if (settingsUpdate === true || settingsUpdate === false) {
+      this.setState({imageRecognition: settingsUpdate});
+    } else {
+      var settings = await AsyncStorage.getItem('@Enforce:settings');
+      settings = JSON.parse(settings);    
+      if (settings && settings.imageRecognition) this.setState({imageRecognition: true});
+    }
   }
 
   async _checkFirstTimeAccess() {
