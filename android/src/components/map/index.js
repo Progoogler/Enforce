@@ -14,7 +14,7 @@ import Realm from 'realm';
 import CustomCallout from './CustomCallout';
 import ErrorMessage from './ErrorMessage';
 import LocationView from './LocationView';
-import Navigation from '../navigation/StaticNavigation';
+import Navigation from '../navigation';
 
 
 /*global require*/
@@ -52,9 +52,8 @@ export default class MapApp extends Component {
       <View style={styles.container} >
         <Navigation
           navigation={this.props.navigation}
-          title={'Map View'}
-          route={'Map'}
-          imageSource={require('../../../../shared/images/white-pin.jpg')} />
+          title={'Map View'}    
+        />
 
         <LocationView description={this.state.description} fadeDescription={this.state.fadeDescription}/>
 
@@ -74,17 +73,21 @@ export default class MapApp extends Component {
             longitude: this.realm.objects('Coordinates')[0].longitude ? this.realm.objects('Coordinates')[0].longitude : -122.43159,
             latitudeDelta: 0.0108,
             longitudeDelta: 0.0060,
-          }} >
+          }}
+        >
+
             { this.markers.length ? this.markers : this._getMarkers() }
             { this.state.polyline[0] }
+
         </AnimatedMap>
 
         <ActivityIndicator
           animating={this.state.animating}
           style={styles.activity}
-          size='large' />
+          size='large' 
+        />
 
-        { this.state.showError ? <ErrorMessage checkLocationAndRender={this.checkLocationAndRender.bind(this)} /> : <View /> }
+        <ErrorMessage checkLocationAndRender={this.checkLocationAndRender.bind(this)} showError={this.state.showError}/>
       </View>
     );
   }
@@ -115,14 +118,14 @@ export default class MapApp extends Component {
     );
   }
 
-
   componentDidMount() {
     this.mounted = true;
+    // this._getMarkers() called once in render function
     this._checkAndGetCoordinates();
     this._checkAndDrawPolyline();
     setTimeout(() => {
       if (!this.animatedToMarker && !this.description) {
-        this._displayDescription('No location details were found.', 'fadeDescriptionAfterSetTimeout');
+        this._displayDescription('Location details were not found.', true);
       } else if (!this.animatedToMarker && this.description) {
         this._displayDescription(this.description);
       } else if (this.props.navigation.state.params && this.description) {
@@ -211,7 +214,7 @@ export default class MapApp extends Component {
 
   _displayDescription(description, fadeDescription) {
     this.mounted && this.setState({description, fadeDescription});
-    if (this.state.fadeDescription) setTimeout(() => this.mounted && this.setState({fadeDescription: false}), 7800);
+    if (fadeDescription) setTimeout(() => this.mounted && this.setState({fadeDescription: false}), 7800);
   }
 
   _getMarkers() {
@@ -317,7 +320,12 @@ export default class MapApp extends Component {
             this.realm.objects('Coordinates')[0].latitude = latitude;
             this.realm.objects('Coordinates')[0].longitude = longitude;
           });
-          if (this.mounted && this.state.showError) this.setState({showError: false, mapPositionBottom: 0});
+          if (this.mounted && this.state.showError) {
+            if (this.state.description === 'Location details were not found.' && !this.state.fadeDescription) {
+              this._displayDescription(this.state.description, true);
+            }
+            this.mounted && this.setState({showError: false, mapPositionBottom: 0});
+          }
         }, () => {
           if (!this.state.showError) this.mounted && this.setState({showError: true, mapPositionBottom: 10});
         },
@@ -325,7 +333,6 @@ export default class MapApp extends Component {
       );
     });
   }
-
 }
 
 MapApp.propTypes = {
