@@ -119,6 +119,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     alignItems: 'center',
     backgroundColor: primaryBlue,
+    zIndex: 11,
   },
   headerContainer: {
     flexDirection: 'row',
