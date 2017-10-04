@@ -77,10 +77,6 @@ export default class Row extends Component {
     );
   }
 
-  _onVinRequest() {
-
-  }
-
   _getPrettyTimeFormat(createdAt: number): string {
     let date = new Date(createdAt);
     let hour = date.getHours();
