@@ -7,12 +7,12 @@ import {
   View,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { mediumFontSize, primaryBlue } from '../../styles/common';
+import { mediumFontSize, navBarContainerHeight, primaryBlue } from '../../styles/common';
  
 class ErrorMessage extends Component {
   constructor() {
     super();
-    this.messageBottom = new Animated.Value(-30);
+    this.messageBottom = new Animated.Value(-navBarContainerHeight);
   }
   render() {
     return (
@@ -31,11 +31,25 @@ class ErrorMessage extends Component {
     );
   }
 
-  componentDidMount() {
+  componentWillUpdate(nextProps) {
+    if (nextProps.showError === false) {
+      this.hideErrorMessage();
+    } else {
+      Animated.timing(
+        this.messageBottom, { 
+          toValue: 0,
+          duration: 1000 
+        }
+      ).start();
+    }
+  }
+
+  hideErrorMessage() {
     Animated.timing(
-      this.messageBottom,
-      { toValue: 0,
-        duration: 1000 }
+      this.messageBottom, { 
+        toValue: -navBarContainerHeight,
+        duration: 1000 
+      }
     ).start();
   }
 }
@@ -46,14 +60,14 @@ ErrorMessage.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
-    width: '100%',
-    padding: '4%',
-    zIndex: 10,
-    borderTopWidth: 2,
     borderColor: primaryBlue,
+    borderTopWidth: 2,
+    height: navBarContainerHeight,
+    justifyContent: 'center',
+    width: '100%',
+    zIndex: 10,
   },
   message: {
     fontSize: mediumFontSize,
