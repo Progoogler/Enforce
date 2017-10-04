@@ -29,9 +29,9 @@ export default class Result extends Component {
       <View style={styles.container}>
         {
           vinCheck ? 
-          <Text style={styles.text}>No results for VIN #  <Text style={styles.license}>{ this.props.license }</Text></Text> 
+          <Text style={styles.text}>No result for VIN #  <Text style={styles.license}>{ this.props.license }</Text></Text> 
           :
-          <Text style={styles.text}>No results for license #  <Text style={styles.license}>{ this.props.license }</Text></Text>
+          <Text style={styles.text}>No result for license #  <Text style={styles.license}>{ this.props.license }</Text></Text>
         }
       </View>
     );
