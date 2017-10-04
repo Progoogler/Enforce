@@ -6,7 +6,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'; 
-import { captureContainerHeight, mediumFontSize } from '../../styles/common';
+import PropTypes from 'prop-types';
+
+import { 
+  captureContainerHeight, 
+  mediumFontSize, 
+  primaryBlue, 
+} from '../../styles/common';
  
 var buttonSize = captureContainerHeight - 10;
 
@@ -20,7 +26,8 @@ export default class Capture extends Component {
           onPress={() => this.props.setModalVisible()} >
           <Image
             style={styles.pinIcon}
-            source={require('../../../../shared/images/pin.png')} />
+            source={require('../../../../shared/images/pin.png')}
+          />
         </TouchableOpacity>
         </View>
 
@@ -28,9 +35,8 @@ export default class Capture extends Component {
         <TouchableOpacity
           activeOpacity={.6}
           style={styles.capture}
-          onPress={() => {
-          this.props.takePicture();
-        }} >
+          onPress={() => this.props.takePicture()} 
+        >
           <View></View>
         </TouchableOpacity>
         </View>
@@ -38,16 +44,26 @@ export default class Capture extends Component {
         <View style={styles.undoContainer}>
         <TouchableOpacity
           activeOpacity={.6}
-          style={styles.undoButton} >
+          style={styles.undoButton} 
+        >
           <Text
             style={styles.undo}
-            onPress={() => this.props.deletePreviousPicture() }>UNDO</Text>
+            onPress={() => this.props.deletePreviousPicture()}
+          >
+            { 'UNDO' }
+          </Text>
         </TouchableOpacity>
         </View>
       </View>
     );
   }
-};
+}
+
+Capture.propTypes = {
+  deletePreviousPicture: PropTypes.func.isRequired,
+  setModalVisible: PropTypes.func.isRequired,
+  takePicture: PropTypes.func.isRequired,
+}
 
 const styles = StyleSheet.create({
   footer: {
@@ -80,7 +96,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   undo: {
-    color: '#4286f4',
+    color: primaryBlue,
     fontSize: mediumFontSize,
   },
 });
