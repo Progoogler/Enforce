@@ -16,7 +16,9 @@ export default class LocationView extends Component {
       description: '',
       fadeDescription: false,
     };
-    this.top = new Animated.Value(-30);
+    this.displayErrorAutoOnce = 0;
+    this.timeout = null;
+    this.top = new Animated.Value(-navBarContainerHeight);
   }
 
   render() {
@@ -45,11 +47,22 @@ export default class LocationView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.description.length !== 0) {
+    if (nextProps.description && nextProps.fadeDescription) {
       this.setState({description: nextProps.description, fadeDescription: nextProps.fadeDescription});
       this._displayAnimatedView();
       if (nextProps.fadeDescription) setTimeout(() => this._hideAnimatedView(), 8000);
+    } else if (nextProps.description === 'Location details were not found.' && !nextProps.fadeDescription && this.displayErrorAutoOnce === 0) {
+      if (this.state.description !== 'Location details were not found.') this.setState({description: nextProps.description});
+      this._displayAnimatedView();
+      this.timeout = setTimeout(() => this._hideAnimatedView(), 7800);
+      this.displayErrorAutoOnce++;
+    } else if (nextProps.description) {
+      this.setState({description: nextProps.description});
     }
+  }
+
+  componentWillUnmount() {
+    if (this.timeout) clearTimeout(this.timeout);
   }
 
   _displayAnimatedView() {
@@ -63,7 +76,7 @@ export default class LocationView extends Component {
   _hideAnimatedView() {
     Animated.timing(
       this.top,
-      { toValue: -30,
+      { toValue: -navBarContainerHeight,
         duration: 1000 },
     ).start();
   }
@@ -71,7 +84,7 @@ export default class LocationView extends Component {
 
 LocationView.propTypes = {
   description: PropTypes.string.isRequired,
-  fadeDescription: PropTypes.boolean,
+  fadeDescription: PropTypes.bool.isRequired,
 }
 
 const styles = StyleSheet.create({
