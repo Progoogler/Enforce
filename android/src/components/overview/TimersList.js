@@ -18,16 +18,16 @@ import Row from './Row';
 export default class TimersList extends Component {
   constructor() {
     super();
-      this.state = {
-        dataSource: this.list,
-        refreshing: false,
-        updateRows: 0,
-        updatedLocation: false,
-      };
     this.realm = new Realm();
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
     this.list = insertionSortModified(this.list);
     this.key = 0;
+    this.state = {
+      dataSource: this.list,
+      refreshing: false,
+      updateRows: 0,
+      updatedLocation: false,
+    };
   }
 
   render() {
