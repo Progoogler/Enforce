@@ -35,7 +35,7 @@ export default class VerifyModal extends Component {
 			state: '',
 			states: [],
 		};
-		this.animatedBottom = new Animated.Value(-320);
+		this.animatedBottom = new Animated.Value(-verificationContainerHeight);
 		this.mounted = false;
 	}
 
@@ -46,7 +46,7 @@ export default class VerifyModal extends Component {
 					style={{
 						width: screenWidth,
 						backgroundColor: primaryBlue,
-						height: verificationContainerHeight, //320,
+						height: verificationContainerHeight,
 						padding: '5%',
 						zIndex: 11,
 					}}
@@ -127,7 +127,7 @@ export default class VerifyModal extends Component {
 	_animateContainer() {
 		Animated.timing(
 			this.animatedBottom, {
-				toValue: screenHeight - (mainButtonsHeight + navBarContainerHeight + 320),
+				toValue: screenHeight - (mainButtonsHeight + navBarContainerHeight + verificationContainerHeight),
 				duration: 1000
 			}
 		).start();
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
 		marginRight: '2%',
 	},
 	pickerContainer: {
-		borderBottomWidth: 1, 
+		borderBottomWidth: 1,
 		paddingLeft: 15,
 		width: verifyPickerInputWidth, 
 	},
