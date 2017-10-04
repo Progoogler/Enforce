@@ -76,7 +76,7 @@ export default class Settings extends Component {
           <Text style={styles.settingDesc}>Use license recognition with camera</Text>
           <View style={styles.slider}>
             <Switch
-              onValueChange={(value) => this.setState({imageRecognition: value})}
+              onValueChange={(value) => this._toggleImageRecognition(value)}
               onTintColor="green"
               style={{marginBottom: 10}}
               thumbTintColor={primaryBlue}
@@ -116,14 +116,14 @@ export default class Settings extends Component {
   }
 
   async componentWillMount() {
-    let settings = await AsyncStorage.getItem('@Enforce:settings');
-    settings = JSON.parse(settings);
+    this.settings = await AsyncStorage.getItem('@Enforce:settings');
+    this.settings = JSON.parse(this.settings);
     this.setState({
-      notifications: settings.notifications,
-      location: settings.location,
-      imageUpload: settings.imageUpload,
-      dataUpload: settings.dataUpload,
-      imageRecognition: settings.imageRecognition,
+      notifications: this.settings.notifications,
+      location: this.settings.location,
+      imageUpload: this.settings.imageUpload,
+      dataUpload: this.settings.dataUpload,
+      imageRecognition: this.settings.imageRecognition,
     });
   }
 
@@ -151,9 +151,17 @@ export default class Settings extends Component {
       this.setState({imageUpload: false});
     }
   }
+
+  _toggleImageRecognition(boolean) {
+    this.setState({imageRecognition: boolean});
+    if (boolean !== this.settings.imageRecognition) this.props.screenProps.updateImageRecognition(boolean);
+  }
 }
 
-Settings.propTypes = { navigation: PropTypes.object.isRequired };
+Settings.propTypes = { 
+  navigation: PropTypes.object.isRequired,
+  screenProps: PropTypes.object.isRequired,
+};
 
 const styles = StyleSheet.create({
   container: {
