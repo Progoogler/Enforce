@@ -61,21 +61,29 @@ export default class History extends Component {
     return (
       <View style={styles.container}>
         <Navigation navigation={this.props.navigation}/>
-        <ImageModal uri={this.state.uri} visibility={this.state.showMaximizedImage} maximizeOrMinimizeImage={this.maximizeOrMinimizeImage.bind(this)}/>
+        <ImageModal 
+          uri={this.state.uri} 
+          visibility={this.state.showMaximizedImage} 
+          maximizeOrMinimizeImage={this.maximizeOrMinimizeImage.bind(this)}
+        />
         <Text style={styles.title}>History</Text>
-        <View style={styles.pickerActivityRow}>
+        <View 
+          style={{
+            flexDirection: 'row',
+            width: this.state.pickerWidth,
+            borderBottomWidth: 1,
+          }}
+        >
           <Picker
             style={{
-
-              width: this.state.pickerWidth,
               color: primaryBlue,
-
+              width: this.state.pickerWidth,
             }}
             selectedValue={this.state.selected}
             onValueChange={(val) => this._onValueChange(val)} 
           >
 
-            { this.state.items.map((item) => item) }
+            { this.state.items }
 
           </Picker>
           <ActivityIndicator
@@ -305,9 +313,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-  },
-  pickerActivityRow: {
-    flexDirection: 'row',
   },
   flatlist: {
     flex: 1,
