@@ -84,7 +84,7 @@ export default class LocationView extends Component {
 
 LocationView.propTypes = {
   description: PropTypes.string.isRequired,
-  fadeDescription: PropTypes.bool.isRequired,
+  fadeDescription: PropTypes.bool,
 }
 
 const styles = StyleSheet.create({
