@@ -59,10 +59,11 @@ export var windowCenterPoint = (width / 2) - PixelRatio.get() - 1;
 //Title
 export var timeLimitTitleContainerHeight = height * .05;
 // Row
-export var timerFlatListHeight = timerRowDescContainerHeight + timerRowButtonsContainerHeight + timerRowImageHeight;
 export var timerRowButtonsContainerHeight = height * .09;
 export var timerRowDescContainerHeight = height * .12;
 export var timerRowImageHeight = height * .564 - (StatusBar.currentHeight ? StatusBar.currentHeight : 0);
+export var timerFlatListHeight = timerRowDescContainerHeight + timerRowButtonsContainerHeight + timerRowImageHeight;
+
 // Warning
 export var warningContainerMarginTop = height * .22;
 
