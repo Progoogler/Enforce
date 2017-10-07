@@ -70,7 +70,8 @@ const AppNavigator = DrawerNavigator({
               <Text style={styles.label}>Reset</Text>
             </View>
           </TouchableNativeFeedback>
-      </View>),
+      </View>
+    ),
     contentOptions: { 
       activeTintColor: 'green',
     },
