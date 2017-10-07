@@ -15,6 +15,7 @@ import CustomCallout from './CustomCallout';
 import ErrorMessage from './ErrorMessage';
 import LocationView from './LocationView';
 import Navigation from '../navigation';
+import StaticNavigation from '../navigation/StaticNavigation';
 
 
 /*global require*/
@@ -37,6 +38,7 @@ export default class MapApp extends Component {
     this.markers = [];
     this.mounted = false;
     this.realm = new Realm();
+    this.timeout = null;
     this.timersArray = [];
   }
 
@@ -49,11 +51,20 @@ export default class MapApp extends Component {
 
   render() {
     return (
-      <View style={styles.container} >
-        <Navigation
-          navigation={this.props.navigation}
-          title={'Map View'}    
-        />
+      <View style={styles.container}>
+
+        { this.props.navigation.state.params && this.props.navigation.state.params.timerCreatedAt ?
+          <StaticNavigation
+            navigation={this.props.navigation}
+            title={'Map View'}
+            timerList={true}
+          />
+          :
+          <Navigation
+            navigation={this.props.navigation}
+            title={'Map View'}    
+          />
+        }
 
         <LocationView description={this.state.description} fadeDescription={this.state.fadeDescription}/>
 
@@ -137,7 +148,7 @@ export default class MapApp extends Component {
   }
 
   componentWillUnmount() {
-    clearTimeout(this._timeout);
+    clearTimeout(this.timeout);
     this.mounted = false;
     if (this.props.navigation.state.params) {
       // Remove params for fresh state when main Map Button is pressed
@@ -148,18 +159,27 @@ export default class MapApp extends Component {
   async _checkAndGetCoordinates() {
     if (this.props.navigation.state.params && typeof this.props.navigation.state.params.timersIndex === 'number') {
       this.timersArray = this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list;
-      if (this.timersArray[0].latitude) {
-        this.mounted && this._animateToCoords(this.timersArray[0].latitude, this.timersArray[0].longitude);
-        this.animatedToMarker = true;
-        return;
-      } else {
-        for (let i = 1; i < this.timersArray.length; i++) {
-          if (this.timersArray[i].latitude) {
+      if (this.props.navigation.state.params.timerCreatedAt) {
+        for (let i = 0; i < this.timersArray.length; i++) {
+          if (this.timersArray[i].createdAt === this.props.navigation.state.params.timerCreatedAt) {
             this.animatedToMarker = true;
-            this._timeout = setTimeout(() => {
-              this.mounted && this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
-            }, 1500);
-            return;
+            this.mounted && this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
+          }
+        }
+      } else {
+        if (this.timersArray[0].latitude) {
+          this.mounted && this._animateToCoords(this.timersArray[0].latitude, this.timersArray[0].longitude);
+          this.animatedToMarker = true;
+          return;
+        } else {
+          for (let i = 1; i < this.timersArray.length; i++) {
+            if (this.timersArray[i].latitude) {
+              this.animatedToMarker = true;
+              this.timeout = setTimeout(() => {
+                this.mounted && this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
+              }, 1500);
+              return;
+            }
           }
         }
       }
@@ -246,7 +266,7 @@ export default class MapApp extends Component {
         if (lists[idx+1] === undefined) {
           if (lat > 0) {
             this.animatedToMarker = true;
-            this._timeout = setTimeout(() => {
+            this.timeout = setTimeout(() => {
               this._animateToCoords(lat, long);
             }, 1500);
           }
@@ -256,45 +276,70 @@ export default class MapApp extends Component {
     } else {
       // Else check timers in params
       if (!this.timersArray.length) this.timersArray = this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list;
-      this.description = this.timersArray[0].description ? this.timersArray[0].description : '';
-
-      this.markers.push(<Marker draggable
-          coordinate={{latitude: this.timersArray[0].latitude, longitude: this.timersArray[0].longitude}}
-          onPress={() => this._displayDescription(this.timersArray[0].description)}
-          onDragEnd={(e) => this._resetTimerCoords(this.timersArray[0].index, e.nativeEvent.coordinate, 0)}
-          key={this.timersArray[0].createdAt} >
-          <CustomCallout timer={this.timersArray[0]} title="1st" />
-        </Marker>
-      );
-      this.timersArray.forEach((timer, idx) => {
-         if (idx !== 0) {
-           if (!this.description && timer.description) this.description = timer.description;
-           if (timer.latitude) {
-             this.markers.push(<Marker draggable
-               coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
-               onPress={() => this._displayDescription(timer.description)}
-               onDragEnd={(e) => this._resetTimerCoords(this.timersArray[idx].index, e.nativeEvent.coordinate, idx)}
-               key={timer.createdAt} >
-               <CustomCallout timer={timer} secondary={true}/>
-               </Marker>
-             );
-           }
-         }
-      });
-
-      if (this.timersArray[0].latitude) {
-        this.animatedToMarker = true;
-        this._timeout = setTimeout(() => {
-          this._animateToCoords(this.timersArray[0].latitude, this.timersArray[0].longitude);
-        }, 1500);
-      } else { // Try to find the first timer with recorded coordinates and animate there
-        for (let i = 1; i < this.timersArray.length; i++) {
-          if (this.timersArray[i].latitude) {
-            this.animatedToMarker = true;
-            this._timeout = setTimeout(() => {
-              this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
-            }, 1500);
+      
+      if (this.props.navigation.state.params.timerCreatedAt) {
+        for (let i = 0; i < this.timersArray.length; i++) {
+          if (this.timersArray[i].createdAt === this.props.navigation.state.params.timerCreatedAt) {
+            this.description = this.timersArray[i].description ? this.timersArray[i].description : '';
+            
+            this.markers.push(<Marker draggable
+                coordinate={{latitude: this.timersArray[i].latitude, longitude: this.timersArray[i].longitude}}
+                onPress={() => this._displayDescription(this.timersArray[i].description)}
+                onDragEnd={(e) => this._resetTimerCoords(this.timersArray[i].index, e.nativeEvent.coordinate, i)}
+                key={this.timersArray[i].createdAt} >
+                <CustomCallout timer={this.timersArray[i]} title="1st" />
+              </Marker>);
+            if (this.timersArray[i].latitude) {
+              this.animatedToMarker = true;
+              this.timeout = setTimeout(() => {
+                this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
+              }, 1500);
+            }
             break;
+          }
+        }
+      } else {
+
+        this.description = this.timersArray[0].description ? this.timersArray[0].description : '';
+
+        this.markers.push(<Marker draggable
+            coordinate={{latitude: this.timersArray[0].latitude, longitude: this.timersArray[0].longitude}}
+            onPress={() => this._displayDescription(this.timersArray[0].description)}
+            onDragEnd={(e) => this._resetTimerCoords(this.timersArray[0].index, e.nativeEvent.coordinate, 0)}
+            key={this.timersArray[0].createdAt} >
+            <CustomCallout timer={this.timersArray[0]} title="1st" />
+          </Marker>
+        );
+        this.timersArray.forEach((timer, idx) => {
+          if (idx !== 0) {
+            if (!this.description && timer.description) this.description = timer.description;
+            if (timer.latitude) {
+              this.markers.push(<Marker draggable
+                coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
+                onPress={() => this._displayDescription(timer.description)}
+                onDragEnd={(e) => this._resetTimerCoords(this.timersArray[idx].index, e.nativeEvent.coordinate, idx)}
+                key={timer.createdAt} >
+                <CustomCallout timer={timer} secondary={true}/>
+                </Marker>
+              );
+            }
+          }
+        });
+
+        if (this.timersArray[0].latitude) {
+          this.animatedToMarker = true;
+          this.timeout = setTimeout(() => {
+            this._animateToCoords(this.timersArray[0].latitude, this.timersArray[0].longitude);
+          }, 1500);
+        } else { // Try to find the first timer with recorded coordinates and animate there
+          for (let i = 1; i < this.timersArray.length; i++) {
+            if (this.timersArray[i].latitude) {
+              this.animatedToMarker = true;
+              this.timeout = setTimeout(() => {
+                this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
+              }, 1500);
+              break;
+            }
           }
         }
       }
