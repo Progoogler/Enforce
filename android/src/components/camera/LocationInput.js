@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
  
 import {
   largeFontSize,
-  mediumFontSize,
   navigationBarHeight,
   primaryBlue,
   textInputContainerHeight,
@@ -31,45 +30,45 @@ export default class LocationInput extends Component {
         transparent={true}
         visible={this.props.visibility}
         onRequestClose={() => this.props.setModalVisible(this.state.text)} >
-        <View style={styles.container} >
+        <View style={styles.container}>
+          <View style={styles.containerBorder}>
 
+            <Text style={styles.title}>Location Details</Text>
+            <View style={styles.textInputContainer}>
+              <AutoGrowingTextInput
+                style={styles.textInput}
+                onChange={(event) => this._handleTextInput(event)}
+                underlineColorAndroid={primaryBlue}
+                autoCorrect={false}
+                autoCapitalize={'sentences'}
+                fontSize={26}
+                maxLength={75}
+                minHeight={120}
+                autoFocus={true}
+                value={this.state.text} />
 
-          <Text style={styles.title}>Location Details:</Text>
-          <View style={styles.textInputContainer}>
-            <AutoGrowingTextInput
-              style={styles.textInput}
-              onChange={(event) => this._handleTextInput(event)}
-              underlineColorAndroid={'white'}
-              autoCorrect={false}
-              autoCapitalize={'sentences'}
-              fontSize={26}
-              maxLength={75}
-              minHeight={120}
-              autoFocus={true}
-              value={this.state.text} />
-
-            </View>
-            <Text style={styles.count}>{75 - this.state.text.length} characters remaining</Text>
-            <View style={styles.buttonRow}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => {
-                  this.setState({text: ''});
-                  this.props.setModalVisible('');
-                }}>
-                <Text style={styles.cancelText}>Cancel</Text>
+              </View>
+              <Text style={styles.count}>{75 - this.state.text.length} characters remaining</Text>
+              <View style={styles.buttonRow}>
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => {
+                    this.setState({text: ''});
+                    this.props.setModalVisible('');
+                  }}>
+                  <Text style={styles.cancelText}>Cancel</Text>
+                  </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.doneButton}
+                  activeOpacity={.6}
+                  onPress={() => {
+                    this.props.setModalVisible(this.state.text);
+                    this.setState({text: ''});
+                  }} >
+                  <Text style={styles.doneText}>Done</Text>
                 </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.doneButton}
-                activeOpacity={.6}
-                onPress={() => {
-                  this.props.setModalVisible(this.state.text);
-                  this.setState({text: ''});
-                }} >
-                <Text style={styles.doneText}>Done</Text>
-              </TouchableOpacity>
+              </View>
             </View>
-
         </View>
       </Modal>
     );
@@ -89,44 +88,54 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: primaryBlue,
     marginTop: navigationBarHeight,
-    padding: '4%',
+    padding: '5%',
+  },
+  containerBorder: {
+    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: '6%',
   },
   buttonRow: {
+    alignItems: 'center',
+    alignSelf: 'center',
     flexDirection: 'row',
-    alignSelf: 'flex-end',
     margin: '4%',
   },
   cancelButton: {
       alignItems: 'center',
       alignSelf: 'flex-end',
-      marginRight: '12%',
-      marginBottom: '2%',
+      marginRight: '20%',
   },
   cancelText: {
-    color: 'white',
-    fontSize: mediumFontSize,
+    color: primaryBlue,
+    padding: '8%',
   },
   title: {
-    color: 'white',
     fontWeight: 'bold',
     fontSize: largeFontSize,
-    marginLeft: '5%',
+    marginBottom: '4%',
+    textAlign: 'center',
   },
   textInputContainer: {
-    marginLeft: '5%',
+    backgroundColor: primaryBlue,
+    borderRadius: 10,
     height: textInputContainerHeight,
+    marginLeft: '5%',
+  },
+  textInput: {
+    color: 'white',
   },
   count: {
     marginLeft: '8%',
+    marginTop: '2%',
   },
   doneButton: {
     alignItems: 'center',
-    backgroundColor: 'green',
-    padding: '2%',
+    backgroundColor: primaryBlue,
     borderRadius: 6,
   },
   doneText: {
-    fontSize: mediumFontSize,
     color: 'white',
+    padding: '5%',
   },
 });
