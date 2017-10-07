@@ -48,12 +48,13 @@ export default class TimerList extends Component {
     this.reset = false;
     this.ticketCount = undefined;
     this.timeElapsed = '';
+    this.timeoutRefresh = null;
     this.timer = null;
     this.VIN = '';
 
     // These variables are used to calculate the index of the Timer currently in the scroll view
-    this._flatListHeight = Math.ceil(timerFlatListHeight);
-    this._halvedFlatListHeight = Math.ceil(timerFlatListHeight / 2);
+    this.flatListHeight = Math.ceil(timerFlatListHeight);
+    this.halvedFlatListHeight = Math.ceil(timerFlatListHeight / 2);
   }
 
   static navigationOptions = {
@@ -67,7 +68,6 @@ export default class TimerList extends Component {
   };
 
   render() {
-
     return (
       <View style={styles.container}>
         <Search
@@ -108,6 +108,7 @@ export default class TimerList extends Component {
       setUserTickets(this.refPath, this.realm.objects('Ticketed')[0]['list']);
     }
     this.props.navigation.state.params = undefined; // Reset params so constructor finds earliest ending Timer upon opening from Navigation menu
+    clearTimeout(this.timeoutRefresh);
     this.mounted = false;
   }
 
@@ -123,6 +124,21 @@ export default class TimerList extends Component {
     }
     if (this.list[0].latitude) this.getDirectionBound();
     this._getUserInfo();
+    this._prepareTimeout();
+  }
+
+  _prepareTimeout() {
+    var now = new Date();
+    for (let i = 0; i < this.list.length; i++) {
+      if (now - this.list[i].createdAt < this.list[i].timeLength * 60 * 60 * 1000) {
+        this.timeoutRefresh = setTimeout(() => {
+          this.onRefresh();
+          this._prepareTimeout();
+        }, this.list[i].timeLength * 60 * 60 * 1000 - (now - this.list[i].createdAt));
+        return;
+      }
+    }
+    clearTimeout(this.timeoutRefresh);
   }
 
   getDirectionBound() {
@@ -284,15 +300,6 @@ export default class TimerList extends Component {
     }
   }
 
-  // checkUpdatedLicenseValidity(originalLicense: string, updatedLicense: string): string {
-  //   var validity = 0;
-  //   for (var i = 0; i < originalLicense.length; i++) {
-  //     let check = updatedLicense.includes(originalLicense[i]);
-  //     if (check) validity++;
-  //   }
-  //   return validity > 1 ? updatedLicense : originalLicense;
-  // }
-
   enterLicenseInSearchField(license: object) {
     this.setState({license});
     if (this.license) this.license = ''; // Reset value when user scrolls to another picture
@@ -331,6 +338,7 @@ export default class TimerList extends Component {
         expiredFunc={this.expiredFunc.bind(this)}
         uponTicketed={this.uponTicketed.bind(this)}
         enterLicenseInSearchField={this.enterLicenseInSearchField.bind(this)}
+        navigation={this.props.navigation}
       />
     );
   }
@@ -345,8 +353,8 @@ export default class TimerList extends Component {
 
   _handleScroll(event) {
     // Update the license value of the current timer on the FlatList view to the search input field as user scrolls
-    if (event.nativeEvent.contentOffset.y > this._halvedFlatListHeight) {
-      let idx = Math.ceil(event.nativeEvent.contentOffset.y / this._flatListHeight);
+    if (event.nativeEvent.contentOffset.y > this.halvedFlatListHeight) {
+      let idx = Math.ceil(event.nativeEvent.contentOffset.y / this.flatListHeight);
       if (idx !== this.currentLicense) {
         if (this.list[idx] === undefined) return;
         this.currentLicense = idx;
