@@ -17,7 +17,7 @@ import {
 	mainButtonsHeight,
 	mediumFontSize,
 	navBarContainerHeight,
-  primaryBlue,
+    primaryBlue,
 	screenHeight,
 	screenWidth,
 	verificationContainerHeight,
@@ -202,10 +202,10 @@ VerifyModal.propTypes = {
 
 const styles = StyleSheet.create({
   containerBorder: {
-    backgroundColor: 'white',
-    alignItems: 'center',
-    borderRadius: 5,
-    padding: '6%',
+		backgroundColor: 'white',
+		alignItems: 'center',
+		borderRadius: 5,
+		padding: '6%',
 	},
 	rowContainer: {
 		alignItems: 'center',
