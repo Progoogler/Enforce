@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { NavigationActions } from'react-navigation';
 import PhotoView from 'react-native-photo-view';
 import PropTypes from 'prop-types';
 
@@ -46,13 +47,22 @@ export default class Row extends Component {
         </View>
         { this.props.data.description ?
           <View style={styles.locationContainer}>
-            <Text style={styles.location}>{ `${this.props.data.description}` }</Text>
+            <TouchableOpacity 
+              activeOpacity={.9}
+              onPress={() => this._openMapPage(this.props.data.index)}
+            >
+              <Text style={styles.location}>{ `${this.props.data.description}` }</Text>
+            </TouchableOpacity>
           </View>
           : null }
         { this.props.data.license ?
-          <TouchableOpacity activeOpacity={1} style={styles.licenseContainer} onPress={() => {
-            this.props.enterLicenseInSearchField({license: this.props.data.license, listIndex: this.props.data.index});
-          }}>
+          <TouchableOpacity 
+            activeOpacity={1} 
+            style={styles.licenseContainer} 
+            onPress={() => {
+              this.props.enterLicenseInSearchField({license: this.props.data.license, listIndex: this.props.data.index});
+            }}
+          >
             <Text style={styles.license}>{this.props.data.license}</Text>
           </TouchableOpacity>
           : null }
@@ -106,12 +116,25 @@ export default class Row extends Component {
       return '';
     }
   }
+
+  _openMapPage(timersIndex: number): undefined {
+    const navigateAction = NavigationActions.navigate({
+      routeName: 'Map',
+      params: {
+        timersIndex, 
+        navigation: this.props.navigation,
+        timerCreatedAt: this.props.data.createdAt,
+      },
+    });
+    this.props.navigation.dispatch(navigateAction);
+  }
 }
 
 Row.propTypes = {
   data: PropTypes.object.isRequired,
   enterLicenseInSearchField: PropTypes.func.isRequired,
   expiredFunc: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
   uponTicketed: PropTypes.func.isRequired,
 }
 
