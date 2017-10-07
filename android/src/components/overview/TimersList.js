@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   AsyncStorage,
+  DeviceEventEmitter,
   StyleSheet,
   View,
 } from 'react-native';
@@ -21,13 +22,15 @@ export default class TimersList extends Component {
     this.realm = new Realm();
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
     this.list = insertionSortModified(this.list);
-    this.key = 0;
     this.state = {
       dataSource: this.list,
       refreshing: false,
       updateRows: 0,
       updatedLocation: false,
     };
+    this.key = 0;
+    this.mounted = false;
+    this.timeoutRefresh = null;
   }
 
   render() {
@@ -54,7 +57,7 @@ export default class TimersList extends Component {
           this.realm.objects('Coordinates')[0].latitude = this.latitude;
           this.realm.objects('Coordinates')[0].longitude = this.longitude;
         });
-        this._mounted && this.setState({ updatedLocation: true }) && this._onRefresh();
+        this.mounted && this.setState({ updatedLocation: true }) && this._onRefresh();
       }, () => {},
       {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
     );
@@ -62,11 +65,11 @@ export default class TimersList extends Component {
 
   componentDidMount() {
     this._checkReset();
-    this._mounted = true;
-    this._timeoutRefresh = this.list.length > 0 ? setTimeout(() => this._onRefresh(), 300000) : null;
+    this.mounted = true;
+    this.timeoutRefresh = this.list.length > 0 ? setTimeout(() => this._onRefresh(), 300000) : null;
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) { // In case reset is pushed while in Overview screen
     if (prevProps.navigation.state !== this.props.navigation.state) {
       if (this.props.navigation.state.params && this.props.navigation.state.params.reset) {
         this._hardReset();
@@ -75,8 +78,8 @@ export default class TimersList extends Component {
   }
 
   componentWillUnmount() {
-    clearTimeout(this._timeoutRefresh);
-    this._mounted = false;
+    clearTimeout(this.timeoutRefresh);
+    this.mounted = false;
   }
 
   async _checkReset() {
@@ -86,9 +89,10 @@ export default class TimersList extends Component {
     // If today is a different day than yesterday, reset app; i.e., 24th > 23rd || 2nd - 24th < 0
     if (today > parseInt(yesterday) || today - parseInt(yesterday) < 0) {
       this._reset();
+      DeviceEventEmitter.removeListener('notificationActionReceived');
     } else if (this.props.navigation.state.params && this.props.navigation.state.params.reset) {
       this._hardReset();
-      this.props.navigation.state.params = undefined;
+      DeviceEventEmitter.removeListener('notificationActionReceived');
     }
   }
 
@@ -126,7 +130,7 @@ export default class TimersList extends Component {
       if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
 
       this.list = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
-      this._mounted && this.setState({dataSource: this.list});
+      this.mounted && this.setState({dataSource: this.list});
       this.props.resetTicketCounter();
       setTimeout(() => {
         Realm.clearTestState();
@@ -178,8 +182,9 @@ export default class TimersList extends Component {
       if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
 
       this.list = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
-      this._mounted && this.setState({dataSource: this.list});
+      this.mounted && this.setState({dataSource: this.list});
       this.props.resetTicketCounter();
+      this.props.navigation.state.params = undefined;
       setTimeout(() => {
         Realm.clearTestState();
         this.realm = new Realm({schema: Schema});
@@ -223,13 +228,13 @@ export default class TimersList extends Component {
   _onRefresh() {
     this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
     this.list = insertionSortModified(this.list);
-    this._mounted && this.setState({
+    this.mounted && this.setState({
       refreshing: true,
       dataSource: this.list,
     });
-    this._mounted && this.setState({refreshing: false, updateRows: this.state.updateRows + 1, updatedLocation: false});
-    clearTimeout(this._timeoutRefresh);
-    this._timeoutRefresh = setTimeout(() => this._onRefresh(), 300000);
+    this.mounted && this.setState({refreshing: false, updateRows: this.state.updateRows + 1, updatedLocation: false});
+    clearTimeout(this.timeoutRefresh);
+    this.timeoutRefresh = setTimeout(() => this._onRefresh(), 300000);
   }
 
   _renderItem(data: object = {list: [{'createdAt': 0}]}): object { // Supplement a fake createdAt prop for FlatList Key && Row render based on empty value.
