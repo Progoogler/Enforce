@@ -48,15 +48,24 @@ export default class StaticNavigation extends Component {
   }
 
   _handleArrow() {
-    this.props.navigation ? this.props.navigation.navigate('Overview') : this.props.closeModal();
+    if (this.props.navigation) {
+      if (this.props.timerList) {
+        this.props.navigation.navigate('Timers');
+      } else {
+        this.props.navigation.navigate('Overview');
+      }
+    } else {
+      this.props.closeModal();
+    }
   }
 
 }
 
 StaticNavigation.propTypes = {
-  navigation: PropTypes.object,
-  title: PropTypes.string.isRequired,
   closeModal: PropTypes.func,
+  navigation: PropTypes.object,
+  timerList: PropTypes.boolean,
+  title: PropTypes.string.isRequired,
 }
 
 const styles = StyleSheet.create({
