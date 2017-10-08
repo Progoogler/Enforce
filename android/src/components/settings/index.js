@@ -23,8 +23,8 @@ export default class Settings extends Component {
     super();
     this.state = {
       dataUpload: true,
-      imageUpload: true,
-      imageRecognition: true,
+      imageUpload: false,
+      imageRecognition: false,
       location: true,
       notifications: true,
     }
