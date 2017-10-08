@@ -20,10 +20,8 @@ export default class TimersList extends Component {
   constructor() {
     super();
     this.realm = new Realm();
-    this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
-    this.list = insertionSortModified(this.list);
     this.state = {
-      dataSource: this.list,
+      dataSource: insertionSortModified(this.realm.objects('Timers').filtered('list.createdAt >= 0')),
       refreshing: false,
       updateRows: 0,
       updatedLocation: false,
@@ -46,27 +44,11 @@ export default class TimersList extends Component {
     );
   }
 
-  componentWillMount() {
-    this.latitude = this.realm.objects('Coordinates')[0].latitude;
-    this.longitude = this.realm.objects('Coordinates')[0].longitude;
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        this.latitude = parseFloat(position.coords.latitude);
-        this.longitude = parseFloat(position.coords.longitude);
-        this.realm.write(() => {
-          this.realm.objects('Coordinates')[0].latitude = this.latitude;
-          this.realm.objects('Coordinates')[0].longitude = this.longitude;
-        });
-        this.mounted && this.setState({ updatedLocation: true }) && this._onRefresh();
-      }, () => {},
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
-    );
-  }
-
   componentDidMount() {
-    this._checkReset();
     this.mounted = true;
-    this.timeoutRefresh = this.list.length > 0 ? setTimeout(() => this._onRefresh(), 300000) : null;
+    this._checkReset();
+    this._getAndSaveCoords();
+    this._setTimeoutRefresh();
   }
 
   componentDidUpdate(prevProps) { // In case reset is pushed while in Overview screen
@@ -80,6 +62,19 @@ export default class TimersList extends Component {
   componentWillUnmount() {
     clearTimeout(this.timeoutRefresh);
     this.mounted = false;
+  }
+
+  _setTimeoutRefresh() {
+    var now = new Date();
+    for (let i = 0; i < this.realm.objects('Timers').length; i++) {
+      if (now - this.realm.objects('Timers')[i].list[0].createdAt < this.realm.objects('Timers')[i].list[0].timeLength * 60 * 60 * 1000) {
+        this.timeoutRefresh = setTimeout(() => {
+          this._onRefresh();
+          this._setTimeoutRefresh();
+        }, (this.realm.objects('Timers')[i].list[0].timeLength * 60 * 60 * 1000) - (now - this.realm.objects('Timers')[i].list[0].createdAt));
+        return;
+      }
+    }
   }
 
   async _checkReset() {
@@ -129,8 +124,8 @@ export default class TimersList extends Component {
       if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
       if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
 
-      this.list = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
-      this.mounted && this.setState({dataSource: this.list});
+      var dataSource = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
+      this.mounted && this.setState({dataSource});
       this.props.resetTicketCounter();
       setTimeout(() => {
         Realm.clearTestState();
@@ -138,7 +133,7 @@ export default class TimersList extends Component {
         this.realm.write(() => {
           this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
           this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
-          this.realm.create('Coordinates', {latitude: 0, longitude: 0});
+          this.realm.create('Coordinates', {latitude: 0, longitude: 0, time: 0});
           this.realm.create('Ticketed', {list: []});
           this.realm.create('Expired', {list: []});
         });
@@ -181,8 +176,8 @@ export default class TimersList extends Component {
       if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
       if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
 
-      this.list = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
-      this.mounted && this.setState({dataSource: this.list});
+      var dataSource = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
+      this.mounted && this.setState({dataSource});
       this.props.resetTicketCounter();
       this.props.navigation.state.params = undefined;
       setTimeout(() => {
@@ -191,7 +186,7 @@ export default class TimersList extends Component {
         this.realm.write(() => {
           this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
           this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
-          this.realm.create('Coordinates', {latitude: 0, longitude: 0});
+          this.realm.create('Coordinates', {latitude: 0, longitude: 0, time: 0});
           this.realm.create('Ticketed', {list: []});
           this.realm.create('Expired', {list: []});
         });
@@ -211,12 +206,6 @@ export default class TimersList extends Component {
       });
     });
 
-    for (let timerObj in this.list) {
-      if (this.list[timerObj].list === timers) {
-        // Reassign the list property to empty object to nullify its reference
-        this.list[timerObj].list = {};
-      }
-    }
     setTimeout(() => {
       this.realm.write(() => {
         this.realm.delete(timers);
@@ -225,16 +214,32 @@ export default class TimersList extends Component {
     }, 2000);
   }
 
+  _getAndSaveCoords() {
+    if (new Date() - this.realm.objects('Coordinates')[0].time > 300000) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.latitude = parseFloat(position.coords.latitude);
+          this.longitude = parseFloat(position.coords.longitude);
+          this.realm.write(() => {
+            this.realm.objects('Coordinates')[0].latitude = this.latitude;
+            this.realm.objects('Coordinates')[0].longitude = this.longitude;
+            this.realm.objects('Coordinates')[0].time = new Date() / 1;
+          });
+          this.mounted && this.setState({ updatedLocation: true }) && this._onRefresh();
+        }, () => {},
+        {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
+      );
+    }
+  }
+
   _onRefresh() {
-    this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
-    this.list = insertionSortModified(this.list);
     this.mounted && this.setState({
       refreshing: true,
-      dataSource: this.list,
+      dataSource: insertionSortModified(this.realm.objects('Timers').filtered('list.createdAt >= 0')),
+      updateRows: this.state.updateRows + 1,
+      updatedLocation: false,
     });
-    this.mounted && this.setState({refreshing: false, updateRows: this.state.updateRows + 1, updatedLocation: false});
-    clearTimeout(this.timeoutRefresh);
-    this.timeoutRefresh = setTimeout(() => this._onRefresh(), 300000);
+    setTimeout(() => { this.mounted && this.setState({refreshing: false})}, 1500);
   }
 
   _renderItem(data: object = {list: [{'createdAt': 0}]}): object { // Supplement a fake createdAt prop for FlatList Key && Row render based on empty value.
