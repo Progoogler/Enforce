@@ -64,7 +64,7 @@ export default class StaticNavigation extends Component {
 StaticNavigation.propTypes = {
   closeModal: PropTypes.func,
   navigation: PropTypes.object,
-  timerList: PropTypes.boolean,
+  timerList: PropTypes.bool,
   title: PropTypes.string.isRequired,
 }
 
