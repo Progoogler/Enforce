@@ -10,7 +10,6 @@ import {
   View,
 } from 'react-native';
 import FlatList from 'react-native/Libraries/Lists/FlatList';
-import { NavigationActions } from'react-navigation';
 import PropTypes from 'prop-types';
 import Realm from 'realm';
 
@@ -26,15 +25,14 @@ import {
   xxlargeFontSize,
 } from '../../styles/common';
 
+/*global require*/
 export default class History extends Component {
   constructor() {
     super();
-    this.realm = new Realm();
-    this.list = this._reverseRealmList(this.realm.objects('Ticketed')[0]['list']); // Display most recent first.
-    this.ticketedList = this.list;
+    this.realm = new Realm(); 
     this.state = {
       animating: true,
-      dataSource: this.list,
+      dataSource: this._reverseRealmList(this.realm.objects('Ticketed')[0]['list']), // Display most recent first.
       dateTransition: false,
       uri: '',
       isConnected: true,
@@ -43,15 +41,16 @@ export default class History extends Component {
       selected: "Today's Tickets",
       showMaximizedImage: false,
     }
-    this.userId = null;
-    this.userSettings = null;
+    this.mounted = false;
+    this.profileId = null;
+    this.profileSettings = null;
   }
 
   static navigationOptions = {
     drawerLabel: 'History',
     drawerIcon: () => (
       <Image
-        source={require('../../../../shared/images/page-icon.png')} /*global require*/
+        source={require('../../../../shared/images/page-icon.png')} 
         style={[styles.icon]}
       />
     )
@@ -97,6 +96,7 @@ export default class History extends Component {
            style={styles.flatlist}
            data={this.state.dataSource}
            ItemSeparatorComponent={this._renderSeparator}
+           removeClippedSubviews={true}
            renderItem={this._renderItem.bind(this)}
            keyExtractor={this._keyExtractor} 
         />
@@ -111,12 +111,10 @@ export default class History extends Component {
     return (
       <Row
         data={data.item}
-        NavigationActions={NavigationActions}
-        navigation={this.props.navigation}
         selected={this.state.selected}
         maximizeOrMinimizeImage={this.maximizeOrMinimizeImage.bind(this)}
-        userId={this.userId}
-        userSettings={this.userSettings}
+        profileId={this.profileId}
+        profileSettings={this.profileSettings}
         getTicketImage={getTicketImage}
         dateTransition={this.state.dateTransition}
         />
@@ -132,25 +130,35 @@ export default class History extends Component {
   }
 
   componentWillMount() {
-    this._mounted = true;
+    this.mounted = true;
     this._getHistoryDates();
   }
 
+  componentDidMount() {
+    this._getProfileInfo();
+  }
+
   componentWillUnmount() {
-    this._mounted = false;
+    this.mounted = false;
+  }
+
+  async _getProfileInfo() {
+    this.profileSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
+    this.profileId = await AsyncStorage.getItem('@Enforce:profileId');
+    this.profileSettings = JSON.parse(this.profileSettings);
   }
 
   async _getHistoryDates() {
-    this.dateCount = await AsyncStorage.getItem('@Enforce:dateCount');
+    var dateCount = await AsyncStorage.getItem('@Enforce:dateCount');
     var dates = [];
-    if (this.dateCount) {
-        this.dateCount = JSON.parse(this.dateCount);
+    if (dateCount) {
+        dateCount = JSON.parse(dateCount);
         dates.push(<Picker.Item label="Today's Tickets" value="Today's Tickets" key={-2}/>);
         dates.push(<Picker.Item label="Today's Expired" value="Today's Expired" key={-1}/>);
-        for (let i = this.dateCount.length - 1; i >= 0; i--) {
-          let month = this.dateCount[i].slice(0, this.dateCount[i].indexOf('-'));
-          let day = this.dateCount[i].slice(this.dateCount[i].indexOf('-') + 1, this.dateCount[i].length);
-          dates.push(<Picker.Item label={this._getPrettyDate(month, day)} value={this.dateCount[i]} key={i}/>);
+        for (let i = dateCount.length - 1; i >= 0; i--) {
+          let month = dateCount[i].slice(0, dateCount[i].indexOf('-'));
+          let day = dateCount[i].slice(dateCount[i].indexOf('-') + 1, dateCount[i].length);
+          dates.push(<Picker.Item label={this._getPrettyDate(month, day)} value={dateCount[i]} key={i}/>);
         }
     } else {
         dates.push(<Picker.Item label="Today's Tickets" value="Today's Tickets" key={-2}/>);
@@ -160,15 +168,12 @@ export default class History extends Component {
   }
 
   async _getHistoryData(date: string): undefined {
-    var userSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
-    this.userId = await AsyncStorage.getItem('@Enforce:profileId');
-    this.userSettings = JSON.parse(userSettings);
     var month = date.slice(0, date.indexOf('-'));
     var day = date.slice(date.indexOf('-') + 1, date.length);
     var prettyDate = this._getPrettyDate(month, day);
 
-    if (this.userId && this.userSettings) {
-        await getHistoryData(this.userSettings.state, this.userSettings.county, this.userId, date, (data) => {
+    if (this.profileId && this.profileSettings) {
+        await getHistoryData(this.profileSettings.state, this.profileSettings.county, this.profileId, date, (data) => {
           this.updating = true;
           if (data === null) {
             this._updateRows([], prettyDate.length);
@@ -185,11 +190,10 @@ export default class History extends Component {
     this.setState({animating: true, dateTransition: true});
     this.selected = value;
     if (value === "Today's Tickets") {
-      this._updateRows(this.ticketedList, value.length);
+      this._updateRows(this._reverseRealmList(this.realm.objects('Ticketed')[0]['list']), value.length);
       return;
     } else if (value === "Today's Expired") {
-      this.list = this._reverseRealmList(this.realm.objects('Expired')[0]['list']);
-      this._updateRows(this.list, value.length);
+      this._updateRows(this._reverseRealmList(this.realm.objects('Expired')[0]['list']), value.length);
       return;
     }
     NetInfo.isConnected.fetch().then(isConnected => {
@@ -198,14 +202,13 @@ export default class History extends Component {
       } else {
         this.setState({animating: false, isConnected: false});
         setTimeout(() => {
-          this._mounted && this.setState({isConnected: true});
+          this.mounted && this.setState({isConnected: true});
         }, 5000);
       }
     });
   }
 
   _updateRows(list: object, length: number): undefined {
-    if (!list) list = this.list;
     this.setState({
       dataSource: list,
       selected: this.selected,
@@ -263,7 +266,7 @@ export default class History extends Component {
         month = 'September';
         break;
       case '10':
-        month = 'Octoboer';
+        month = 'October';
         break;
       case '11':
         month = 'November';
