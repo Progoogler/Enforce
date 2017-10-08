@@ -67,7 +67,8 @@ CoordinatesSchema.schema = {
   name: 'Coordinates',
   properties: {
     latitude: 'float',
-    longitude: 'float'
+    longitude: 'float',
+    time: 'int'
   }
 }
 
