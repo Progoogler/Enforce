@@ -40,6 +40,7 @@ export default class MapApp extends Component {
     this.realm = new Realm();
     this.timeout = null;
     this.timersArray = [];
+    this.timersTimeout = null;
   }
 
   static navigationOptions = {
@@ -104,29 +105,24 @@ export default class MapApp extends Component {
   }
 
   componentWillMount() {
-    navigator.geolocation.getCurrentPosition(
-      position => {
-        this.accessedLocation = true;
-        let latitude = parseFloat(position.coords.latitude);
-        let longitude = parseFloat(position.coords.longitude);
+    if (new Date() - this.realm.objects('Coordinates')[0].time > 150000) {
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          this.accessedLocation = true;
+          let latitude = parseFloat(position.coords.latitude);
+          let longitude = parseFloat(position.coords.longitude);
 
-        if (!this.props.navigation.state.params  || !this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list[0].latitude) {
-           if (this.animatedMap) {
-             this._animateToCoords(latitude, longitude);
-           } else {
-             setTimeout(() => this.mounted && this._animateToCoords(latitude, longitude), 1500);
-           }
-         }
-
-        setTimeout(() => { // Write the coordinates to Realm later after component has finished loading
-          this.realm.write(() => {
-            this.realm.objects('Coordinates')[0].latitude = latitude;
-            this.realm.objects('Coordinates')[0].longitude = longitude;
-          });
-        }, 5000);
-      }, () => {},
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
-    );
+          if (!this.props.navigation.state.params  || !this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list[0].latitude) {
+            if (this.animatedMap) {
+              this._animateToCoords(latitude, longitude);
+            } else {
+              setTimeout(() => this.mounted && this._animateToCoords(latitude, longitude), 1500);
+            }
+          }
+        }, () => {},
+        {enableHighAccuracy: true, timeout: 20000, maximumAge: 10000}
+      );
+    }
   }
 
   componentDidMount() {
@@ -149,6 +145,7 @@ export default class MapApp extends Component {
 
   componentWillUnmount() {
     clearTimeout(this.timeout);
+    clearTimeout(this.timerTimeout);
     this.mounted = false;
     if (this.props.navigation.state.params) {
       // Remove params for fresh state when main Map Button is pressed
@@ -343,6 +340,7 @@ export default class MapApp extends Component {
           }
         }
       }
+      this.timersTimeout = setTimeout(() => this.timersArray = [], 3000);
     }
     return this.markers;
   }
