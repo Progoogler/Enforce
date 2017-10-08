@@ -124,7 +124,7 @@ export default class App extends Component {
     this.realm.write(() => {
       this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1000, count: 0});
       this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
-      this.realm.create('Coordinates', {latitude: 0, longitude: 0});
+      this.realm.create('Coordinates', {latitude: 0, longitude: 0, time: 0});
       this.realm.create('Ticketed', {list: []});
       this.realm.create('Expired', {list: []});
     });
