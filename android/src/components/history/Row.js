@@ -123,7 +123,7 @@ export default class Row extends Component {
     this.mounted && this.setState({animating: true});
     let date = new Date(this.props.data.createdAt);
     let datePath=`${date.getMonth() + 1}-${date.getDate()}`;
-    let refPath = `${this.props.userSettings.county}/${this.props.userId}/${datePath}`;
+    let refPath = `${this.props.profileSettings.state}/${this.props.profileSettings.county}/${this.props.profileId}/${datePath}`;
     let time = this.props.data.createdAt + '';
     this.props.getTicketImage(refPath, time, (url) => {
       if (url === null) {
@@ -155,10 +155,9 @@ export default class Row extends Component {
 Row.propTypes = {
   data: PropTypes.object.isRequired,
   maximizeOrMinimizeImage: PropTypes.func.isRequired,
-  navigation: PropTypes.object.isRequired,
   dateTransition: PropTypes.bool.isRequired,
-  userSettings: PropTypes.object,
-  userId: PropTypes.string,
+  profileSettings: PropTypes.object,
+  profileId: PropTypes.string,
   getTicketImage: PropTypes.func.isRequired,
   selected: PropTypes.string.isRequired,
 }
