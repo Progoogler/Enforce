@@ -69,8 +69,8 @@ export default class MapModal extends Component {
     );
   }
 
-  componentDidMount() {
-    if (this.props.description) this.setState({description: this.props.description});
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.description) this.setState({description: this.props.description});
   }
 
   mapModalAnimating() {
