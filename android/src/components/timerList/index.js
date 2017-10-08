@@ -87,6 +87,7 @@ export default class TimerList extends Component {
            data={this.state.dataSource}
            ItemSeparatorComponent={this._renderSeparator}
            renderItem={this._renderItem.bind(this)}
+           removeClippedSubviews={true}
            onRefresh={this.onRefresh.bind(this)}
            refreshing={this.state.refreshing}
            keyExtractor={this._keyExtractor}
@@ -99,12 +100,8 @@ export default class TimerList extends Component {
     );
   }
 
-  componentWillMount() {
-    this.ticketCount = this.realm.objects('Ticketed')[0]['list'].length;
-  }
-
   componentWillUnmount() {
-    if (this.settings.dataUpload && this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) {
+    if (this.settings.dataUpload && this.refPath && this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) {
       setUserTickets(this.refPath, this.realm.objects('Ticketed')[0]['list']);
     }
     this.props.navigation.state.params = undefined; // Reset params so constructor finds earliest ending Timer upon opening from Navigation menu
@@ -125,6 +122,7 @@ export default class TimerList extends Component {
     if (this.list[0].latitude) this.getDirectionBound();
     this._getUserInfo();
     this._prepareTimeout();
+    this.ticketCount = this.realm.objects('Ticketed')[0]['list'].length;
   }
 
   _prepareTimeout() {
@@ -199,7 +197,10 @@ export default class TimerList extends Component {
   }
 
   async uponTicketed(timer: object, force?: string): undefined { // Handle updates to Realm for regular and forced
-    if (Array.isArray(timer)) timer = this._timer;
+    if (Array.isArray(timer)) {
+      timer = this.timer;
+      this.timer = null;
+    }
     var now = new Date();
     var indexOfTimer; // Keep track of the index so that the next timer's license can be inserted into the search field
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000 || force) {
@@ -248,7 +249,7 @@ export default class TimerList extends Component {
       }
       this.updateRows('clearWarning');
     } else {
-      this._timer = timer;
+      this.timer = timer;
       let timeElapsed = (new Date() - timer.createdAt) / 1000 / 60;
       this.timeElapsed = `${(timeElapsed / 60 + '')[0] !== '0' ? (timeElapsed / 60 + '')[0] + ' hour' : ''} ${Math.floor(timeElapsed % 60)} minutes`;
       this.mounted && this.setState({
