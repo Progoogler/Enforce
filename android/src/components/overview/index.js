@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  AsyncStorage,
   DeviceEventEmitter,
   Image,
   StyleSheet,
@@ -48,6 +49,22 @@ export default class Overview extends Component {
   }
 
   componentDidMount() {
+    this._checkToSetPushNotifications();
+  }
+
+  async _checkToSetPushNotifications() {
+    var prevLen = await AsyncStorage.getItem('@Enforce:timerListsLength');
+    var len = this.realm.objects('Timers').length;
+    if (len > parseInt(prevLen)) {
+      this._setPushNotifications();
+      AsyncStorage.setItem('@Enforce:timerListsLength', `{len}`);
+    } else if (parseInt(prevLen) > len || prevLen === null) {
+      AsyncStorage.setItem('@Enforce:timerListsLength', `{len}`);
+      if (len > 1) this._setPushNotifications();
+    }
+  }
+
+  _setPushNotifications() {
     PushNotification.configure({
       onNotification: function() {
         // @Param notification is an argument passed to this callback
