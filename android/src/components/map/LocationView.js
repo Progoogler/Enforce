@@ -30,18 +30,17 @@ export default class LocationView extends Component {
           left: 0,
           right: 0,
           zIndex: 9,
-        }}>
+        }}
+      >
+        <TouchableWithoutFeedback style={styles.touchable} onPress={() => this._hideAnimatedView()}>
+          <View style={styles.textContainer}>
+            <Text style={styles.description}> { this.state.description } </Text>
+          </View>
+        </TouchableWithoutFeedback>
 
-          <TouchableWithoutFeedback style={styles.touchable} onPress={() => this._hideAnimatedView()}>
-            <View style={styles.textContainer}>
-              <Text style={styles.description}> { this.state.description } </Text>
-            </View>
-          </TouchableWithoutFeedback>
-
-          <TouchableWithoutFeedback onPress={() => this._hideAnimatedView()}>
-            <View style={styles.circle}></View>
-          </TouchableWithoutFeedback>
-
+        <TouchableWithoutFeedback onPress={() => this._hideAnimatedView()}>
+          <View style={styles.circle}></View>
+        </TouchableWithoutFeedback>
       </Animated.View>
     );
   }
@@ -51,8 +50,8 @@ export default class LocationView extends Component {
       this.setState({description: nextProps.description, fadeDescription: nextProps.fadeDescription});
       this._displayAnimatedView();
       if (nextProps.fadeDescription) setTimeout(() => this._hideAnimatedView(), 8000);
-    } else if (nextProps.description === 'Location details were not found.' && !nextProps.fadeDescription && this.displayErrorAutoOnce === 0) {
-      if (this.state.description !== 'Location details were not found.') this.setState({description: nextProps.description});
+    } else if (nextProps.description === 'No location reminder found.' && !nextProps.fadeDescription && this.displayErrorAutoOnce === 0) {
+      if (this.state.description !== 'No location reminder found.') this.setState({description: nextProps.description});
       this._displayAnimatedView();
       this.timeout = setTimeout(() => this._hideAnimatedView(), 7800);
       this.displayErrorAutoOnce++;
