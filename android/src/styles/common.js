@@ -31,7 +31,7 @@ export var timeLimitContainerHeight = responsiveHeight(9);
 // Capture
 export var captureContainerHeight = responsiveHeight(10);
 // LocationInput
-export var textInputContainerHeight = responsiveHeight(18);
+export var textInputContainerHeight = responsiveHeight(25);
 
 /* Search/Navigation */
 export var closeButtonSize = responsiveHeight(3);
