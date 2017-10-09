@@ -30,54 +30,52 @@ export default class LocationInput extends Component {
       <Modal animationType={'slide'}
         transparent={true}
         visible={this.props.visibility}
-        onRequestClose={() => this.props.setModalVisible(this.state.text)} >
-        <View style={styles.container}>
+        onRequestClose={() => this.props.setModalVisible(this.state.text)} 
+      >
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Location Reminder</Text>
+        </View>
 
-          <View style={styles.titleContainer}>
-            <Text style={styles.title}>Location Reminder</Text>
+        <View style={styles.textContainer}>
+          <View style={styles.textInputContainer}>
+            <AutoGrowingTextInput
+              style={styles.textInput}
+              onChange={(event) => this._handleTextInput(event)}
+              underlineColorAndroid={primaryBlue}
+              autoCorrect={false}
+              autoCapitalize={'sentences'}
+              fontSize={26}
+              maxLength={75}
+              minHeight={120}
+              autoFocus={true}
+              value={this.state.text} 
+            />
+            <Text style={styles.count}>{75 - this.state.text.length} characters remaining</Text>
           </View>
-
-          <View style={styles.textContainer}>
-            <View style={styles.textInputContainer}>
-              <AutoGrowingTextInput
-                style={styles.textInput}
-                onChange={(event) => this._handleTextInput(event)}
-                underlineColorAndroid={primaryBlue}
-                autoCorrect={false}
-                autoCapitalize={'sentences'}
-                fontSize={26}
-                maxLength={75}
-                minHeight={120}
-                autoFocus={true}
-                value={this.state.text} 
-              />
-              <Text style={styles.count}>{75 - this.state.text.length} characters remaining</Text>
-            </View>
-          </View>
-              
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={styles.buttonColumn}
-              activeOpacity={.9}
-              onPress={() => {
-                this.setState({text: ''});
-                this.props.setModalVisible('');
-              }}
-            >
-              <Text style={styles.cancelText}>Cancel</Text>
-            </TouchableOpacity>
-            <View style={styles.separator}/>
-            <TouchableOpacity
-              style={styles.buttonColumn}
-              activeOpacity={.9}
-              onPress={() => {
-                this.props.setModalVisible(this.state.text);
-                this.setState({text: ''});
-              }} 
-            >
-              <Text style={styles.doneText}>Done</Text>
-            </TouchableOpacity>
-          </View>
+        </View>
+            
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            style={styles.buttonColumn}
+            activeOpacity={.9}
+            onPress={() => {
+              this.setState({text: ''});
+              this.props.setModalVisible('');
+            }}
+          >
+            <Text style={styles.cancelText}>Cancel</Text>
+          </TouchableOpacity>
+          <View style={styles.separator}/>
+          <TouchableOpacity
+            style={styles.buttonColumn}
+            activeOpacity={.9}
+            onPress={() => {
+              this.props.setModalVisible(this.state.text);
+              this.setState({text: ''});
+            }} 
+          >
+            <Text style={styles.doneText}>Done</Text>
+          </TouchableOpacity>
         </View>
       </Modal>
     );
@@ -94,12 +92,6 @@ LocationInput.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    // backgroundColor: primaryBlue,
-    // marginTop: navigationBarHeight,
-    // padding: '5%',
-    // flex: 1,
-  },
   titleContainer: {
     alignSelf: 'stretch',
     backgroundColor: 'white',
@@ -117,10 +109,9 @@ const styles = StyleSheet.create({
     backgroundColor: primaryBlue,
   },
   textInputContainer: {
+    height: textInputContainerHeight,
     marginLeft: '5%',
     marginRight: '5%',
-    // borderRadius: 10,
-    height: textInputContainerHeight,
   },
   textInput: {
     color: 'white',
@@ -129,7 +120,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     color: 'white',
     marginRight: '2%',
-    // marginTop: '2%',
     marginBottom: '2%',
   },
   buttonRow: {
