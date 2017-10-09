@@ -33,25 +33,25 @@ export default class CameraApp extends Component {
     this.latitude = null;
     this.license = '';
     this.listIndex = 0;
-    this.locationService = false;
+    this.locationMemory = {
+      avgLatDiff: 0,
+      avgLongDiff: 0,
+      locations: [],
+      time: null,
+    };
     this.longitude = null;
     this.mounted = false;
     this.pictureCount = 0;
-    this.profileSettings = null;
     this.profileState = '';
     this.realm = new Realm();
-    this.retry = 0;
-    this.settings = null;
+    this.resetTimeLimit = null;
     this.timeLimit = 1;
   }
 
   static navigationOptions = {
     drawerLabel: 'Camera',
     drawerIcon: () => (
-      <Image
-        source={require('../../../../shared/images/camera-blue.png')}
-        style={[styles.icon]}
-      />
+      <Image source={require('../../../../shared/images/camera-blue.png')}/>
     )
   };
 
@@ -64,9 +64,9 @@ export default class CameraApp extends Component {
 
         <View style={styles.cameraContainer}>
 
-
-        {this.state.imageRecognition ?
-
+        {
+          this.props.screenProps.imageRecognition ?
+          
           <ALPR
             ref={(cam) => this.camera = cam}
             style={styles.camera}
@@ -77,40 +77,36 @@ export default class CameraApp extends Component {
             plateOutlineColor='#ff0000'
             showPlateOutline
             torchMode={ALPR.constants.TorchMode.off}
-            touchToFocus/>
+            touchToFocus
+          />
 
           :
 
           <Camera
-           ref={(cam) => this.camera = cam}
-           style={styles.camera}
-           aspect={Camera.constants.Aspect.fill}
-           captureQuality={Camera.constants.CaptureQuality.high}/>
-
+            ref={(cam) => this.camera = cam}
+            style={styles.camera}
+            aspect={Camera.constants.Aspect.fill}
+            captureQuality={Camera.constants.CaptureQuality.high}
+          />
+          
         }
-
-
         </View>
         <Capture setModalVisible={this.setModalVisible.bind(this)} takePicture={this.takePicture.bind(this)} deletePreviousPicture={this.deletePreviousPicture.bind(this)} />
       </View>
     );
 }
 
-  async componentWillMount() {
-    this.settings = await AsyncStorage.getItem('@Enforce:settings');
-    this.settings = JSON.parse(this.settings);
-    this.profileSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
-    this.profileSettings = JSON.parse(this.profileSettings);
-    this.profileState = this.profileSettings.state;
-    if (this.settings && !this.settings.imageRecognition) this.setState({imageRecognition: false});
-  }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.mounted = true;
+
     this._setCameraTime();
     this._setTimeLimit();
 
-    if (this.settings && this.settings.location) {
+    var settings = await AsyncStorage.getItem('@Enforce:settings');
+    settings = JSON.parse(settings);    
+
+    if (settings && settings.location) {
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
           message: "<h2>Turn On Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
           ok: "OK",
@@ -126,28 +122,66 @@ export default class CameraApp extends Component {
       this.longitude = 0;
       navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
     }
+    var profileSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
+    profileSettings = JSON.parse(profileSettings);
+    this.profileState = profileSettings.state;
   }
 
   componentWillUnmount() {
     this.mounted = false;
-    clearTimeout(this._timeout);
+    clearTimeout(this.resetTimeLimit);
   }
 
   success = (position) => {
     this.latitude = position.coords.latitude;
     this.longitude = position.coords.longitude;
-    this.realm.write(() => {
-      this.realm.objects('Coordinates')[0].latitude = this.latitude;
-      this.realm.objects('Coordinates')[0].longitude = this.longitude;
-    });
-    this.locationService = true;
+
+    console.log('regular coords', this.latitude, this.longitude);
+
+    var now = new Date();
+    if (this.locationMemory.locations.length === 4) {
+
+      if (now - this.locationMemory.time > 30000) {
+        this.locationMemory.locations = [];
+        this.locationMemory.locations.push({
+          lat: this.latitude,
+          long: this.longitude,
+        });
+      } else {
+
+        this.locationMemory.locations.push({
+          lat: this.latitude,
+          long: this.longitude,
+        });
+
+        var latDiffSum = 0,
+            longDiffSum = 0;
+        for (let i = 1; i < 5; i++) {
+          latDiffSum += this.locationMemory.locations[i].lat - this.locationMemory.locations[i - 1].lat;
+          longDiffSum += this.locationMemory.locations[i].long - this.locationMemory.locations[i - 1].long;
+        }
+        this.locationMemory.avgLatDiff = latDiffSum / 5;
+        this.locationMemory.avgLongDiff = longDiffSum / 5;
+      }
+
+    } else {
+      if ((now - this.locationMemory.time > 30000)) {
+        this.locationMemory.locations = [];
+        this.locationMemory.locations.push({
+          lat: this.latitude,
+          long: this.longitude,
+        });
+      } else {
+        this.locationMemory.locations.push({
+          lat: this.latitude,
+          long: this.longitude,
+        });
+      }
+    }
+    this.locationMemory.time = now;
   }
 
-  error = () => {
-    let realmCoords = this.realm.objects('Coordinates')[0];
-    this.latitude = realmCoords.latitude;
-    this.longitude = realmCoords.longitude;
-  }
+  error = () => {}
 
   options = {
     enableHighAccuracy: true,
@@ -163,8 +197,8 @@ export default class CameraApp extends Component {
 
   _setCameraTime() {
     if (!this.realm.objects('Timers')[0]) this._createNewTimerList();
-    let timerSequence = this.realm.objects('TimerSequence')[0];
-    let timeSince = new Date() - timerSequence.timeAccessedAt;
+    var timerSequence = this.realm.objects('TimerSequence')[0];
+    var timeSince = new Date() - timerSequence.timeAccessedAt;
     if (timeSince >= 900000) { // Start a new timer group after every 15 minutes
       this.realm.write(() => {
          timerSequence.timeAccessedAt = new Date() / 1;
@@ -174,14 +208,14 @@ export default class CameraApp extends Component {
       return;
     } else {
       // Start new timer after remaining milliseconds reach 15 minutes
-      this._timeout = setTimeout(this._setCameraTime.bind(this), 900000 - timeSince);
+      this.resetTimeLimit = setTimeout(this._setCameraTime.bind(this), 900000 - timeSince);
     }
     this._setTimerCount();
   }
 
   // Keep track of the length of the number of timers in each Timer list
   _setTimerCount(inc: string = '') {
-    let timerSequence = this.realm.objects('TimerSequence')[0];
+    var timerSequence = this.realm.objects('TimerSequence')[0];
     if (inc) {
       this.realm.write(() => {
         timerSequence.count++;
@@ -199,40 +233,33 @@ export default class CameraApp extends Component {
     }
   }
 
-  takePicture(retry) {
-    if (!retry) {
-      this.pictureCount++;
+  takePicture() {
 
-      if (this.locationService) {
-        navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
-      }
+    this.pictureCount++;
+
+    if (this.latitude && (this.locationMemory.locations.length < 5 || new Date() - this.locationMemory.time > 60000)) {
+      navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
+    } else if (this.latitude) {
+      this.latitude += this.locationMemory.avgLatDiff;
+      this.longitude += this.locationMemory.avgLongDiff;
+      console.log('coords w/ diff', this.latitude, this.longitude, this.locationMemory.avgLatDiff, this.locationMemory.avgLongDiff);
+    } else if (this.latitude === 0 && this.firstCapture) {
+      navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
     }
 
-    if (this.camera === null) {
-      setTimeout(() => this.takePicture(), 500);
-      return;
-    }
     this.camera.capture()
-      .then((data) => {
-        if (this.firstCapture) {
-          setTimeout(() => {
-            this._savePicture(data);
-          }, 1200);
-          this.retry = 0;
-          this.firstCapture = false;
-          return;
-        }
-        this._savePicture(data);
-        this.retry = 0;
-      })
-      .catch(err => {
-        this.retry++;
-        if (this.retry !== 3) {
-          this.takePicture('retry');
-        } else {
-          this.retry = 0;
-        }
-      });
+    .then((data) => {
+      if (this.firstCapture) { 
+        // Delay the first capture in case savePicture attempts before 
+        // components finish loading or location data has not been accessed yet.
+        setTimeout(() => { 
+          this._savePicture(data);
+        }, 1200);
+        this.firstCapture = false;
+        return;
+      }
+      this._savePicture(data);
+    })
   }
 
   deletePreviousPicture(pictureCount?: number) {
@@ -253,15 +280,12 @@ export default class CameraApp extends Component {
     }
     if (length - 1 < 0) return;
     unlink(timer.mediaPath)
-      .then(() => {
-        this.realm.write(() => {
-          this.realm.objects('Timers')[this.listIndex]['list'].splice(pictureCount ? pictureCount - 1 : this.pictureCount - 1, 1);
-          this.realm.delete(timer);
-        });
-      })
-      .catch(() => {
-        //console.warn(err.message);
+    .then(() => {
+      this.realm.write(() => {
+        this.realm.objects('Timers')[this.listIndex]['list'].splice(pictureCount ? pictureCount - 1 : this.pictureCount - 1, 1);
+        this.realm.delete(timer);
       });
+    })
     this.deleting = false;
   }
 
@@ -305,7 +329,6 @@ export default class CameraApp extends Component {
     this._createNewTimerList();
   }
 
-
     _createNewTimerList() {
       Vibration.vibrate();
       this._showNotification();
@@ -321,7 +344,10 @@ export default class CameraApp extends Component {
   }
 }
 
-CameraApp.propTypes = { navigation: PropTypes.object.isRequired };
+CameraApp.propTypes = { 
+  navigation: PropTypes.object.isRequired,
+  screenProps: PropTypes.object.isRequired,
+};
 
 const styles = StyleSheet.create({
   container: {
