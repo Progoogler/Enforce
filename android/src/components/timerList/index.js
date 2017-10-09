@@ -208,7 +208,7 @@ export default class TimerList extends Component {
         // Ticket the first timer in the list
         indexOfTimer = 0;
         this.realm.write(() => {
-          timer.ticketedAt = now / 1;
+          timer.ticketedAt = now / 1; // Divide new Date() by 1 to get an integer to satisfy the Realm type.
           // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
           if (this.license) timer.license = this.license;
           timer.VIN = this.VIN;
@@ -225,7 +225,7 @@ export default class TimerList extends Component {
         }
         if (indexOfTimer) {
           this.realm.write(() => {
-            timer.ticketedAt = new Date() / 1;
+            timer.ticketedAt = now / 1;
             // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
             if (this.license) timer.license = this.license;
             timer.VIN = this.VIN;
@@ -250,7 +250,7 @@ export default class TimerList extends Component {
       this.updateRows('clearWarning');
     } else {
       this.timer = timer;
-      let timeElapsed = (new Date() - timer.createdAt) / 1000 / 60;
+      let timeElapsed = (now - timer.createdAt) / 1000 / 60;
       this.timeElapsed = `${(timeElapsed / 60 + '')[0] !== '0' ? (timeElapsed / 60 + '')[0] + ' hour' : ''} ${Math.floor(timeElapsed % 60)} minutes`;
       this.mounted && this.setState({
         warningVisibility: true,
@@ -272,6 +272,7 @@ export default class TimerList extends Component {
       this.realm.write(() => {
         // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
         if (this.license) timer.license = this.license;
+        timer.ticketedAt = new Date() / 1; // Store the date for the "Expired" data field in history retrieval.
         this.realm.objects('Expired')[0]['list'].push(timer);
         this.list.shift();
       });
@@ -286,6 +287,7 @@ export default class TimerList extends Component {
         this.realm.write(() => {
           // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
           if (this.license) timer.license = this.license;
+          timer.ticketedAt = new Date() / 1;
           this.realm.objects('Expired')[0]['list'].push(timer);
           this.list.splice(parseInt(indexOfTimer), 1);
         });
