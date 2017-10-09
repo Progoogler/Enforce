@@ -38,13 +38,13 @@ export default class Warning extends Component {
                 style={styles.no}
                 activeOpacity={.8}
                 onPress={() => {this.props.clearWarning('clearWarning', 'only')}} >
-                <Text style={styles.noButtonText}>No</Text>
+                <Text style={styles.noButtonText}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.yes}
                 activeOpacity={.6}
                 onPress={() => { this.props.uponTicketed([], 'force')}} >
-                <Text style={styles.yesButtonText}>Yes</Text>
+                <Text style={styles.yesButtonText}>Confirm</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -88,20 +88,21 @@ const styles = StyleSheet.create({
     marginTop: '6%',
   },
   noButtonText: {
-    fontSize: largeFontSize,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  yesButtonText: {
-    fontSize: largeFontSize,
     color: primaryBlue,
+    padding: '8%',
   },
   no: {
-    borderWidth: 1,
+    marginRight: '20%',
+		justifyContent: 'center',
+		alignItems: 'center',
+  },
+  yesButtonText: {
+    color: 'white',
+  },
+  yes: {
     borderRadius: 5,
     backgroundColor: primaryBlue,
-    marginRight: '15%',
-    padding: '3%',
+    padding: '5%',
   },
 });
  
