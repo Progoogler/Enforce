@@ -20,6 +20,7 @@ export default class MapModal extends Component {
     this.state = {
       animating: true,
       description: '',
+      marker: [],
     };
   }
 
@@ -54,13 +55,17 @@ export default class MapModal extends Component {
               longitudeDelta: 0.0060,
             }} >
 
-            <Marker
-              mapModalAnimating={this.mapModalAnimating.bind(this)}
-              coordinate={{
-                latitude: this.props.latitude,
-                longitude: this.props.longitude}} >
-              <Image source={require('../../../../shared/images/blue-pin.png')} />
-            </Marker>
+            { this.state.marker.length ? this.state.marker :
+
+              <Marker
+                mapModalAnimating={this.mapModalAnimating.bind(this)}
+                coordinate={{
+                  latitude: this.props.latitude,
+                  longitude: this.props.longitude}} >
+                <Image source={require('../../../../shared/images/blue-pin.png')} />
+              </Marker>
+
+            }
 
           </AnimatedMap>
 
@@ -69,8 +74,25 @@ export default class MapModal extends Component {
     );
   }
 
+  componentDidMount() {
+    this.props.description.length === 0 ? this.setState({description: 'No location reminder found.'}) : this.setState({description: this.props.description});
+  }
+
   componentWillReceiveProps(nextProps) {
-    if (nextProps.description) this.setState({description: this.props.description});
+    if (nextProps.description && this.state.description === '') this.setState({description: nextProps.description});
+    if (nextProps.latitude) {
+      this.setState({marker: [
+        <Marker
+          mapModalAnimating={this.mapModalAnimating.bind(this)}
+          coordinate={{
+            latitude: this.props.latitude,
+            longitude: this.props.longitude}} 
+            key={1}
+          >
+          <Image source={require('../../../../shared/images/blue-pin.png')} />
+        </Marker>
+      ]});
+    }
   }
 
   mapModalAnimating() {
