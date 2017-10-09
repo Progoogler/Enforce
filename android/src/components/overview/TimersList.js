@@ -20,7 +20,7 @@ export default class TimersList extends Component {
   constructor() {
     super();
     this.realm = new Realm();
-    this.list = insertionSortModified(this.realm.objects('Timers').filtered('list.createdAt >= 0'));
+    this.list = insertionSortModified(this.realm.objects('Timers').filtered('list.createdAt > 0'));
     this.state = {
       dataSource: this.list,
       refreshing: false,
@@ -247,7 +247,7 @@ export default class TimersList extends Component {
 
   _onRefresh() {
     this.refreshed++;
-    if (this.refreshed >= 2 && this.refreshed < 4) this.list = insertionSortModified(this.realm.objects('Timers').filtered('list.createdAt >= 0'));
+    if (this.refreshed >= 2 && this.refreshed < 4) this.list = insertionSortModified(this.realm.objects('Timers').filtered('list.createdAt > 0'));
     this.mounted && this.setState({
       refreshing: true,
       dataSource: this.list,
