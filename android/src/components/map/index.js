@@ -109,8 +109,8 @@ export default class MapApp extends Component {
       navigator.geolocation.getCurrentPosition(
         position => {
           this.accessedLocation = true;
-          let latitude = parseFloat(position.coords.latitude);
-          let longitude = parseFloat(position.coords.longitude);
+          var latitude = parseFloat(position.coords.latitude);
+          var longitude = parseFloat(position.coords.longitude);
 
           if (!this.props.navigation.state.params  || !this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list[0].latitude) {
             if (this.animatedMap) {
@@ -132,7 +132,7 @@ export default class MapApp extends Component {
     this._checkAndDrawPolyline();
     setTimeout(() => {
       if (!this.animatedToMarker && !this.description) {
-        this._displayDescription('Location details were not found.', true);
+        this._displayDescription('No location reminders found.', true);
       } else if (!this.animatedToMarker && this.description) {
         this._displayDescription(this.description);
       } else if (this.props.navigation.state.params && this.description) {
@@ -182,14 +182,14 @@ export default class MapApp extends Component {
       }
     }
 
-    let settings = await AsyncStorage.getItem('@Enforce:settings');
+    var settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);
     if (settings && settings.location && !this.accessedLocation) this.checkLocationAndRender();
   }
 
   _checkAndDrawPolyline() {
     if (this.timersArray.length) {
-      let coords = [];
+      var coords = [];
       this.timersArray.forEach( timer => {
         coords.push({
           'latitude': timer.latitude,
@@ -235,10 +235,10 @@ export default class MapApp extends Component {
   }
 
   _getMarkers() {
-    let lat, long, aux;
-    let soonest = Number.POSITIVE_INFINITY;
+    var lat, long, aux;
+    var soonest = Number.POSITIVE_INFINITY;
     if (!this.props.navigation.state.params) {
-      let lists = this.realm.objects('Timers');
+      var lists = this.realm.objects('Timers');
       lists.forEach((timerList, idx) => {
         if (timerList.list.length > 0) {
           aux = timerList.list[0].createdAt + (timerList.list[0].timeLength * 60 * 60 * 1000);
@@ -364,7 +364,7 @@ export default class MapApp extends Component {
             this.realm.objects('Coordinates')[0].longitude = longitude;
           });
           if (this.mounted && this.state.showError) {
-            if (this.state.description === 'Location details were not found.' && !this.state.fadeDescription) {
+            if (this.state.description === 'No location reminder found.' && !this.state.fadeDescription) {
               this._displayDescription(this.state.description, true);
             }
             this.mounted && this.setState({showError: false, mapPositionBottom: 0});
