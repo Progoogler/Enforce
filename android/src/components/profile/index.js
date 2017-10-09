@@ -181,8 +181,8 @@ export default class Profile extends Component {
     if (this.createdNewUser) {
       Firebase.signInUser(this.state.email, this.state.password);
       setTimeout(() => {
-        let id = Firebase.getCurrentUser();
-        let refPath = `${States[this.state.selectedState]['abbr']}/${this.state.selectedCounty}/${id}`;
+        var id = Firebase.getCurrentUser();
+        var refPath = `${States[this.state.selectedState]['abbr']}/${this.state.selectedCounty}/${id}`;
         AsyncStorage.setItem('@Enforce:refPath', refPath);
         AsyncStorage.setItem('@Enforce:profileId', id);
       }, 1500);
@@ -192,8 +192,8 @@ export default class Profile extends Component {
       Database.deleteUserTickets(this.profile.state, this.profile.county, this.profileId);
       Firebase.signInUser(this.state.email, this.state.password);
       setTimeout(() => {
-        let newId = Firebase.getCurrentUser();
-        let refPath = `${States[this.state.selectedState]['abbr']}/${this.state.selectedCounty}/${newId}`;
+        var newId = Firebase.getCurrentUser();
+        var refPath = `${States[this.state.selectedState]['abbr']}/${this.state.selectedCounty}/${newId}`;
         AsyncStorage.setItem('@Enforce:refPath', refPath);
         AsyncStorage.setItem('@Enforce:profileId', newId);
         Database.transferUserData(refPath, this.data); // Port old data into new account
@@ -337,11 +337,10 @@ export default class Profile extends Component {
   }
 
   _onEmailBlur() {
-    let email = this.state.email;
-    let regexForCom = /.(?=\.com$)/g;
-    let regexForAt = /@{1}/g;
-    let com = regexForCom.test(email);
-    let at = regexForAt.test(email);
+    var regexForCom = /.(?=\.com$)/g;
+    var regexForAt = /@{1}/g;
+    var com = regexForCom.test(this.state.email);
+    var at = regexForAt.test(this.state.email);
     if (!com || !at) {
       this.setState({emailBorder: 'red', emailWarning: true, emailBackground: 'white'});
       return;
