@@ -11,7 +11,8 @@ import PropTypes from 'prop-types';
  
 import {
   largeFontSize,
-  navigationBarHeight,
+  mainButtonsHeight,
+  mediumFontSize,
   primaryBlue,
   textInputContainerHeight,
 } from '../../styles/common';
@@ -31,9 +32,12 @@ export default class LocationInput extends Component {
         visible={this.props.visibility}
         onRequestClose={() => this.props.setModalVisible(this.state.text)} >
         <View style={styles.container}>
-          <View style={styles.containerBorder}>
 
-            <Text style={styles.title}>Location Details</Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Location Reminder</Text>
+          </View>
+
+          <View style={styles.textContainer}>
             <View style={styles.textInputContainer}>
               <AutoGrowingTextInput
                 style={styles.textInput}
@@ -45,30 +49,35 @@ export default class LocationInput extends Component {
                 maxLength={75}
                 minHeight={120}
                 autoFocus={true}
-                value={this.state.text} />
-
-              </View>
+                value={this.state.text} 
+              />
               <Text style={styles.count}>{75 - this.state.text.length} characters remaining</Text>
-              <View style={styles.buttonRow}>
-                <TouchableOpacity
-                  style={styles.cancelButton}
-                  onPress={() => {
-                    this.setState({text: ''});
-                    this.props.setModalVisible('');
-                  }}>
-                  <Text style={styles.cancelText}>Cancel</Text>
-                  </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.doneButton}
-                  activeOpacity={.6}
-                  onPress={() => {
-                    this.props.setModalVisible(this.state.text);
-                    this.setState({text: ''});
-                  }} >
-                  <Text style={styles.doneText}>Done</Text>
-                </TouchableOpacity>
-              </View>
             </View>
+          </View>
+              
+          <View style={styles.buttonRow}>
+            <TouchableOpacity
+              style={styles.buttonColumn}
+              activeOpacity={.9}
+              onPress={() => {
+                this.setState({text: ''});
+                this.props.setModalVisible('');
+              }}
+            >
+              <Text style={styles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
+            <View style={styles.separator}/>
+            <TouchableOpacity
+              style={styles.buttonColumn}
+              activeOpacity={.9}
+              onPress={() => {
+                this.props.setModalVisible(this.state.text);
+                this.setState({text: ''});
+              }} 
+            >
+              <Text style={styles.doneText}>Done</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
     );
@@ -86,56 +95,67 @@ LocationInput.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: primaryBlue,
-    marginTop: navigationBarHeight,
+    // backgroundColor: primaryBlue,
+    // marginTop: navigationBarHeight,
+    // padding: '5%',
+    // flex: 1,
+  },
+  titleContainer: {
+    alignSelf: 'stretch',
+    backgroundColor: 'white',
+    justifyContent: 'center',
     padding: '5%',
   },
-  containerBorder: {
-    backgroundColor: 'white',
-    borderRadius: 5,
-    padding: '6%',
-  },
-  buttonRow: {
-    alignItems: 'center',
-    alignSelf: 'center',
-    flexDirection: 'row',
-    margin: '4%',
-  },
-  cancelButton: {
-      alignItems: 'center',
-      alignSelf: 'flex-end',
-      marginRight: '20%',
-  },
-  cancelText: {
-    color: primaryBlue,
-    padding: '8%',
-  },
   title: {
-    fontWeight: 'bold',
+    color: primaryBlue,
     fontSize: largeFontSize,
-    marginBottom: '4%',
+    fontWeight: 'bold',
     textAlign: 'center',
   },
-  textInputContainer: {
+  textContainer: {
+    alignSelf: 'stretch',
     backgroundColor: primaryBlue,
-    borderRadius: 10,
-    height: textInputContainerHeight,
+  },
+  textInputContainer: {
     marginLeft: '5%',
+    marginRight: '5%',
+    // borderRadius: 10,
+    height: textInputContainerHeight,
   },
   textInput: {
     color: 'white',
   },
   count: {
-    marginLeft: '8%',
-    marginTop: '2%',
+    alignSelf: 'flex-end',
+    color: 'white',
+    marginRight: '2%',
+    // marginTop: '2%',
+    marginBottom: '2%',
   },
-  doneButton: {
+  buttonRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  buttonColumn: {
     alignItems: 'center',
     backgroundColor: primaryBlue,
-    borderRadius: 6,
+    borderColor: 'white',
+    borderTopWidth: 1,
+    flex: .5,
+    height: mainButtonsHeight,
+    justifyContent: 'center',
+  },
+  cancelText: {
+    color: 'white',
+    fontSize: mediumFontSize,
+  },
+  separator: {
+    borderColor: 'white',
+    borderWidth: .5,
+    height: mainButtonsHeight,
   },
   doneText: {
     color: 'white',
-    padding: '5%',
+    fontSize: mediumFontSize,
   },
 });
