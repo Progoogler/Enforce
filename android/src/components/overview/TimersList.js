@@ -20,14 +20,16 @@ export default class TimersList extends Component {
   constructor() {
     super();
     this.realm = new Realm();
+    this.list = insertionSortModified(this.realm.objects('Timers').filtered('list.createdAt >= 0'));
     this.state = {
-      dataSource: insertionSortModified(this.realm.objects('Timers').filtered('list.createdAt >= 0')),
+      dataSource: this.list,
       refreshing: false,
       updateRows: 0,
       updatedLocation: false,
     };
     this.key = 0;
     this.mounted = false;
+    this.refreshed = 0;
     this.timeoutRefresh = null;
   }
 
@@ -40,7 +42,8 @@ export default class TimersList extends Component {
         onRefresh={this._onRefresh.bind(this)}
         refreshing={this.state.refreshing}
         renderItem={this._renderItem.bind(this)}
-        keyExtractor={this._keyExtractor.bind(this)} />
+        keyExtractor={this._keyExtractor.bind(this)} 
+      />
     );
   }
 
@@ -64,22 +67,30 @@ export default class TimersList extends Component {
     this.mounted = false;
   }
 
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if (this.state.dataSource !== nextState.dataSource) {
+  //     console.log('state', this.state.dataSource, nextState.dataSource);
+  //     return true;
+  //   }
+  //   return false;
+  // }
+
   _setTimeoutRefresh() {
     var now = new Date();
-    for (let i = 0; i < this.realm.objects('Timers').length; i++) {
-      if (now - this.realm.objects('Timers')[i].list[0].createdAt < this.realm.objects('Timers')[i].list[0].timeLength * 60 * 60 * 1000) {
+    for (let i = 0; i < this.list.length; i++) {
+      if (now - this.list[i].list[0].createdAt < this.list[i].list[0].timeLength * 60 * 60 * 1000) {
         this.timeoutRefresh = setTimeout(() => {
           this._onRefresh();
           this._setTimeoutRefresh();
-        }, (this.realm.objects('Timers')[i].list[0].timeLength * 60 * 60 * 1000) - (now - this.realm.objects('Timers')[i].list[0].createdAt));
+        }, (this.list[i].list[0].timeLength * 60 * 60 * 1000) - (now - this.list[i].list[0].createdAt));
         return;
       }
     }
   }
 
   async _checkReset() {
-    let today = new Date().getDate();
-    let yesterday = await AsyncStorage.getItem('@Enforce:currentDay');
+    var today = new Date().getDate();
+    var yesterday = await AsyncStorage.getItem('@Enforce:currentDay');
     if (!yesterday) AsyncStorage.setItem('@Enforce:currentDay', `${today}`);
     // If today is a different day than yesterday, reset app; i.e., 24th > 23rd || 2nd - 24th < 0
     if (today > parseInt(yesterday) || today - parseInt(yesterday) < 0) {
@@ -92,12 +103,12 @@ export default class TimersList extends Component {
   }
 
   async _reset() {
-    let refPath = await AsyncStorage.getItem('@Enforce:refPath');
-    let dateCount = await AsyncStorage.getItem('@Enforce:dateCount');
-    let registerDate = await AsyncStorage.getItem('@Enforce:registerDate');
-    let today = new Date();
-    let day = today.getDate() + '';
-    let date = `${today.getMonth() + 1}-${day}`;
+    var refPath = await AsyncStorage.getItem('@Enforce:refPath');
+    var dateCount = await AsyncStorage.getItem('@Enforce:dateCount');
+    var registerDate = await AsyncStorage.getItem('@Enforce:registerDate');
+    var today = new Date();
+    var day = today.getDate() + '';
+    var date = `${today.getMonth() + 1}-${day}`;
     AsyncStorage.setItem('@Enforce:registerDate', date); // Set for next reset
     AsyncStorage.setItem('@Enforce:currentDay', day); // Set for checkReset()
 
@@ -114,15 +125,15 @@ export default class TimersList extends Component {
     dateCount = JSON.stringify(dateCount);
     AsyncStorage.setItem('@Enforce:dateCount', dateCount);
 
-    let timerLists = this.realm.objects('Timers');
-    let ticketList = this.realm.objects('Ticketed');
-    let expiredList = this.realm.objects('Expired');
-    if (timerLists.length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
+    // var timerLists = this.realm.objects('Timers');
+    // var ticketList = this.realm.objects('Ticketed');
+    // var expiredList = this.realm.objects('Expired');
+    if (this.realm.objects('Timers').length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
 
       // Delete corresponding images in the DCIM directory
-      this._loopDeletion(timerLists);
-      if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
-      if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
+      this._loopDeletion(this.realm.objects('Timers'));
+      if (this.realm.objects('Ticketed')[0].list.length > 0) this._loopDeletion(this.realm.objects('Ticketed'), true);
+      if (this.realm.objects('Expired')[0].list.length > 0) this._loopDeletion(this.realm.objects('Expired'), true);
 
       var dataSource = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
       this.mounted && this.setState({dataSource});
@@ -138,6 +149,7 @@ export default class TimersList extends Component {
           this.realm.create('Expired', {list: []});
         });
       }, 3000);
+      DeviceEventEmitter.removeAllListeners('notificationActionReceived');
     }
   }
 
@@ -166,15 +178,15 @@ export default class TimersList extends Component {
   }
 
   _hardReset() { // Only removes current pictures and resets Realm state
-    let timerLists = this.realm.objects('Timers');
-    let ticketList = this.realm.objects('Ticketed');
-    let expiredList = this.realm.objects('Expired');
-    if (timerLists.length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
+    // var timerLists = this.realm.objects('Timers');
+    // var ticketList = this.realm.objects('Ticketed');
+    // var expiredList = this.realm.objects('Expired');
+    if (this.realm.objects('Timers').length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
 
       // Delete corresponding images in the DCIM directory
-      this._loopDeletion(timerLists);
-      if (ticketList[0].list.length > 0) this._loopDeletion(ticketList, true);
-      if (expiredList[0].list.length > 0) this._loopDeletion(expiredList, true);
+      this._loopDeletion(this.realm.objects('Timers'));
+      if (this.realm.objects('Ticketed')[0].list.length > 0) this._loopDeletion(this.realm.objects('Ticketed'), true);
+      if (this.realm.objects('Expired')[0].list.length > 0) this._loopDeletion(this.realm.objects('Expired'), true);
 
       var dataSource = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
       this.mounted && this.setState({dataSource});
@@ -191,6 +203,7 @@ export default class TimersList extends Component {
           this.realm.create('Expired', {list: []});
         });
       }, 3000);
+      DeviceEventEmitter.removeAllListeners('notificationActionReceived');
     }
   }
 
@@ -233,9 +246,11 @@ export default class TimersList extends Component {
   }
 
   _onRefresh() {
+    this.refreshed++;
+    if (this.refreshed >= 2 && this.refreshed < 4) this.list = insertionSortModified(this.realm.objects('Timers').filtered('list.createdAt >= 0'));
     this.mounted && this.setState({
       refreshing: true,
-      dataSource: insertionSortModified(this.realm.objects('Timers').filtered('list.createdAt >= 0')),
+      dataSource: this.list,
       updateRows: this.state.updateRows + 1,
       updatedLocation: false,
     });
