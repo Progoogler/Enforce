@@ -91,6 +91,7 @@ export default class App extends Component {
   }
 
   componentWillMount() {
+    // this._resetRealmState();
     FirebaseInitialize();
     this._checkFirstTimeAccess();
     this._signIn();
