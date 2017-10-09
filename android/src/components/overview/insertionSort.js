@@ -1,35 +1,32 @@
 export default function insertionSortModified(arr: object): array {
-      const aux = [];
+    const aux = [];
 
-      for (let list in arr) {
-        aux.push(arr[list]);
+    for (let list in arr) {
+      aux.push(arr[list]);
+    }
+
+    for(let i = 1; i < aux.length; i++) {
+      let temp = aux[i];
+      
+      if (temp.list[0].createdAt === undefined) continue;
+      let tempElapsed = (temp.list[0].timeLength * 60 * 60 * 1000) - (new Date() - temp.list[0].createdAt);
+
+      for(let j = i - 1; j >= 0; j--) {
+        if (aux[j].list[0].createdAt === undefined) continue;
+        let earlyElapsed = (aux[j].list[0].timeLength * 60 * 60 * 1000) - (new Date() - aux[j].list[0].createdAt);
+
+        if (tempElapsed < earlyElapsed) {
+          swap(aux, j+1, j);
+        } else {
+          break
+        }
       }
-      let n = arr.length,
-          temp;
+    }
+   return aux;
+}
 
-          for(let i = 1; i < n; i++) {
-
-              temp = aux[i];
-              if (temp.list[0].createdAt === undefined) continue;
-              let tempElapsed = new Date() - temp.list[0].createdAt;
-
-              for(var j = i - 1; j >= 0; j--) {
-                if (aux[j].list[0].createdAt === undefined) continue;
-                let earlyElapased = new Date() - aux[j].list[0].createdAt;
-
-                if (((temp.list[0].timeLength * 60 * 60 * 1000) - tempElapsed) > ((aux[j].list[0].timeLength * 60 * 60 * 1000) - earlyElapased)) {
-                   aux[j+1] = aux[j];
-                } else {
-                  break
-                }
-              }
-              aux[j+1] = temp;
-          }
-   let res = [];
-   aux.reverse();
-   for (let i = 0; i < aux.length; i++) {
-     res.push(aux[i]);
-   }
-
-   return res;
+function swap(arr, elm1, elm2) {
+  var temp = arr[elm1];
+  arr[elm1] = arr[elm2];
+  arr[elm2] = temp;
 }
