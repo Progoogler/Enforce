@@ -27,12 +27,10 @@ export default class Row extends Component {
   constructor() {
     super();
     this.distance;
-    this.mounted = false;
-    this.timerLengthPaddingLeft = '10%';
   }
 
   render() {
-    if (this.props.data.list.length <= 1 && !this.props.data.list[0].createdAt) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
+    if (this.props.data.list.length <= 1 && !Object.keys(this.props.data.list).length) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
     return (
           <ScrollView
             style={styles.innerScroll}
@@ -80,40 +78,37 @@ export default class Row extends Component {
   }
 
   componentWillMount() {
+    var timerLengthPaddingLeft;
     if (this.props.data.list.length < 10) {
-      this.timerLengthPaddingLeft = '10%';
+      timerLengthPaddingLeft = '10%';
     } else if (this.props.data.list.length < 100) {
-      this.timerLengthPaddingLeft = '6%';
+      timerLengthPaddingLeft = '6%';
     } else {
-      this.timerLengthPaddingLeft = '3%';
+      timerLengthPaddingLeft = '3%';
     }
     styles.timerRowLength = {
       fontSize: largeFontSize,
       color: primaryBlue,
-      paddingLeft: this.timerLengthPaddingLeft,
+      paddingLeft: timerLengthPaddingLeft,
       fontWeight: 'bold',
       textAlign: 'center',
     };
     this._getDistance();
-    this.timer = this.props.data.list;
-  }
-
-  componentDidMount() {
-    this.mounted = true;
   }
 
   componentWillUpdate() {
+    var timerLengthPaddingLeft;
     if (this.props.data.list.length < 10) {
-      this.timerLengthPaddingLeft = '10%';
+      timerLengthPaddingLeft = '10%';
     } else if (this.props.data.list.length < 100) {
-      this.timerLengthPaddingLeft = '6%';
+      timerLengthPaddingLeft = '6%';
     } else {
-      this.timerLengthPaddingLeft = '3%';
+      timerLengthPaddingLeft = '3%';
     }
     styles.timerRowLength = {
       fontSize: largeFontSize,
       fontWeight: 'bold',
-      paddingLeft: this.timerLengthPaddingLeft,
+      paddingLeft: timerLengthPaddingLeft,
       textAlign: 'center',
       color: primaryBlue,
     };
