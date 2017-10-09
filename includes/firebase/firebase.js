@@ -19,7 +19,7 @@ class Firebase {
         // we skip the "already exists" message which is
         // not an actual error when we're hot-reloading
         if (!/already exists/.test(err.message)) {
-        console.error('Firebase initialization error', err.stack)
+        //console.error('Firebase initialization error', err.stack)
         }
       }
     }
@@ -31,10 +31,10 @@ class Firebase {
     }
 
     static signInUser(userId, password, response) {
-      firebase.auth().signInWithEmailAndPassword(userId, password).catch((err) => {
+      firebase.auth().signInWithEmailAndPassword(userId, password).catch(() => {
         response && response('Cannot sign in.');
-        console.error(`Error signing in: [ERROR ${err.code}] ${err.message}`);
-      })
+        //console.error(`Error signing in: [ERROR ${err.code}] ${err.message}`);
+      });
     }
 
     static changeUserPassword(newPassword) {
