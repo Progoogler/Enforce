@@ -49,13 +49,21 @@ export default class Result extends Component {
               <Image source={{uri: this.props.data.data.mediaUri}} style={styles.image} />
             </TouchableOpacity>
               <View style={styles.dataContainer}>
-                { this.props.data.data.license && this.props.data.data.VIN ?
+                { 
+                  this.props.data.data.license && this.props.data.data.VIN ?
                   <Text><Text style={styles.label}>License:</Text> {this.props.data.data.license + '         '}
-                  <Text style={styles.label}>VIN:</Text> {this.props.data.data.VIN}</Text> :
-                  <Text><Text style={styles.label}>License:</Text> {this.props.data.data.license}</Text> }
+                  <Text style={styles.label}>VIN:</Text> {this.props.data.data.VIN}</Text> 
+                  :
+                  <Text><Text style={styles.label}>License:</Text> {this.props.data.data.license}</Text> 
+                }
 
                 <Text><Text style={styles.label}>Photo taken:</Text> {this._getPrettyTimeFormat(this.props.data.data.createdAt)}</Text>
-                { this.props.data.data.ticketedAt !== 0 ? <Text><Text style={styles.label}>Ticketed:</Text> {this._getPrettyTimeFormat(this.props.data.data.ticketedAt)}</Text> : null }
+                { 
+                  this.props.data.type === 'ticketed' ? 
+                  <Text><Text style={styles.label}>Ticketed:</Text> {this._getPrettyTimeFormat(this.props.data.data.ticketedAt)}</Text> 
+                  : 
+                  <Text><Text style={styles.label}>Expired:</Text> {this._getPrettyTimeFormat(this.props.data.data.ticketedAt)}</Text> 
+                }
                 <Text><Text style={styles.label}>Time limit:</Text> {this._getTimeLimitDesc(this.props.data.data.timeLength)}</Text>
               </View>
               {
