@@ -60,10 +60,7 @@ export default class TimerList extends Component {
   static navigationOptions = {
     drawerLabel: 'Timers',
     drawerIcon: () => (
-      <Image
-        source={require('../../../../shared/images/clock-icon.png')}
-        style={[styles.icon]}
-      />
+      <Image source={require('../../../../shared/images/clock-icon.png')}/>
     )
   };
 
@@ -79,9 +76,11 @@ export default class TimerList extends Component {
           addLicenseToQueue={this.addLicenseToQueue.bind(this)}
         />
 
-        <Title limit={this.list[0] ? this.list[0].timeLength ? this.list[0].timeLength : 0 : 0} bound={this.state.bound} getDirectionBound={this.getDirectionBound.bind(this)}/>
-
-        <Warning timeElapsed={this.timeElapsed} visibility={this.state.warningVisibility} uponTicketed={this.uponTicketed.bind(this)} clearWarning={this.updateRows.bind(this)}/>
+        <Title 
+          limit={this.list[0] ? this.list[0].timeLength ? this.list[0].timeLength : 0 : 0} 
+          bound={this.state.bound} 
+          getDirectionBound={this.getDirectionBound.bind(this)}
+        />
 
         <FlatList
            data={this.state.dataSource}
@@ -94,6 +93,13 @@ export default class TimerList extends Component {
            onScroll={this._handleScroll.bind(this)}
         />
 
+        <Warning 
+          timeElapsed={this.timeElapsed} 
+          visibility={this.state.warningVisibility} 
+          uponTicketed={this.uponTicketed.bind(this)} 
+          clearWarning={this.updateRows.bind(this)}
+        />
+        
         { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : null }
 
       </View>

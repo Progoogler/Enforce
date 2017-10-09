@@ -120,7 +120,7 @@ export default class Search extends Component {
           <TouchableOpacity
             style={styles.button}
             activeOpacity={.6}
-            onPress={ () => { this.handleHistorySearch(this.state.license) }} >
+            onPress={ () => { this._handleHistorySearch(this.state.license) }} >
             <Animated.Text style={{
               color: 'white',
               fontSize: smallFontSize,
@@ -274,7 +274,7 @@ export default class Search extends Component {
 
   // Look through the history of Realm ( TODO: and Firebase??) for a record
   // @PARAM typeOfSearch - Signfy the difference between a VIN and license when input is 4 characters long
-  handleHistorySearch(license: string) {
+  _handleHistorySearch(license: string) {
     
     var vinCheck;
     if (license.length === 4) {
@@ -286,33 +286,11 @@ export default class Search extends Component {
       this.myTextInput.focus();
       return;
     } else {
-      let result;
-      let prevResult = this.state.result;
       
       if (vinCheck) {
-        result = historySearch(license, "vinSearch");
+        historySearch(license, "vinSearch", this.historyResultCallback.bind(this));
       } else {
-        result = historySearch(license);
-      }
-
-      if (result === undefined && prevResult !== 'unfound') {
-        this._noResultNotification(); // TODO QUICK FIX FOR EMPTY BLOCK -- Figure out what goes here!
-      }
-
-      result = result === undefined ? 'unfound' : result;
-      this.setState({result});
-
-
-      if (result !== 'unfound') {
-        // Case for extending the container of Search in any component.
-        this._extendResultContainer();
-        // Case for extending the Menu container of Overview.
-        this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
-        Keyboard.dismiss();
-
-      } else if (result === 'unfound') {
-        this.props.noResultNotificationForMenu && this.props.noResultNotificationForMenu();
-        this._noResultNotification();
+        historySearch(license, false, this.historyResultCallback.bind(this));
       }
 
       // Add license to current Timer in queue in TimerList if in TimerList.
@@ -323,6 +301,27 @@ export default class Search extends Component {
           this._updateLicenseOfTimer();
         }
       }
+    }
+  }
+
+  historyResultCallback(result) {
+    if (result === undefined) {
+      this._noResultNotification(); // TODO QUICK FIX FOR EMPTY BLOCK -- Figure out what goes here!
+    }
+
+    result = result === undefined ? 'unfound' : result;
+    this.setState({result});
+
+    if (result !== 'unfound') {
+      // Case for extending the container of Search in any component.
+      this._extendResultContainer();
+      // Case for extending the Menu container of Overview.
+      this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
+      Keyboard.dismiss();
+
+    } else if (result === 'unfound') {
+      this.props.noResultNotificationForMenu && this.props.noResultNotificationForMenu();
+      this._noResultNotification();
     }
   }
 
