@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
 	Animated,
 	AsyncStorage,
+	Keyboard,
 	Picker,
 	StyleSheet,
 	Text,
@@ -169,12 +170,14 @@ export default class VerifyModal extends Component {
 	_handleCancel() {
 		if (this.props.minimizeVerifyContainerForMenu) this.props.minimizeVerifyContainerForMenu();
 		this.props.minimizeVerifyContainer();
+		Keyboard.dismiss();
 	}
 
 	_handleConfirm() {
 		this.props.handleVINSearch(this.state.license, this.state.state);
 		if (this.props.minimizeVerifyContainerForMenu) this.props.minimizeVerifyContainerForMenu();
 		this.props.minimizeVerifyContainer(this.state.license);
+		Keyboard.dismiss();
 	}
 
 	_onLicenseFocus() {
