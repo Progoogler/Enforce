@@ -35,6 +35,7 @@ export default class MapApp extends Component {
     this.animatedToMarker = false;
     this.animatedMap = undefined;
     this.description = '';
+    this.done = [];
     this.markers = [];
     this.mounted = false;
     this.realm = new Realm();
@@ -161,12 +162,15 @@ export default class MapApp extends Component {
           if (this.timersArray[i].createdAt === this.props.navigation.state.params.timerCreatedAt) {
             this.animatedToMarker = true;
             this.mounted && this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
+            this.done.push(true);
+            return;
           }
         }
       } else {
         if (this.timersArray[0].latitude) {
           this.mounted && this._animateToCoords(this.timersArray[0].latitude, this.timersArray[0].longitude);
           this.animatedToMarker = true;
+          this.done.push(true);
           return;
         } else {
           for (let i = 1; i < this.timersArray.length; i++) {
@@ -175,6 +179,7 @@ export default class MapApp extends Component {
               this.timeout = setTimeout(() => {
                 this.mounted && this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
               }, 1500);
+              this.done.push(true);
               return;
             }
           }
@@ -206,6 +211,8 @@ export default class MapApp extends Component {
           />
         ]
       });
+      this.done.length === 2 ? this.timersArray = [] : this.done.push(true);
+      return;
     }
   }
 
@@ -254,7 +261,8 @@ export default class MapApp extends Component {
               coordinate={{latitude: timerList.list[0].latitude, longitude: timerList.list[0].longitude}}
               onPress={() => this._displayDescription(timerList.list[0].description)}
               onDragEnd={(e) => this._resetTimerCoords(timerList.list[0].index, e.nativeEvent.coordinate, null)}
-              key={timerList.list[0].createdAt} >
+              key={timerList.list[0].createdAt} 
+            >
               <CustomCallout timer={timerList.list[0]} title="1st"/>
             </Marker>
           );
@@ -279,13 +287,16 @@ export default class MapApp extends Component {
           if (this.timersArray[i].createdAt === this.props.navigation.state.params.timerCreatedAt) {
             this.description = this.timersArray[i].description ? this.timersArray[i].description : '';
             
-            this.markers.push(<Marker draggable
+            this.markers.push(
+              <Marker draggable
                 coordinate={{latitude: this.timersArray[i].latitude, longitude: this.timersArray[i].longitude}}
                 onPress={() => this._displayDescription(this.timersArray[i].description)}
                 onDragEnd={(e) => this._resetTimerCoords(this.timersArray[i].index, e.nativeEvent.coordinate, i)}
-                key={this.timersArray[i].createdAt} >
+                key={this.timersArray[i].createdAt} 
+              >
                 <CustomCallout timer={this.timersArray[i]} title="1st" />
-              </Marker>);
+              </Marker>
+            );
             if (this.timersArray[i].latitude) {
               this.animatedToMarker = true;
               this.timeout = setTimeout(() => {
@@ -299,11 +310,13 @@ export default class MapApp extends Component {
 
         this.description = this.timersArray[0].description ? this.timersArray[0].description : '';
 
-        this.markers.push(<Marker draggable
+        this.markers.push(
+          <Marker draggable
             coordinate={{latitude: this.timersArray[0].latitude, longitude: this.timersArray[0].longitude}}
             onPress={() => this._displayDescription(this.timersArray[0].description)}
             onDragEnd={(e) => this._resetTimerCoords(this.timersArray[0].index, e.nativeEvent.coordinate, 0)}
-            key={this.timersArray[0].createdAt} >
+            key={this.timersArray[0].createdAt} 
+          >
             <CustomCallout timer={this.timersArray[0]} title="1st" />
           </Marker>
         );
@@ -311,12 +324,14 @@ export default class MapApp extends Component {
           if (idx !== 0) {
             if (!this.description && timer.description) this.description = timer.description;
             if (timer.latitude) {
-              this.markers.push(<Marker draggable
-                coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
-                onPress={() => this._displayDescription(timer.description)}
-                onDragEnd={(e) => this._resetTimerCoords(this.timersArray[idx].index, e.nativeEvent.coordinate, idx)}
-                key={timer.createdAt} >
-                <CustomCallout timer={timer} secondary={true}/>
+              this.markers.push(
+                <Marker draggable
+                  coordinate={{latitude: timer.latitude, longitude: timer.longitude}}
+                  onPress={() => this._displayDescription(timer.description)}
+                  onDragEnd={(e) => this._resetTimerCoords(this.timersArray[idx].index, e.nativeEvent.coordinate, idx)}
+                  key={timer.createdAt} 
+                >
+                  <CustomCallout timer={timer} secondary={true}/>
                 </Marker>
               );
             }
@@ -342,6 +357,7 @@ export default class MapApp extends Component {
       }
       this.timersTimeout = setTimeout(() => this.timersArray = [], 3000);
     }
+    this.done.length === 2 ? this.timersArray = [] : this.done.push(true);
     return this.markers;
   }
 
