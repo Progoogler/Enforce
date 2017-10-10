@@ -264,7 +264,7 @@ export default class Profile extends Component {
           // Change Firebase account if either email or county IDs change.
           if (this.profile.email !== this.state.email || this.profile.county !== this.state.selectedCounty) {
 
-            var refPath = `/${this.profile.state}/${this.profile.county}/${this.profielId}/`;
+            var refPath = `/${this.profile.state}/${this.profile.county}/${this.profileId}/`;
             // TODO Check if user wants to retain old records first
             Database.getUserTickets(refPath, (data) => {
               // Gather all the data on current account to ready for port.

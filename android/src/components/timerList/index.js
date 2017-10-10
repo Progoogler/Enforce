@@ -108,7 +108,17 @@ export default class TimerList extends Component {
 
   componentWillUnmount() {
     if (this.settings.dataUpload && this.refPath && this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) {
-      setUserTickets(this.refPath, this.realm.objects('Ticketed')[0]['list']);
+      var date = new Date();
+      date = `${date.getMonth() + 1}-${date.getDate()}`;
+      var refPath = `/${this.refPath}/${date}`;
+      var ticketedImage = {};
+      for (let i = 0; i < this.realm.objects('Ticketed')[0]['list'].length; i++) {
+        ticketedImage[this.realm.objects('Ticketed')[0]['list'][i].license ?
+         this.realm.objects('Ticketed')[0]['list'][i].license :
+          this.realm.objects('Ticketed')[0]['list'][i].createdAt] =
+           this.realm.objects('Ticketed')[0]['list'][i];
+      }
+      setUserTickets(refPath, ticketedImage);
     }
     this.props.navigation.state.params = undefined; // Reset params so constructor finds earliest ending Timer upon opening from Navigation menu
     clearTimeout(this.timeoutRefresh);
