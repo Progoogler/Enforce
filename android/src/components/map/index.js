@@ -186,10 +186,7 @@ export default class MapApp extends Component {
         }
       }
     }
-
-    var settings = await AsyncStorage.getItem('@Enforce:settings');
-    settings = JSON.parse(settings);
-    if (settings && settings.location && !this.accessedLocation) this.checkLocationAndRender();
+    if (this.props.screenProps.locationReminder && !this.accessedLocation) this.checkLocationAndRender();
   }
 
   _checkAndDrawPolyline() {
@@ -396,6 +393,7 @@ export default class MapApp extends Component {
 
 MapApp.propTypes = {
   navigation: PropTypes.object.isRequired,
+  screenProps: PropTypes.object.isRequired,
 }
 
 const styles = StyleSheet.create({
