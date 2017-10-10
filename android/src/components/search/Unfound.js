@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import PropTypes from 'prop-types';
@@ -31,14 +32,26 @@ export default class Result extends Component {
           vinCheck ? 
           <Text style={styles.text}>No result for VIN #  <Text style={styles.license}>{ this.props.license }</Text></Text> 
           :
-          <Text style={styles.text}>No result for license #  <Text style={styles.license}>{ this.props.license }</Text></Text>
+          <View>
+            <Text style={styles.text}>No result for license #  <Text style={styles.license}>{ this.props.license }</Text></Text>
+            <TouchableOpacity
+              activeOpacity={.9}
+              onPress={() => this.props.deepSearch()}
+              style={styles.searchTouch}
+            >
+              <Text style={styles.searchText}>Deep Search</Text>
+            </TouchableOpacity>
+          </View>
         }
       </View>
     );
   }
 }
 
-Result.propTypes = { license: PropTypes.string.isRequired };
+Result.propTypes = { 
+  deepSearch: PropTypes.func.isRequired,
+  license: PropTypes.string.isRequired,
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -54,6 +67,13 @@ const styles = StyleSheet.create({
   },
   license: {
     color: primaryBlue,
+  },
+  searchText: {
+    color: primaryBlue,
+    textAlign: 'center',
+  },
+  searchTouch: {
+    // alignSelf: 'flex-end',
   },
 });
  
