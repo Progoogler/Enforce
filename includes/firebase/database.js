@@ -41,14 +41,10 @@ class Database {
   */
 
   static getUserTickets(refPath, callback) {
-    let tickets;
     firebase.database().ref(refPath).on('value', (snapshot) => {
-
-      tickets = snapshot.val();
-      callback(tickets);
-
+      callback(snapshot.val());
     });
-}
+  }
 
   static deleteUserTickets(stateId, countyId, userId) {
     let userTicketPath = `/${stateId}/${countyId}/${userId}/`;
