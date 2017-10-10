@@ -158,7 +158,7 @@ export default class Menu extends Component {
           duration: 600,
         },
       ).start();
-    }, 1800);
+    }, 3000);
   }
 
   toggleVerifyContainer(open) {
