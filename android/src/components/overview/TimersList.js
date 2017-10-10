@@ -67,14 +67,6 @@ export default class TimersList extends Component {
     this.mounted = false;
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if (this.state.dataSource !== nextState.dataSource) {
-  //     console.log('state', this.state.dataSource, nextState.dataSource);
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
   _setTimeoutRefresh() {
     var now = new Date();
     for (let i = 0; i < this.list.length; i++) {
@@ -125,9 +117,6 @@ export default class TimersList extends Component {
     dateCount = JSON.stringify(dateCount);
     AsyncStorage.setItem('@Enforce:dateCount', dateCount);
 
-    // var timerLists = this.realm.objects('Timers');
-    // var ticketList = this.realm.objects('Ticketed');
-    // var expiredList = this.realm.objects('Expired');
     if (this.realm.objects('Timers').length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
 
       // Delete corresponding images in the DCIM directory
@@ -178,9 +167,6 @@ export default class TimersList extends Component {
   }
 
   _hardReset() { // Only removes current pictures and resets Realm state
-    // var timerLists = this.realm.objects('Timers');
-    // var ticketList = this.realm.objects('Ticketed');
-    // var expiredList = this.realm.objects('Expired');
     if (this.realm.objects('Timers').length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
 
       // Delete corresponding images in the DCIM directory
