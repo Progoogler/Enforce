@@ -82,11 +82,19 @@ export default class App extends Component {
     super();
     this.state = {
       imageRecognition: false,
+      locationReminder: false,
     };
   }
   render() {
     return (
-        <AppNavigator screenProps={{imageRecognition: this.state.imageRecognition, updateImageRecognition: this.getCameraType.bind(this)}}/>
+        <AppNavigator 
+          screenProps={{
+            imageRecognition: this.state.imageRecognition, 
+            locationReminder: this.state.locationReminder,
+            updateImageRecognition: this.getCameraType.bind(this),
+            updateLocationReminder: this.getLocationSetting.bind(this),
+          }}
+        />
     );
   }
 
@@ -95,17 +103,24 @@ export default class App extends Component {
     FirebaseInitialize();
     this._checkFirstTimeAccess();
     this._signIn();
-    this.getCameraType();
+    this._getSettings();
   }
 
-  async getCameraType(settingsUpdate: boolean) {
-    if (settingsUpdate === true || settingsUpdate === false) {
-      this.setState({imageRecognition: settingsUpdate});
-    } else {
-      var settings = await AsyncStorage.getItem('@Enforce:settings');
-      settings = JSON.parse(settings);    
-      if (settings && settings.imageRecognition) this.setState({imageRecognition: true});
+  async _getSettings() {
+    var settings = await AsyncStorage.getItem('@Enforce:settings');
+    settings = JSON.parse(settings);
+    if (settings) {
+      if (settings.imageRecognition) this.setState({imageRecognition: true});
+      if (settings.location) this.setState({locationReminder: true});
     }
+  }
+
+  getCameraType(settingsUpdate: boolean) {
+    this.setState({imageRecognition: settingsUpdate});
+  }
+
+  getLocationSetting(settingsUpdate: boolean) {
+    this.setState({locationReminder: settingsUpdate});
   }
 
   async _checkFirstTimeAccess() {
