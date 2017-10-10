@@ -45,7 +45,6 @@ export default class Settings extends Component {
         <Navigation navigation={this.props.navigation} title={'Settings'} />
         <Text style={styles.title}>Control System</Text>
 
-
         <View style={styles.row}>
           <Text style={styles.settingDesc}>Show notifications when timers expire</Text>
           <View style={styles.slider}>
@@ -63,7 +62,7 @@ export default class Settings extends Component {
           <Text style={styles.settingDesc}>Reminder to turn on GPS</Text>
           <View style={styles.slider}>
             <Switch
-              onValueChange={(value) => this.setState({location: value})}
+              onValueChange={(value) => this._toggleLocationReminder(value)}
               onTintColor="green"
               style={{marginBottom: 10}}
               thumbTintColor={primaryBlue}
@@ -150,6 +149,11 @@ export default class Settings extends Component {
     } else {
       this.setState({imageUpload: false});
     }
+  }
+
+  _toggleLocationReminder(boolean) {
+    this.setState({location: boolean});
+    if (boolean !== this.settings.location) this.props.screenProps.updateLocationReminder(boolean);
   }
 
   _toggleImageRecognition(boolean) {
