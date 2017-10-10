@@ -157,6 +157,7 @@ export default class Search extends Component {
 
             <Result
               data={this.state.result}
+              deepSearch={this.deepSearch.bind(this)}
               navigation={this.props.navigation}
               license={this.state.license}
               resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
@@ -311,13 +312,10 @@ export default class Search extends Component {
   }
 
   historyResultCallback(result) {
-    if (result === undefined) {
-      this._noResultNotification(); // TODO QUICK FIX FOR EMPTY BLOCK -- Figure out what goes here!
-      
-      getLicenseHistory(this.refPath, this.dates, this.state.license, (res) => {
-        setTimeout(() => this._databaseResult(res), 2000);
-      });
-    }
+    // if (result === undefined) {
+    //   this._noResultNotification(); // TODO QUICK FIX FOR EMPTY BLOCK -- Figure out what goes here!
+
+    // }
 
     result = result === undefined ? 'unfound' : result;
     this.setState({result});
@@ -330,13 +328,27 @@ export default class Search extends Component {
       Keyboard.dismiss();
 
     } else if (result === 'unfound') {
+      if (this.props.historyScreen) this.deepSearch();
       this.props.noResultNotificationForMenu && this.props.noResultNotificationForMenu();
       this._noResultNotification();
     }
   }
 
+  deepSearch() { // Look for license in Firebase.
+    getLicenseHistory(this.refPath, this.dates, this.state.license, (res) => {
+      this._databaseResult(res);
+    });
+  }
+
   _databaseResult(results) { console.log('database result', results);
     if (results.length) {
+      if (this.props.historyScreen) {
+        if (results.length > 1) {
+          this.props.displayFirebaseResult(results);
+          Keyboard.dismiss();
+          return;
+        }
+      }
       var result = {};
       result['type'] = 'ticketed';
       result['data'] = results[0];
@@ -346,6 +358,11 @@ export default class Search extends Component {
       // Case for extending the Menu container of Overview.
       this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
       Keyboard.dismiss();
+    } else {
+      setTimeout(() => {
+        this.props.noResultNotificationForMenu && this.props.noResultNotificationForMenu();
+        this._noResultNotification();
+      }, 2000);
     }
   }
 
@@ -428,7 +445,7 @@ export default class Search extends Component {
           },
         ),
       ]).start();
-    }, 1800);
+    }, 3000);
   }
 
   _extendVerifyContainer() {
@@ -603,21 +620,23 @@ export default class Search extends Component {
 }
 
 Search.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  timerList: PropTypes.bool,
-  shouldResetLicense: PropTypes.func,
-  minimizeResultContainer: PropTypes.func,
-  minimizeMenuContainer: PropTypes.func,
-  resizeMenuContainer: PropTypes.func,
-  noResultNotificationForMenu: PropTypes.func,
-  closeSearch: PropTypes.func,
-  toggleVerifyContainer: PropTypes.func,
   addLicenseToQueue: PropTypes.func,
-  refreshTimerList: PropTypes.func,
+  closeSearch: PropTypes.func,
+  displayFirebaseResult: PropTypes.func,
+  historyScreen: PropTypes.bool,
   licenseParam: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.string
   ]),
+  minimizeMenuContainer: PropTypes.func,
+  minimizeResultContainer: PropTypes.func,
+  navigation: PropTypes.object.isRequired,
+  noResultNotificationForMenu: PropTypes.func,
+  refreshTimerList: PropTypes.func,
+  resizeMenuContainer: PropTypes.func,
+  shouldResetLicense: PropTypes.func,
+  timerList: PropTypes.bool,
+  toggleVerifyContainer: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
