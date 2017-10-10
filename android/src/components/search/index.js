@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   Animated,
+  AsyncStorage,
   Image,
   Keyboard,
   StyleSheet,
@@ -12,6 +13,7 @@ import {
 import PropTypes from 'prop-types';
 import Realm from 'realm';
 
+import { getLicenseHistory } from '../../../../includes/firebase/database';
 import historySearch from './historySearch';
 import Result from './Result';
 import VerifyModal from './Verify';
@@ -212,6 +214,7 @@ export default class Search extends Component {
     if (this.props.timerList) this.keyboardDidHideForTimerListListener = Keyboard.addListener('keyboardDidHideForTimerList', this._keyboardDidHideForTimerList.bind(this));
     this.mounted = true;
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+    this._getAsyncData();
   }
 
   _keyboardDidHide() {
@@ -245,6 +248,12 @@ export default class Search extends Component {
     }
   }
 
+  async _getAsyncData() {
+    this.refPath = await AsyncStorage.getItem('@Enforce:refPath');
+    this.dates = await AsyncStorage.getItem('@Enforce:dateCount');
+    this.dates = JSON.parse(this.dates);  
+  }
+
   _openSearch() {
     this.state.result !== null && this.minimizeResultContainer();
     this.props.minimizeMenuContainer && this.props.minimizeMenuContainer();
@@ -273,33 +282,30 @@ export default class Search extends Component {
   }
 
   // Look through the history of Realm ( TODO: and Firebase??) for a record
-  // @PARAM typeOfSearch - Signfy the difference between a VIN and license when input is 4 characters long
   _handleHistorySearch(license: string) {
     
-    var vinCheck;
-    if (license.length === 4) {
-      vinCheck = parseInt(license) + '';
-      vinCheck = vinCheck.length === 4 ? true : false;
-    }
-
     if (license.length === 0) {
       this.myTextInput.focus();
       return;
-    } else {
-      
-      if (vinCheck) {
-        historySearch(license, "vinSearch", this.historyResultCallback.bind(this));
-      } else {
-        historySearch(license, false, this.historyResultCallback.bind(this));
-      }
+    }
 
-      // Add license to current Timer in queue in TimerList if in TimerList.
-      if (this.props.timerList) {
-        if (!this.props.licenseParam.license) {
-          this.props.addLicenseToQueue(license); // TODO Decide if a historySearch() press should warrant adding license to queue
-        } else {
-          this._updateLicenseOfTimer();
-        }
+    if (license.length === 4) {
+      var vinCheck = parseInt(license) + '';
+      vinCheck = vinCheck.length === 4 ? true : false;
+    }
+      
+    if (vinCheck) {
+      historySearch(license, "vinSearch", this.historyResultCallback.bind(this));
+    } else {
+      historySearch(license, "license", this.historyResultCallback.bind(this));
+    }
+
+    // Add license to current Timer in queue in TimerList if in TimerList.
+    if (this.props.timerList) {
+      if (!this.props.licenseParam.license) {
+        this.props.addLicenseToQueue(license); // TODO Decide if a historySearch() press should warrant adding license to queue
+      } else {
+        this._updateLicenseOfTimer();
       }
     }
   }
@@ -307,6 +313,10 @@ export default class Search extends Component {
   historyResultCallback(result) {
     if (result === undefined) {
       this._noResultNotification(); // TODO QUICK FIX FOR EMPTY BLOCK -- Figure out what goes here!
+      
+      getLicenseHistory(this.refPath, this.dates, this.state.license, (res) => {
+        setTimeout(() => this._databaseResult(res), 2000);
+      });
     }
 
     result = result === undefined ? 'unfound' : result;
@@ -322,6 +332,20 @@ export default class Search extends Component {
     } else if (result === 'unfound') {
       this.props.noResultNotificationForMenu && this.props.noResultNotificationForMenu();
       this._noResultNotification();
+    }
+  }
+
+  _databaseResult(results) { console.log('database result', results);
+    if (results.length) {
+      var result = {};
+      result['type'] = 'ticketed';
+      result['data'] = results[0];
+      this.setState({result});
+      // Case for extending the container of Search in any component.
+      this._extendResultContainer();
+      // Case for extending the Menu container of Overview.
+      this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
+      Keyboard.dismiss();
     }
   }
 
