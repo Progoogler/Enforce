@@ -59,7 +59,11 @@ export default class History extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Navigation navigation={this.props.navigation}/>
+        <Navigation 
+          historyDisplay={this.displayFirebaseResult.bind(this)}
+          historyScreen={true} 
+          navigation={this.props.navigation} 
+        />
         <ImageModal 
           uri={this.state.uri} 
           visibility={this.state.showMaximizedImage} 
@@ -117,7 +121,7 @@ export default class History extends Component {
         profileSettings={this.profileSettings}
         getTicketImage={getTicketImage}
         dateTransition={this.state.dateTransition}
-        />
+      />
     );
   }
 
@@ -140,6 +144,14 @@ export default class History extends Component {
 
   componentWillUnmount() {
     this.mounted = false;
+  }
+
+  displayFirebaseResult(results: array) {
+    if (results.length <= 1) return;
+    // Select Picker at the first object's Date
+    var length = this._parseDate(results[0].createdAt);
+    // UpdateRows() w/ the data
+    this._updateRows(results, length);
   }
 
   async _getProfileInfo() {
@@ -165,6 +177,15 @@ export default class History extends Component {
         dates.push(<Picker.Item label="Today's Expired" value="Today's Expired" key={-1}/>);
     }
     this.setState({items: dates, animating: false});
+  }
+
+  _parseDate(date) {
+    var dateObj = new Date(date);
+    var month = dateObj.getMonth() + 1;
+    var day = dateObj.getDate();
+    var prettyDate = this._getPrettyDate(month, day);
+    this.selected = `${month}-${day}`;
+    return prettyDate.length;
   }
 
   async _getHistoryData(date: string): undefined {
