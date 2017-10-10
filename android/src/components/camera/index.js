@@ -22,7 +22,6 @@ export default class CameraApp extends Component {
   constructor() {
     super();
     this.state = {
-      imageRecognition: true,
       modalVisible: false,
       newTimer: false,
     };
@@ -101,12 +100,9 @@ export default class CameraApp extends Component {
     this.mounted = true;
 
     this._setCameraTime();
-    this._setTimeLimit();
+    this._setTimeLimit();  
 
-    var settings = await AsyncStorage.getItem('@Enforce:settings');
-    settings = JSON.parse(settings);    
-
-    if (settings && settings.location) {
+    if (this.props.screenProps.locationReminder) {
       LocationServicesDialogBox.checkLocationServicesIsEnabled({
           message: "<h2>Turn On Location ?</h2>Enforce wants to change your device settings:<br/><br/>Use GPS, Wi-Fi, and cell network for location<br/><br/>",
           ok: "OK",
