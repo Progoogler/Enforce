@@ -19,6 +19,7 @@ import historySearch from './historySearch';
 import Result from './Result';
 import VerifyModal from './Verify';
 import {
+  navBarContainerHeight,
   noResultContainerHeight,
   noResultHeight,
   primaryBlue,
@@ -27,6 +28,7 @@ import {
   searchContainerHeight,
   separatorHeight,
   smallFontSize,
+  staticCenterPoint,
   textInputOffset,
   underlineWidth,
   verificationContainerHeight,
@@ -70,21 +72,34 @@ export default class Search extends Component {
       >
 
         <View style={styles.headerContainer}>
+          <TouchableHighlight
+            onPress={() => this._openSearch()}
+            style={styles.searchIcon} 
+            underlayColor={primaryBlue}
+          >
+            <Image source={require('../../../../shared/images/search-icon.png')}/>
+          </TouchableHighlight>
 
-        <TouchableHighlight
-          onPress={ () => this._openSearch() }
-          underlayColor={primaryBlue}
-          style={styles.searchIcon} >
-          <Image source={require('../../../../shared/images/search-icon.png')} />
-        </TouchableHighlight>
+          <TouchableHighlight
+            onPress={() => {
+              Keyboard.dismiss();
+              this.props.navigation.navigate('DrawerOpen');
+            }}
+            underlayColor={primaryBlue}
+            style={styles.headerNavigation}
+          >
+            <Image source={require('../../../../shared/images/menu-icon.jpg')}/>
+          </TouchableHighlight>
+        </View>
 
           <Animated.View
             style={{
-              marginLeft: this.cursorMarginLeft,
               position: 'absolute',
-              top: '35%', // TODO Fix this percentage into a responsive percentage of height of device
+              marginLeft: this.cursorMarginLeft,
+              top: 24,
               width: '30%',
-            }}>
+            }}
+          >
             <TextInput
               autoCapitalize={'characters'}
               autoCorrect={false}
@@ -92,44 +107,47 @@ export default class Search extends Component {
               fontSize={24}
               keyboardType={'numeric'}
               maxLength={7}
-              onChangeText={(license) => { this.handleTextInput(license) }}
+              onChangeText={(license) => this.handleTextInput(license)}
               ref={(ref) => { this.myTextInput = ref }}
               underlineColorAndroid={'transparent'}
-              value={this.state.license} />
+              value={this.state.license} 
+            />
           </Animated.View>
-
-          <TouchableHighlight
-            onPress={ () => {
-              Keyboard.dismiss();
-              this.props.navigation.navigate('DrawerOpen')
-            }}
-            underlayColor={primaryBlue}
-            style={styles.headerNavigation} >
-            <Image source={require('../../../../shared/images/menu-icon.jpg')} />
-          </TouchableHighlight>
-        </View>
-
 
         <Animated.View
           style={{
             alignSelf: 'center',
-            borderColor: 'white',
             borderWidth: .35,
+            borderColor: 'white',
             opacity: this.underlineOpacity,
+            position: 'absolute',
+            top: navBarContainerHeight,
             width: this.underline,
           }}
         />
 
-        <Animated.View style={{
-            opacity: this.buttonOpacity,
-            flex: 1,
-            flexDirection: 'row', }} >
+        <Animated.View 
+          style={{
+            borderColor: 'white',
+            borderWidth: .35,
+            height: this.separatorHeight, 
+            position: 'absolute',
+            marginLeft: staticCenterPoint,
+            top: navBarContainerHeight,
+          }} 
+        />
 
+        <Animated.View 
+          style={{
+            flex: 1,
+            flexDirection: 'row', 
+            opacity: this.buttonOpacity,
+          }} 
+        >
           <TouchableOpacity
             style={styles.button}
             activeOpacity={.6}
-            onPress={ () => { this._handleHistorySearch(this.state.license)}} 
-          >
+            onPress={ () => { this._handleHistorySearch(this.state.license) }} >
             <Animated.Text 
               style={{
                 color: 'white',
@@ -141,16 +159,10 @@ export default class Search extends Component {
             </Animated.Text>
           </TouchableOpacity>
 
-          <Animated.View style={{
-            borderColor: 'white',
-            borderWidth: .35,
-            height: this.separatorHeight, }} 
-          />
-
           <TouchableOpacity
             style={styles.button}
             activeOpacity={.6}
-            onPress={ () => { this.handleVINSearch(this.state.license)}} >
+            onPress={ () => { this.handleVINSearch(this.state.license) }} >
             <Animated.Text 
               style={{
                 color: 'white',
@@ -163,43 +175,44 @@ export default class Search extends Component {
           </TouchableOpacity>
         </Animated.View>
 
-          <Animated.View 
-            style={{
-              alignSelf: 'stretch',
-              height: this.resultHeight,
-              opacity: this.containerOpacity,
-            }}
-          >
+        <Animated.View 
+          style={{
+            alignSelf: 'stretch',
+            height: this.resultHeight,
+            opacity: this.containerOpacity,
+          }}
+        >
+          { 
+            this.state.result ?
 
-        { 
-          this.state.result ?
+              <Result
+                closeSearch={this.props.closeSearch} 
+                data={this.state.result}
+                deepSearch={this.deepSearch.bind(this)}
+                license={this.state.license}
+                minimizeResultContainer={this.minimizeResultContainer.bind(this)}
+                navigation={this.props.navigation}
+                resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
+              /> 
 
-            <Result
-              closeSearch={this.props.closeSearch} 
-              data={this.state.result}
-              deepSearch={this.deepSearch.bind(this)}
-              license={this.state.license}
-              minimizeResultContainer={this.minimizeResultContainer.bind(this)}
-              navigation={this.props.navigation}
-              resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
-            /> 
-            :
-            <View
-              style={{
-                alignItems: 'center',
-                alignSelf: 'stretch',
-                height: resultHeight,
-                justifyContent: 'center',
-              }}
-            >
-              <ActivityIndicator
-                animating={this.state.animating}
-                size='small' 
-              />
-            </View>
-              
-        }
-          </Animated.View>
+              :
+
+              <View
+                style={{
+                  alignItems: 'center',
+                  alignSelf: 'stretch',
+                  height: resultHeight,
+                  justifyContent: 'center',
+                }}
+              >
+                <ActivityIndicator
+                  animating={this.state.animating}
+                  size='small' 
+                />
+              </View> 
+          }
+        </Animated.View>
+
 
         <Animated.View 
           style={{
@@ -208,7 +221,6 @@ export default class Search extends Component {
             opacity: this.containerOpacity,
           }}
         >
-
           <VerifyModal 
             handleTextInput={this.handleTextInput.bind(this)}
             handleVINSearch={this.handleVINSearch.bind(this)}
@@ -216,7 +228,6 @@ export default class Search extends Component {
             minimizeVerifyContainer={this.minimizeVerifyContainer.bind(this)}
             minimizeVerifyContainerForMenu={this.props.toggleVerifyContainer}
           /> 
-      
         </Animated.View>
 
       </Animated.View>
@@ -594,7 +605,6 @@ export default class Search extends Component {
       ),
     ]).start();
     this.setState({license: '', result: null});
-    // console.log('container height', this.containerHeight, 'result height', this.resultHeight)
     Keyboard.dismiss();
     this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
     this.marginValue = windowCenterPoint;
@@ -639,31 +649,37 @@ export default class Search extends Component {
   _fadeContainer() {
     Animated.parallel([
       Animated.timing(
-        this.buttonOpacity,{
+        this.buttonOpacity, {
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
-        this.containerHeight,{
+        this.containerHeight, {
           toValue: searchContainerHeight,
           duration: 700,
         },
       ),
       Animated.timing(
-        this.underlineOpacity,{
+        this.underlineOpacity, {
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
-        this.underline,{
+        this.underline, {
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
-        this.containerOpacity,{
+        this.containerOpacity, {
+          toValue: 0,
+          duration: 700,
+        },
+      ),
+      Animated.timing(
+        this.separatorHeight, {
           toValue: 0,
           duration: 700,
         },
