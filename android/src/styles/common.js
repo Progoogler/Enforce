@@ -44,6 +44,7 @@ export var resultContainerHeight = height * .34;
 export var resultHeight = height * .14;
 export var searchContainerHeight = height * .18;
 export var separatorHeight = responsiveHeight(5);
+export var staticCenterPoint = width / 2;
 export var textInputOffset = PixelRatio.get() * 2;
 export var titleFontSize = responsiveFontSize(3.5);
 export var underlineWidth = responsiveWidth(40);
