@@ -184,6 +184,7 @@ export default class Profile extends Component {
         var id = Firebase.getCurrentUser();
         var refPath = `${States[this.state.selectedState]['abbr']}/${this.state.selectedCounty}/${id}`;
         AsyncStorage.setItem('@Enforce:refPath', refPath);
+        this.props.screenProps.updateRefPath(refPath);
         AsyncStorage.setItem('@Enforce:profileId', id);
       }, 1500);
       return;
@@ -195,6 +196,7 @@ export default class Profile extends Component {
         var newId = Firebase.getCurrentUser();
         var refPath = `${States[this.state.selectedState]['abbr']}/${this.state.selectedCounty}/${newId}`;
         AsyncStorage.setItem('@Enforce:refPath', refPath);
+        this.props.screenProps.updateRefPath(refPath);
         AsyncStorage.setItem('@Enforce:profileId', newId);
         Database.transferUserData(refPath, this.data); // Port old data into new account
       }, 1500);
