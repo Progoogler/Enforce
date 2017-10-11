@@ -60,7 +60,7 @@ export default class History extends Component {
     return (
       <View style={styles.container}>
         <Navigation 
-          historyDisplay={this.displayFirebaseResult.bind(this)}
+          displayFirebaseResult={this.displayFirebaseResult.bind(this)}
           historyScreen={true} 
           navigation={this.props.navigation} 
         />
@@ -149,9 +149,11 @@ export default class History extends Component {
   displayFirebaseResult(results: array) {
     if (results.length <= 1) return;
     // Select Picker at the first object's Date
-    var length = this._parseDate(results[0].createdAt);
-    // UpdateRows() w/ the data
-    this._updateRows(results, length);
+    this._parseDate(results[0].createdAt, (length) => { console.log('len', length)
+      // UpdateRows() w/ the data
+      this._updateRows(results, length);
+    });
+    // this._updateRows(results, length);
   }
 
   async _getProfileInfo() {
@@ -179,13 +181,13 @@ export default class History extends Component {
     this.setState({items: dates, animating: false});
   }
 
-  _parseDate(date) {
+  _parseDate(date, cb) {
     var dateObj = new Date(date);
-    var month = dateObj.getMonth() + 1;
-    var day = dateObj.getDate();
+    var month = dateObj.getMonth() + 1 + '';
+    var day = dateObj.getDate() + '';
     var prettyDate = this._getPrettyDate(month, day);
     this.selected = `${month}-${day}`;
-    return prettyDate.length;
+    cb(prettyDate.length);
   }
 
   async _getHistoryData(date: string): undefined {
