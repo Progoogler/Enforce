@@ -16,6 +16,7 @@ import historySearch from './historySearch';
 import Result from './Result';
 import VerifyModal from './Verify';
 import {
+  navBarContainerHeight,
   noResultContainerHeight,
   noResultHeight,
   primaryBlue,
@@ -24,6 +25,7 @@ import {
   searchContainerHeight,
   separatorHeight,
   smallFontSize,
+  staticCenterPoint,
   textInputOffset,
   underlineWidth,
   verificationContainerHeight,
@@ -56,122 +58,146 @@ export default class Search extends Component {
 
   render() {
     return (
-      <Animated.View style={{
-        zIndex: 10,
-        height: this.containerHeight,
-        alignSelf: 'stretch',
-        backgroundColor: primaryBlue, }} >
+      <Animated.View 
+        style={{
+          alignSelf: 'stretch',
+          backgroundColor: primaryBlue,
+          height: this.containerHeight,
+          zIndex: 10,
+        }} 
+      >
 
         <View style={styles.headerContainer}>
+          <TouchableHighlight
+            onPress={() => this._openSearch()}
+            style={styles.searchIcon} 
+            underlayColor={primaryBlue}
+          >
+            <Image source={require('../../../../shared/images/search-icon.png')}/>
+          </TouchableHighlight>
 
-        <TouchableHighlight
-          onPress={ () => this._openSearch() }
-          underlayColor={primaryBlue}
-          style={styles.searchIcon} >
-          <Image source={require('../../../../shared/images/search-icon.png')} />
-        </TouchableHighlight>
+          <TouchableHighlight
+            onPress={() => {
+              Keyboard.dismiss();
+              this.props.navigation.navigate('DrawerOpen');
+            }}
+            underlayColor={primaryBlue}
+            style={styles.headerNavigation}
+          >
+            <Image source={require('../../../../shared/images/menu-icon.jpg')}/>
+          </TouchableHighlight>
+        </View>
 
           <Animated.View
             style={{
               position: 'absolute',
-              top: '35%', // TODO Fix this percentage into a responsive percentage of height of device
-              width: '30%',
               marginLeft: this.cursorMarginLeft,
-            }}>
+              top: 24,
+              width: '30%',
+            }}
+          >
             <TextInput
-              ref={(ref) => { this.myTextInput = ref }}
-              onChangeText={(license) => { this.handleTextInput(license) }}
-              maxLength={7}
-              fontSize={24}
               autoCapitalize={'characters'}
-              keyboardType={'numeric'}
               autoCorrect={false}
               autoFocus={ this.props.timerList ? false : true }
+              fontSize={24}
+              keyboardType={'numeric'}
+              maxLength={7}
+              onChangeText={(license) => this.handleTextInput(license)}
+              ref={(ref) => { this.myTextInput = ref }}
               underlineColorAndroid={'transparent'}
-              value={this.state.license} />
+              value={this.state.license} 
+            />
           </Animated.View>
-
-          <TouchableHighlight
-            onPress={ () => {
-              Keyboard.dismiss();
-              this.props.navigation.navigate('DrawerOpen')
-            }}
-            underlayColor={primaryBlue}
-            style={styles.headerNavigation} >
-            <Image source={require('../../../../shared/images/menu-icon.jpg')} />
-          </TouchableHighlight>
-        </View>
-
 
         <Animated.View
           style={{
             alignSelf: 'center',
             borderWidth: .35,
             borderColor: 'white',
-            width: this.underline,
             opacity: this.underlineOpacity,
-        }}/>
+            position: 'absolute',
+            top: navBarContainerHeight,
+            width: this.underline,
+          }}
+        />
 
-        <Animated.View style={{
-            opacity: this.buttonOpacity,
+        <Animated.View 
+          style={{
+            borderColor: 'white',
+            borderWidth: .35,
+            height: this.separatorHeight, 
+            position: 'absolute',
+            marginLeft: staticCenterPoint,
+            top: navBarContainerHeight,
+          }} 
+        />
+
+        <Animated.View 
+          style={{
             flex: 1,
-            flexDirection: 'row', }} >
-
+            flexDirection: 'row', 
+            opacity: this.buttonOpacity,
+          }} 
+        >
           <TouchableOpacity
             style={styles.button}
             activeOpacity={.6}
             onPress={ () => { this._handleHistorySearch(this.state.license) }} >
-            <Animated.Text style={{
-              color: 'white',
-              fontSize: smallFontSize,
-              opacity: this.textFade, }}>History</Animated.Text>
+            <Animated.Text 
+              style={{
+                color: 'white',
+                fontSize: smallFontSize,
+                opacity: this.textFade, 
+              }}
+            >
+              {'History'}
+            </Animated.Text>
           </TouchableOpacity>
-
-          <Animated.View style={{
-            borderColor: 'white',
-            borderWidth: .35,
-            height: this.separatorHeight, }} 
-          />
 
           <TouchableOpacity
             style={styles.button}
             activeOpacity={.6}
             onPress={ () => { this.handleVINSearch(this.state.license) }} >
-            <Animated.Text style={{
-            color: 'white',
-            fontSize: smallFontSize,
-            opacity: this.textFade, }}>VIN</Animated.Text>
+            <Animated.Text 
+              style={{
+                color: 'white',
+                fontSize: smallFontSize,
+                opacity: this.textFade, 
+              }}
+            >
+              {'VIN'}
+            </Animated.Text>
           </TouchableOpacity>
         </Animated.View>
 
         <Animated.View 
           style={{
-            opacity: this.containerOpacity,
-            height: this.resultHeight,
             alignSelf: 'stretch',
+            height: this.resultHeight,
+            opacity: this.containerOpacity,
           }}
         >
           { this.state.result ?
 
             <Result
-              data={this.state.result}
-              navigation={this.props.navigation}
-              license={this.state.license}
-              resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
-              minimizeResultContainer={this.minimizeResultContainer.bind(this)}
               closeSearch={this.props.closeSearch} 
+              data={this.state.result}
+              license={this.state.license}
+              minimizeResultContainer={this.minimizeResultContainer.bind(this)}
+              navigation={this.props.navigation}
+              resizeMenuContainer={this.props.resizeMenuContainer}
             /> : null
           }
         </Animated.View>
 
         <Animated.View 
           style={{
-            opacity: this.containerOpacity,
-            height: this.verifyHeight,
             alignSelf: 'stretch',
+            height: this.verifyHeight,
+            opacity: this.containerOpacity,
           }}
         >
-
           <VerifyModal 
             handleTextInput={this.handleTextInput.bind(this)}
             handleVINSearch={this.handleVINSearch.bind(this)}
@@ -179,7 +205,6 @@ export default class Search extends Component {
             minimizeVerifyContainer={this.minimizeVerifyContainer.bind(this)}
             minimizeVerifyContainerForMenu={this.props.toggleVerifyContainer}
           /> 
-      
         </Animated.View>
 
       </Animated.View>
@@ -544,38 +569,44 @@ export default class Search extends Component {
   _fadeContainer() {
     Animated.parallel([
       Animated.timing(
-        this.buttonOpacity,{
+        this.buttonOpacity, {
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
-        this.containerHeight,{
+        this.containerHeight, {
           toValue: searchContainerHeight,
           duration: 700,
         },
       ),
       Animated.timing(
-        this.underlineOpacity,{
+        this.underlineOpacity, {
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
-        this.underline,{
+        this.underline, {
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
-        this.containerOpacity,{
+        this.containerOpacity, {
+          toValue: 0,
+          duration: 700,
+        },
+      ),
+      Animated.timing(
+        this.separatorHeight, {
           toValue: 0,
           duration: 700,
         },
       ),
     ]).start();
   }
-
+  
 }
 
 Search.propTypes = {
@@ -601,7 +632,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    height: 100,
+    height: navBarContainerHeight,
   },
   searchIcon: {
     marginLeft: '2%',
