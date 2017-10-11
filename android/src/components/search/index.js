@@ -182,7 +182,6 @@ export default class Search extends Component {
             opacity: this.containerOpacity,
           }}
         >
-<<<<<<< HEAD
           { 
             this.state.result ?
 
@@ -211,18 +210,6 @@ export default class Search extends Component {
                   size='small' 
                 />
               </View> 
-=======
-          { this.state.result ?
-
-            <Result
-              closeSearch={this.props.closeSearch} 
-              data={this.state.result}
-              license={this.state.license}
-              minimizeResultContainer={this.minimizeResultContainer.bind(this)}
-              navigation={this.props.navigation}
-              resizeMenuContainer={this.props.resizeMenuContainer}
-            /> : null
->>>>>>> master
           }
         </Animated.View>
 
@@ -308,7 +295,6 @@ export default class Search extends Component {
   }
 
   async _getAsyncData() {
-    this.refPath = await AsyncStorage.getItem('@Enforce:refPath');
     this.dates = await AsyncStorage.getItem('@Enforce:dateCount');
     this.dates = JSON.parse(this.dates);  
   }
@@ -395,7 +381,7 @@ export default class Search extends Component {
     clearTimeout(this.hideNotification);
     this.setState({result: '', animating: true});
     this._showNoResultNotification();
-    getLicenseHistory(this.refPath, this.dates, this.state.license, (res) => {
+    getLicenseHistory(this.props.screenProps.refPath, this.dates, this.state.license, (res) => {
       this._databaseResult(res);
     });
   }
@@ -675,29 +661,17 @@ export default class Search extends Component {
       ),
       Animated.timing(
         this.underlineOpacity, {
-<<<<<<< HEAD
-=======
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
         this.underline, {
->>>>>>> master
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
-<<<<<<< HEAD
-        this.underline, {
-          toValue: 0,
-          duration: 700,
-        },
-      ),
-      Animated.timing(
-=======
->>>>>>> master
         this.containerOpacity, {
           toValue: 0,
           duration: 700,
@@ -729,6 +703,7 @@ Search.propTypes = {
   navigation: PropTypes.object.isRequired,
   refreshTimerList: PropTypes.func,
   resizeMenuContainer: PropTypes.func,
+  screenProps: PropTypes.object.isRequired,
   shouldResetLicense: PropTypes.func,
   showNoResultNotificationForMenu: PropTypes.func,
   timerList: PropTypes.bool,
