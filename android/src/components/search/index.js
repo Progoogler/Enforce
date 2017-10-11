@@ -182,6 +182,7 @@ export default class Search extends Component {
             opacity: this.containerOpacity,
           }}
         >
+<<<<<<< HEAD
           { 
             this.state.result ?
 
@@ -210,6 +211,18 @@ export default class Search extends Component {
                   size='small' 
                 />
               </View> 
+=======
+          { this.state.result ?
+
+            <Result
+              closeSearch={this.props.closeSearch} 
+              data={this.state.result}
+              license={this.state.license}
+              minimizeResultContainer={this.minimizeResultContainer.bind(this)}
+              navigation={this.props.navigation}
+              resizeMenuContainer={this.props.resizeMenuContainer}
+            /> : null
+>>>>>>> master
           }
         </Animated.View>
 
@@ -662,17 +675,29 @@ export default class Search extends Component {
       ),
       Animated.timing(
         this.underlineOpacity, {
+<<<<<<< HEAD
+=======
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
         this.underline, {
+>>>>>>> master
           toValue: 0,
           duration: 700,
         },
       ),
       Animated.timing(
+<<<<<<< HEAD
+        this.underline, {
+          toValue: 0,
+          duration: 700,
+        },
+      ),
+      Animated.timing(
+=======
+>>>>>>> master
         this.containerOpacity, {
           toValue: 0,
           duration: 700,
@@ -686,7 +711,7 @@ export default class Search extends Component {
       ),
     ]).start();
   }
-
+  
 }
 
 Search.propTypes = {
@@ -715,7 +740,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    height: 100,
+    height: navBarContainerHeight,
   },
   searchIcon: {
     marginLeft: '2%',
