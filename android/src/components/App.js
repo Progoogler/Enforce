@@ -85,7 +85,8 @@ export default class App extends Component {
       imageUpload: false,
       imageRecognition: false,
       locationReminder: false,
-      refPath: null,
+      profileState: '',
+      refPath: '',
     };
   }
   render() {
@@ -96,11 +97,13 @@ export default class App extends Component {
             imageUpload: this.state.imageUpload,
             imageRecognition: this.state.imageRecognition, 
             locationReminder: this.state.locationReminder,
+            profileState: this.state.profileState,
             refPath: this.state.refPath,
             updateDataUpload: this.setDataUpload.bind(this),
             updateImageUpload: this.setImageUpload.bind(this),
             updateImageRecognition: this.setCameraType.bind(this),
             updateLocationReminder: this.setLocationSetting.bind(this),
+            updateProfileState: this.updateProfileState.bind(this),
             updateRefPath: this.updateRefPath.bind(this),
           }}
         />
@@ -124,6 +127,9 @@ export default class App extends Component {
       if (!settings.dataUpload) this.setState({dataUpload: false});
       if (settings.imageUpload) this.setState({imageUpload: true});
     }
+    var profileSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
+    profileSettings = JSON.parse(profileSettings);
+    if (profileSettings) this.setState({profileState: profileSettings.state});
     var refPath = await AsyncStorage.getItem('@Enforce:refPath');
     if (refPath) this.setState({refPath});
   }
@@ -146,6 +152,10 @@ export default class App extends Component {
 
   updateRefPath(refPath: string) {
     this.setState({refPath});
+  }
+
+  updateProfileState(profileState: string) {
+    this.setState({profileState});
   }
 
   async _checkFirstTimeAccess() {
