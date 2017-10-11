@@ -9,10 +9,10 @@ class Database {
    * @returns {firebase.Promise<any>|!firebase.Promise.<void>}
    */
   static setUserTickets(ticketRefPath, tickets) {
-    return firebase.database().ref(ticketRefPath).set({
+    return firebase.database().ref(ticketRefPath).update({
         tickets: tickets
     });
-  }
+  } 
 
   static transferUserData(refPath, data) {
     return firebase.database().ref(`/${refPath}`).set(
