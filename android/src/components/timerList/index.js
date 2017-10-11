@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  AsyncStorage,
   Image,
   StyleSheet,
   View,
@@ -106,25 +105,6 @@ export default class TimerList extends Component {
     );
   }
 
-  componentWillUnmount() {
-    if (this.settings.dataUpload && this.refPath && this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) {
-      var date = new Date();
-      date = `${date.getMonth() + 1}-${date.getDate()}`;
-      var refPath = `/${this.refPath}/${date}`;
-      var ticketedImage = {};
-      for (let i = this.ticketCount; i < this.realm.objects('Ticketed')[0]['list'].length; i++) {
-        ticketedImage[this.realm.objects('Ticketed')[0]['list'][i].license ?
-         this.realm.objects('Ticketed')[0]['list'][i].license :
-          this.realm.objects('Ticketed')[0]['list'][i].createdAt] =
-           this.realm.objects('Ticketed')[0]['list'][i];
-      }
-      setUserTickets(refPath, ticketedImage);
-    }
-    this.props.navigation.state.params = undefined; // Reset params so constructor finds earliest ending Timer upon opening from Navigation menu
-    clearTimeout(this.timeoutRefresh);
-    this.mounted = false;
-  }
-
   componentDidMount() {
     this.mounted = true;
     if (this.list[0].createdAt === 0 || Object.keys(this.list).length === 0) {
@@ -136,9 +116,26 @@ export default class TimerList extends Component {
       });
     }
     if (this.list[0].latitude) this.getDirectionBound();
-    this._getUserInfo();
     this._prepareTimeout();
     this.ticketCount = this.realm.objects('Ticketed')[0]['list'].length;
+  }
+
+  componentWillUnmount() {
+    if (this.props.screenProps.dataUpload && this.props.screenProps.refPath && this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) {
+      var date = new Date();
+      date = `${date.getMonth() + 1}-${date.getDate()}`;
+      var ticketedImage = {};
+      for (let i = this.ticketCount; i < this.realm.objects('Ticketed')[0]['list'].length; i++) {
+        ticketedImage[this.realm.objects('Ticketed')[0]['list'][i].license ?
+         this.realm.objects('Ticketed')[0]['list'][i].license :
+          this.realm.objects('Ticketed')[0]['list'][i].createdAt] =
+           this.realm.objects('Ticketed')[0]['list'][i];
+      }
+      setUserTickets(`/${this.props.screenProps.refPath}/${date}`, ticketedImage);
+    }
+    this.props.navigation.state.params = undefined; // Reset params so constructor finds earliest ending Timer upon opening from Navigation menu
+    clearTimeout(this.timeoutRefresh);
+    this.mounted = false;
   }
 
   _prepareTimeout() {
@@ -168,13 +165,6 @@ export default class TimerList extends Component {
     var bound = coordinatesBound(this.list[0].latitude, this.list[0].longitude, avgLat, avgLong);
     this.mounted && this.setState({bound});
     setTimeout(() => this.mounted && this.setState({bound: undefined}), 5000);
-  }
-
-  async _getUserInfo() {
-    this.settings = await AsyncStorage.getItem('@Enforce:settings');
-    this.settings = JSON.parse(this.settings);
-    this.refPath = await AsyncStorage.getItem('@Enforce:refPath');
-    this.updateRows();
   }
 
   onRefresh() {
@@ -251,16 +241,15 @@ export default class TimerList extends Component {
         }
       }
       if (this.license) this.resetLicenseAndVIN();
-      if (this.settings.imageUpload) { // Uploads the image to the user's Firebase account
+      if (this.props.screenProps.imageUpload && this.props.screenProps.refPath) { // Uploads the image to the user's Firebase account
         let rnfbURI = RNFetchBlob.wrap(timer.mediaPath);
         Blob
           .build(rnfbURI, {type: 'image/jpg;'})
           .then((blob) => {
             let month = now.getMonth() + 1;
             let day = now.getDate();
-            let refPath = `${this.refPath}/${month}-${day}`;
-            let imagePath = `${timer.createdAt}`;
-            setTicketImage(refPath, imagePath, blob);
+            // setTicketImage(refPath, imagePath, blob);
+            setTicketImage(`${this.props.screenProps.refPath}/${month}-${day}`, `${timer.createdAt}`, blob);
           });
       }
       this.updateRows('clearWarning');
@@ -395,6 +384,7 @@ export default class TimerList extends Component {
 
 TimerList.propTypes = {
   navigation: PropTypes.object.isRequired,
+  screenProps: PropTypes.object.isRequired,
 }
 
 const styles = StyleSheet.create({
