@@ -89,6 +89,7 @@ export default class Result extends Component {
             <Unfound 
               deepSearch={this.props.deepSearch}
               license={this.props.license} 
+              type={this.props.data}
             />
 
         }
