@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  ActivityIndicator,
   Animated,
   AsyncStorage,
   Image,
@@ -38,6 +39,7 @@ export default class Search extends Component {
   constructor() {
     super();
     this.state = {
+      animating: false,
       license: '',
       result: null,
     }
@@ -58,11 +60,14 @@ export default class Search extends Component {
 
   render() {
     return (
-      <Animated.View style={{
-        zIndex: 10,
-        height: this.containerHeight,
-        alignSelf: 'stretch',
-        backgroundColor: primaryBlue, }} >
+      <Animated.View 
+        style={{
+          alignSelf: 'stretch',
+          backgroundColor: primaryBlue,
+          height: this.containerHeight,
+          zIndex: 10,
+        }} 
+      >
 
         <View style={styles.headerContainer}>
 
@@ -75,20 +80,20 @@ export default class Search extends Component {
 
           <Animated.View
             style={{
+              marginLeft: this.cursorMarginLeft,
               position: 'absolute',
               top: '35%', // TODO Fix this percentage into a responsive percentage of height of device
               width: '30%',
-              marginLeft: this.cursorMarginLeft,
             }}>
             <TextInput
-              ref={(ref) => { this.myTextInput = ref }}
-              onChangeText={(license) => { this.handleTextInput(license) }}
-              maxLength={7}
-              fontSize={24}
               autoCapitalize={'characters'}
-              keyboardType={'numeric'}
               autoCorrect={false}
               autoFocus={ this.props.timerList ? false : true }
+              fontSize={24}
+              keyboardType={'numeric'}
+              maxLength={7}
+              onChangeText={(license) => { this.handleTextInput(license) }}
+              ref={(ref) => { this.myTextInput = ref }}
               underlineColorAndroid={'transparent'}
               value={this.state.license} />
           </Animated.View>
@@ -108,11 +113,12 @@ export default class Search extends Component {
         <Animated.View
           style={{
             alignSelf: 'center',
-            borderWidth: .35,
             borderColor: 'white',
-            width: this.underline,
+            borderWidth: .35,
             opacity: this.underlineOpacity,
-        }}/>
+            width: this.underline,
+          }}
+        />
 
         <Animated.View style={{
             opacity: this.buttonOpacity,
@@ -122,11 +128,17 @@ export default class Search extends Component {
           <TouchableOpacity
             style={styles.button}
             activeOpacity={.6}
-            onPress={ () => { this._handleHistorySearch(this.state.license) }} >
-            <Animated.Text style={{
-              color: 'white',
-              fontSize: smallFontSize,
-              opacity: this.textFade, }}>History</Animated.Text>
+            onPress={ () => { this._handleHistorySearch(this.state.license)}} 
+          >
+            <Animated.Text 
+              style={{
+                color: 'white',
+                fontSize: smallFontSize,
+                opacity: this.textFade, 
+              }}
+            >
+              {'History'}
+            </Animated.Text>
           </TouchableOpacity>
 
           <Animated.View style={{
@@ -138,40 +150,62 @@ export default class Search extends Component {
           <TouchableOpacity
             style={styles.button}
             activeOpacity={.6}
-            onPress={ () => { this.handleVINSearch(this.state.license) }} >
-            <Animated.Text style={{
-            color: 'white',
-            fontSize: smallFontSize,
-            opacity: this.textFade, }}>VIN</Animated.Text>
+            onPress={ () => { this.handleVINSearch(this.state.license)}} >
+            <Animated.Text 
+              style={{
+                color: 'white',
+                fontSize: smallFontSize,
+                opacity: this.textFade, 
+              }}
+            >
+              {'VIN'}
+            </Animated.Text>
           </TouchableOpacity>
         </Animated.View>
 
-        <Animated.View 
-          style={{
-            opacity: this.containerOpacity,
-            height: this.resultHeight,
-            alignSelf: 'stretch',
-          }}
-        >
-          { this.state.result ?
+          <Animated.View 
+            style={{
+              alignSelf: 'stretch',
+              height: this.resultHeight,
+              opacity: this.containerOpacity,
+            }}
+          >
+
+        { 
+          this.state.result ?
 
             <Result
+              closeSearch={this.props.closeSearch} 
               data={this.state.result}
               deepSearch={this.deepSearch.bind(this)}
-              navigation={this.props.navigation}
               license={this.state.license}
-              resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
               minimizeResultContainer={this.minimizeResultContainer.bind(this)}
-              closeSearch={this.props.closeSearch} 
-            /> : null
-          }
-        </Animated.View>
+              navigation={this.props.navigation}
+              resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
+            /> 
+            :
+            <View
+              style={{
+                alignItems: 'center',
+                alignSelf: 'stretch',
+                height: resultHeight,
+                justifyContent: 'center',
+              }}
+            >
+              <ActivityIndicator
+                animating={this.state.animating}
+                size='small' 
+              />
+            </View>
+              
+        }
+          </Animated.View>
 
         <Animated.View 
           style={{
-            opacity: this.containerOpacity,
-            height: this.verifyHeight,
             alignSelf: 'stretch',
+            height: this.verifyHeight,
+            opacity: this.containerOpacity,
           }}
         >
 
@@ -312,57 +346,74 @@ export default class Search extends Component {
   }
 
   historyResultCallback(result) {
-    // if (result === undefined) {
-    //   this._noResultNotification(); // TODO QUICK FIX FOR EMPTY BLOCK -- Figure out what goes here!
-
-    // }
-
     result = result === undefined ? 'unfound' : result;
-    this.setState({result});
 
     if (result !== 'unfound') {
-      // Case for extending the container of Search in any component.
-      this._extendResultContainer();
-      // Case for extending the Menu container of Overview.
-      this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
+      this.setState({result});
+      this._extendResultContainer(); // Case for extending the container of Search in any component.
+      this.props.resizeMenuContainer && this.props.resizeMenuContainer(true); // Case for extending the Menu container of Overview.
       Keyboard.dismiss();
-
     } else if (result === 'unfound') {
-      if (this.props.historyScreen) this.deepSearch();
-      this.props.noResultNotificationForMenu && this.props.noResultNotificationForMenu();
-      this._noResultNotification();
+      if (this.props.historyScreen) {
+        this.deepSearch();
+        return;
+      }
+      this.setState({result});
+      this._showNoResultNotification();
+      this.hideNotification = setTimeout(() => {
+        this._hideNoResultNotification();
+      }, 3300);
     }
   }
 
   deepSearch() { // Look for license in Firebase.
+    if (this.state.animating) return;
+    clearTimeout(this.hideNotification);
+    this.setState({result: '', animating: true});
+    this._showNoResultNotification();
     getLicenseHistory(this.refPath, this.dates, this.state.license, (res) => {
       this._databaseResult(res);
     });
   }
 
-  _databaseResult(results) { console.log('database result', results);
+  _databaseResult(results) {
     if (results.length) {
       if (this.props.historyScreen) {
         if (results.length > 1) {
-          this.props.displayFirebaseResult(results);
-          Keyboard.dismiss();
+          setTimeout(() => {
+            this.setState({animating: false});
+            this._hideNoResultNotification();
+            this.props.displayFirebaseResult(results);
+            Keyboard.dismiss();
+          }, 2000);
           return;
         }
       }
       var result = {};
       result['type'] = 'ticketed';
       result['data'] = results[0];
-      this.setState({result});
-      // Case for extending the container of Search in any component.
-      this._extendResultContainer();
-      // Case for extending the Menu container of Overview.
-      this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
-      Keyboard.dismiss();
+      setTimeout(() => {
+        this._hideNoResultNotification();
+      }, 1500);
+      setTimeout(() => {
+        this.setState({result, animating: false})
+        // Case for extending the container of Search in any component.
+        this._extendResultContainer();
+        // Case for extending the Menu container of Overview.
+        this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
+        Keyboard.dismiss();
+      }, 3000);
     } else {
       setTimeout(() => {
-        this.props.noResultNotificationForMenu && this.props.noResultNotificationForMenu();
-        this._noResultNotification();
-      }, 2000);
+        this._hideNoResultNotification();
+      }, 1900);
+      setTimeout(() => {
+        this.setState({result: 'searched', animating: false}); // Display "not found" message w/o the Deep Search option.
+        this._showNoResultNotification();
+        setTimeout(() => {
+          this._hideNoResultNotification();
+        }, 3000);
+      }, 3000);
     }
   }
 
@@ -401,7 +452,8 @@ export default class Search extends Component {
     this.props.refreshTimerList();
   }
 
-  _noResultNotification() {
+  _showNoResultNotification() {
+    this.props.showNoResultNotificationForMenu && this.props.showNoResultNotificationForMenu();
     Animated.parallel([
       Animated.timing(
         this.containerHeight, {
@@ -422,30 +474,30 @@ export default class Search extends Component {
         },
       ),
     ]).start();
+  }
 
-    setTimeout(() => {
-
-      Animated.parallel([
-        Animated.timing(
-          this.containerHeight, {
-            toValue: searchContainerHeight,
-            duration: 600,
-          },
-        ),
-        Animated.timing(
-          this.resultHeight, {
-            toValue: 0,
-            duration: 400,
-          },
-        ),
-        Animated.timing(
-          this.containerOpacity, {
-            toValue: 0,
-            duration: 1000,
-          },
-        ),
-      ]).start();
-    }, 3000);
+  _hideNoResultNotification() {
+    this.props.hideNoResultNotificationForMenu && this.props.hideNoResultNotificationForMenu();
+    Animated.parallel([
+      Animated.timing(
+        this.containerHeight, {
+          toValue: searchContainerHeight,
+          duration: 600,
+        },
+      ),
+      Animated.timing(
+        this.resultHeight, {
+          toValue: 0,
+          duration: 400,
+        },
+      ),
+      Animated.timing(
+        this.containerOpacity, {
+          toValue: 0,
+          duration: 1000,
+        },
+      ),
+    ]).start();
   }
 
   _extendVerifyContainer() {
@@ -520,6 +572,7 @@ export default class Search extends Component {
   }
 
   minimizeResultContainer() {
+    
     Animated.parallel([
       Animated.timing(
         this.containerHeight, {
@@ -540,8 +593,9 @@ export default class Search extends Component {
         },
       ),
     ]).start();
-    Keyboard.dismiss();
     this.setState({license: '', result: null});
+    // console.log('container height', this.containerHeight, 'result height', this.resultHeight)
+    Keyboard.dismiss();
     this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
     this.marginValue = windowCenterPoint;
   }
@@ -623,6 +677,7 @@ Search.propTypes = {
   addLicenseToQueue: PropTypes.func,
   closeSearch: PropTypes.func,
   displayFirebaseResult: PropTypes.func,
+  hideNoResultNotificationForMenu: PropTypes.func,
   historyScreen: PropTypes.bool,
   licenseParam: PropTypes.oneOfType([
     PropTypes.object,
@@ -631,10 +686,10 @@ Search.propTypes = {
   minimizeMenuContainer: PropTypes.func,
   minimizeResultContainer: PropTypes.func,
   navigation: PropTypes.object.isRequired,
-  noResultNotificationForMenu: PropTypes.func,
   refreshTimerList: PropTypes.func,
   resizeMenuContainer: PropTypes.func,
   shouldResetLicense: PropTypes.func,
+  showNoResultNotificationForMenu: PropTypes.func,
   timerList: PropTypes.bool,
   toggleVerifyContainer: PropTypes.func,
 };
