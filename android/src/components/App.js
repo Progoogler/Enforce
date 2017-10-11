@@ -81,12 +81,29 @@ export default class App extends Component {
   constructor() {
     super();
     this.state = {
+      dataUpload: true,
+      imageUpload: false,
       imageRecognition: false,
+      locationReminder: false,
+      refPath: null,
     };
   }
   render() {
     return (
-        <AppNavigator screenProps={{imageRecognition: this.state.imageRecognition, updateImageRecognition: this.getCameraType.bind(this)}}/>
+        <AppNavigator 
+          screenProps={{
+            dataUpload: this.state.dataUpload,
+            imageUpload: this.state.imageUpload,
+            imageRecognition: this.state.imageRecognition, 
+            locationReminder: this.state.locationReminder,
+            refPath: this.state.refPath,
+            updateDataUpload: this.setDataUpload.bind(this),
+            updateImageUpload: this.setImageUpload.bind(this),
+            updateImageRecognition: this.setCameraType.bind(this),
+            updateLocationReminder: this.setLocationSetting.bind(this),
+            updateRefPath: this.updateRefPath.bind(this),
+          }}
+        />
     );
   }
 
@@ -95,17 +112,40 @@ export default class App extends Component {
     FirebaseInitialize();
     this._checkFirstTimeAccess();
     this._signIn();
-    this.getCameraType();
+    this._getSettings();
   }
 
-  async getCameraType(settingsUpdate: boolean) {
-    if (settingsUpdate === true || settingsUpdate === false) {
-      this.setState({imageRecognition: settingsUpdate});
-    } else {
-      var settings = await AsyncStorage.getItem('@Enforce:settings');
-      settings = JSON.parse(settings);    
-      if (settings && settings.imageRecognition) this.setState({imageRecognition: true});
+  async _getSettings() {
+    var settings = await AsyncStorage.getItem('@Enforce:settings');
+    settings = JSON.parse(settings);
+    if (settings) {
+      if (settings.imageRecognition) this.setState({imageRecognition: true});
+      if (settings.location) this.setState({locationReminder: true});
+      if (!settings.dataUpload) this.setState({dataUpload: false});
+      if (settings.imageUpload) this.setState({imageUpload: true});
     }
+    var refPath = await AsyncStorage.getItem('@Enforce:refPath');
+    if (refPath) this.setState({refPath});
+  }
+
+  setCameraType(update: boolean) {
+    this.setState({imageRecognition: update});
+  }
+
+  setLocationSetting(update: boolean) {
+    this.setState({locationReminder: update});
+  }
+
+  setDataUpload(update: boolean) {
+    this.setState({dataUpload: update});
+  }
+
+  setImageUpload(update: boolean) {
+    this.setState({imageUpload: update});
+  }
+
+  updateRefPath(refPath: string) {
+    this.setState({refPath});
   }
 
   async _checkFirstTimeAccess() {

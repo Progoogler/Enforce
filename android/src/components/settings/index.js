@@ -25,7 +25,7 @@ export default class Settings extends Component {
       dataUpload: true,
       imageUpload: false,
       imageRecognition: false,
-      location: true,
+      location: false,
       notifications: true,
     }
   }
@@ -45,7 +45,6 @@ export default class Settings extends Component {
         <Navigation navigation={this.props.navigation} title={'Settings'} />
         <Text style={styles.title}>Control System</Text>
 
-
         <View style={styles.row}>
           <Text style={styles.settingDesc}>Show notifications when timers expire</Text>
           <View style={styles.slider}>
@@ -63,7 +62,7 @@ export default class Settings extends Component {
           <Text style={styles.settingDesc}>Reminder to turn on GPS</Text>
           <View style={styles.slider}>
             <Switch
-              onValueChange={(value) => this.setState({location: value})}
+              onValueChange={(value) => this._toggleLocationReminder(value)}
               onTintColor="green"
               style={{marginBottom: 10}}
               thumbTintColor={primaryBlue}
@@ -135,8 +134,11 @@ export default class Settings extends Component {
   _toggleUploadCondition(boolean) {
     if (boolean) {
       this.setState({dataUpload: true});
+      if (boolean !== this.settings.dataUpload) this.props.screenProps.updateDataUpload(true);
     } else {
       this.setState({dataUpload: false, imageUpload: false});
+      if (boolean !== this.settings.dataUpload) this.props.screenProps.updateDataUpload(false);
+      if (boolean !== this.settings.imageUpload) this.props.screenProps.updateImageUpload(false);
     }
   }
 
@@ -144,12 +146,20 @@ export default class Settings extends Component {
     if (boolean) {
       if (!this.state.dataUpload) {
         this.setState({imageUpload: false});
+        if (boolean !== this.settings.imageUpload) this.props.screenProps.updateImageUpload(false);
       } else {
         this.setState({imageUpload: true});
+        if (boolean !== this.settings.imageUpload) this.props.screenProps.updateImageUpload(true);
       }
     } else {
       this.setState({imageUpload: false});
+      if (boolean !== this.settings.imageUpload) this.props.screenProps.updateImageUpload(false);
     }
+  }
+
+  _toggleLocationReminder(boolean) {
+    this.setState({location: boolean});
+    if (boolean !== this.settings.location) this.props.screenProps.updateLocationReminder(boolean);
   }
 
   _toggleImageRecognition(boolean) {
