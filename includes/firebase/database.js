@@ -9,10 +9,10 @@ class Database {
    * @returns {firebase.Promise<any>|!firebase.Promise.<void>}
    */
   static setUserTickets(ticketRefPath, tickets) {
-    return firebase.database().ref(ticketRefPath).set({
+    return firebase.database().ref(ticketRefPath).update({
         tickets: tickets
     });
-  }
+  } 
 
   static transferUserData(refPath, data) {
     return firebase.database().ref(`/${refPath}`).set(
@@ -41,14 +41,10 @@ class Database {
   */
 
   static getUserTickets(refPath, callback) {
-    let tickets;
     firebase.database().ref(refPath).on('value', (snapshot) => {
-
-      tickets = snapshot.val();
-      callback(tickets);
-
+      callback(snapshot.val());
     });
-}
+  }
 
   static deleteUserTickets(stateId, countyId, userId) {
     let userTicketPath = `/${stateId}/${countyId}/${userId}/`;
