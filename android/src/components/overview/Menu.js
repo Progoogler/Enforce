@@ -48,12 +48,16 @@ export default class Menu extends Component {
         this.state.search ?
 
         <Search 
+          closeSearch={this.closeSearch.bind(this)}
+          hideNoResultNotificationForMenu={this.hideNoResultNotificationForMenu.bind(this)} 
           navigation={this.props.navigation} 
-          noResultNotificationForMenu={this.noResultNotificationForMenu.bind(this)} 
           resizeMenuContainer={this.resizeMenuContainer.bind(this)} 
+          showNoResultNotificationForMenu={this.showNoResultNotificationForMenu.bind(this)} 
           toggleVerifyContainer={this.toggleVerifyContainer.bind(this)}
-          closeSearch={this.closeSearch.bind(this)}/> :
-
+        /> 
+        
+        :
+        
         <View>
           <View style={styles.headerContainer} >
             <TouchableHighlight
@@ -143,22 +147,22 @@ export default class Menu extends Component {
     }
   }
 
-  noResultNotificationForMenu() {
+  showNoResultNotificationForMenu() {
     Animated.timing(
       this.containerHeight, {
         toValue: noResultContainerHeight,
         duration: 600,
       },
     ).start();
+  }
 
-    setTimeout(() => {
-      Animated.timing(
-        this.containerHeight, {
-          toValue: searchContainerHeight,
-          duration: 600,
-        },
-      ).start();
-    }, 3000);
+  hideNoResultNotificationForMenu() {
+    Animated.timing(
+      this.containerHeight, {
+        toValue: searchContainerHeight,
+        duration: 600,
+      },
+    ).start();
   }
 
   toggleVerifyContainer(open) {
