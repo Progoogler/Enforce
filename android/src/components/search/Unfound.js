@@ -32,6 +32,9 @@ export default class Result extends Component {
           vinCheck ? 
           <Text style={styles.text}>No result for VIN #  <Text style={styles.license}>{ this.props.license }</Text></Text> 
           :
+          this.props.type === 'searched' ?
+          <Text style={styles.text}>No result for license #  <Text style={styles.license}>{ this.props.license }</Text></Text>
+          :
           <View>
             <Text style={styles.text}>No result for license #  <Text style={styles.license}>{ this.props.license }</Text></Text>
             <TouchableOpacity
