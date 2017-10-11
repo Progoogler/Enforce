@@ -38,7 +38,10 @@ export default class Overview extends Component {
   render() {
     return (
       <View style={styles.container} >
-        <Menu navigation={this.props.navigation} />
+        <Menu 
+          navigation={this.props.navigation} 
+          refPath={this.props.screenProps.refPath}
+        />
         <TicketCounter
           reset={this.state.zero}
           navigation={this.props.navigation}
@@ -128,7 +131,10 @@ export default class Overview extends Component {
 
 }
 
-Overview.propTypes = { navigation: PropTypes.object.isRequired };
+Overview.propTypes = { 
+  navigation: PropTypes.object.isRequired,
+  screenProps: PropTypes.object.isRequired, 
+};
 
 const styles = StyleSheet.create({
   container: {

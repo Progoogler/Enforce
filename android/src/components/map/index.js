@@ -64,6 +64,7 @@ export default class MapApp extends Component {
           :
           <Navigation
             navigation={this.props.navigation}
+            refPath={this.props.screenProps.refPath}
             title={'Map View'}    
           />
         }
@@ -73,11 +74,11 @@ export default class MapApp extends Component {
         <AnimatedMap
           ref={ref => { this.animatedMap = ref; }}
           style={{
+            bottom: this.state.mapPositionBottom,
             position: 'absolute',
-            top: 0,
             left: 0,
             right: 0,
-            bottom: this.state.mapPositionBottom,
+            top: 0,
           }}
           mapType="hybrid"
           showsUserLocation={true}
@@ -398,13 +399,13 @@ MapApp.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
+    alignItems: 'center',
+    justifyContent: 'flex-end',
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
   },
   activity: {
     flex: 1,

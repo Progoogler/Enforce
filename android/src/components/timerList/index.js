@@ -67,39 +67,40 @@ export default class TimerList extends Component {
     return (
       <View style={styles.container}>
         <Search
-          timerList={true}
-          refreshTimerList={this.onRefresh.bind(this)}
-          navigation={this.props.navigation}
-          licenseParam={this.state.license}
-          shouldResetLicense={this.shouldResetLicense.bind(this)}
           addLicenseToQueue={this.addLicenseToQueue.bind(this)}
+          licenseParam={this.state.license}
+          navigation={this.props.navigation}
+          refPath={this.props.screenProps.refPath}
+          refreshTimerList={this.onRefresh.bind(this)}
+          shouldResetLicense={this.shouldResetLicense.bind(this)}
+          timerList={true}
         />
 
         <Title 
-          limit={this.list[0] ? this.list[0].timeLength ? this.list[0].timeLength : 0 : 0} 
           bound={this.state.bound} 
           getDirectionBound={this.getDirectionBound.bind(this)}
+          limit={this.list[0] ? this.list[0].timeLength ? this.list[0].timeLength : 0 : 0} 
         />
 
         <FlatList
            data={this.state.dataSource}
            ItemSeparatorComponent={this._renderSeparator}
-           renderItem={this._renderItem.bind(this)}
-           removeClippedSubviews={true}
-           onRefresh={this.onRefresh.bind(this)}
-           refreshing={this.state.refreshing}
            keyExtractor={this._keyExtractor}
+           onRefresh={this.onRefresh.bind(this)}
            onScroll={this._handleScroll.bind(this)}
+           refreshing={this.state.refreshing}
+           removeClippedSubviews={true}
+           renderItem={this._renderItem.bind(this)}
         />
 
         <Warning 
-          timeElapsed={this.timeElapsed} 
-          visibility={this.state.warningVisibility} 
-          uponTicketed={this.uponTicketed.bind(this)} 
           clearWarning={this.updateRows.bind(this)}
+          timeElapsed={this.timeElapsed} 
+          uponTicketed={this.uponTicketed.bind(this)} 
+          visibility={this.state.warningVisibility} 
         />
         
-        { this.state.modalVisible ? <Done navigation={this.props.navigation} /> : null }
+        { this.state.modalVisible ? <Done navigation={this.props.navigation}/> : null }
 
       </View>
     );
@@ -389,12 +390,12 @@ TimerList.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: 'white',
+    flex: 1,
   },
   separator: {
+    backgroundColor: '#8E8E8E',
     flex: 1,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: '#8E8E8E',
   },
 });
