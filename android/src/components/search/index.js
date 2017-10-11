@@ -295,6 +295,7 @@ export default class Search extends Component {
   }
 
   async _getAsyncData() {
+    this.refPath = await AsyncStorage.getItem('@Enforce:refPath');
     this.dates = await AsyncStorage.getItem('@Enforce:dateCount');
     this.dates = JSON.parse(this.dates);  
   }
@@ -381,7 +382,7 @@ export default class Search extends Component {
     clearTimeout(this.hideNotification);
     this.setState({result: '', animating: true});
     this._showNoResultNotification();
-    getLicenseHistory(this.props.screenProps.refPath, this.dates, this.state.license, (res) => {
+    getLicenseHistory(this.refPath, this.dates, this.state.license, (res) => {
       this._databaseResult(res);
     });
   }
@@ -703,7 +704,6 @@ Search.propTypes = {
   navigation: PropTypes.object.isRequired,
   refreshTimerList: PropTypes.func,
   resizeMenuContainer: PropTypes.func,
-  screenProps: PropTypes.object.isRequired,
   shouldResetLicense: PropTypes.func,
   showNoResultNotificationForMenu: PropTypes.func,
   timerList: PropTypes.bool,
