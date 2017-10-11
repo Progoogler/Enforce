@@ -708,7 +708,7 @@ Search.propTypes = {
   minimizeMenuContainer: PropTypes.func,
   minimizeResultContainer: PropTypes.func,
   navigation: PropTypes.object.isRequired,
-  refPath: PropTypes.string,
+  refPath: PropTypes.string.isRequired,
   refreshTimerList: PropTypes.func,
   resizeMenuContainer: PropTypes.func,
   shouldResetLicense: PropTypes.func,

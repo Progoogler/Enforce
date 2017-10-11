@@ -121,7 +121,7 @@ Navigation.propTypes = {
   displayFirebaseResult: PropTypes.func,
   historyScreen: PropTypes.bool,
   navigation: PropTypes.object.isRequired,
-  refPath: PropTypes.string,
+  refPath: PropTypes.string.isRequired,
   search: PropTypes.bool,
   title: PropTypes.string,
   toggleSearching: PropTypes.func,
