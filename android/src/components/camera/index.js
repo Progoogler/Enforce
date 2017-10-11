@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  AsyncStorage,
   Image,
   StyleSheet,
   Vibration,
@@ -66,30 +65,33 @@ export default class CameraApp extends Component {
           this.props.screenProps.imageRecognition ?
           
           <ALPR
-            ref={(cam) => this.camera = cam}
-            style={styles.camera}
             aspect={ALPR.constants.Aspect.fill}
             captureQuality={ALPR.constants.CaptureQuality.medium}
             country='us'
             onPlateRecognized={(data) => this._onPlateRecognized(data)}
             plateOutlineColor='#ff0000'
+            ref={(cam) => this.camera = cam}
             showPlateOutline
-            torchMode={ALPR.constants.TorchMode.off}
+            style={styles.camera}
             touchToFocus
+            torchMode={ALPR.constants.TorchMode.off}
           />
 
           :
 
           <Camera
-            ref={(cam) => this.camera = cam}
-            style={styles.camera}
             aspect={Camera.constants.Aspect.fill}
             captureQuality={Camera.constants.CaptureQuality.high}
+            ref={(cam) => this.camera = cam}
+            style={styles.camera}
           />
           
         }
         </View>
-        <Capture setModalVisible={this.setModalVisible.bind(this)} takePicture={this.takePicture.bind(this)} deletePreviousPicture={this.deletePreviousPicture.bind(this)} />
+        <Capture 
+          deletePreviousPicture={this.deletePreviousPicture.bind(this)} />
+          setModalVisible={this.setModalVisible.bind(this)} 
+          takePicture={this.takePicture.bind(this)} 
       </View>
     );
 }
@@ -349,8 +351,8 @@ const styles = StyleSheet.create({
     flex: .8,
   },
   camera: {
+    alignItems: 'center',
     flex: 1,
     justifyContent: 'flex-end',
-    alignItems: 'center',
   },
 });
