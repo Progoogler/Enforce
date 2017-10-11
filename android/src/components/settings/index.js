@@ -25,7 +25,7 @@ export default class Settings extends Component {
       dataUpload: true,
       imageUpload: false,
       imageRecognition: false,
-      location: true,
+      location: false,
       notifications: true,
     }
   }
@@ -134,8 +134,11 @@ export default class Settings extends Component {
   _toggleUploadCondition(boolean) {
     if (boolean) {
       this.setState({dataUpload: true});
+      if (boolean !== this.settings.dataUpload) this.props.screenProps.updateDataUpload(true);
     } else {
       this.setState({dataUpload: false, imageUpload: false});
+      if (boolean !== this.settings.dataUpload) this.props.screenProps.updateDataUpload(false);
+      if (boolean !== this.settings.imageUpload) this.props.screenProps.updateImageUpload(false);
     }
   }
 
@@ -143,11 +146,14 @@ export default class Settings extends Component {
     if (boolean) {
       if (!this.state.dataUpload) {
         this.setState({imageUpload: false});
+        if (boolean !== this.settings.imageUpload) this.props.screenProps.updateImageUpload(false);
       } else {
         this.setState({imageUpload: true});
+        if (boolean !== this.settings.imageUpload) this.props.screenProps.updateImageUpload(true);
       }
     } else {
       this.setState({imageUpload: false});
+      if (boolean !== this.settings.imageUpload) this.props.screenProps.updateImageUpload(false);
     }
   }
 
