@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {
+  ActivityIndicator,
   Animated,
+  AsyncStorage,
   Image,
   Keyboard,
   StyleSheet,
@@ -12,6 +14,7 @@ import {
 import PropTypes from 'prop-types';
 import Realm from 'realm';
 
+import { getLicenseHistory } from '../../../../includes/firebase/database';
 import historySearch from './historySearch';
 import Result from './Result';
 import VerifyModal from './Verify';
@@ -38,6 +41,7 @@ export default class Search extends Component {
   constructor() {
     super();
     this.state = {
+      animating: false,
       license: '',
       result: null,
     }
@@ -178,18 +182,37 @@ export default class Search extends Component {
             opacity: this.containerOpacity,
           }}
         >
-          { this.state.result ?
+          { 
+            this.state.result ?
 
-            <Result
-              closeSearch={this.props.closeSearch} 
-              data={this.state.result}
-              license={this.state.license}
-              minimizeResultContainer={this.minimizeResultContainer.bind(this)}
-              navigation={this.props.navigation}
-              resizeMenuContainer={this.props.resizeMenuContainer}
-            /> : null
+              <Result
+                closeSearch={this.props.closeSearch} 
+                data={this.state.result}
+                deepSearch={this.deepSearch.bind(this)}
+                license={this.state.license}
+                minimizeResultContainer={this.minimizeResultContainer.bind(this)}
+                navigation={this.props.navigation}
+                resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
+              /> 
+
+              :
+
+              <View
+                style={{
+                  alignItems: 'center',
+                  alignSelf: 'stretch',
+                  height: resultHeight,
+                  justifyContent: 'center',
+                }}
+              >
+                <ActivityIndicator
+                  animating={this.state.animating}
+                  size='small' 
+                />
+              </View> 
           }
         </Animated.View>
+
 
         <Animated.View 
           style={{
@@ -237,6 +260,7 @@ export default class Search extends Component {
     if (this.props.timerList) this.keyboardDidHideForTimerListListener = Keyboard.addListener('keyboardDidHideForTimerList', this._keyboardDidHideForTimerList.bind(this));
     this.mounted = true;
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+    this._getAsyncData();
   }
 
   _keyboardDidHide() {
@@ -270,6 +294,12 @@ export default class Search extends Component {
     }
   }
 
+  async _getAsyncData() {
+    this.refPath = await AsyncStorage.getItem('@Enforce:refPath');
+    this.dates = await AsyncStorage.getItem('@Enforce:dateCount');
+    this.dates = JSON.parse(this.dates);  
+  }
+
   _openSearch() {
     this.state.result !== null && this.minimizeResultContainer();
     this.props.minimizeMenuContainer && this.props.minimizeMenuContainer();
@@ -298,55 +328,103 @@ export default class Search extends Component {
   }
 
   // Look through the history of Realm ( TODO: and Firebase??) for a record
-  // @PARAM typeOfSearch - Signfy the difference between a VIN and license when input is 4 characters long
   _handleHistorySearch(license: string) {
     
-    var vinCheck;
-    if (license.length === 4) {
-      vinCheck = parseInt(license) + '';
-      vinCheck = vinCheck.length === 4 ? true : false;
-    }
-
     if (license.length === 0) {
       this.myTextInput.focus();
       return;
-    } else {
-      
-      if (vinCheck) {
-        historySearch(license, "vinSearch", this.historyResultCallback.bind(this));
-      } else {
-        historySearch(license, false, this.historyResultCallback.bind(this));
-      }
+    }
 
-      // Add license to current Timer in queue in TimerList if in TimerList.
-      if (this.props.timerList) {
-        if (!this.props.licenseParam.license) {
-          this.props.addLicenseToQueue(license); // TODO Decide if a historySearch() press should warrant adding license to queue
-        } else {
-          this._updateLicenseOfTimer();
-        }
+    if (license.length === 4) {
+      var vinCheck = parseInt(license) + '';
+      vinCheck = vinCheck.length === 4 ? true : false;
+    }
+      
+    if (vinCheck) {
+      historySearch(license, "vinSearch", this.historyResultCallback.bind(this));
+    } else {
+      historySearch(license, "license", this.historyResultCallback.bind(this));
+    }
+
+    // Add license to current Timer in queue in TimerList if in TimerList.
+    if (this.props.timerList) {
+      if (!this.props.licenseParam.license) {
+        this.props.addLicenseToQueue(license); // TODO Decide if a historySearch() press should warrant adding license to queue
+      } else {
+        this._updateLicenseOfTimer();
       }
     }
   }
 
   historyResultCallback(result) {
-    if (result === undefined) {
-      this._noResultNotification(); // TODO QUICK FIX FOR EMPTY BLOCK -- Figure out what goes here!
-    }
-
     result = result === undefined ? 'unfound' : result;
-    this.setState({result});
 
     if (result !== 'unfound') {
-      // Case for extending the container of Search in any component.
-      this._extendResultContainer();
-      // Case for extending the Menu container of Overview.
-      this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
+      this.setState({result});
+      this._extendResultContainer(); // Case for extending the container of Search in any component.
+      this.props.resizeMenuContainer && this.props.resizeMenuContainer(true); // Case for extending the Menu container of Overview.
       Keyboard.dismiss();
-
     } else if (result === 'unfound') {
-      this.props.noResultNotificationForMenu && this.props.noResultNotificationForMenu();
-      this._noResultNotification();
+      if (this.props.historyScreen) {
+        this.deepSearch();
+        return;
+      }
+      this.setState({result});
+      this._showNoResultNotification();
+      this.hideNotification = setTimeout(() => {
+        this._hideNoResultNotification();
+      }, 3300);
+    }
+  }
+
+  deepSearch() { // Look for license in Firebase.
+    if (this.state.animating) return;
+    clearTimeout(this.hideNotification);
+    this.setState({result: '', animating: true});
+    this._showNoResultNotification();
+    getLicenseHistory(this.refPath, this.dates, this.state.license, (res) => {
+      this._databaseResult(res);
+    });
+  }
+
+  _databaseResult(results) {
+    if (results.length) {
+      if (this.props.historyScreen) {
+        if (results.length > 1) {
+          setTimeout(() => {
+            this.setState({animating: false});
+            this._hideNoResultNotification();
+            this.props.displayFirebaseResult(results);
+            Keyboard.dismiss();
+          }, 2000);
+          return;
+        }
+      }
+      var result = {};
+      result['type'] = 'ticketed';
+      result['data'] = results[0];
+      setTimeout(() => {
+        this._hideNoResultNotification();
+      }, 1500);
+      setTimeout(() => {
+        this.setState({result, animating: false})
+        // Case for extending the container of Search in any component.
+        this._extendResultContainer();
+        // Case for extending the Menu container of Overview.
+        this.props.resizeMenuContainer && this.props.resizeMenuContainer(true);
+        Keyboard.dismiss();
+      }, 3000);
+    } else {
+      setTimeout(() => {
+        this._hideNoResultNotification();
+      }, 1900);
+      setTimeout(() => {
+        this.setState({result: 'searched', animating: false}); // Display "not found" message w/o the Deep Search option.
+        this._showNoResultNotification();
+        setTimeout(() => {
+          this._hideNoResultNotification();
+        }, 3000);
+      }, 3000);
     }
   }
 
@@ -385,7 +463,8 @@ export default class Search extends Component {
     this.props.refreshTimerList();
   }
 
-  _noResultNotification() {
+  _showNoResultNotification() {
+    this.props.showNoResultNotificationForMenu && this.props.showNoResultNotificationForMenu();
     Animated.parallel([
       Animated.timing(
         this.containerHeight, {
@@ -406,30 +485,30 @@ export default class Search extends Component {
         },
       ),
     ]).start();
+  }
 
-    setTimeout(() => {
-
-      Animated.parallel([
-        Animated.timing(
-          this.containerHeight, {
-            toValue: searchContainerHeight,
-            duration: 600,
-          },
-        ),
-        Animated.timing(
-          this.resultHeight, {
-            toValue: 0,
-            duration: 400,
-          },
-        ),
-        Animated.timing(
-          this.containerOpacity, {
-            toValue: 0,
-            duration: 1000,
-          },
-        ),
-      ]).start();
-    }, 1800);
+  _hideNoResultNotification() {
+    this.props.hideNoResultNotificationForMenu && this.props.hideNoResultNotificationForMenu();
+    Animated.parallel([
+      Animated.timing(
+        this.containerHeight, {
+          toValue: searchContainerHeight,
+          duration: 600,
+        },
+      ),
+      Animated.timing(
+        this.resultHeight, {
+          toValue: 0,
+          duration: 400,
+        },
+      ),
+      Animated.timing(
+        this.containerOpacity, {
+          toValue: 0,
+          duration: 1000,
+        },
+      ),
+    ]).start();
   }
 
   _extendVerifyContainer() {
@@ -504,6 +583,7 @@ export default class Search extends Component {
   }
 
   minimizeResultContainer() {
+    
     Animated.parallel([
       Animated.timing(
         this.containerHeight, {
@@ -524,8 +604,8 @@ export default class Search extends Component {
         },
       ),
     ]).start();
-    Keyboard.dismiss();
     this.setState({license: '', result: null});
+    Keyboard.dismiss();
     this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
     this.marginValue = windowCenterPoint;
   }
@@ -610,21 +690,24 @@ export default class Search extends Component {
 }
 
 Search.propTypes = {
-  navigation: PropTypes.object.isRequired,
-  timerList: PropTypes.bool,
-  shouldResetLicense: PropTypes.func,
-  minimizeResultContainer: PropTypes.func,
-  minimizeMenuContainer: PropTypes.func,
-  resizeMenuContainer: PropTypes.func,
-  noResultNotificationForMenu: PropTypes.func,
-  closeSearch: PropTypes.func,
-  toggleVerifyContainer: PropTypes.func,
   addLicenseToQueue: PropTypes.func,
-  refreshTimerList: PropTypes.func,
+  closeSearch: PropTypes.func,
+  displayFirebaseResult: PropTypes.func,
+  hideNoResultNotificationForMenu: PropTypes.func,
+  historyScreen: PropTypes.bool,
   licenseParam: PropTypes.oneOfType([
     PropTypes.object,
     PropTypes.string
   ]),
+  minimizeMenuContainer: PropTypes.func,
+  minimizeResultContainer: PropTypes.func,
+  navigation: PropTypes.object.isRequired,
+  refreshTimerList: PropTypes.func,
+  resizeMenuContainer: PropTypes.func,
+  shouldResetLicense: PropTypes.func,
+  showNoResultNotificationForMenu: PropTypes.func,
+  timerList: PropTypes.bool,
+  toggleVerifyContainer: PropTypes.func,
 };
 
 const styles = StyleSheet.create({

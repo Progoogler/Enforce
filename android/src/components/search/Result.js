@@ -86,7 +86,11 @@ export default class Result extends Component {
 
             :
 
-            <Unfound license={this.props.license} />
+            <Unfound 
+              deepSearch={this.props.deepSearch}
+              license={this.props.license} 
+              type={this.props.data}
+            />
 
         }
 
@@ -146,6 +150,7 @@ export default class Result extends Component {
 
 Result.propTypes = {
   data: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
+  deepSearch: PropTypes.func.isRequired,
   license: PropTypes.string,
   minimizeResultContainer: PropTypes.func.isRequired,
   resizeMenuContainer: PropTypes.func,

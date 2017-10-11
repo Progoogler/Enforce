@@ -38,8 +38,11 @@ export default class Navigation extends Component {
         <Search
           navigation={this.props.navigation}
           closeSearch={this.closeSearch.bind(this)}
-          defaultSearch={this.props.search}
-          handleVINSearch={this.props.handleVINSearch ? this.props.handleVINSearch : null} /> :
+          displayFirebaseResult={this.props.displayFirebaseResult}
+          historyScreen={this.props.historyScreen} 
+        /> 
+        
+        :
 
         <View style={styles.headerContainer} >
           <TouchableHighlight
@@ -107,8 +110,9 @@ export default class Navigation extends Component {
 }
 
 Navigation.propTypes = {
+  displayFirebaseResult: PropTypes.func,
   navigation: PropTypes.object.isRequired,
-  handleVINSearch: PropTypes.func,
+  historyScreen: PropTypes.bool,
   toggleSearching: PropTypes.func,
   title: PropTypes.string,
   search: PropTypes.bool,
