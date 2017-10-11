@@ -41,7 +41,6 @@ export default class CameraApp extends Component {
     this.longitude = null;
     this.mounted = false;
     this.pictureCount = 0;
-    this.profileState = '';
     this.realm = new Realm();
     this.resetTimeLimit = null;
     this.timeLimit = 1;
@@ -118,9 +117,6 @@ export default class CameraApp extends Component {
       this.longitude = 0;
       navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
     }
-    var profileSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
-    profileSettings = JSON.parse(profileSettings);
-    this.profileState = profileSettings.state;
   }
 
   componentWillUnmount() {
@@ -296,7 +292,7 @@ export default class CameraApp extends Component {
         timeLength: this.timeLimit,
         license: this.license,
         VIN: '',
-        state: this.profileState,
+        state: this.props.screenProps.profileState,
         mediaUri: data.mediaUri,
         mediaPath: data.path,
         description: this.description,
