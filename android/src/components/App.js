@@ -81,18 +81,27 @@ export default class App extends Component {
   constructor() {
     super();
     this.state = {
+      dataUpload: true,
+      imageUpload: false,
       imageRecognition: false,
       locationReminder: false,
+      refPath: null,
     };
   }
   render() {
     return (
         <AppNavigator 
           screenProps={{
+            dataUpload: this.state.dataUpload,
+            imageUpload: this.state.imageUpload,
             imageRecognition: this.state.imageRecognition, 
             locationReminder: this.state.locationReminder,
-            updateImageRecognition: this.getCameraType.bind(this),
-            updateLocationReminder: this.getLocationSetting.bind(this),
+            refPath: this.state.refPath,
+            updateDataUpload: this.setDataUpload.bind(this),
+            updateImageUpload: this.setImageUpload.bind(this),
+            updateImageRecognition: this.setCameraType.bind(this),
+            updateLocationReminder: this.setLocationSetting.bind(this),
+            updateRefPath: this.updateRefPath.bind(this),
           }}
         />
     );
@@ -112,15 +121,31 @@ export default class App extends Component {
     if (settings) {
       if (settings.imageRecognition) this.setState({imageRecognition: true});
       if (settings.location) this.setState({locationReminder: true});
+      if (!settings.dataUpload) this.setState({dataUpload: false});
+      if (settings.imageUpload) this.setState({imageUpload: true});
     }
+    var refPath = await AsyncStorage.getItem('@Enforce:refPath');
+    if (refPath) this.setState({refPath});
   }
 
-  getCameraType(settingsUpdate: boolean) {
-    this.setState({imageRecognition: settingsUpdate});
+  setCameraType(update: boolean) {
+    this.setState({imageRecognition: update});
   }
 
-  getLocationSetting(settingsUpdate: boolean) {
-    this.setState({locationReminder: settingsUpdate});
+  setLocationSetting(update: boolean) {
+    this.setState({locationReminder: update});
+  }
+
+  setDataUpload(update: boolean) {
+    this.setState({dataUpload: update});
+  }
+
+  setImageUpload(update: boolean) {
+    this.setState({imageUpload: update});
+  }
+
+  updateRefPath(refPath: string) {
+    this.setState({refPath});
   }
 
   async _checkFirstTimeAccess() {
