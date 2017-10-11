@@ -112,7 +112,7 @@ export default class TimerList extends Component {
       date = `${date.getMonth() + 1}-${date.getDate()}`;
       var refPath = `/${this.refPath}/${date}`;
       var ticketedImage = {};
-      for (let i = 0; i < this.realm.objects('Ticketed')[0]['list'].length; i++) {
+      for (let i = this.ticketCount; i < this.realm.objects('Ticketed')[0]['list'].length; i++) {
         ticketedImage[this.realm.objects('Ticketed')[0]['list'][i].license ?
          this.realm.objects('Ticketed')[0]['list'][i].license :
           this.realm.objects('Ticketed')[0]['list'][i].createdAt] =
