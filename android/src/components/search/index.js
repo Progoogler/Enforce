@@ -277,8 +277,8 @@ export default class Search extends Component {
     if (this.props.timerList) {
       if (this.props.shouldResetLicense()) {
         this.setState({license: ''});
-        this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
         this.marginValue = windowCenterPoint;
+        this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
         this.props.shouldResetLicense(true); // Sets the return value of this._reset to false in TimerList to prevent resetting the search field until a uponTicketed() or expiredFunc() is performed.
       } else if (this.props.licenseParam.license !== nextProps.licenseParam.license) {
         this.marginValue = windowCenterPoint;
