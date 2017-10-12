@@ -8,6 +8,7 @@ import {
   View,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import Realm from 'realm';
 
 import Notification from './Notification';
 import {
@@ -20,6 +21,7 @@ import {
 export default class SetTimeLimit extends Component {
   constructor() {
     super();
+    this.realm = new Realm();
     this.state = {
       hour: "1",
       minutes: "00",
@@ -74,8 +76,8 @@ export default class SetTimeLimit extends Component {
   }
 
   componentDidMount() {
-    if (this.props.realm.objects('TimeLimit')) {
-      let history = this.props.realm.objects('TimeLimit')[0];
+    if (this.realm.objects('TimeLimit')) {
+      let history = this.realm.objects('TimeLimit')[0];
       this.setState({
         hour: history.hour,
         minutes: history.minutes ? history.minutes.length === 1 ? '0' + history.minutes : history.minutes : '00',
@@ -103,7 +105,7 @@ export default class SetTimeLimit extends Component {
   }
 
   _updateTimeLimit() {
-    let timeLimit = this.props.realm.objects('TimeLimit')[0];
+    let timeLimit = this.realm.objects('TimeLimit')[0];
     let decimalMinutes = `${parseInt(this.state.minutes) / 60}`;
     let newLimit;
     let minutes;
@@ -113,7 +115,7 @@ export default class SetTimeLimit extends Component {
         minutes = "00";
         this.setState({hour: this.state.hour + 1});
         newLimit = parseFloat(`${parseInt(this.state.hour)}.0`);
-        this.props.realm.write(() => {
+        this.realm.write(() => {
           timeLimit.hour = this.state.hour === undefined ? "0" : this.state.hour;
           timeLimit.minutes = minutes;
           timeLimit.float = newLimit;
@@ -122,7 +124,7 @@ export default class SetTimeLimit extends Component {
         return;
       } else if (decimalMinutes === "0") {
         newLimit = parseFloat(`${parseInt(this.state.hour)}.0`);
-        this.props.realm.write(() => {
+        this.realm.write(() => {
           timeLimit.hour = this.state.hour === undefined ? "0" : this.state.hour;
           timeLimit.minutes = "00";
           timeLimit.float = newLimit;
@@ -135,7 +137,7 @@ export default class SetTimeLimit extends Component {
     decimalMinutes = decimalMinutes.slice(1);
     newLimit = this.state.hour + decimalMinutes;
     newLimit = parseFloat(newLimit);
-    this.props.realm.write(() => {
+    this.realm.write(() => {
       timeLimit.hour = this.state.hour === undefined ? "0" : this.state.hour;
       timeLimit.minutes = this.state.minutes === undefined ? "00" : this.state.minutes;
       timeLimit.float = newLimit;
@@ -146,7 +148,6 @@ export default class SetTimeLimit extends Component {
 
 SetTimeLimit.propTypes = {
   newTimer: PropTypes.bool.isRequired,
-  realm: PropTypes.object.isRequired,
   onUpdateTimeLimit: PropTypes.func.isRequired,
 }
 

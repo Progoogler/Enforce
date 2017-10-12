@@ -81,26 +81,31 @@ export default class App extends Component {
   constructor() {
     super();
     this.state = {
+      currentDay: 0,
       dataUpload: true,
       imageUpload: false,
       imageRecognition: false,
       locationReminder: false,
-      refPath: null,
+      profileState: '',
+      refPath: '',
     };
   }
   render() {
     return (
         <AppNavigator 
           screenProps={{
+            currentDay: this.state.currentDay,
             dataUpload: this.state.dataUpload,
             imageUpload: this.state.imageUpload,
             imageRecognition: this.state.imageRecognition, 
             locationReminder: this.state.locationReminder,
+            profileState: this.state.profileState,
             refPath: this.state.refPath,
             updateDataUpload: this.setDataUpload.bind(this),
             updateImageUpload: this.setImageUpload.bind(this),
             updateImageRecognition: this.setCameraType.bind(this),
             updateLocationReminder: this.setLocationSetting.bind(this),
+            updateProfileState: this.updateProfileState.bind(this),
             updateRefPath: this.updateRefPath.bind(this),
           }}
         />
@@ -116,6 +121,13 @@ export default class App extends Component {
   }
 
   async _getSettings() {
+    var currentDay = await AsyncStorage.getItem('@Enforce:currentDay');
+    if (currentDay) {
+      this.setState({currentDay: parseInt(currentDay)});
+    } else {
+      let today = new Date().getDate();
+      AsyncStorage.setItem('@Enforce:currentDay', `${today}`);
+    }
     var settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);
     if (settings) {
@@ -124,6 +136,9 @@ export default class App extends Component {
       if (!settings.dataUpload) this.setState({dataUpload: false});
       if (settings.imageUpload) this.setState({imageUpload: true});
     }
+    var profileSettings = await AsyncStorage.getItem('@Enforce:profileSettings');
+    profileSettings = JSON.parse(profileSettings);
+    if (profileSettings) this.setState({profileState: profileSettings.state});
     var refPath = await AsyncStorage.getItem('@Enforce:refPath');
     if (refPath) this.setState({refPath});
   }
@@ -146,6 +161,10 @@ export default class App extends Component {
 
   updateRefPath(refPath: string) {
     this.setState({refPath});
+  }
+
+  updateProfileState(profileState: string) {
+    this.setState({profileState});
   }
 
   async _checkFirstTimeAccess() {

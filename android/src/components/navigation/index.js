@@ -36,10 +36,11 @@ export default class Navigation extends Component {
         this.state.search ?
 
         <Search
-          navigation={this.props.navigation}
           closeSearch={this.closeSearch.bind(this)}
           displayFirebaseResult={this.props.displayFirebaseResult}
           historyScreen={this.props.historyScreen} 
+          navigation={this.props.navigation}
+          refPath={this.props.refPath}
         /> 
         
         :
@@ -48,38 +49,45 @@ export default class Navigation extends Component {
           <TouchableHighlight
             onPress={ () => {
               Animated.timing(
-                this.titleOpacity,
-                { toValue: 0,
-                  duration: 500, },
+                this.titleOpacity, { 
+                  toValue: 0,
+                  duration: 500, 
+                }
               ).start();
               this.props.toggleSearching ? this.props.toggleSearching() : null;
               this.setState({ search: !this.state.search });
             }}
+            style={styles.searchIcon}
             underlayColor={primaryBlue}
-            style={styles.searchIcon} >
-            <Image source={require('../../../../shared/images/search-icon.png')} />
+          >
+            <Image source={require('../../../../shared/images/search-icon.png')}/>
           </TouchableHighlight>
-          <Animated.Text style={{
-            opacity: this.titleOpacity,
-            flex: .70,
-            fontSize: titleFontSize,
-            marginLeft: '2%',
-            color: 'white',
-            textAlignVertical: 'center',
-            textShadowColor: blueTextShadow,
-            textShadowOffset: {
-              width: 2,
-              height: 1
-            },
-          }}>{ this.props.title ? this.props.title : 'Enforce' }</Animated.Text>
+          <Animated.Text 
+            style={{
+              color: 'white',
+              flex: .70,
+              fontSize: titleFontSize,
+              marginLeft: '2%',
+              opacity: this.titleOpacity,
+              textAlignVertical: 'center',
+              textShadowColor: blueTextShadow,
+              textShadowOffset: {
+                width: 2,
+                height: 1
+              },
+            }}
+          >
+            { this.props.title ? this.props.title : 'Enforce' }
+          </Animated.Text>
           <TouchableHighlight
-            underlayColor={primaryBlue}
             onPress={ () => {
               Keyboard.dismiss();
               this.props.navigation.navigate('DrawerOpen');
             }}
-            style={styles.headerNavigation} >
-            <Image source={require('../../../../shared/images/menu-icon.jpg')} />
+            style={styles.headerNavigation}
+            underlayColor={primaryBlue}
+          >
+            <Image source={require('../../../../shared/images/menu-icon.jpg')}/>
           </TouchableHighlight>
         </View>
       }
@@ -111,11 +119,12 @@ export default class Navigation extends Component {
 
 Navigation.propTypes = {
   displayFirebaseResult: PropTypes.func,
-  navigation: PropTypes.object.isRequired,
   historyScreen: PropTypes.bool,
-  toggleSearching: PropTypes.func,
-  title: PropTypes.string,
+  navigation: PropTypes.object.isRequired,
+  refPath: PropTypes.string.isRequired,
   search: PropTypes.bool,
+  title: PropTypes.string,
+  toggleSearching: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
@@ -126,8 +135,8 @@ const styles = StyleSheet.create({
     zIndex: 11,
   },
   headerContainer: {
-    flexDirection: 'row',
     height: navBarContainerHeight,
+    flexDirection: 'row',
   },
   searchIcon: {
     alignSelf: 'center',

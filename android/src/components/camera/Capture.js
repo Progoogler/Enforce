@@ -20,39 +20,40 @@ export default class Capture extends Component {
   render() {
     return (
       <View style={styles.footer}>
-      <View style={styles.pinContainer}>
-        <TouchableOpacity
-          activeOpacity={.6}
-          onPress={() => this.props.setModalVisible()} >
-          <Image
-            style={styles.pinIcon}
-            source={require('../../../../shared/images/pin.png')}
-          />
-        </TouchableOpacity>
+        <View style={styles.pinContainer}>
+          <TouchableOpacity
+            activeOpacity={.6}
+            onPress={() => this.props.setModalVisible()} 
+          >
+            <Image
+              style={styles.pinIcon}
+              source={require('../../../../shared/images/pin.png')}
+            />
+          </TouchableOpacity>
         </View>
 
         <View style={styles.captureContainer}>
-        <TouchableOpacity
-          activeOpacity={.6}
-          style={styles.capture}
-          onPress={() => this.props.takePicture()} 
-        >
-          <View></View>
-        </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={.6}
+            style={styles.capture}
+            onPress={() => this.props.takePicture()} 
+          >
+            <View></View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.undoContainer}>
-        <TouchableOpacity
-          activeOpacity={.6}
-          style={styles.undoButton} 
-        >
-          <Text
-            style={styles.undo}
-            onPress={() => this.props.deletePreviousPicture()}
+          <TouchableOpacity
+            activeOpacity={.6}
+            style={styles.undoButton} 
           >
-            { 'UNDO' }
-          </Text>
-        </TouchableOpacity>
+            <Text
+              style={styles.undo}
+              onPress={() => this.props.deletePreviousPicture()}
+            >
+              { 'UNDO' }
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     );

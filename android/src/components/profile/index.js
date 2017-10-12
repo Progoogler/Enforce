@@ -251,6 +251,7 @@ export default class Profile extends Component {
             }
           });
           AsyncStorage.setItem('@Enforce:profileSettings', settings);
+          this.props.screenProps.updateProfileState(this.state.state);
           this.createdNewUser = true;
           return;
         }
@@ -260,6 +261,7 @@ export default class Profile extends Component {
           if (this.profile.password !== this.state.password && this.profile.email === this.state.email && this.profile.county === this.state.county) {
             Firebase.changeUserPassword(this.state.password);
             AsyncStorage.setItem('@Enforce:profileSettings', settings);
+            this.props.screenProps.updateProfileState(this.state.state);
             return;
           }
 
@@ -276,6 +278,7 @@ export default class Profile extends Component {
 
 
             AsyncStorage.setItem('@Enforce:profileSettings', settings);
+            this.props.screenProps.updateProfileState(this.state.state);
 
             Firebase.createNewUser(this.state.email, this.state.password);
 
@@ -401,7 +404,10 @@ export default class Profile extends Component {
   }
 }
 
-Profile.propTypes = { navigation: PropTypes.object.isRequired };
+Profile.propTypes = { 
+  navigation: PropTypes.object.isRequired,
+  screenProps: PropTypes.object.isRequired,
+};
 
 const styles = StyleSheet.create({
   container: {

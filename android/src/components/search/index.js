@@ -295,7 +295,6 @@ export default class Search extends Component {
   }
 
   async _getAsyncData() {
-    this.refPath = await AsyncStorage.getItem('@Enforce:refPath');
     this.dates = await AsyncStorage.getItem('@Enforce:dateCount');
     this.dates = JSON.parse(this.dates);  
   }
@@ -382,9 +381,16 @@ export default class Search extends Component {
     clearTimeout(this.hideNotification);
     this.setState({result: '', animating: true});
     this._showNoResultNotification();
-    getLicenseHistory(this.refPath, this.dates, this.state.license, (res) => {
-      this._databaseResult(res);
-    });
+    if (this.props.refPath) {
+      getLicenseHistory(this.props.refPath, this.dates, this.state.license, (res) => {
+        this._databaseResult(res);
+      });
+    } else {
+      setTimeout(() => {
+        this.setState({animating: false});
+        this._hideNoResultNotification();
+      }, 1500);
+    }
   }
 
   _databaseResult(results) {
@@ -424,7 +430,7 @@ export default class Search extends Component {
         setTimeout(() => {
           this._hideNoResultNotification();
         }, 3000);
-      }, 3000);
+      }, 2600);
     }
   }
 
@@ -702,6 +708,7 @@ Search.propTypes = {
   minimizeMenuContainer: PropTypes.func,
   minimizeResultContainer: PropTypes.func,
   navigation: PropTypes.object.isRequired,
+  refPath: PropTypes.string.isRequired,
   refreshTimerList: PropTypes.func,
   resizeMenuContainer: PropTypes.func,
   shouldResetLicense: PropTypes.func,

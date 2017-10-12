@@ -49,10 +49,7 @@ export default class History extends Component {
   static navigationOptions = {
     drawerLabel: 'History',
     drawerIcon: () => (
-      <Image
-        source={require('../../../../shared/images/page-icon.png')} 
-        style={[styles.icon]}
-      />
+      <Image source={require('../../../../shared/images/page-icon.png')}/>
     )
   };
 
@@ -63,18 +60,19 @@ export default class History extends Component {
           displayFirebaseResult={this.displayFirebaseResult.bind(this)}
           historyScreen={true} 
           navigation={this.props.navigation} 
+          refPath={this.props.screenProps.refPath}
         />
         <ImageModal 
+          maximizeOrMinimizeImage={this.maximizeOrMinimizeImage.bind(this)}
           uri={this.state.uri} 
           visibility={this.state.showMaximizedImage} 
-          maximizeOrMinimizeImage={this.maximizeOrMinimizeImage.bind(this)}
         />
         <Text style={styles.title}>History</Text>
         <View 
           style={{
+            borderBottomWidth: 1,
             flexDirection: 'row',
             width: this.state.pickerWidth,
-            borderBottomWidth: 1,
           }}
         >
           <Picker
@@ -82,8 +80,8 @@ export default class History extends Component {
               color: primaryBlue,
               width: this.state.pickerWidth,
             }}
-            selectedValue={this.state.selected}
             onValueChange={(val) => this._onValueChange(val)} 
+            selectedValue={this.state.selected}
           >
 
             { this.state.items }
@@ -97,12 +95,12 @@ export default class History extends Component {
         </View>
 
         <FlatList
-           style={styles.flatlist}
            data={this.state.dataSource}
            ItemSeparatorComponent={this._renderSeparator}
+           keyExtractor={this._keyExtractor} 
            removeClippedSubviews={true}
            renderItem={this._renderItem.bind(this)}
-           keyExtractor={this._keyExtractor} 
+           style={styles.flatlist}
         />
 
         { this.state.isConnected ? null : <ThrowConnectionMessage/> }
@@ -126,7 +124,7 @@ export default class History extends Component {
   }
 
   _renderSeparator() {
-    return <View style={styles.separator} />;
+    return <View style={styles.separator}/>;
   }
 
   _keyExtractor(item) {
@@ -153,7 +151,6 @@ export default class History extends Component {
       // UpdateRows() w/ the data
       this._updateRows(results, length);
     });
-    // this._updateRows(results, length);
   }
 
   async _getProfileInfo() {
@@ -233,12 +230,12 @@ export default class History extends Component {
 
   _updateRows(list: object, length: number): undefined {
     this.setState({
-      dataSource: list,
-      selected: this.selected,
-      dateTransition: false,
       animating: false,
+      dataSource: list,
+      dateTransition: false,
       isConnected: true,
       pickerWidth: 25 + length * 8,
+      selected: this.selected,
     });
   }
 
@@ -330,31 +327,34 @@ export default class History extends Component {
   }
 }
 
-History.propTypes = { navigation: PropTypes.object.isRequired }
+History.propTypes = { 
+  navigation: PropTypes.object.isRequired,
+  screenProps: PropTypes.object.isRequired,
+}
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    alignItems: 'center',
     backgroundColor: 'white',
+    flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    alignItems: 'center',
   },
   flatlist: {
-    flex: 1,
     alignSelf: 'stretch',
+    flex: 1,
   },
   separator: {
+    backgroundColor: '#8E8E8E',
     flex: 1,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: '#8E8E8E',
   },
   title: {
-    textAlign: 'center',
     color: primaryBlue,
-    marginTop: '6%',
     fontSize: xxlargeFontSize,
     fontWeight: 'bold',
+    marginTop: '6%',
+    textAlign: 'center',
     textShadowColor: titleTextShadow,
     textShadowOffset: {
       width: 1,

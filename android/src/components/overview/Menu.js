@@ -38,11 +38,13 @@ export default class Menu extends Component {
   render() {
     return (
 
-      <Animated.View style={{
-        height: this.containerHeight,
-        alignSelf: 'stretch',
-        backgroundColor: primaryBlue,
-      }}>
+      <Animated.View 
+        style={{
+          alignSelf: 'stretch',
+          backgroundColor: primaryBlue,
+          height: this.containerHeight,
+        }}
+      >
       {
 
         this.state.search ?
@@ -54,12 +56,13 @@ export default class Menu extends Component {
           resizeMenuContainer={this.resizeMenuContainer.bind(this)} 
           showNoResultNotificationForMenu={this.showNoResultNotificationForMenu.bind(this)} 
           toggleVerifyContainer={this.toggleVerifyContainer.bind(this)}
+          refPath={this.props.refPath}
         /> 
         
         :
         
         <View>
-          <View style={styles.headerContainer} >
+          <View style={styles.headerContainer}>
             <TouchableHighlight
               onPress={() => {
                 Animated.parallel([
@@ -80,19 +83,21 @@ export default class Menu extends Component {
               style={styles.searchIcon} >
               <Image source={require('../../../../shared/images/search-icon.png')} />
             </TouchableHighlight>
-            <Animated.Text style={{
-              opacity: this.titleOpacity,
-              flex: .70,
-              fontSize: titleFontSize,
-              color: 'white',
-              marginLeft: '2%',
-              textAlignVertical: 'center',
-              textShadowColor: blueTextShadow,
-              textShadowOffset: {
-                width: 2,
-                height: 1
-              },
-            }}>
+            <Animated.Text 
+              style={{
+                color: 'white',
+                flex: .70,
+                fontSize: titleFontSize,
+                marginLeft: '2%',
+                opacity: this.titleOpacity,
+                textAlignVertical: 'center',
+                textShadowColor: blueTextShadow,
+                textShadowOffset: {
+                  width: 2,
+                  height: 1
+                },
+              }}
+            >
 
             { this.props.title ? this.props.title : 'Enforce' }
 
@@ -104,11 +109,11 @@ export default class Menu extends Component {
                 this.props.navigation.navigate('DrawerOpen');
               }}
               style={styles.headerNavigation} >
-              <Image source={require('../../../../shared/images/menu-icon.jpg')} />
+              <Image source={require('../../../../shared/images/menu-icon.jpg')}/>
             </TouchableHighlight>
           </View>
-          <Animated.View style={{ opacity: this.buttonOpacity, marginTop: '2%', }} >
-            <MainButtons navigation={this.props.navigation} searching={this.state.search} />
+          <Animated.View style={{ opacity: this.buttonOpacity, marginTop: '2%', }}>
+            <MainButtons navigation={this.props.navigation} searching={this.state.search}/>
           </Animated.View>
         </View>
       }
@@ -119,9 +124,10 @@ export default class Menu extends Component {
   componentDidMount() {
     this.mounted = true;
     Animated.timing(
-      this.titleOpacity,
-      { toValue: 1,
-        duration: 500, },
+      this.titleOpacity, { 
+        toValue: 1,
+        duration: 500, 
+      }
     ).start();
   }
 
@@ -134,15 +140,15 @@ export default class Menu extends Component {
       Animated.timing(
         this.containerHeight, { 
           toValue: resultContainerHeight,
-          duration: 500, 
-        },
+          duration: 500
+        }
       ).start();
     } else {
       Animated.timing(
         this.containerHeight, { 
           toValue: searchContainerHeight,
-          duration: 500, 
-        },
+          duration: 500
+        }
       ).start();
     }
   }
@@ -151,8 +157,8 @@ export default class Menu extends Component {
     Animated.timing(
       this.containerHeight, {
         toValue: noResultContainerHeight,
-        duration: 600,
-      },
+        duration: 600
+      }
     ).start();
   }
 
@@ -160,8 +166,8 @@ export default class Menu extends Component {
     Animated.timing(
       this.containerHeight, {
         toValue: searchContainerHeight,
-        duration: 600,
-      },
+        duration: 600
+      }
     ).start();
   }
 
@@ -170,15 +176,15 @@ export default class Menu extends Component {
       Animated.timing(
         this.containerHeight, {
           toValue: verificationContainerHeight,
-          duration: 600,
-        },
+          duration: 600
+        }
       ).start();
     } else {
       Animated.timing(
         this.containerHeight, {
           toValue: searchContainerHeight,
-          duration: 1000,
-        },
+          duration: 1000
+        }
       ).start();
     }
   }
@@ -187,19 +193,22 @@ export default class Menu extends Component {
     this.mounted && this.setState({ search: !this.state.search });
     Animated.parallel([
       Animated.timing(
-        this.titleOpacity,
-        { toValue: 1,
-          duration: 1000, },
+        this.titleOpacity, { 
+          toValue: 1,
+          duration: 1000 
+        }
       ),
       Animated.timing(
-        this.buttonOpacity,
-        { toValue: 1,
-          duration: 1000, },
+        this.buttonOpacity, { 
+          toValue: 1,
+          duration: 1000 
+        }
       ),
       Animated.timing(
-        this.containerHeight,
-        { toValue: searchContainerHeight,
-          duration: 350, },
+        this.containerHeight, { 
+          toValue: searchContainerHeight,
+          duration: 350
+        }
       ),
     ]).start();
   }
@@ -207,13 +216,14 @@ export default class Menu extends Component {
 
 Menu.propTypes = {
   navigation: PropTypes.object.isRequired,
+  refPath: PropTypes.string,
   title: PropTypes.string,
 };
 
 const styles = StyleSheet.create({
   headerContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
     marginTop: '2%'
   },
   searchIcon: {

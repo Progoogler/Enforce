@@ -38,12 +38,19 @@ export default class Overview extends Component {
   render() {
     return (
       <View style={styles.container} >
-        <Menu navigation={this.props.navigation} />
+        <Menu 
+          navigation={this.props.navigation} 
+          refPath={this.props.screenProps.refPath}
+        />
         <TicketCounter
           reset={this.state.zero}
           navigation={this.props.navigation}
           ticketCount={this.realm.objects('Ticketed')[0] ? this.realm.objects('Ticketed')[0].list.length : 0} />
-        <TimersList resetTicketCounter={this.resetTicketCounter.bind(this)} navigation={this.props.navigation} />
+        <TimersList 
+          currentDay={this.props.screenProps.currentDay}
+          navigation={this.props.navigation}
+          resetTicketCounter={this.resetTicketCounter.bind(this)} 
+        />
       </View>
     );
   }
@@ -128,7 +135,10 @@ export default class Overview extends Component {
 
 }
 
-Overview.propTypes = { navigation: PropTypes.object.isRequired };
+Overview.propTypes = { 
+  navigation: PropTypes.object.isRequired,
+  screenProps: PropTypes.object.isRequired, 
+};
 
 const styles = StyleSheet.create({
   container: {
