@@ -49,7 +49,7 @@ export default class TimersList extends Component {
 
   componentDidMount() {
     this.mounted = true;
-    this._checkReset();
+    setTimeout(() => this._checkReset(), 1500); // Delay checking reset for screenProps to update w/ currentDay from AsyncStorage.
     this._getAndSaveCoords();
     this._setTimeoutRefresh();
   }
@@ -80,12 +80,17 @@ export default class TimersList extends Component {
     }
   }
 
-  async _checkReset() {
-    var today = new Date().getDate();
-    var yesterday = await AsyncStorage.getItem('@Enforce:currentDay');
-    if (!yesterday) AsyncStorage.setItem('@Enforce:currentDay', `${today}`);
+  async _checkReset() { console.log('current Day', this.props.currentDay);
+    var yesterday;
+    if (this.props.currentDay) {
+      yesterday = parseInt(this.props.currentDay);
+    } else {
+      var today = new Date().getDate();
+      yesterday = await AsyncStorage.getItem('@Enforce:currentDay');
+      if (!yesterday) AsyncStorage.setItem('@Enforce:currentDay', `${today}`);
+    }
     // If today is a different day than yesterday, reset app; i.e., 24th > 23rd || 2nd - 24th < 0
-    if (today > parseInt(yesterday) || today - parseInt(yesterday) < 0) {
+    if (today > yesterday || today - yesterday < 0) {
       this._reset();
       DeviceEventEmitter.removeListener('notificationActionReceived');
     } else if (this.props.navigation.state.params && this.props.navigation.state.params.reset) {
@@ -108,7 +113,7 @@ export default class TimersList extends Component {
       dateCount = [];
     } else {
       dateCount = JSON.parse(dateCount);
-      if (dateCount.length >= 45) { // Keep at a maxium range of 45 days of history available to search
+      if (this._checkDates(dateCount[0], today.getMonth() + 1, parseInt(day))) { // Keep at a maxium range of 45 days of history available to search
         let removalDate = dateCount.shift();
         refPath && removeTicketPath(refPath, removalDate); // Delete path from Firebase.
       }
@@ -127,6 +132,7 @@ export default class TimersList extends Component {
       var dataSource = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
       this.mounted && this.setState({dataSource});
       this.props.resetTicketCounter();
+      clearTimeout(this.timeoutRefresh);
       setTimeout(() => {
         Realm.clearTestState();
         this.realm = new Realm({schema: Schema});
@@ -178,6 +184,7 @@ export default class TimersList extends Component {
       this.mounted && this.setState({dataSource});
       this.props.resetTicketCounter();
       this.props.navigation.state.params = undefined;
+      clearTimeout(this.timeoutRefresh);
       setTimeout(() => {
         Realm.clearTestState();
         this.realm = new Realm({schema: Schema});
@@ -264,9 +271,68 @@ export default class TimersList extends Component {
     return this.key++;
   }
 
+  _checkDates(pastDate, month, day) {
+    var pastMonth = parseInt(pastDate.slice(0, pastDate.indexOf('-')));
+    var pastDay = parseInt(pastDate.slice(pastDate.indexOf('-') + 1, pastDate.length));
+    if (pastMonth < month - 2) return true;
+  
+    var amount;
+    switch (pastMonth) {
+      case 1:
+        amount = 31;
+        break;
+      case 2:
+        amount = 28;
+        break;
+      case 3:
+        amount = 31;
+        break;
+      case 4:
+        amount = 30;
+        break;
+      case 5:
+        amount = 31;
+        break;
+      case 6:
+        amount = 30;
+        break;
+      case 7:
+        amount = 31;
+        break;
+      case 8: 
+        amount = 31;
+        break;
+      case 9:
+        amount = 30;
+        break;
+      case 10:
+        amount = 31;
+        break;
+      case 11:
+        amount = 30;
+        break;
+      case 12:
+        amount = 31;
+        break;
+      default:
+        return;
+    }
+  
+    if (pastMonth === month - 2) {
+      if (amount - pastDay + 30 + day >= 45) return true;
+      return;
+    } 
+    
+    if (pastMonth === month - 1) {
+      if (amount - pastDay + day >= 45) return true;
+      return;
+    }
+  }
+
 }
 
 TimersList.propTypes = {
+  currentDay: PropTypes.number.isRequired,
   resetTicketCounter: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
 };
