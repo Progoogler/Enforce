@@ -101,7 +101,7 @@ export default class Row extends Component {
 
   _getTimeLimitDesc = (timeLimit) => {
     if (timeLimit < 1) {
-      return `${timeLimit * 60} minutes`;
+      return `${Math.floor(timeLimit * 60)} ${Math.floor(timeLimit * 60) === 1 ? 'minute' : 'minutes'}`;
     } else {
       return `${timeLimit} ${timeLimit === 1 ? 'hour' : 'hours'}`;
     }
