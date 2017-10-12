@@ -81,6 +81,7 @@ export default class App extends Component {
   constructor() {
     super();
     this.state = {
+      currentDay: 0,
       dataUpload: true,
       imageUpload: false,
       imageRecognition: false,
@@ -93,6 +94,7 @@ export default class App extends Component {
     return (
         <AppNavigator 
           screenProps={{
+            currentDay: this.state.currentDay,
             dataUpload: this.state.dataUpload,
             imageUpload: this.state.imageUpload,
             imageRecognition: this.state.imageRecognition, 
@@ -119,6 +121,13 @@ export default class App extends Component {
   }
 
   async _getSettings() {
+    var currentDay = await AsyncStorage.getItem('@Enforce:currentDay');
+    if (currentDay) {
+      this.setState({currentDay: parseInt(currentDay)});
+    } else {
+      let today = new Date().getDate();
+      AsyncStorage.setItem('@Enforce:currentDay', `${today}`);
+    }
     var settings = await AsyncStorage.getItem('@Enforce:settings');
     settings = JSON.parse(settings);
     if (settings) {
