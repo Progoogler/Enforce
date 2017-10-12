@@ -8,16 +8,12 @@ class Database {
    * @param tickets The entire list of ticketed objects w/ keys renamed to license or createdAt value.
    * @returns {firebase.Promise<any>|!firebase.Promise.<void>}
    */
-  static setUserTickets(ticketRefPath, tickets) {
-    return firebase.database().ref(ticketRefPath).update({
-        tickets: tickets
-    });
+  static setUserTicket(ticketRefPath, key, ticket) {
+    return firebase.database().ref(ticketRefPath).child(key).set(ticket);
   } 
 
   static transferUserData(refPath, data) {
-    return firebase.database().ref(`/${refPath}`).set(
-      data
-    );
+    return firebase.database().ref(`/${refPath}`).set(data);
   }
 
   /**
@@ -95,7 +91,7 @@ class Database {
   static getLicenseHistory(refPath, dates, license, callback) {
     var results = [];
     for (let i = 0; i < dates.length; i++) { 
-      let ref = firebase.database().ref(`${refPath}/${dates[i]}/tickets`);
+      let ref = firebase.database().ref(`${refPath}/${dates[i]}`);
       ref.child(license).once("value")
       .then((snapshot) => {
         if (snapshot.val()) {

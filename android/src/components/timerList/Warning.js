@@ -22,28 +22,31 @@ export default class Warning extends Component {
 
   render() {
     return (
-      <Modal animationType={"slide"}
+      <Modal 
+        animationType={"fade"}
         transparent={true}
-        onRequestClose={() => {this.props.clearWarning('clearWarning', 'only')}}
-        visible={this.props.visibility} >
-        <View style={styles.container} >
-          <View style={styles.containerBorder} >
-
+        onRequestClose={() => this.props.clearWarning('clearWarning', 'only')}
+        visible={this.props.visibility} 
+      >
+        <View style={styles.container}>
+          <View style={styles.containerBorder}>
             <Text style={styles.message}> Vehicle has parked for </Text>
             <Text style={styles.warning}> {this.props.timeElapsed} </Text>
             <Text style={styles.message}> Are you sure </Text>
             <Text style={styles.message}> you want to ticket now? </Text>
-            <View style={styles.buttons} >
+            <View style={styles.buttons}>
               <TouchableOpacity
                 style={styles.no}
                 activeOpacity={.8}
-                onPress={() => {this.props.clearWarning('clearWarning', 'only')}} >
+                onPress={() => this.props.clearWarning('clearWarning', 'only')}
+              >
                 <Text style={styles.noButtonText}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.yes}
                 activeOpacity={.6}
-                onPress={() => { this.props.uponTicketed([], 'force')}} >
+                onPress={() => this.props.uponTicketed([], 'force')}
+              >
                 <Text style={styles.yesButtonText}>Confirm</Text>
               </TouchableOpacity>
             </View>

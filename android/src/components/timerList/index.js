@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import Realm from 'realm';
 
 import coordinatesBound from './coordinatesBound';
-import { setUserTickets, setTicketImage } from '../../../../includes/firebase/database';
+import { setUserTicket, setTicketImage } from '../../../../includes/firebase/database';
 import Done from './Done';
 import Row from './Row';
 import Search from '../search';
@@ -36,10 +36,10 @@ export default class TimerList extends Component {
     this.state = {
       bound: undefined,
       dataSource: this.list,
+      done: false,
       license: '',
-      modalVisible: false,
       refreshing: false,
-      warningVisibility: false,
+      warning: false,
     };
     this.currentLicense = 0;
     this.license = '';
@@ -66,6 +66,13 @@ export default class TimerList extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <Warning 
+          clearWarning={this.updateRows.bind(this)}
+          timeElapsed={this.timeElapsed} 
+          uponTicketed={this.uponTicketed.bind(this)} 
+          visibility={this.state.warning} 
+        />
+
         <Search
           addLicenseToQueue={this.addLicenseToQueue.bind(this)}
           licenseParam={this.state.license}
@@ -92,15 +99,8 @@ export default class TimerList extends Component {
            removeClippedSubviews={true}
            renderItem={this._renderItem.bind(this)}
         />
-
-        <Warning 
-          clearWarning={this.updateRows.bind(this)}
-          timeElapsed={this.timeElapsed} 
-          uponTicketed={this.uponTicketed.bind(this)} 
-          visibility={this.state.warningVisibility} 
-        />
         
-        { this.state.modalVisible ? <Done navigation={this.props.navigation}/> : null }
+        { this.state.done ? <Done navigation={this.props.navigation}/> : null }
 
       </View>
     );
@@ -109,7 +109,7 @@ export default class TimerList extends Component {
   componentDidMount() {
     this.mounted = true;
     if (this.list[0].createdAt === 0 || Object.keys(this.list).length === 0) {
-      this.setState({ modalVisible: true });
+      this.setState({ done: true });
     } else {
       this.enterLicenseInSearchField({
         license: this.list[0].license,
@@ -125,14 +125,12 @@ export default class TimerList extends Component {
     if (this.props.screenProps.dataUpload && this.props.screenProps.refPath && this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) {
       var date = new Date();
       date = `${date.getMonth() + 1}-${date.getDate()}`;
-      var ticketedImage = {};
       for (let i = this.ticketCount; i < this.realm.objects('Ticketed')[0]['list'].length; i++) {
-        ticketedImage[this.realm.objects('Ticketed')[0]['list'][i].license ?
-         this.realm.objects('Ticketed')[0]['list'][i].license :
-          this.realm.objects('Ticketed')[0]['list'][i].createdAt] =
-           this.realm.objects('Ticketed')[0]['list'][i];
+        let key = this.realm.objects('Ticketed')[0]['list'][i].license ?
+          this.realm.objects('Ticketed')[0]['list'][i].license :
+          this.realm.objects('Ticketed')[0]['list'][i].createdAt + '';
+        setUserTicket(`/${this.props.screenProps.refPath}/${date}`, key, this.realm.objects('Ticketed')[0]['list'][i]);
       }
-      setUserTickets(`/${this.props.screenProps.refPath}/${date}`, ticketedImage);
     }
     this.props.navigation.state.params = undefined; // Reset params so constructor finds earliest ending Timer upon opening from Navigation menu
     clearTimeout(this.timeoutRefresh);
@@ -180,21 +178,21 @@ export default class TimerList extends Component {
     if (this.list.length === 0 && clearWarning) {
       this.mounted && this.setState({
         dataSource: this.list,
-        modalVisible: true, // Show the "Done" button to indicate end of list.
-        warningVisibility: false,
+        done: true, // Show the "Done" button to indicate end of list.
+        warning: false,
       });
     } else if (this.list.length === 0) {
       this.mounted && this.setState({
-        modalVisible: true,
+        done: true,
       });
     } else if (clearWarning && only) { // Extra transaction handler for displaying the warning sign.
-      this.mounted && this.setState({
-        warningVisibility: false,
+      this.mounted && this.setState({ 
+        warning: false,
       });
     } else if (clearWarning) {
       this.mounted && this.setState({
         dataSource: this.list,
-        warningVisibility: false,
+        warning: false,
       });
     } else {
       this.mounted && this.setState({
@@ -245,22 +243,20 @@ export default class TimerList extends Component {
       if (this.props.screenProps.imageUpload && this.props.screenProps.refPath) { // Uploads the image to the user's Firebase account
         let rnfbURI = RNFetchBlob.wrap(timer.mediaPath);
         Blob
-          .build(rnfbURI, {type: 'image/jpg;'})
-          .then((blob) => {
-            let month = now.getMonth() + 1;
-            let day = now.getDate();
-            // setTicketImage(refPath, imagePath, blob);
-            setTicketImage(`${this.props.screenProps.refPath}/${month}-${day}`, `${timer.createdAt}`, blob);
-          });
+        .build(rnfbURI, {type: 'image/jpg;'})
+        .then((blob) => {
+          let month = now.getMonth() + 1;
+          let day = now.getDate();
+          // setTicketImage(refPath, imagePath, blob);
+          setTicketImage(`${this.props.screenProps.refPath}/${month}-${day}`, `${timer.createdAt}`, blob);
+        });
       }
       this.updateRows('clearWarning');
     } else {
       this.timer = timer;
       let timeElapsed = (now - timer.createdAt) / 1000 / 60;
       this.timeElapsed = `${(timeElapsed / 60 + '')[0] !== '0' ? (timeElapsed / 60 + '')[0] + ' hour' : ''} ${Math.floor(timeElapsed % 60)} minutes`;
-      this.mounted && this.setState({
-        warningVisibility: true,
-      });
+      this.mounted && this.setState({warning: true});
     }
     if (indexOfTimer !== undefined && this.list[indexOfTimer] !== undefined) {
       // Handles updating license input field for the last timer that is not also the first
