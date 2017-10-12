@@ -46,7 +46,11 @@ export default class Overview extends Component {
           reset={this.state.zero}
           navigation={this.props.navigation}
           ticketCount={this.realm.objects('Ticketed')[0] ? this.realm.objects('Ticketed')[0].list.length : 0} />
-        <TimersList resetTicketCounter={this.resetTicketCounter.bind(this)} navigation={this.props.navigation} />
+        <TimersList 
+          currentDay={this.props.screenProps.currentDay}
+          navigation={this.props.navigation}
+          resetTicketCounter={this.resetTicketCounter.bind(this)} 
+        />
       </View>
     );
   }
