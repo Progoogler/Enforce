@@ -55,9 +55,18 @@ export default class CameraApp extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <LocationInput visibility={this.state.modalVisible} setModalVisible={this.setModalVisible.bind(this)} />
-        <Navigation navigation={this.props.navigation} title={'Enforce'}/>
-        <SetTimeLimit onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} newTimer={this.state.newTimer} realm={this.realm} />
+        <LocationInput 
+          setModalVisible={this.setModalVisible.bind(this)}
+          visibility={this.state.modalVisible} 
+        />
+        <Navigation 
+          title={'Enforce'}
+          navigation={this.props.navigation} 
+        />
+        <SetTimeLimit 
+          newTimer={this.state.newTimer} 
+          onUpdateTimeLimit={this._onUpdateTimeLimit.bind(this)} 
+        />
 
         <View style={styles.cameraContainer}>
 
@@ -89,9 +98,10 @@ export default class CameraApp extends Component {
         }
         </View>
         <Capture 
-          deletePreviousPicture={this.deletePreviousPicture.bind(this)} />
+          deletePreviousPicture={this.deletePreviousPicture.bind(this)} 
           setModalVisible={this.setModalVisible.bind(this)} 
           takePicture={this.takePicture.bind(this)} 
+        />
       </View>
     );
 }
