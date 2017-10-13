@@ -22,6 +22,16 @@ import StaticNavigation from '../navigation/StaticNavigation';
 export default class MapApp extends Component {
   constructor() {
     super();
+    this.accessedLocation = false;
+    this.animatedToMarker = false;
+    this.animatedMap = null;
+    this.description = '';
+    this.markers = [];
+    this.mounted = false;
+    this.realm = new Realm();
+    this.timeout = null;
+    this.timersArray = [];
+    this.timersTimeout = null;
     this.state = {
       animating: true,
       description: '',
@@ -30,20 +40,8 @@ export default class MapApp extends Component {
       polyline: [],
       showError: false,
     };
-    this.accessedLocation = false;
-    this.animated = false;
-    this.animatedToMarker = false;
-    this.animatedMap = undefined;
-    this.description = '';
-    this.done = [];
-    this.markers = [];
-    this.mounted = false;
-    this.realm = new Realm();
-    this.timeout = null;
-    this.timersArray = [];
-    this.timersTimeout = null;
   }
-
+  
   static navigationOptions = {
     drawerLabel: 'Map',
     drawerIcon: () => (
@@ -129,9 +127,7 @@ export default class MapApp extends Component {
 
   componentDidMount() {
     this.mounted = true;
-    // this._getMarkers() called once in render function
-    this._checkAndGetCoordinates();
-    this._checkAndDrawPolyline();
+    if (this.props.screenProps.locationReminder && !this.accessedLocation) this.checkLocationAndRender();
     setTimeout(() => {
       if (!this.animatedToMarker && !this.description) {
         this._displayDescription('No location reminders found.', true);
@@ -155,41 +151,6 @@ export default class MapApp extends Component {
     }
   }
 
-  async _checkAndGetCoordinates() {
-    if (this.props.navigation.state.params && typeof this.props.navigation.state.params.timersIndex === 'number') {
-      this.timersArray = this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list;
-      if (this.props.navigation.state.params.timerCreatedAt) {
-        for (let i = 0; i < this.timersArray.length; i++) {
-          if (this.timersArray[i].createdAt === this.props.navigation.state.params.timerCreatedAt) {
-            this.animatedToMarker = true;
-            this.mounted && this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
-            this.done.push(true);
-            return;
-          }
-        }
-      } else {
-        if (this.timersArray[0].latitude) {
-          this.mounted && this._animateToCoords(this.timersArray[0].latitude, this.timersArray[0].longitude);
-          this.animatedToMarker = true;
-          this.done.push(true);
-          return;
-        } else {
-          for (let i = 1; i < this.timersArray.length; i++) {
-            if (this.timersArray[i].latitude) {
-              this.animatedToMarker = true;
-              this.timeout = setTimeout(() => {
-                this.mounted && this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
-              }, 1500);
-              this.done.push(true);
-              return;
-            }
-          }
-        }
-      }
-    }
-    if (this.props.screenProps.locationReminder && !this.accessedLocation) this.checkLocationAndRender();
-  }
-
   _checkAndDrawPolyline() {
     if (this.timersArray.length) {
       var coords = [];
@@ -209,8 +170,9 @@ export default class MapApp extends Component {
           />
         ]
       });
-      this.done.length === 2 ? this.timersArray = [] : this.done.push(true);
-      return;
+      setTimeout(() => {
+        if (this.animatedToMarker) this.timersArray = [];
+      }, 3000);
     }
   }
 
@@ -219,7 +181,7 @@ export default class MapApp extends Component {
       latitude: lat,
       longitude: long,
     }, 1500);
-    if (!this.animated) this.animated = true;
+    if (!this.animatedToMarker) this.animatedToMarker = true;
     if (this.state.animating) this.mounted && this.setState({animating: false});
   }
 
@@ -268,7 +230,6 @@ export default class MapApp extends Component {
 
         if (lists[idx+1] === undefined) {
           if (lat > 0) {
-            this.animatedToMarker = true;
             this.timeout = setTimeout(() => {
               this._animateToCoords(lat, long);
             }, 1500);
@@ -278,7 +239,7 @@ export default class MapApp extends Component {
       return this.markers;
     } else {
       // Else check timers in params
-      if (!this.timersArray.length) this.timersArray = this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list;
+      this.timersArray = this.realm.objects('Timers')[this.props.navigation.state.params.timersIndex].list;
       
       if (this.props.navigation.state.params.timerCreatedAt) {
         for (let i = 0; i < this.timersArray.length; i++) {
@@ -296,7 +257,6 @@ export default class MapApp extends Component {
               </Marker>
             );
             if (this.timersArray[i].latitude) {
-              this.animatedToMarker = true;
               this.timeout = setTimeout(() => {
                 this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
               }, 1500);
@@ -337,14 +297,12 @@ export default class MapApp extends Component {
         });
 
         if (this.timersArray[0].latitude) {
-          this.animatedToMarker = true;
           this.timeout = setTimeout(() => {
             this._animateToCoords(this.timersArray[0].latitude, this.timersArray[0].longitude);
           }, 1500);
         } else { // Try to find the first timer with recorded coordinates and animate there
           for (let i = 1; i < this.timersArray.length; i++) {
             if (this.timersArray[i].latitude) {
-              this.animatedToMarker = true;
               this.timeout = setTimeout(() => {
                 this._animateToCoords(this.timersArray[i].latitude, this.timersArray[i].longitude);
               }, 1500);
@@ -355,7 +313,7 @@ export default class MapApp extends Component {
       }
       this.timersTimeout = setTimeout(() => this.timersArray = [], 3000);
     }
-    this.done.length === 2 ? this.timersArray = [] : this.done.push(true);
+    this._checkAndDrawPolyline();
     return this.markers;
   }
 
