@@ -29,9 +29,13 @@ import {
 export default class History extends Component {
   constructor() {
     super();
+    this.displayFirebaseResult = this.displayFirebaseResult.bind(this);
+    this.maximizeOrMinimizeImage = this.maximizeOrMinimizeImage.bind(this);
     this.mounted = false;
     this.profileId = null;
     this.profileSettings = null;
+    this.renderItem = this.renderItem.bind(this);
+
     this.realm = new Realm(); 
     this.state = {
       animating: true,
@@ -57,13 +61,13 @@ export default class History extends Component {
     return (
       <View style={styles.container}>
         <Navigation 
-          displayFirebaseResult={this.displayFirebaseResult.bind(this)}
+          displayFirebaseResult={this.displayFirebaseResult}
           historyScreen={true} 
           navigation={this.props.navigation} 
           refPath={this.props.screenProps.refPath}
         />
         <ImageModal 
-          maximizeOrMinimizeImage={this.maximizeOrMinimizeImage.bind(this)}
+          maximizeOrMinimizeImage={this.maximizeOrMinimizeImage}
           uri={this.state.uri} 
           visibility={this.state.showMaximizedImage} 
         />
@@ -99,7 +103,7 @@ export default class History extends Component {
            ItemSeparatorComponent={this._renderSeparator}
            keyExtractor={this._keyExtractor} 
            removeClippedSubviews={true}
-           renderItem={this._renderItem.bind(this)}
+           renderItem={this.renderItem}
            style={styles.flatlist}
         />
 
@@ -109,16 +113,16 @@ export default class History extends Component {
     );
   }
 
-  _renderItem(data) {
+  renderItem(data) {
     return (
       <Row
         data={data.item}
-        selected={this.state.selected}
-        maximizeOrMinimizeImage={this.maximizeOrMinimizeImage.bind(this)}
+        dateTransition={this.state.dateTransition}
+        getTicketImage={getTicketImage}
+        maximizeOrMinimizeImage={this.maximizeOrMinimizeImage}
         profileId={this.profileId}
         profileSettings={this.profileSettings}
-        getTicketImage={getTicketImage}
-        dateTransition={this.state.dateTransition}
+        selected={this.state.selected}
       />
     );
   }
@@ -147,7 +151,7 @@ export default class History extends Component {
   displayFirebaseResult(results: array) {
     if (results.length <= 1) return;
     // Select Picker at the first object's Date
-    this._parseDate(results[0].createdAt, (length) => { console.log('len', length)
+    this._parseDate(results[0].createdAt, (length) => {
       // UpdateRows() w/ the data
       this._updateRows(results, length);
     });
@@ -191,19 +195,28 @@ export default class History extends Component {
     var month = date.slice(0, date.indexOf('-'));
     var day = date.slice(date.indexOf('-') + 1, date.length);
     var prettyDate = this._getPrettyDate(month, day);
-
     if (this.profileId && this.profileSettings) {
-        await getHistoryData(this.profileSettings.state, this.profileSettings.county, this.profileId, date, (data) => {
-          this.updating = true;
-          if (data === null) {
-            this._updateRows([], prettyDate.length);
-            return;
-          }
-          this._updateRows(data.tickets, prettyDate.length);
+      await getHistoryData(this.profileSettings.state, this.profileSettings.county, this.profileId, date, (data) => {
+        this.updating = true;
+        if (data === null) {
+          this._updateRows([], prettyDate.length);
+          return;
+        }
+        this._parseData(data, (parsedData) => {
+          this._updateRows(parsedData, prettyDate.length);
         });
+      });
     } else {
       this._updateRows([], prettyDate.length);
     }
+  }
+
+  _parseData(data: object, cb: func) {
+    var parsedData = [];
+    for (let info in data) {
+      parsedData.push(data[info]);
+    }
+    cb(parsedData);
   }
 
   _onValueChange(value: string): undefined {
