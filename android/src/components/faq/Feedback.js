@@ -96,12 +96,32 @@ export default class Feedback extends Component {
 					this.props.welcome();
 				}, 1500);
 			}, 5000);
+		} else if (nextProps.reply) {
+			this.mounted && this.setState({message: 'Thank you for your feedback!'});
+			Animated.timing(
+				this.right, {
+					toValue: 0,
+					duration: 500,
+				}
+			).start();
+			setTimeout(() => {
+				this.mounted && this.setState({message: "We'll get back to you soon."});
+			}, 1500);
+			setTimeout(() => {
+				Animated.timing(
+					this.right, {
+						toValue: -(PixelRatio.get() * 2 * 28),
+						duration: 1500,
+					}
+				).start();
+			}, 3500);
 		}
 	}
 }
 
 Feedback.propTypes = {
 	openMessenger: PropTypes.func.isRequired,
+	reply: PropTypes.bool.isRequired,
 	thanks: PropTypes.bool.isRequired,
 	welcome: PropTypes.func.isRequired,
 };
