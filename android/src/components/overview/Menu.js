@@ -25,14 +25,19 @@ import {
 export default class Menu extends Component {
   constructor() {
     super();
+    this.buttonOpacity = new Animated.Value(1);
+    this.closeSearch = this.closeSearch.bind(this);
+    this.containerHeight = new Animated.Value(searchContainerHeight);
+    this.containerOpacity = new Animated.Value(1);
+    this.hideNoResultNotificationForMenu = this.hideNoResultNotificationForMenu.bind(this);
+    this.mounted = false;
+    this.resizeMenuContainer = this.resizeMenuContainer.bind(this);
+    this.showNoResultNotificationForMenu = this.showNoResultNotificationForMenu.bind(this);
+    this.titleOpacity = new Animated.Value(0);
+    this.toggleVerifyContainer = this.toggleVerifyContainer.bind(this);
     this.state = {
       search: false,
     };
-    this.buttonOpacity = new Animated.Value(1);
-    this.containerHeight = new Animated.Value(searchContainerHeight);
-    this.containerOpacity = new Animated.Value(1);
-    this.mounted = false;
-    this.titleOpacity = new Animated.Value(0);
   }
 
   render() {
@@ -50,12 +55,12 @@ export default class Menu extends Component {
         this.state.search ?
 
         <Search 
-          closeSearch={this.closeSearch.bind(this)}
-          hideNoResultNotificationForMenu={this.hideNoResultNotificationForMenu.bind(this)} 
+          closeSearch={this.closeSearch}
+          hideNoResultNotificationForMenu={this.hideNoResultNotificationForMenu} 
           navigation={this.props.navigation} 
-          resizeMenuContainer={this.resizeMenuContainer.bind(this)} 
-          showNoResultNotificationForMenu={this.showNoResultNotificationForMenu.bind(this)} 
-          toggleVerifyContainer={this.toggleVerifyContainer.bind(this)}
+          resizeMenuContainer={this.resizeMenuContainer} 
+          showNoResultNotificationForMenu={this.showNoResultNotificationForMenu} 
+          toggleVerifyContainer={this.toggleVerifyContainer}
           refPath={this.props.refPath}
         /> 
         
@@ -75,13 +80,14 @@ export default class Menu extends Component {
                     this.buttonOpacity,
                     { toValue: 0,
                       duration: 500, },
-                  ),
+                  )
                 ]).start();
                 this.mounted && this.setState({search: !this.state.search});
               }}
+              style={styles.searchIcon}
               underlayColor={primaryBlue}
-              style={styles.searchIcon} >
-              <Image source={require('../../../../shared/images/search-icon.png')} />
+            >
+              <Image source={require('../../../../shared/images/search-icon.png')}/>
             </TouchableHighlight>
             <Animated.Text 
               style={{
@@ -95,7 +101,7 @@ export default class Menu extends Component {
                 textShadowOffset: {
                   width: 2,
                   height: 1
-                },
+                }
               }}
             >
 
@@ -103,12 +109,13 @@ export default class Menu extends Component {
 
             </Animated.Text>
             <TouchableHighlight
-              underlayColor={primaryBlue}
               onPress={ () => {
                 Keyboard.dismiss();
                 this.props.navigation.navigate('DrawerOpen');
               }}
-              style={styles.headerNavigation} >
+              style={styles.headerNavigation} 
+              underlayColor={primaryBlue}
+            >
               <Image source={require('../../../../shared/images/menu-icon.jpg')}/>
             </TouchableHighlight>
           </View>
@@ -126,7 +133,7 @@ export default class Menu extends Component {
     Animated.timing(
       this.titleOpacity, { 
         toValue: 1,
-        duration: 500, 
+        duration: 500
       }
     ).start();
   }
@@ -224,7 +231,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     alignItems: 'center',
     flexDirection: 'row',
-    marginTop: '2%'
+    marginTop: '2%',
   },
   searchIcon: {
     marginLeft: '2%',

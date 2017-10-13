@@ -21,6 +21,7 @@ export default class Overview extends Component {
   constructor() {
     super();
     this.realm = new Realm();
+    this.resetTicketCounter = this.resetTicketCounter.bind(this);
     this.state = {
       zero: false,
     };
@@ -30,14 +31,13 @@ export default class Overview extends Component {
     title: 'Overview',
     drawerLabel: 'Overview',
     drawerIcon: () => (
-      <Image
-        source={require('../../../../shared/images/eyecon.png')} />
+      <Image source={require('../../../../shared/images/eyecon.png')}/>
     ),
   };
 
   render() {
     return (
-      <View style={styles.container} >
+      <View style={styles.container}>
         <Menu 
           navigation={this.props.navigation} 
           refPath={this.props.screenProps.refPath}
@@ -45,11 +45,12 @@ export default class Overview extends Component {
         <TicketCounter
           reset={this.state.zero}
           navigation={this.props.navigation}
-          ticketCount={this.realm.objects('Ticketed')[0] ? this.realm.objects('Ticketed')[0].list.length : 0} />
+          ticketCount={this.realm.objects('Ticketed')[0] ? this.realm.objects('Ticketed')[0].list.length : 0} 
+        />
         <TimersList 
           currentDay={this.props.screenProps.currentDay}
           navigation={this.props.navigation}
-          resetTicketCounter={this.resetTicketCounter.bind(this)} 
+          resetTicketCounter={this.resetTicketCounter} 
         />
       </View>
     );
@@ -83,10 +84,11 @@ export default class Overview extends Component {
     PushNotification.cancelAllLocalNotifications()
 
     var timers = this.realm.objects('Timers');
+    var now = Date.now();
     timers.forEach((timersLists, idx) => {
       if (!timersLists.list[0]) return;
 
-      let timeLeft = (timersLists.list[0].timeLength * 60 * 60 * 1000) - ((new Date() / 1) - timersLists.list[0].createdAt);
+      let timeLeft = (timersLists.list[0].timeLength * 60 * 60 * 1000) - (now - timersLists.list[0].createdAt);
       if (timeLeft < 0) return;
 
       let message = this._getTimeLimit(timersLists.list[0].timeLength) + " Limit Timer has expired";
@@ -99,7 +101,7 @@ export default class Overview extends Component {
         actions,
         tag: idx,
         vibration: 300,
-        date: new Date(Date.now() + (timeLeft)),
+        date: new Date(now + timeLeft),
       });
     });
 

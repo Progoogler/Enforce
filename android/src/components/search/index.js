@@ -40,16 +40,19 @@ import {
 export default class Search extends Component {
   constructor() {
     super();
-    this.state = {
-      animating: false,
-      license: '',
-      result: null,
-    }
     this.buttonOpacity = new Animated.Value(1);
     this.containerHeight = new Animated.Value(searchContainerHeight);
     this.containerOpacity = new Animated.Value(0);
     this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
+    this.deepSearch = this.deepSearch.bind(this);
+    this.handleTextInput = this.handleTextInput.bind(this);
+    this.handleVINSearch = this.handleVINSearch.bind(this);
+    this.historyResultCallback = this.historyResultCallback.bind(this);
+    this._keyboardDidHide = this._keyboardDidHide.bind(this);
+    this._keyboardDidHideForTimerList = this._keyboardDidHideForTimerList.bind(this);
     this.marginValue = windowCenterPoint;
+    this.minimizeResultContainer = this.minimizeResultContainer.bind(this);
+    this.minimizeVerifyContainer = this.minimizeVerifyContainer.bind(this);
     this.mounted = false;
     this.realm = new Realm();
     this.resultHeight = new Animated.Value(0);
@@ -58,6 +61,11 @@ export default class Search extends Component {
     this.underline = new Animated.Value(0);
     this.underlineOpacity = new Animated.Value(1);
     this.verifyHeight = new Animated.Value(0);
+    this.state = {
+      animating: false,
+      license: '',
+      result: null,
+    }
   }
 
   render() {
@@ -188,9 +196,9 @@ export default class Search extends Component {
               <Result
                 closeSearch={this.props.closeSearch} 
                 data={this.state.result}
-                deepSearch={this.deepSearch.bind(this)}
+                deepSearch={this.deepSearch}
                 license={this.state.license}
-                minimizeResultContainer={this.minimizeResultContainer.bind(this)}
+                minimizeResultContainer={this.minimizeResultContainer}
                 navigation={this.props.navigation}
                 resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
               /> 
@@ -222,10 +230,10 @@ export default class Search extends Component {
           }}
         >
           <VerifyModal 
-            handleTextInput={this.handleTextInput.bind(this)}
-            handleVINSearch={this.handleVINSearch.bind(this)}
+            handleTextInput={this.handleTextInput}
+            handleVINSearch={this.handleVINSearch}
             license={this.state.license}
-            minimizeVerifyContainer={this.minimizeVerifyContainer.bind(this)}
+            minimizeVerifyContainer={this.minimizeVerifyContainer}
             minimizeVerifyContainerForMenu={this.props.toggleVerifyContainer}
           /> 
         </Animated.View>
@@ -257,9 +265,9 @@ export default class Search extends Component {
           duration: 500, },
       ),
     ]).start();
-    if (this.props.timerList) this.keyboardDidHideForTimerListListener = Keyboard.addListener('keyboardDidHideForTimerList', this._keyboardDidHideForTimerList.bind(this));
+    if (this.props.timerList) this.keyboardDidHideForTimerListListener = Keyboard.addListener('keyboardDidHideForTimerList', this._keyboardDidHideForTimerList);
     this.mounted = true;
-    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide.bind(this));
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
     this._getAsyncData();
   }
 
@@ -340,9 +348,9 @@ export default class Search extends Component {
     }
       
     if (vinCheck) {
-      historySearch(license, "vinSearch", this.historyResultCallback.bind(this));
+      historySearch(license, "vinSearch", this.historyResultCallback);
     } else {
-      historySearch(license, "license", this.historyResultCallback.bind(this));
+      historySearch(license, "license", this.historyResultCallback);
     }
 
     // Add license to current Timer in queue in TimerList if in TimerList.
@@ -658,37 +666,37 @@ export default class Search extends Component {
         this.buttonOpacity, {
           toValue: 0,
           duration: 700,
-        },
+        }
       ),
       Animated.timing(
         this.containerHeight, {
           toValue: searchContainerHeight,
           duration: 700,
-        },
+        }
       ),
       Animated.timing(
         this.underlineOpacity, {
           toValue: 0,
           duration: 700,
-        },
+        }
       ),
       Animated.timing(
         this.underline, {
           toValue: 0,
           duration: 700,
-        },
+        }
       ),
       Animated.timing(
         this.containerOpacity, {
           toValue: 0,
           duration: 700,
-        },
+        }
       ),
       Animated.timing(
         this.separatorHeight, {
           toValue: 0,
           duration: 700,
-        },
+        }
       ),
     ]).start();
   }
@@ -719,9 +727,9 @@ Search.propTypes = {
 
 const styles = StyleSheet.create({
   headerContainer: {
+    alignItems: 'center',
     flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
     height: navBarContainerHeight,
   },
   searchIcon: {
@@ -732,8 +740,8 @@ const styles = StyleSheet.create({
     right: '1%',
   },
   button: {
-    flex: .5,
     alignItems: 'center',
+    flex: .5,
     justifyContent: 'center',
   },
 });

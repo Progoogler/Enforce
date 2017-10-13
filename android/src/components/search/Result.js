@@ -25,6 +25,8 @@ import {
 export default class Result extends Component {
   constructor() {
     super();
+    this.closeModal = this.closeModal.bind(this);
+    this.maximizeOrMinimizeImage = this.maximizeOrMinimizeImage.bind(this);
     this.state = {
       showMaximizedImage: false,
       modalVisible: false,
@@ -36,11 +38,16 @@ export default class Result extends Component {
     return (
       <View style={styles.outerContainer} >
 
-        { this.state.showMaximizedImage ?
+        { 
+          this.state.showMaximizedImage ?
           <ImageModal
+            maximizeOrMinimizeImage={this.maximizeOrMinimizeImage}
             uri={this.state.uri}
             visibility={this.state.showMaximizedImage}
-            maximizeOrMinimizeImage={this.maximizeOrMinimizeImage.bind(this)} /> : null }
+          /> 
+          : 
+          null 
+        }
 
         {
           typeof this.props.data.data === 'object' ?
@@ -69,17 +76,19 @@ export default class Result extends Component {
               {
                 this.props.data.data.latitude || this.props.data.data.description ?  
                 <TouchableOpacity
+                  onPress={() => this._openMapPage()} 
                   style={styles.mapButton}
-                  onPress={() => this._openMapPage()} >
-                  <Image source={require('../../../../shared/images/blue-pin.png')} style={styles.mapIcon} />
+                >
+                  <Image source={require('../../../../shared/images/blue-pin.png')} style={styles.mapIcon}/>
                 </TouchableOpacity>
                 :
                 null
               }
               <TouchableOpacity
+                onPress={() => this._handleCloseResult()} 
                 opacity={.8}
                 style={styles.closeResultButton}
-                onPress={() => this._handleCloseResult()} >
+              >
                 <Text style={styles.closeResultText}>X</Text>
               </TouchableOpacity>
             </View>
@@ -91,15 +100,20 @@ export default class Result extends Component {
               license={this.props.license} 
               type={this.props.data}
             />
-
         }
 
-        { this.state.modalVisible ? <MapModal
-                                      visibility={this.state.modalVisible}
-                                      latitude={this.props.data.data.latitude}
-                                      longitude={this.props.data.data.longitude}
-                                      description={this.props.data.data.description}
-                                      closeModal={this.closeModal.bind(this)} /> : null }
+        { 
+          this.state.modalVisible ? 
+          <MapModal
+            visibility={this.state.modalVisible}
+            latitude={this.props.data.data.latitude}
+            longitude={this.props.data.data.longitude}
+            description={this.props.data.data.description}
+            closeModal={this.closeModal} 
+          /> 
+          : 
+          null 
+        }
 
       </View>
     );
@@ -158,44 +172,44 @@ Result.propTypes = {
 
 const styles = StyleSheet.create({
   outerContainer: {
-    height: 120,
     alignSelf: 'stretch',
     backgroundColor: primaryBlue,
+    height: 120,
     padding: '4%',
   },
   container: {
+    backgroundColor: 'white',
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: 'white',
   },
   image: {
-    height: imageSize,
-    width: imageSize,
-    marginRight: '4%',
     flex: .3,
+    height: imageSize,
+    marginRight: '4%',
+    width: imageSize,
   },
   dataContainer: {
     flex: .7,
     padding: '1.5%',
   },
   label: {
-    fontWeight: 'bold',
     fontSize: smallFontSize,
+    fontWeight: 'bold',
   },
   mapButton: {
-    position: 'absolute',
     bottom: 0,
+    position: 'absolute',
     right: 0,
   },
   closeResultButton: {
+    backgroundColor: primaryBlue,
     height: closeButtonSize,
     width: closeButtonSize,
-    backgroundColor: primaryBlue,
   },
   closeResultText: {
     color: 'white',
-    textAlign: 'center',
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   mapIcon: {
     height: pinHeight,
