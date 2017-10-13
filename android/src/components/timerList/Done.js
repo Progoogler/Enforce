@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   Image,
   StyleSheet,
@@ -10,28 +10,42 @@ import {
   doneHeight,
   largeFontSize, 
   primaryBlue, 
+  mediumFontSize,
 } from '../../styles/common';
 
-const Done = (props) => (
-  <TouchableOpacity
-    activeOpacity={.5}
-    style={styles.container}
-    onPress={() => {
-      if (props.closeModal) {
-        props.closeModal();
-      } else {
-        props.navigation.navigate('Overview');
-      }
-    }}
-  >
-      <Image
-        source={require('../../../../shared/images/checkmark.jpg')}
-        style={styles.image}
-      />
-      <Text style={styles.text}>{props.text ? props.text : 'Done'}</Text>
+export default class Done extends Component {
+  constructor() {
+    super();
+  }
 
-  </TouchableOpacity>
-);
+  render() {
+    return (
+      <TouchableOpacity
+        activeOpacity={.5}
+        style={styles.container}
+        onPress={() => this._handlePress()}
+      >
+        {
+          this.props.text === 'Send' ?
+          <Image source={require('../../../../shared/images/envelope.png')}/> :
+          this.props.text ?
+          null :
+          <Image source={require('../../../../shared/images/checkmark.jpg')}/>
+        }
+        <Text style={[styles.text, this.props.text === 'Must be connected to the Internet' ? styles.smallText : null]}>{this.props.text ? this.props.text : 'Done'}</Text>
+      </TouchableOpacity>
+    );
+  }
+
+  _handlePress() {
+    if (this.props.closeModal) {
+      this.props.closeModal();
+    } else {
+      this.props.navigation.navigate('Overview');
+    }
+  }
+
+}
 
 Done.propTypes = { 
   closeModal: PropTypes.func,
@@ -41,22 +55,25 @@ Done.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
-    height: doneHeight,
-    width: '100%',
-    bottom: 0,
-    zIndex: 10,
-    borderTopWidth: 2,
     borderColor: primaryBlue,
+    borderTopWidth: 2,
+    bottom: 0,
+    flexDirection: 'row',
+    height: doneHeight,
+    justifyContent: 'center',
+    width: '100%',
+    zIndex: 10,
   },
   text: {
-    padding: '5%',
-    fontSize: largeFontSize,
     color: primaryBlue,
+    fontSize: largeFontSize,
+    padding: '5%',
+  },
+  smallText: {
+    color: primaryBlue,
+    fontSize: mediumFontSize,
+    padding: '5%',
   }
 });
-
-export default Done;

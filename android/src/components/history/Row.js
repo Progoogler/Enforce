@@ -19,13 +19,14 @@ import {
 export default class Row extends Component {
   constructor() {
     super();
+    this.closeModal = this.closeModal.bind(this);
+    this.mounted = false;
     this.state = {
       animating: false,
       getImageText: `Get${'\n'}Photo`,
       image: [],
       modalVisible: false,
     }
-    this.mounted = false;
   }
 
   render() {
@@ -34,11 +35,19 @@ export default class Row extends Component {
         <View style={styles.rowContainer}>
           {
             (this.props.selected === "Today's Tickets" || this.props.selected === "Today's Expired") ?
-            <TouchableOpacity activeOpacity={.4} onPress={() => this.props.maximizeOrMinimizeImage(this.props.data.mediaUri)}>
-              <Image style={styles.image} source={{uri: this.props.data.mediaUri}} />
+            <TouchableOpacity 
+              activeOpacity={.4} 
+              onPress={() => this.props.maximizeOrMinimizeImage(this.props.data.mediaUri)}
+              style={styles.imageContainer}
+            >
+              <Image style={styles.image} source={{uri: this.props.data.mediaUri}}/>
             </TouchableOpacity>
             :
-            <TouchableOpacity activeOpacity={.4} style={styles.getImageButton} onPress={() => this._getImageFromDatabase() }>
+            <TouchableOpacity 
+              activeOpacity={.4} 
+              onPress={() => this._getImageFromDatabase()}
+              style={styles.getImageButton} 
+            >
               { this.state.image.length === 0 ? <Text style={styles.getImageText}>{this.state.getImageText}</Text> : this.state.image[0] }
             </TouchableOpacity>
           }
@@ -47,12 +56,15 @@ export default class Row extends Component {
           <View>
             {
               this.props.data.license && this.props.data.VIN ?
+
               <Text><Text style={styles.label}>License:</Text> {this.props.data.license + '         '}
               <Text style={styles.label}>VIN:</Text> {this.props.data.VIN}</Text> :
 
               this.props.data.license ?
 
-              <Text><Text style={styles.label}>License:</Text> {this.props.data.license}</Text> : null
+              <Text><Text style={styles.label}>License:</Text> {this.props.data.license}</Text> 
+              
+              : null
             }
             <Text><Text style={styles.label}>Photo taken:</Text> {this._getPrettyTimeFormat(this.props.data.createdAt)}</Text>
 
@@ -74,12 +86,18 @@ export default class Row extends Component {
 
         </View>
 
-        { this.state.modalVisible ? <MapModal
-                                      visibility={this.state.modalVisible}
-                                      latitude={this.props.data.latitude}
-                                      longitude={this.props.data.longitude}
-                                      description={this.props.data.description}
-                                      closeModal={this.closeModal.bind(this)} /> : null }
+        { 
+          this.state.modalVisible ? 
+          <MapModal
+            closeModal={this.closeModal}
+            description={this.props.data.description}
+            latitude={this.props.data.latitude}
+            longitude={this.props.data.longitude}
+            visibility={this.state.modalVisible}
+          /> 
+          : 
+          null 
+        }
 
       </View>
     );
@@ -100,10 +118,14 @@ export default class Row extends Component {
   }
 
   _getTimeLimitDesc = (timeLimit) => {
+    var limit;
     if (timeLimit < 1) {
-      return `${Math.floor(timeLimit * 60)} ${Math.floor(timeLimit * 60) === 1 ? 'minute' : 'minutes'}`;
+      limit = Math.floor(timeLimit * 60);
+      return `${limit} ${limit === 1 ? 'minute' : 'minutes'}`;
     } else {
-      return `${timeLimit} ${timeLimit === 1 ? 'hour' : 'hours'}`;
+      limit = timeLimit + '';
+      if (limit.length > 4) limit = limit.slice(0, 4);
+      return `${limit} ${limit === 1 ? 'hour' : 'hours'}`;
     }
   }
 
@@ -128,18 +150,24 @@ export default class Row extends Component {
     this.props.getTicketImage(refPath, time, (url) => {
       if (url === null) {
         this.mounted && this.setState({
-          image: [<View style={styles.getImageButton} key={date}><Text style={styles.getImageText}>Photo {'\n'}not{'\n'}available</Text></View>],
+          image: [<View 
+                    key={date}
+                    style={styles.getImageButton} 
+                  >
+                    <Text style={styles.getImageText}>Photo {'\n'}not{'\n'}available</Text>
+                  </View>],
           animating: false,
         });
       } else {
         this.mounted && this.setState({
           image: [<TouchableOpacity
-                    style={styles.image}
                     activeOpacity={.8}
+                    key={date} 
                     onPress={() => this.props.maximizeOrMinimizeImage(url)}
-                    key={date} >
-                      <Image style={{alignSelf: 'center', height: imageSize, width: imageSize}} source={{ uri: url }} />
-                    </TouchableOpacity>],
+                    style={styles.imageContainer}
+                  >
+                    <Image style={styles.image} source={{ uri: url }}/>
+                  </TouchableOpacity>],
           animating: false,
         });
       }
@@ -154,11 +182,11 @@ export default class Row extends Component {
 
 Row.propTypes = {
   data: PropTypes.object.isRequired,
-  maximizeOrMinimizeImage: PropTypes.func.isRequired,
   dateTransition: PropTypes.bool.isRequired,
-  profileSettings: PropTypes.object,
-  profileId: PropTypes.string,
   getTicketImage: PropTypes.func.isRequired,
+  maximizeOrMinimizeImage: PropTypes.func.isRequired,
+  profileId: PropTypes.string,
+  profileSettings: PropTypes.object,
   selected: PropTypes.string.isRequired,
 }
 
@@ -169,33 +197,38 @@ const styles = StyleSheet.create({
   rowContainer: {
     flexDirection: 'row',
   },
-  image: {
+  imageContainer: {
     height: imageSize,
-    width: imageSize,
     marginRight: '4%',
+    width: imageSize,
+  },
+  image: {
+    alignSelf: 'center', 
+    height: imageSize, 
+    width: imageSize,
   },
   label: {
-    fontWeight: 'bold',
     fontSize: smallFontSize,
+    fontWeight: 'bold',
   },
   activity: {
-    position: 'absolute',
     alignSelf: 'center',
     left: '10%',
+    position: 'absolute',
     zIndex: 10,
   },
   button: {
     backgroundColor: primaryBlue,
-    justifyContent: 'center',
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    borderWidth: 1,
     borderRadius: 5,
-    padding: '1%',
-    height: '35%',
-    width: '20%',
+    borderWidth: 1,
+    bottom: 0,
     elevation: 4,
+    height: '35%',
+    justifyContent: 'center',
+    padding: '1%',
+    position: 'absolute',
+    right: 0,
+    width: '20%',
   },
   buttonText: {
     color: 'white',
@@ -203,12 +236,12 @@ const styles = StyleSheet.create({
   },
   getImageButton: {
     backgroundColor: 'grey',
-    height: imageSize,
-    width: imageSize,
-    marginRight: '4%',
     borderWidth: 1,
-    justifyContent: 'center',
     elevation: 4,
+    height: imageSize,
+    justifyContent: 'center',
+    marginRight: '4%',
+    width: imageSize,
   },
   getImageText: {
     color: 'white',

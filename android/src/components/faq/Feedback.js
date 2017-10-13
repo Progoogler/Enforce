@@ -88,7 +88,7 @@ export default class Feedback extends Component {
 			setTimeout(() => {
 				Animated.timing(
 					this.right, {
-						toValue: -this.space,
+						toValue: -(PixelRatio.get() * 2 * 30),
 						duration: 1500,
 					}
 				).start();

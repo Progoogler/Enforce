@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import {
 	AsyncStorage,
-	Text,
 	Modal,
+	NetInfo,
 	ScrollView,
 	StyleSheet,
 	View,
@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 
 import { sendFeedback } from '../../../../includes/firebase/database';
 import StaticNavigation from '../navigation/StaticNavigation'
-import Done from '../timerList/Done';
+import Send from '../timerList/Done';
 import {
 	messageContainerHeight,
 	primaryBlue,
@@ -24,6 +24,10 @@ export default class Messenger extends Component {
 		this.email = '';
 		this.feedback = {};
 		this.message = '';
+		this.sendFeedbackToFirebase = this.sendFeedbackToFirebase.bind(this);
+		this.state = {
+			submitText: 'Send',
+		}
 	}
 
 	render() {
@@ -53,9 +57,9 @@ export default class Messenger extends Component {
 						/>
 					</View>
 				</ScrollView>
-				<Done 
-					text={'Send'}
-					closeModal={this.sendFeedbackToFirebase.bind(this)}
+				<Send
+					text={this.state.submitText}
+					closeModal={this.sendFeedbackToFirebase}
 				/>
 			</Modal>
 		);
@@ -77,17 +81,23 @@ export default class Messenger extends Component {
 		if (this.message.length === 0) {
 			this.props.closeMessenger();
 		} else {
-			this.feedback.message = this.message.replace(/\W/g, " ");
-			if (this.email) {
-				sendFeedback(this.email, this.feedback);
-			} else {
-				sendFeedback(this.feedback.date, this.feedback);
-			}
+			NetInfo.isConnected.fetch().then(isConnected => {
+				if (isConnected) {
+					this.feedback.message = this.message.replace(/\W/g, " ");
+					if (this.email) {
+						sendFeedback(this.email, this.feedback);
+					} else {
+						sendFeedback(this.feedback.date, this.feedback);
+					}
+					this.props.closeMessenger('thanks');
+				} else {
+					this.setState({submitText: 'Must be connected to the Internet'})
+					setTimeout(() => this.setState({submitText: 'Send'}), 3000);
+				}
+			});
 		}
-		// Say thank you
-		this.props.closeMessenger('thanks');
 	}
-
+	
 	_parseEmail(email) {
 		var result = email.replace('@', ' AT ');
 		result = result.replace('.', ' DOT ');
