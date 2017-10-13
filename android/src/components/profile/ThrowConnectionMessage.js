@@ -8,27 +8,26 @@ import { primaryBlue, smallFontSize } from '../../styles/common';
 
 const ThrowConnectionMessage = () => (
   <View style={styles.container}>
-    <Text style={styles.message}>Must be connected to the Internet.</Text>
+    <Text style={styles.message}>Must be connected to the Internet</Text>
   </View>
 );
  
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
-    width: '100%',
-    position: 'absolute',
-    bottom: 0,
-    zIndex: 10,
     borderTopWidth: 2,
     borderColor: primaryBlue,
+    bottom: 0,
+    justifyContent: 'center',
+    position: 'absolute',
+    width: '100%',
+    zIndex: 10,
   },
   message: {
-    padding: '5%',
     fontSize: smallFontSize,
+    padding: '5%',
   },
 });
-
 
 export default ThrowConnectionMessage;
