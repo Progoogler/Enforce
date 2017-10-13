@@ -138,30 +138,48 @@ export default class TimersList extends Component {
     if (this.realm.objects('Timers').length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
 
       // Delete corresponding images in the DCIM directory
-      this._loopDeletion(this.realm.objects('Timers'));
-      if (this.realm.objects('Ticketed')[0].list.length > 0) this._loopDeletion(this.realm.objects('Ticketed'), true);
-      if (this.realm.objects('Expired')[0].list.length > 0) this._loopDeletion(this.realm.objects('Expired'), true);
-
+      this._deleteTimers()
+      .then(() => {
+        setTimeout(() => {
+          Realm.clearTestState();
+          this.realm = new Realm({schema: Schema});
+          this.realm.write(() => {
+            this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
+            this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
+            this.realm.create('Coordinates', {latitude: 0, longitude: 0, time: 0});
+            this.realm.create('Ticketed', {list: []});
+            this.realm.create('Expired', {list: []});
+          });
+        }, 3000);
+      });
       var dataSource = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
       this.mounted && this.setState({dataSource});
       this.props.resetTicketCounter();
       clearTimeout(this.timeoutRefresh);
-      setTimeout(() => {
-        Realm.clearTestState();
-        this.realm = new Realm({schema: Schema});
-        this.realm.write(() => {
-          this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
-          this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
-          this.realm.create('Coordinates', {latitude: 0, longitude: 0, time: 0});
-          this.realm.create('Ticketed', {list: []});
-          this.realm.create('Expired', {list: []});
-        });
-      }, 3000);
       DeviceEventEmitter.removeAllListeners('notificationActionReceived');
     }
   }
 
+  _deleteTimers() {
+    return new Promise((resolve, reject) => {
+      var timersLen = 0;
+      this.realm.objects('Timers').forEach((timerList) => {
+        timersLen += timerList.list.length;
+      });
+      var ticketedLen = this.realm.objects('Ticketed')[0]['list'].length;
+      var expiredLen = this.realm.objects('Expired')[0]['list'].length;
+      var total = timersLen + ticketedLen + expiredLen;
+      var removedTimers = this._loopDeletion(this.realm.objects('Timers'));
+      var removedTicketed = this._loopDeletion(this.realm.objects('Ticketed'), true);
+      var removedExpired = this._loopDeletion(this.realm.objects('Expired'), true);
+      if (total === removedTimers + removedTicketed + removedExpired) {
+        resolve();
+      }
+    });
+  }
+
   _loopDeletion(timerLists: object, once?: boolean) {
+    var deleted = 0;
     if (once) { // Single loop for linear list
       timerLists[0].list.forEach((timer) => {
         unlink(timer.mediaPath)
@@ -169,6 +187,7 @@ export default class TimersList extends Component {
             this.realm.write(() => {
               this.realm.delete(timer);
             });
+            deleted++;
           });
         });
     } else {
@@ -179,36 +198,38 @@ export default class TimersList extends Component {
             this.realm.write(() => {
               this.realm.delete(timer);
             });
+            deleted++;
           });
         });
       });
     }
+    return deleted;
   }
 
   _hardReset() { // Only removes current pictures and resets Realm state
     if (this.realm.objects('Timers').length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
 
       // Delete corresponding images in the DCIM directory
-      this._loopDeletion(this.realm.objects('Timers'));
-      if (this.realm.objects('Ticketed')[0].list.length > 0) this._loopDeletion(this.realm.objects('Ticketed'), true);
-      if (this.realm.objects('Expired')[0].list.length > 0) this._loopDeletion(this.realm.objects('Expired'), true);
+      this._deleteTimers()
+      .then(() => {
+        setTimeout(() => {
+          Realm.clearTestState();
+          this.realm = new Realm({schema: Schema});
+          this.realm.write(() => {
+            this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
+            this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
+            this.realm.create('Coordinates', {latitude: 0, longitude: 0, time: 0});
+            this.realm.create('Ticketed', {list: []});
+            this.realm.create('Expired', {list: []});
+          });
+        }, 3000);
+      });
 
       var dataSource = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
       this.mounted && this.setState({dataSource});
       this.props.resetTicketCounter();
       this.props.navigation.state.params = undefined;
       clearTimeout(this.timeoutRefresh);
-      setTimeout(() => {
-        Realm.clearTestState();
-        this.realm = new Realm({schema: Schema});
-        this.realm.write(() => {
-          this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
-          this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
-          this.realm.create('Coordinates', {latitude: 0, longitude: 0, time: 0});
-          this.realm.create('Ticketed', {list: []});
-          this.realm.create('Expired', {list: []});
-        });
-      }, 3000);
       DeviceEventEmitter.removeAllListeners('notificationActionReceived');
     }
   }
