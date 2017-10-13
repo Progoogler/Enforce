@@ -48,14 +48,14 @@ export default class StaticNavigation extends Component {
   }
 
   _handleArrow() {
-    if (this.props.navigation) {
-      if (this.props.timerList) {
-        this.props.navigation.navigate('Timers');
-      } else {
-        this.props.navigation.navigate('Overview');
-      }
-    } else {
+    if (this.props.closeModal) {
       this.props.closeModal();
+      return;
+    }
+    if (this.props.timerList) {
+      this.props.navigation.navigate('Timers');
+    } else {
+      this.props.navigation.navigate('Overview');
     }
   }
 
