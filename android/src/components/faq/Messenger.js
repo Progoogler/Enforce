@@ -53,7 +53,7 @@ export default class Messenger extends Component {
 							maxLength={365}
 							minHeight={120}
 							autoFocus={true}
-							placeholder={'We appreciate your feedback!'}
+							placeholder={"What's on your mind?"}
 						/>
 					</View>
 				</ScrollView>
@@ -83,10 +83,22 @@ export default class Messenger extends Component {
 		} else {
 			NetInfo.isConnected.fetch().then(isConnected => {
 				if (isConnected) {
+					var question = this.message.includes('?');
 					this.feedback.message = this.message.replace(/\W/g, " ");
 					if (this.email) {
-						sendFeedback(this.email, this.feedback);
+						if (question) {
+							sendFeedback('QUESTION! ' + this.email, this.feedback);
+							this.props.closeMessenger('reply');
+							return;
+						}
+						var random = Math.floor(Math.random() * 100);
+						sendFeedback(this.email + ' ' + random, this.feedback);
 					} else {
+						if (question) {
+							sendFeedback('QUESTION! ' + this.feedback.date, this.feedback);
+							this.props.closeMessenger('reply');
+							return;
+						}
 						sendFeedback(this.feedback.date, this.feedback);
 					}
 					this.props.closeMessenger('thanks');

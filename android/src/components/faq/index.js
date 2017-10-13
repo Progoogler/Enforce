@@ -35,6 +35,7 @@ export default class FAQs extends Component {
     this.welcome = this.welcome.bind(this);
     this.state = {
       messaging: false,
+      reply: false,
       thanks: false,
     };
   }
@@ -76,6 +77,7 @@ export default class FAQs extends Component {
         </ScrollView>
         <Feedback 
           openMessenger={this.openMessenger}
+          reply={this.state.reply}
           thanks={this.state.thanks}
           welcome={this.welcome}
         />
@@ -91,11 +93,17 @@ export default class FAQs extends Component {
     this.mounted && this.setState({messaging: true});
   }
 
-  closeMessenger(thanks) {
-    if (thanks) {
+  closeMessenger(type) {
+    if (type === 'thanks') {
       this.mounted && this.setState({
         messaging: false,
         thanks: true,
+      });
+      return;
+    } else if (type === 'reply') {
+      this.mounted&& this.setState({
+        messaging: false,
+        reply: true,
       });
       return;
     }
@@ -103,7 +111,7 @@ export default class FAQs extends Component {
   }
 
   welcome() {
-    this.mounted && this.setState({thanks: false});
+    this.mounted && this.setState({thanks: false, reply: false});
   }
 }
 
