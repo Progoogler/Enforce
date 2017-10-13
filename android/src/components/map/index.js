@@ -25,6 +25,7 @@ export default class MapApp extends Component {
     this.accessedLocation = false;
     this.animatedToMarker = false;
     this.animatedMap = null;
+    this.checkLocationAndRender = this.checkLocatio;
     this.description = '';
     this.markers = [];
     this.mounted = false;
@@ -99,13 +100,13 @@ export default class MapApp extends Component {
           size='large' 
         />
 
-        <ErrorMessage checkLocationAndRender={this.checkLocationAndRender.bind(this)} showError={this.state.showError}/>
+        <ErrorMessage checkLocationAndRender={this.checkLocationAndRender} showError={this.state.showError}/>
       </View>
     );
   }
 
   componentWillMount() {
-    if (new Date() - this.realm.objects('Coordinates')[0].time > 150000) {
+    if (Date.now() - this.realm.objects('Coordinates')[0].time > 150000) {
       navigator.geolocation.getCurrentPosition(
         position => {
           this.accessedLocation = true;

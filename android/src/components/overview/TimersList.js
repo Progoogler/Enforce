@@ -255,7 +255,7 @@ export default class TimersList extends Component {
   }
 
   _getAndSaveCoords() { 
-    var date = new Date();
+    var date = Date.now();
     if (date - this.realm.objects('Coordinates')[0].time > 300000) {
       navigator.geolocation.getCurrentPosition(
         position => {
@@ -264,7 +264,7 @@ export default class TimersList extends Component {
           this.realm.write(() => {
             this.realm.objects('Coordinates')[0].latitude = this.latitude;
             this.realm.objects('Coordinates')[0].longitude = this.longitude;
-            this.realm.objects('Coordinates')[0].time = new Date() / 1;
+            this.realm.objects('Coordinates')[0].time = date;
           });
           this.mounted && this.setState({ updatedLocation: true }) && this.onRefresh();
         }, () => {},

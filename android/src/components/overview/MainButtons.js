@@ -25,38 +25,40 @@ export default class MainButtons extends Component {
 
         <View style={styles.buttonColumn}>
           <TouchableHighlight
+            onHideUnderlay={() => {this._onHideUnderlay('map')}}
+            onPress={() => this.props.navigation.navigate('Map')} 
+            onShowUnderlay={() => {this._onShowUnderlay('map')}}
             style={{
-              height: mainButtonsHeight,
-              borderBottomWidth: 4,
-              borderBottomColor: this.state.mapBorder,
               alignItems: 'center',
+              borderBottomColor: this.state.mapBorder,
+              borderBottomWidth: 4,
+              height: mainButtonsHeight,
               justifyContent: 'center',
             }}
             underlayColor={primaryBlue}
-            onHideUnderlay={() => {this._onHideUnderlay('map')}}
-            onShowUnderlay={() => {this._onShowUnderlay('map')}}
-            onPress={() => this.props.navigation.navigate('Map')} >
-            <Image source={require('../../../../shared/images/white-pin.jpg')} />
+          >
+            <Image source={require('../../../../shared/images/white-pin.jpg')}/>
           </TouchableHighlight>
           { this.state.mapUnderline ? <View style={styles.underline} /> : null }
         </View>
 
-        <View style={styles.separator} />
+        <View style={styles.separator}/>
 
         <View style={styles.buttonColumn}>
           <TouchableHighlight
+            onHideUnderlay={() => {this._onHideUnderlay('camera')}}
+            onShowUnderlay={() => {this._onShowUnderlay('camera')}}
+            onPress={() => this.props.navigation.navigate('Camera')}
             style={{
-              height: mainButtonsHeight,
-              borderBottomWidth: 4,
-              borderBottomColor: this.state.cameraBorder,
               alignItems: 'center',
+              borderBottomColor: this.state.cameraBorder,
+              borderBottomWidth: 4,
+              height: mainButtonsHeight,
               justifyContent: 'center',
             }}
             underlayColor={primaryBlue}
-            onHideUnderlay={() => {this._onHideUnderlay('camera')}}
-            onShowUnderlay={() => {this._onShowUnderlay('camera')}}
-            onPress={() => this.props.navigation.navigate('Camera')} >
-            <Image source={require('../../../../shared/images/camera.png')} />
+          >
+            <Image source={require('../../../../shared/images/camera.png')}/>
           </TouchableHighlight>
           { this.state.cameraUnderline ? <View style={styles.underline} /> : null }
         </View>
@@ -78,9 +80,9 @@ MainButtons.propTypes = { navigation: PropTypes.object.isRequired };
 
 const styles = StyleSheet.create({
   mainButtonsContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: primaryBlue,
+    flexDirection: 'row',
   },
   buttonColumn: {
     flex: .5,
