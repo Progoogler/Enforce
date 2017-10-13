@@ -64,6 +64,8 @@ export var timerRowButtonsContainerHeight = height * .09;
 export var timerRowDescContainerHeight = height * .12;
 export var timerRowImageHeight = height * .564 - (StatusBar.currentHeight ? StatusBar.currentHeight : 0);
 export var timerFlatListHeight = timerRowDescContainerHeight + timerRowButtonsContainerHeight + timerRowImageHeight;
+// Done
+export var doneHeight = responsiveHeight(10);
 
 // Warning
 export var warningContainerMarginTop = height * .22;
@@ -74,3 +76,7 @@ export var textInputWidth = width - 100;
 /* History */
 // Row
 export var imageSize = responsiveWidth(20);
+
+/* FAQs */
+// Messenger
+export var messageContainerHeight = screenHeight - navBarContainerHeight - doneHeight - responsiveHeight(10);

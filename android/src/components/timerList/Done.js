@@ -6,24 +6,38 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { largeFontSize, primaryBlue } from '../../styles/common';
+import { 
+  doneHeight,
+  largeFontSize, 
+  primaryBlue, 
+} from '../../styles/common';
 
 const Done = (props) => (
   <TouchableOpacity
     activeOpacity={.5}
     style={styles.container}
-    onPress={() => {props.navigation.navigate('Overview')}} >
-
+    onPress={() => {
+      if (props.closeModal) {
+        props.closeModal();
+      } else {
+        props.navigation.navigate('Overview');
+      }
+    }}
+  >
       <Image
         source={require('../../../../shared/images/checkmark.jpg')}
         style={styles.image}
       />
-      <Text style={styles.text}>Done</Text>
+      <Text style={styles.text}>{props.text ? props.text : 'Done'}</Text>
 
   </TouchableOpacity>
 );
 
-Done.propTypes = { navigation: PropTypes.object.isRequired };
+Done.propTypes = { 
+  closeModal: PropTypes.func,
+  navigation: PropTypes.object,
+  text: PropTypes.string,
+ };
 
 const styles = StyleSheet.create({
   container: {
@@ -31,6 +45,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'white',
+    height: doneHeight,
     width: '100%',
     bottom: 0,
     zIndex: 10,

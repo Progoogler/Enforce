@@ -9,6 +9,8 @@ import {
 import PropTypes from 'prop-types';
 import Navigation from '../navigation/StaticNavigation';
  
+import Messenger from './Messenger';
+import Feedback from './Feedback';
 import {
   largeFontSize,
   mediumFontSize,
@@ -25,9 +27,22 @@ export default class FAQs extends Component {
     )
   };
 
+  constructor() {
+    super();
+    this.mounted = false;
+    this.state = {
+      messaging: false,
+      thanks: false,
+    };
+  }
+
   render() {
     return (
       <View style={styles.container}>
+        <Messenger
+          closeMessenger={this.closeMessenger.bind(this)}
+          visibility={this.state.messaging}
+        />
         <Navigation navigation={this.props.navigation} title={'FAQs'} />
         <ScrollView>
           <Text style={styles.title}>Frequently Asked Questions</Text>
@@ -54,11 +69,38 @@ export default class FAQs extends Component {
 
           <Text style={styles.question}>How would I know where the car is without GPS?</Text>
           <Text style={styles.answer}>It is worth reiterating that we suggest adding location details to the first picture of a timer. Another way is to take a picture of the street sign or some nearby landmark that will serve as a reminder.</Text>
-
+          <View style={styles.spacing}/>
         </ScrollView>
-        <View style={styles.footer} />
+        <Feedback 
+          openMessenger={this.openMessenger.bind(this)}
+          thanks={this.state.thanks}
+          welcome={this.welcome.bind(this)}
+        />
       </View>
     );
+  }
+
+  componentDidMount() {
+    this.mounted = true;
+  }
+
+  openMessenger() {
+    this.mounted && this.setState({messaging: true});
+  }
+
+  closeMessenger(thanks) {
+    if (thanks) {
+      this.mounted && this.setState({
+        messaging: false,
+        thanks: true,
+      });
+      return;
+    }
+    this.mounted && this.setState({messaging: false});
+  }
+
+  welcome() {
+    this.mounted && this.setState({thanks: false});
   }
 }
 
@@ -85,7 +127,7 @@ const styles = StyleSheet.create({
     paddingLeft: '7%',
     paddingRight: '7%',
   },
-  footer: {
-    marginBottom: '5%',
-  },
+  spacing: {
+    marginBottom: '10%',
+  },  
 });

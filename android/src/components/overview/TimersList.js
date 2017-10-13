@@ -70,22 +70,31 @@ export default class TimersList extends Component {
   _setTimeoutRefresh() {
     var now = new Date();
     for (let i = 0; i < this.list.length; i++) {
-      if (now - this.list[i].list[0].createdAt < this.list[i].list[0].timeLength * 60 * 60 * 1000) {
-        this.timeoutRefresh = setTimeout(() => {
-          this._onRefresh();
-          this._setTimeoutRefresh();
-        }, (this.list[i].list[0].timeLength * 60 * 60 * 1000) - (now - this.list[i].list[0].createdAt));
-        return;
+      let since = now - this.list[i].list[0].createdAt;
+      if (since < this.list[i].list[0].timeLength * 60 * 60 * 1000) {
+        if (since < 300000) {
+          this.timeoutRefresh = setTimeout(() => {
+            this._onRefresh();
+            this._setTimeoutRefresh();
+          }, (this.list[i].list[0].timeLength * 60 * 60 * 1000) - since);
+          return;
+        } else {
+          this.timeoutRefresh = setTimeout(() => {
+            this._onRefresh();
+            this._setTimeoutRefresh();
+          }, 300000);
+          return;
+        }
       }
     }
   }
 
-  async _checkReset() { console.log('current Day', this.props.currentDay);
+  async _checkReset() {
+    var today = new Date().getDate();
     var yesterday;
     if (this.props.currentDay) {
       yesterday = parseInt(this.props.currentDay);
     } else {
-      var today = new Date().getDate();
       yesterday = await AsyncStorage.getItem('@Enforce:currentDay');
       if (!yesterday) AsyncStorage.setItem('@Enforce:currentDay', `${today}`);
     }
@@ -240,7 +249,7 @@ export default class TimersList extends Component {
 
   _onRefresh() {
     this.refreshed++;
-    if (this.refreshed >= 2 && this.refreshed < 4) this.list = insertionSortModified(this.realm.objects('Timers').filtered('list.createdAt > 0'));
+    if (this.refreshed >= 1 && this.refreshed < 3) this.list = insertionSortModified(this.realm.objects('Timers').filtered('list.createdAt > 0'));
     this.mounted && this.setState({
       refreshing: true,
       dataSource: this.list,

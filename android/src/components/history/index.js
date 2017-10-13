@@ -29,6 +29,9 @@ import {
 export default class History extends Component {
   constructor() {
     super();
+    this.mounted = false;
+    this.profileId = null;
+    this.profileSettings = null;
     this.realm = new Realm(); 
     this.state = {
       animating: true,
@@ -41,9 +44,6 @@ export default class History extends Component {
       selected: "Today's Tickets",
       showMaximizedImage: false,
     }
-    this.mounted = false;
-    this.profileId = null;
-    this.profileSettings = null;
   }
 
   static navigationOptions = {
@@ -132,11 +132,11 @@ export default class History extends Component {
   }
 
   componentWillMount() {
-    this.mounted = true;
     this._getHistoryDates();
   }
 
   componentDidMount() {
+    this.mounted = true;
     this._getProfileInfo();
   }
 

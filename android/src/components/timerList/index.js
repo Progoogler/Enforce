@@ -117,7 +117,7 @@ export default class TimerList extends Component {
       });
     }
     if (this.list[0].latitude) this.getDirectionBound();
-    this._prepareTimeout();
+    this._setTimeoutRefresh();
     this.ticketCount = this.realm.objects('Ticketed')[0]['list'].length;
   }
 
@@ -137,18 +137,18 @@ export default class TimerList extends Component {
     this.mounted = false;
   }
 
-  _prepareTimeout() {
+  _setTimeoutRefresh() {
     var now = new Date();
+    clearTimeout(this.timeoutRefresh);
     for (let i = 0; i < this.list.length; i++) {
       if (now - this.list[i].createdAt < this.list[i].timeLength * 60 * 60 * 1000) {
         this.timeoutRefresh = setTimeout(() => {
           this.onRefresh();
-          this._prepareTimeout();
+          this._setTimeoutRefresh();
         }, this.list[i].timeLength * 60 * 60 * 1000 - (now - this.list[i].createdAt));
         return;
       }
     }
-    clearTimeout(this.timeoutRefresh);
   }
 
   getDirectionBound() {
@@ -252,6 +252,7 @@ export default class TimerList extends Component {
         });
       }
       this.updateRows('clearWarning');
+      this._setTimeoutRefresh();
     } else {
       this.timer = timer;
       let timeElapsed = (now - timer.createdAt) / 1000 / 60;
@@ -303,6 +304,7 @@ export default class TimerList extends Component {
         listIndex: this.list[indexOfTimer].index,
       });
     }
+    this._setTimeoutRefresh();
   }
 
   enterLicenseInSearchField(license: object) {
