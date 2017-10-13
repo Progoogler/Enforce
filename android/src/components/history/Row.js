@@ -35,11 +35,19 @@ export default class Row extends Component {
         <View style={styles.rowContainer}>
           {
             (this.props.selected === "Today's Tickets" || this.props.selected === "Today's Expired") ?
-            <TouchableOpacity activeOpacity={.4} onPress={() => this.props.maximizeOrMinimizeImage(this.props.data.mediaUri)}>
-              <Image style={styles.image} source={{uri: this.props.data.mediaUri}} />
+            <TouchableOpacity 
+              activeOpacity={.4} 
+              onPress={() => this.props.maximizeOrMinimizeImage(this.props.data.mediaUri)}
+              style={styles.imageContainer}
+            >
+              <Image style={styles.image} source={{uri: this.props.data.mediaUri}}/>
             </TouchableOpacity>
             :
-            <TouchableOpacity activeOpacity={.4} style={styles.getImageButton} onPress={() => this._getImageFromDatabase() }>
+            <TouchableOpacity 
+              activeOpacity={.4} 
+              onPress={() => this._getImageFromDatabase()}
+              style={styles.getImageButton} 
+            >
               { this.state.image.length === 0 ? <Text style={styles.getImageText}>{this.state.getImageText}</Text> : this.state.image[0] }
             </TouchableOpacity>
           }
