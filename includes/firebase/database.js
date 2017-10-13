@@ -101,6 +101,15 @@ class Database {
       });
     }
   }
+
+  /*
+  * Send user feedback to root/feedback ref.
+  * @param email: Key of message value.
+  * @param message: Object containing county, date, and message fields.
+  */
+  static sendFeedback(email, message) {
+    firebase.database().ref('feedback').child(email).set(message);
+  }
 }
 
 module.exports = Database;
