@@ -29,7 +29,10 @@ export default class FAQs extends Component {
 
   constructor() {
     super();
+    this.closeMessenger = this.closeMessenger.bind(this);
     this.mounted = false;
+    this.openMessenger = this.openMessenger.bind(this);
+    this.welcome = this.welcome.bind(this);
     this.state = {
       messaging: false,
       thanks: false,
@@ -40,7 +43,7 @@ export default class FAQs extends Component {
     return (
       <View style={styles.container}>
         <Messenger
-          closeMessenger={this.closeMessenger.bind(this)}
+          closeMessenger={this.closeMessenger}
           visibility={this.state.messaging}
         />
         <Navigation navigation={this.props.navigation} title={'FAQs'} />
@@ -72,9 +75,9 @@ export default class FAQs extends Component {
           <View style={styles.spacing}/>
         </ScrollView>
         <Feedback 
-          openMessenger={this.openMessenger.bind(this)}
+          openMessenger={this.openMessenger}
           thanks={this.state.thanks}
-          welcome={this.welcome.bind(this)}
+          welcome={this.welcome}
         />
       </View>
     );
