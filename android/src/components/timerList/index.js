@@ -41,14 +41,22 @@ export default class TimerList extends Component {
       refreshing: false,
       warning: false,
     };
+    this.addLicenseToQueue = this.addLicenseToQueue.bind(this);
     this.currentLicense = 0;
+    this.getDirectionBound = this.getDirectionBound.bind(this);
+    this.handleScroll = this.handleScroll.bind(this);
     this.license = '';
     this.mounted = false;
+    this.onRefresh = this.onRefresh.bind(this);
+    this.renderItem = this.renderItem.bind(this);
     this.reset = false;
+    this.shouldResetLicense = this.shouldResetLicense.bind(this);
     this.ticketCount = undefined;
     this.timeElapsed = '';
     this.timeoutRefresh = null;
     this.timer = null;
+    this.updateRows = this.updateRows.bind(this);
+    this.uponTicketed = this.uponTicketed.bind(this);
     this.VIN = '';
 
     // These variables are used to calculate the index of the Timer currently in the scroll view
@@ -67,25 +75,25 @@ export default class TimerList extends Component {
     return (
       <View style={styles.container}>
         <Warning 
-          clearWarning={this.updateRows.bind(this)}
+          clearWarning={this.updateRows}
           timeElapsed={this.timeElapsed} 
-          uponTicketed={this.uponTicketed.bind(this)} 
+          uponTicketed={this.uponTicketed} 
           visibility={this.state.warning} 
         />
 
         <Search
-          addLicenseToQueue={this.addLicenseToQueue.bind(this)}
+          addLicenseToQueue={this.addLicenseToQueue}
           licenseParam={this.state.license}
           navigation={this.props.navigation}
           refPath={this.props.screenProps.refPath}
-          refreshTimerList={this.onRefresh.bind(this)}
-          shouldResetLicense={this.shouldResetLicense.bind(this)}
+          refreshTimerList={this.onRefresh}
+          shouldResetLicense={this.shouldResetLicense}
           timerList={true}
         />
 
         <Title 
           bound={this.state.bound} 
-          getDirectionBound={this.getDirectionBound.bind(this)}
+          getDirectionBound={this.getDirectionBound}
           limit={this.list[0] ? this.list[0].timeLength ? this.list[0].timeLength : 0 : 0} 
         />
 
@@ -93,11 +101,11 @@ export default class TimerList extends Component {
            data={this.state.dataSource}
            ItemSeparatorComponent={this._renderSeparator}
            keyExtractor={this._keyExtractor}
-           onRefresh={this.onRefresh.bind(this)}
-           onScroll={this._handleScroll.bind(this)}
+           onRefresh={this.onRefresh}
+           onScroll={this.handleScroll}
            refreshing={this.state.refreshing}
            removeClippedSubviews={true}
-           renderItem={this._renderItem.bind(this)}
+           renderItem={this.renderItem}
         />
         
         { this.state.done ? <Done navigation={this.props.navigation}/> : null }
@@ -338,7 +346,7 @@ export default class TimerList extends Component {
     this.VIN = '';
   }
 
-  _renderItem(data: object): object {
+  renderItem(data: object): object {
     return (
       <Row
         data={data.item}
@@ -358,7 +366,7 @@ export default class TimerList extends Component {
     return item.createdAt;
   }
 
-  _handleScroll(event) {
+  handleScroll(event) {
     // Update the license value of the current timer on the FlatList view to the search input field as user scrolls
     if (event.nativeEvent.contentOffset.y > this.halvedFlatListHeight) {
       let idx = Math.ceil(event.nativeEvent.contentOffset.y / this.flatListHeight);
