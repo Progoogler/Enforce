@@ -33,14 +33,16 @@ export default class Row extends Component {
     if (this.props.data.list.length <= 1 && (!Object.keys(this.props.data.list).length || this.props.data.list[0].createdAt === 0)) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
     return (
           <ScrollView
-            style={styles.innerScroll}
-            horizontal={true}
             directionalLockEnabled={true}
-            showsHorizontalScrollIndicator={false} >
-            <View style={styles.innerContainer} >
+            horizontal={true}
+            showsHorizontalScrollIndicator={false} 
+            style={styles.innerScroll}
+          >
+            <View style={styles.innerContainer}>
               <TouchableNativeFeedback
                 background={TouchableNativeFeedback.Ripple(primaryBlue, true)}
-                onPress={() => this._openTimerListPage(this.props.data.list[0].index)} >
+                onPress={() => this._openTimerListPage(this.props.data.list[0].index)}
+              >
 
                 <View style={styles.timerRowDesc}>
                   <Text style={styles.timerRowLength}>
@@ -56,21 +58,29 @@ export default class Row extends Component {
 
               <View style={styles.distanceContainer}>
                 <TouchableOpacity
-                  style={styles.button}
                   activeOpacity={.8}
-                  onPress={() => this._openMapPage(this.props.data.list[0].index)} >
+                  style={styles.button}
+                  onPress={() => this._openMapPage(this.props.data.list[0].index)} 
+                >
                   <View>
                     <Text style={styles.buttonText}>Show Map</Text>
                   </View>
                 </TouchableOpacity>
-                <Text style={styles.distance}>{ (this.props.updatedLocation === true) ? this._getDistance() : this.distance }</Text>
+                <Text style={styles.distance}>
+                  { 
+                    (this.props.updatedLocation === true) ? 
+                    this.distance ? this.distance : this._getDistance() : 
+                    this.distance
+                  }
+                </Text>
               </View>
 
               <TouchableOpacity
-                style={styles.delete}
                 activeOpacity={.8}
-                onPress={() => {this.props.deleteRow(this.props.data.list)}} >
-                <Image source={require('../../../../shared/images/bin.jpg')} />
+                onPress={() => {this.props.deleteRow(this.props.data.list)}} 
+                style={styles.delete}
+              >
+                <Image source={require('../../../../shared/images/bin.jpg')}/>
               </TouchableOpacity>
             </View>
           </ScrollView>
