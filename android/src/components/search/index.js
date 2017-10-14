@@ -68,7 +68,7 @@ export default class Search extends Component {
     }
   }
 
-  render() {
+  render() { console.log('search renders')
     return (
       <Animated.View 
         style={{
@@ -269,6 +269,16 @@ export default class Search extends Component {
     this.mounted = true;
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
     this._getAsyncData();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.licenseParam) {
+      if (this.props.licenseParam.license !== nextProps.licenseParam.license) return true;
+    }
+    if (this.state.license !== nextState.license) return true;
+    if (this.state.animating !== nextState.animating) return true;
+    if (this.state.result !== nextState.result) return true;
+    return false;
   }
 
   _keyboardDidHide() {

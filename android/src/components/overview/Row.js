@@ -26,7 +26,9 @@ import {
 export default class Row extends Component {
   constructor() {
     super();
-    this.distance;
+    this.state = {
+      distance: null
+    };
   }
 
   render() {
@@ -50,7 +52,7 @@ export default class Row extends Component {
                   </Text>
                   <View style={styles.separator} />
                   <Text style={styles.timerRowTime}>
-                    { this.props.updateRows ? this._getTimeLeft(this.props.data.list[0]) : this._getTimeLeft(this.props.data.list[0]) }
+                    { this._getTimeLeft(this.props.data.list[0]) }
                   </Text>
                 </View>
 
@@ -69,8 +71,8 @@ export default class Row extends Component {
                 <Text style={styles.distance}>
                   { 
                     (this.props.updatedLocation === true) ? 
-                    this.distance ? this.distance : this._getDistance() : 
-                    this.distance
+                    this.state.distance ? this.state.distance : this._getDistance() : 
+                    this.state.distance
                   }
                 </Text>
               </View>
@@ -104,6 +106,12 @@ export default class Row extends Component {
       textAlign: 'center',
     };
     this._getDistance();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.distance !== nextState.distance) return true;
+    if (this.props.updatedLocation !== nextProps.updatedLocation) return true;
+    return false;
   }
 
   componentWillUpdate() {
@@ -154,7 +162,7 @@ export default class Row extends Component {
        }
       i++;
     }
-    return this._getDistanceFromLatLon(this.props.latitude, this.props.longitude, distLat, distLong);
+    this._getDistanceFromLatLon(this.props.latitude, this.props.longitude, distLat, distLong);
   }
 
   _getDistanceFromLatLon(lat1: number, lon1: number, lat2: number, lon2: number): string {
@@ -179,8 +187,7 @@ export default class Row extends Component {
       } else {
         d = d.toFixed(1) + ' miles';
       }
-      this.distance = d;
-      return d;
+      this.setState({distance: d});
     }
   }
 
@@ -209,7 +216,6 @@ export default class Row extends Component {
 Row.propTypes = {
   navigation: PropTypes.object.isRequired,
   data: PropTypes.object.isRequired,
-  updateRows: PropTypes.number.isRequired,
   updatedLocation: PropTypes.bool.isRequired,
   deleteRow: PropTypes.func.isRequired,
   latitude: PropTypes.number,

@@ -27,14 +27,15 @@ export default class Row extends Component {
     super();
     this.licenseButtonPressed = 0;
     this.state = {
-      cloud: false
+      cloud: false,
+      hidden: false,
     };
   }
 
   render() {
-    if (this.props.data.createdAt === 0) return <View/>
+    if (this.props.data.createdAt === 0 || this.state.hidden) return <View/>
     return (
-      <View style={styles.container} >
+      <View style={styles.container}>
         <View style={{height: timerRowImageHeight, backgroundColor: 'black'}}>
           <PhotoView
             style={styles.image}
@@ -56,7 +57,6 @@ export default class Row extends Component {
             <Image source={require('../../../../shared/images/cloud-checkmark.png')}/>
             :
             <Image source={require('../../../../shared/images/cloud-camera.png')}/>
-            
           }
         </TouchableOpacity>
         <View style={styles.descriptionContainer}>
@@ -92,20 +92,37 @@ export default class Row extends Component {
             <TouchableOpacity
               style={styles.rowButton}
               activeOpacity={.9}
-              onPress={() => this.props.expiredFunc(this.props.data)} >
+              onPress={() => {
+                this.props.expiredFunc(this.props.data);
+                this.setState({hidden: true});
+              }} 
+            >
               <Text style={styles.buttonText}> Expired </Text>
             </TouchableOpacity>
             <View style={styles.separator} />
             <TouchableOpacity
               style={styles.rowButton}
               activeOpacity={.9}
-              onPress={() => this.props.uponTicketed(this.props.data)}>
+              onPress={() => {
+                var context = this;
+                this.props.uponTicketed(this.props.data, null, function() {
+                  context.setState({hidden: true});
+                });
+              }}
+            >
               <Text style={styles.buttonText}> Ticketed </Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
     );
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.cloud !== nextState.cloud) return true;
+    if (this.props.upload !== nextProps.upload) return true;
+    if (this.state.hidden !== nextState.hidden) return true;
+    return false;
   }
 
   _getPrettyTimeFormat(createdAt: number): string {

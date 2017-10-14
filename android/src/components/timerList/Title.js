@@ -22,6 +22,12 @@ class Title extends Component {
       </TouchableWithoutFeedback>
     );
   }
+  
+  shouldComponentUpdate(nextProps) {
+    if (this.props.bound !== nextProps.bound) return true;
+    if (this.props.limit !== nextProps.limit) return true;
+    return false;
+  }
 
   _getTimeLimitResponse(length) {
     if (length === 0) return 'Empty ';
