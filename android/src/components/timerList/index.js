@@ -40,6 +40,7 @@ export default class TimerList extends Component {
       done: false,
       license: '',
       refreshing: false,
+      reset: 0,
       upload: true,
       warning: false,
     };
@@ -103,15 +104,17 @@ export default class TimerList extends Component {
         />
 
         <FlatList
-           data={this.state.dataSource}
-           ItemSeparatorComponent={this._renderSeparator}
-           initialNumToRender={1}
-           keyExtractor={this._keyExtractor}
-           onRefresh={this.onRefresh}
-           onScroll={this.handleScroll}
-           refreshing={this.state.refreshing}
-           removeClippedSubviews={true}
-           renderItem={this.renderItem}
+          data={this.state.dataSource}
+          getItemLayout={this._itemLayout}
+          ItemSeparatorComponent={this._renderSeparator}
+          initialNumToRender={3}
+          keyExtractor={this._keyExtractor}
+          onRefresh={this.onRefresh}
+          onScroll={this.handleScroll}
+          refreshing={this.state.refreshing}
+          removeClippedSubviews={true}
+          renderItem={this.renderItem}
+          reset={this.state.reset}
         />
         
         { this.state.done ? <Done navigation={this.props.navigation}/> : null }
@@ -134,6 +137,17 @@ export default class TimerList extends Component {
     this.decipherUploadSetting();
     this._setTimeoutRefresh();
     this.ticketCount = this.realm.objects('Ticketed')[0]['list'].length;
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    // if (this.state.refreshing !== nextState.refreshing) return true;
+    // if (this.state.bound !== nextState.bound) return true;
+    // if (this.state.upload !== nextState.upload) return true;
+    // if (this.state.warning !== nextState.warning) return true;
+    // if (this.state.dataSource !== nextState.dataSource) return true;
+    // if (this.state.done !== nextState.done) return true;
+    if (this.state.license.license !== nextState.license.license) return false; // Check whether this updates Search..
+    return true;
   }
 
   componentWillUnmount() {
@@ -207,6 +221,7 @@ export default class TimerList extends Component {
       this.mounted && this.setState({
         dataSource: this.list,
         done: true, // Show the "Done" button to indicate end of list.
+        reset: this.state.reset + 1,
         warning: false,
       });
     } else if (this.list.length === 0) {
@@ -219,35 +234,32 @@ export default class TimerList extends Component {
       });
     } else if (clearWarning) {
       this.mounted && this.setState({
-        dataSource: this.list,
+        reset: this.state.reset + 1,
         warning: false,
-      });
-    } else {
-      this.mounted && this.setState({
-        dataSource: this.list,
       });
     }
   }
 
-  uponTicketed(timer: object, force?: string): undefined { // Handle updates to Realm for regular and forced
+  uponTicketed(timer: object, force?: string, cb?: func): undefined { // Handle updates to Realm for regular and forced
     if (Array.isArray(timer)) {
       timer = this.timer;
       this.timer = null;
     }
-    var now = new Date();
+    var now = Date.now();
     var indexOfTimer; // Keep track of the index so that the next timer's license can be inserted into the search field
     if (this.imageUploads[timer.createdAt]) var imageUpload = true;
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000 || force) {
+      if (cb) cb();
       if (this.list['0'].createdAt === timer.createdAt) {
         // Ticket the first timer in the list
         indexOfTimer = 0;
         this.realm.write(() => {
-          timer.ticketedAt = now / 1; // Divide new Date() by 1 to get an integer to satisfy the Realm type -- division by 1 is a constant time computation, no?
+          timer.ticketedAt = now; 
           // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
           if (this.license) timer.license = this.license;
           timer.VIN = this.VIN;
           this.realm.objects('Ticketed')[0]['list'].push(timer);
-          this.list.shift();
+          this.list.shift(); // !!Not pure!! Configuring this list affects this.state.dataSource & realm object directly!
         });
       } else {
         for (let index in this.list) {
@@ -259,7 +271,7 @@ export default class TimerList extends Component {
         }
         if (indexOfTimer) {
           this.realm.write(() => {
-            timer.ticketedAt = now / 1;
+            timer.ticketedAt = now;
             // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
             if (this.license) timer.license = this.license;
             timer.VIN = this.VIN;
@@ -274,13 +286,13 @@ export default class TimerList extends Component {
         Blob
         .build(rnfbURI, {type: 'image/jpg;'})
         .then((blob) => {
-          let month = now.getMonth() + 1;
-          let day = now.getDate();
+          let month = new Date().getMonth() + 1;
+          let day = new Date().getDate();
           // setTicketImage(refPath, imagePath, blob);
           setTicketImage(`${this.props.screenProps.refPath}/${month}-${day}`, `${timer.createdAt}`, blob);
         });
       }
-      this.updateRows('clearWarning');
+      this.state.warning && this.updateRows('clearWarning');
       this._setTimeoutRefresh();
     } else {
       this.timer = timer;
@@ -297,7 +309,7 @@ export default class TimerList extends Component {
     }
   }
 
-  async expiredFunc(timer: object): undefined {
+  expiredFunc(timer: object): undefined {
     var indexOfTimer;
     if (this.list['0'] === timer) {
       indexOfTimer = 0;
@@ -325,8 +337,11 @@ export default class TimerList extends Component {
         });
       }
     }
+    if (this.list.length === 0) {
+      this.updateRows();
+      return;
+    }
     if (this.license) this.resetLicenseAndVIN();
-    this.updateRows();
     if (indexOfTimer !== undefined && this.list[indexOfTimer] !== undefined) {
       this.enterLicenseInSearchField({
         license: this.list[indexOfTimer].license, // The current indexOfTimer here has replaced the previous one
@@ -350,7 +365,7 @@ export default class TimerList extends Component {
     // this.vin = VIN
     //<VinSearch handleVINSearch={this.handleVINSearch.bind(this)}/>
 
-    this.updateRows();
+    // this.updateRows();
   }
 
   shouldResetLicense(setToFalse: boolean) {
@@ -390,24 +405,30 @@ export default class TimerList extends Component {
     return item.createdAt;
   }
 
+  _itemLayout(data, index) {
+    return {offset: timerFlatListHeight + StyleSheet.hairlineWidth * index, length: timerFlatListHeight + StyleSheet.hairlineWidth, index};
+  }
+
   handleScroll(event) {
     // Update the license value of the current timer on the FlatList view to the search input field as user scrolls
-    if (event.nativeEvent.contentOffset.y > this.halvedFlatListHeight) {
-      let idx = Math.ceil(event.nativeEvent.contentOffset.y / this.flatListHeight);
-      if (idx !== this.currentLicense) {
-        if (this.list[idx] === undefined) return;
-        this.currentLicense = idx;
+    if (this.props.screenProps.imageRecognition) {
+      if (event.nativeEvent.contentOffset.y > this.halvedFlatListHeight) {
+        let idx = Math.ceil(event.nativeEvent.contentOffset.y / this.flatListHeight);
+        if (idx !== this.currentLicense) {
+          if (this.list[idx] === undefined) return;
+          this.currentLicense = idx;
+          this.enterLicenseInSearchField({
+            license: this.list[idx].license,
+            listIndex: this.list[idx].index,
+          });
+        }
+      } else {
+        this.currentLicense = 0;
         this.enterLicenseInSearchField({
-          license: this.list[idx].license,
-          listIndex: this.list[idx].index,
+          license: this.list[0].license,
+          listIndex: this.list[0].index,
         });
       }
-    } else {
-      this.currentLicense = 0;
-      this.enterLicenseInSearchField({
-        license: this.list[0].license,
-        listIndex: this.list[0].index,
-      });
     }
   }
 
