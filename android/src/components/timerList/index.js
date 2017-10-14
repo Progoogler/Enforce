@@ -100,6 +100,7 @@ export default class TimerList extends Component {
         <FlatList
            data={this.state.dataSource}
            ItemSeparatorComponent={this._renderSeparator}
+           initialNumToRender={1}
            keyExtractor={this._keyExtractor}
            onRefresh={this.onRefresh}
            onScroll={this.handleScroll}
