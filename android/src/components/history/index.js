@@ -42,7 +42,7 @@ export default class History extends Component {
       dataSource: this._reverseRealmList(this.realm.objects('Ticketed')[0]['list']), // Display most recent first.
       dateTransition: false,
       uri: '',
-      isConnected: true,
+      connected: true,
       items: [],
       pickerWidth: 25 + 120,
       selected: "Today's Tickets",
@@ -60,12 +60,14 @@ export default class History extends Component {
   render() {
     return (
       <View style={styles.container}>
+
         <Navigation 
           displayFirebaseResult={this.displayFirebaseResult}
           historyScreen={true} 
           navigation={this.props.navigation} 
           refPath={this.props.screenProps.refPath}
         />
+
         <ImageModal 
           maximizeOrMinimizeImage={this.maximizeOrMinimizeImage}
           uri={this.state.uri} 
@@ -91,12 +93,16 @@ export default class History extends Component {
             { this.state.items }
 
           </Picker>
-          <ActivityIndicator
-            animating={this.state.animating}
-            color={'green'}
-            size='small' 
-          />
         </View>
+
+        <ActivityIndicator
+          animating={this.state.animating}
+          color={'green'}
+          size='small' 
+          style={styles.activity}
+        />
+
+        { this.state.connected ? <View/> : <ThrowConnectionMessage/> }
 
         <FlatList
            data={this.state.dataSource}
@@ -106,8 +112,6 @@ export default class History extends Component {
            renderItem={this.renderItem}
            style={styles.flatlist}
         />
-
-        { this.state.isConnected ? null : <ThrowConnectionMessage/> }
 
       </View>
     );
@@ -187,7 +191,6 @@ export default class History extends Component {
     var month = dateObj.getMonth() + 1 + '';
     var day = dateObj.getDate() + '';
     var prettyDate = this._getPrettyDate(month, day);
-    this.selected = `${month}-${day}`;
     cb(prettyDate.length);
   }
 
@@ -220,8 +223,7 @@ export default class History extends Component {
   }
 
   _onValueChange(value: string): undefined {
-    this.setState({animating: true, dateTransition: true});
-    this.selected = value;
+    this.setState({animating: true, dateTransition: true, selected: value});
     if (value === "Today's Tickets") {
       this._updateRows(this._reverseRealmList(this.realm.objects('Ticketed')[0]['list']), value.length);
       return;
@@ -233,9 +235,10 @@ export default class History extends Component {
       if (isConnected) {
         this._getHistoryData(value);
       } else {
-        this.setState({animating: false, isConnected: false});
+        this.setState({connected: false});
         setTimeout(() => {
-          this.mounted && this.setState({isConnected: true});
+          this.mounted && this.setState({connected: true, animating: false, selected: "Today's Tickets"});
+          this._updateRows(this._reverseRealmList(this.realm.objects('Ticketed')[0]['list']), 15);
         }, 5000);
       }
     });
@@ -246,9 +249,7 @@ export default class History extends Component {
       animating: false,
       dataSource: list,
       dateTransition: false,
-      isConnected: true,
       pickerWidth: 25 + length * 8,
-      selected: this.selected,
     });
   }
 
@@ -346,6 +347,9 @@ History.propTypes = {
 }
 
 const styles = StyleSheet.create({
+  activity: {
+    marginTop: '2%',
+  },
   container: {
     alignItems: 'center',
     backgroundColor: 'white',
