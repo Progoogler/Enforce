@@ -32,7 +32,6 @@ export default class TimersList extends Component {
     this.state = {
       dataSource: this.list,
       refreshing: false,
-      updateRows: 0,
       updatedLocation: false,
     };
   }
@@ -47,6 +46,7 @@ export default class TimersList extends Component {
         refreshing={this.state.refreshing}
         renderItem={this.renderItem}
         keyExtractor={this.keyExtractor} 
+        updatedLocation={this.state.updatedLocation}
       />
     );
   }
@@ -56,6 +56,11 @@ export default class TimersList extends Component {
     setTimeout(() => this._checkReset(), 1500); // Delay checking reset for screenProps to update w/ currentDay from AsyncStorage.
     this._getAndSaveCoords();
     this._setTimeoutRefresh();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.updatedLocation !== nextState.updatedLocation) return true;
+    return false;
   }
 
   componentDidUpdate(prevProps) { // In case reset is pushed while in Overview screen
@@ -256,9 +261,11 @@ export default class TimersList extends Component {
 
   _getAndSaveCoords() { 
     var date = Date.now();
+    console.log('time', date - this.realm.objects('Coordinates')[0].time);  
     if (date - this.realm.objects('Coordinates')[0].time > 300000) {
       navigator.geolocation.getCurrentPosition(
         position => {
+          console.log('getting coords')
           this.latitude = parseFloat(position.coords.latitude);
           this.longitude = parseFloat(position.coords.longitude);
           this.realm.write(() => {
@@ -283,7 +290,6 @@ export default class TimersList extends Component {
     this.mounted && this.setState({
       refreshing: true,
       dataSource: this.list,
-      updateRows: this.state.updateRows + 1,
     });
     setTimeout(() => { this.mounted && this.setState({refreshing: false})}, 1500);
     if (!this.state.updatedLocation) this._getAndSaveCoords();
@@ -297,8 +303,8 @@ export default class TimersList extends Component {
         deleteRow={this.deleteRow.bind(this)}
         latitude={this.latitude}
         longitude={this.longitude}
-        updateRows={this.state.updateRows}
-        updatedLocation={this.state.updatedLocation} />
+        updatedLocation={this.state.updatedLocation} 
+      />
     );
   }
 
