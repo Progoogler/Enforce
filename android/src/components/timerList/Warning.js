@@ -55,6 +55,13 @@ export default class Warning extends Component {
       </Modal>
     );
   }
+
+  shouldComponentUpdate(nextProps) {
+    if (this.props.timeElapsed !== nextProps.timeElapsed) return true;
+    if (this.props.visibility !== nextProps.visibility) return true;
+    return false;
+  }
+
 }
 
 Warning.propTypes = {
