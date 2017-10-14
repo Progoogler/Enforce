@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
   Image,
+  NetInfo,
   StyleSheet,
   View,
 } from 'react-native';
@@ -39,12 +40,15 @@ export default class TimerList extends Component {
       done: false,
       license: '',
       refreshing: false,
+      upload: true,
       warning: false,
     };
     this.addLicenseToQueue = this.addLicenseToQueue.bind(this);
     this.currentLicense = 0;
+    this.decipherUploadSetting = this.decipherUploadSetting.bind(this);
     this.getDirectionBound = this.getDirectionBound.bind(this);
     this.handleScroll = this.handleScroll.bind(this);
+    this.imageUploads = {};
     this.license = '';
     this.mounted = false;
     this.onRefresh = this.onRefresh.bind(this);
@@ -56,6 +60,7 @@ export default class TimerList extends Component {
     this.timeoutRefresh = null;
     this.timer = null;
     this.updateRows = this.updateRows.bind(this);
+    this.uploadImage = this.uploadImage.bind(this);
     this.uponTicketed = this.uponTicketed.bind(this);
     this.VIN = '';
 
@@ -100,6 +105,7 @@ export default class TimerList extends Component {
         <FlatList
            data={this.state.dataSource}
            ItemSeparatorComponent={this._renderSeparator}
+           initialNumToRender={1}
            keyExtractor={this._keyExtractor}
            onRefresh={this.onRefresh}
            onScroll={this.handleScroll}
@@ -125,13 +131,16 @@ export default class TimerList extends Component {
       });
     }
     if (this.list[0].latitude) this.getDirectionBound();
+    this.decipherUploadSetting();
     this._setTimeoutRefresh();
     this.ticketCount = this.realm.objects('Ticketed')[0]['list'].length;
   }
 
   componentWillUnmount() {
-    if (this.props.screenProps.dataUpload && this.props.screenProps.refPath && this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length) {
-      var date = new Date();
+    clearTimeout(this.timeoutRefresh);
+    var date;
+    if (this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length && this.state.upload && this.props.screenProps.dataUpload && this.props.screenProps.refPath) {
+      date = new Date();
       date = `${date.getMonth() + 1}-${date.getDate()}`;
       for (let i = this.ticketCount; i < this.realm.objects('Ticketed')[0]['list'].length; i++) {
         let key = this.realm.objects('Ticketed')[0]['list'][i].license ?
@@ -139,9 +148,19 @@ export default class TimerList extends Component {
           this.realm.objects('Ticketed')[0]['list'][i].createdAt + '';
         setUserTicket(`/${this.props.screenProps.refPath}/${date}`, key, this.realm.objects('Ticketed')[0]['list'][i]);
       }
+    } else if (this.ticketCount !== this.realm.objects('Ticketed')[0]['list'].length && this.state.upload && !this.props.screenProps.dataUpload && this.props.screenProps.refPath && Object.keys(this.imageUploads).length) {
+      date = new Date();
+      date = `${date.getMonth() + 1}-${date.getDate()}`;
+      for (let i = this.ticketCount; i < this.realm.objects('Ticketed')[0]['list'].length; i++) {
+        if (this.imageUploads[this.realm.objects('Ticketed')[0]['list'][i].createdAt]) {
+          let key = this.realm.objects('Ticketed')[0]['list'][i].license ?
+            this.realm.objects('Ticketed')[0]['list'][i].license :
+            this.realm.objects('Ticketed')[0]['list'][i].createdAt + '';
+          setUserTicket(`/${this.props.screenProps.refPath}/${date}`, key, this.realm.objects('Ticketed')[0]['list'][i]);
+        }
+      }
     }
-    this.props.navigation.state.params = undefined; // Reset params so constructor finds earliest ending Timer upon opening from Navigation menu
-    clearTimeout(this.timeoutRefresh);
+    this.props.navigation.state.params = undefined; // Reset params so constructor finds earliest ending Timer upon opening from Navigation menu  
     this.mounted = false;
   }
 
@@ -175,6 +194,7 @@ export default class TimerList extends Component {
   }
 
   onRefresh() {
+    if (this.props.screenProps.dataUpload && !this.state.upload) this.decipherUploadSetting();
     this.setState({
       refreshing: true,
       dataSource: this.list,
@@ -216,12 +236,13 @@ export default class TimerList extends Component {
     }
     var now = new Date();
     var indexOfTimer; // Keep track of the index so that the next timer's license can be inserted into the search field
+    if (this.imageUploads[timer.createdAt]) var imageUpload = true;
     if (now - timer.createdAt >= timer.timeLength * 60 * 60 * 1000 || force) {
       if (this.list['0'].createdAt === timer.createdAt) {
         // Ticket the first timer in the list
         indexOfTimer = 0;
         this.realm.write(() => {
-          timer.ticketedAt = now / 1; // Divide new Date() by 1 to get an integer to satisfy the Realm type.
+          timer.ticketedAt = now / 1; // Divide new Date() by 1 to get an integer to satisfy the Realm type -- division by 1 is a constant time computation, no?
           // Update license from search input field only if license doesn't already exist and it wasn't passed via enterLicenseInSearchField()
           if (this.license) timer.license = this.license;
           timer.VIN = this.VIN;
@@ -248,7 +269,7 @@ export default class TimerList extends Component {
         }
       }
       if (this.license) this.resetLicenseAndVIN();
-      if (this.props.screenProps.imageUpload && this.props.screenProps.refPath) { // Uploads the image to the user's Firebase account
+      if ((this.props.screenProps.imageUpload && this.props.screenProps.refPath) || imageUpload) { // Uploads the image to the user's Firebase account
         let rnfbURI = RNFetchBlob.wrap(timer.mediaPath);
         Blob
         .build(rnfbURI, {type: 'image/jpg;'})
@@ -350,10 +371,13 @@ export default class TimerList extends Component {
     return (
       <Row
         data={data.item}
+        decipherUploadSetting={this.decipherUploadSetting}
         expiredFunc={this.expiredFunc.bind(this)}
         uponTicketed={this.uponTicketed.bind(this)}
         enterLicenseInSearchField={this.enterLicenseInSearchField.bind(this)}
         navigation={this.props.navigation}
+        upload={this.state.upload}
+        uploadImage={this.uploadImage}
       />
     );
   }
@@ -385,6 +409,25 @@ export default class TimerList extends Component {
         listIndex: this.list[0].index,
       });
     }
+  }
+
+  decipherUploadSetting() {
+    if (this.props.screenProps.dataUpload) {
+      NetInfo.isConnected.fetch().then(isConnected => {
+        if (isConnected) {
+          if (!this.state.upload) {
+            this.setState({upload: true});
+            setTimeout(() => this.onRefresh(), 1000);
+          }
+        } else {
+          this.setState({upload: false});
+        }
+      });
+    }
+  }
+
+  uploadImage(createdAt: number, bool: boolean) {
+    this.imageUploads[createdAt] = bool;
   }
 
 }

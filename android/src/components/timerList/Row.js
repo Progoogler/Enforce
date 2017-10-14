@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {
+  Image,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -25,6 +26,9 @@ export default class Row extends Component {
   constructor() {
     super();
     this.licenseButtonPressed = 0;
+    this.state = {
+      cloud: false
+    };
   }
 
   render() {
@@ -38,6 +42,23 @@ export default class Row extends Component {
             androidScaleType="fitCenter"
           />
         </View>
+        <TouchableOpacity
+          activeOpacity={1}
+          hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+          onPress={() => this._cloudPressed()}
+          style={styles.cloud}
+        >
+          {
+            !this.props.upload ?
+            <Image source={require('../../../../shared/images/cloud-internet.png')}/>
+            :
+            this.state.cloud ?
+            <Image source={require('../../../../shared/images/cloud-checkmark.png')}/>
+            :
+            <Image source={require('../../../../shared/images/cloud-camera.png')}/>
+            
+          }
+        </TouchableOpacity>
         <View style={styles.descriptionContainer}>
           <Text style={styles.timeLeft}>{this._getTimeLeft(this.props.data)}</Text>
           <View style={styles.timeContainer}>
@@ -128,17 +149,34 @@ export default class Row extends Component {
     });
     this.props.navigation.dispatch(navigateAction);
   }
+
+  _cloudPressed() {
+    if (this.props.upload) {
+      this.props.uploadImage(this.props.data.createdAt, !this.state.cloud);
+      this.setState({cloud: !this.state.cloud});
+    } else {
+      this.props.decipherUploadSetting();
+    }
+  }
 }
 
 Row.propTypes = {
   data: PropTypes.object.isRequired,
+  decipherUploadSetting: PropTypes.func.isRequired,
   enterLicenseInSearchField: PropTypes.func.isRequired,
   expiredFunc: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
+  upload: PropTypes.bool.isRequired,
+  uploadImage: PropTypes.func.isRequired,
   uponTicketed: PropTypes.func.isRequired,
 }
 
 const styles = StyleSheet.create({
+  cloud: {
+    bottom: timerRowButtonsContainerHeight + timerRowDescContainerHeight + 10,
+    position: 'absolute',
+    right: 10,
+  },
   container: {
     flex: 1,
   },
