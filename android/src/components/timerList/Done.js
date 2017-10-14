@@ -27,9 +27,11 @@ export default class Done extends Component {
       >
         {
           this.props.text === 'Send' ?
-          <Image source={require('../../../../shared/images/envelope.png')}/> :
+          <Image source={require('../../../../shared/images/envelope.png')}/> 
+          :
           this.props.text ?
-          null :
+          <Image source={require('../../../../shared/images/internet-icon.png')}/> 
+          :
           <Image source={require('../../../../shared/images/checkmark.jpg')}/>
         }
         <Text style={[styles.text, this.props.text === 'Must be connected to the Internet' ? styles.smallText : null]}>{this.props.text ? this.props.text : 'Done'}</Text>
