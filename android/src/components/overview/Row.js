@@ -31,7 +31,7 @@ export default class Row extends Component {
     };
   }
 
-  render() {
+  render() {console.log('overview row')
     if (this.props.data.list.length <= 1 && (!Object.keys(this.props.data.list).length || this.props.data.list[0].createdAt === 0)) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
     return (
           <ScrollView
@@ -61,8 +61,8 @@ export default class Row extends Component {
               <View style={styles.distanceContainer}>
                 <TouchableOpacity
                   activeOpacity={.8}
-                  style={styles.button}
                   onPress={() => this._openMapPage(this.props.data.list[0].index)} 
+                  style={styles.button}
                 >
                   <View>
                     <Text style={styles.buttonText}>Show Map</Text>
@@ -109,6 +109,7 @@ export default class Row extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    console.log(this.state.distance !== nextState.distance,this.props.updatedLocation !== nextProps.updatedLocation)
     if (this.state.distance !== nextState.distance) return true;
     if (this.props.updatedLocation !== nextProps.updatedLocation) return true;
     return false;
@@ -225,10 +226,10 @@ Row.propTypes = {
 
 const styles = StyleSheet.create({
   innerContainer: {
-    flexDirection: 'row',
     alignItems: 'center',
-    width: timerRowWidth,
     borderTopWidth: .5,
+    flexDirection: 'row',
+    width: timerRowWidth,
   },
   innerScroll: {
     flex: 1,
@@ -236,50 +237,50 @@ const styles = StyleSheet.create({
     height: timerRowHeight,
   },
   timerRowDesc: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
     width: timerRowDescWidth,
   },
   separator: {
-    marginLeft: '2%',
     borderWidth: .5,
     height: '35%',
+    marginLeft: '2%',
   },
   timeUp: {
+    color:'green',
     fontSize: largeFontSize,
     fontWeight: 'bold',
-    color:'green',
   },
   timeUpVeryNear: {
+    color:'green',
     fontSize: mediumFontSize,
     fontWeight: 'bold',
-    color:'green',
   },
   timeUpFar: {
     fontSize: smallFontSize,
     fontWeight: 'bold',
   },
   timeUpNear: {
+    color: primaryBlue,
     fontSize: mediumFontSize,
     fontWeight: 'bold',
-    color: primaryBlue,
   },
   timerRowTime: {
     paddingLeft: '5%',
   },
   distanceContainer: {
-    flexDirection: 'column',
     alignItems: 'center',
+    flexDirection: 'column',
     width: timerRowDistanceWidth,
   },
   button: {
-    backgroundColor: primaryBlue,
-    justifyContent: 'center',
     alignItems: 'center',
-    padding: '3%',
+    backgroundColor: primaryBlue,
     borderWidth: 1,
     borderRadius: 5,
     elevation: 4,
+    justifyContent: 'center',
+    padding: '3%',
   },
   buttonText: {
     color: 'white',

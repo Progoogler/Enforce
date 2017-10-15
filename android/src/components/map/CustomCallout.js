@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { primaryBlue, smallFontSize } from '../../styles/common';
 
 export default class CustomCallout extends Component {
-  render() {
+  render() { console.log('custom callout renders')
     return (
       <View style={styles.container}>
         <View style={ this.props.title ? (this._checkTimedUp(this.props.timer) ? styles.green : styles.blue) : null }>
@@ -19,6 +19,11 @@ export default class CustomCallout extends Component {
         <View style={ this._checkTimedUp(this.props.timer) ? styles.greenTriangle : styles.blueTriangle } />
       </View>
     );
+  }
+
+  shouldComponentUpdate(nextProps) {
+    if (this.props.title !== nextProps.title) return true;
+    return false;
   }
 
   _checkTimedUp(timer) {
@@ -53,59 +58,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   blue: {
+    alignItems: 'center',
+    backgroundColor: primaryBlue,
+    borderRadius: 50,
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: primaryBlue,
     justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 50,
-    padding: '2%',
     marginBottom: -2,
+    padding: '2%',
   },
   green: {
-    flex: 1,
-    backgroundColor: 'green',
-    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'green',
     borderRadius: 50,
-    padding: '2%',
+    flex: 1,
+    justifyContent: 'center',
     marginBottom: -2,
+    padding: '2%',
   },
   message: {
-    textAlign: 'center',
-    fontSize: smallFontSize,
     color: 'white',
+    fontSize: smallFontSize,
     margin: '1%',
+    textAlign: 'center',
   },
   blueTriangle: {
-    width: 0,
-    height: 0,
     backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 10,
-    borderRightWidth: 10,
+    borderBottomColor: primaryBlue,
     borderBottomWidth: 20,
     borderLeftColor: 'transparent',
+    borderLeftWidth: 10,
     borderRightColor: 'transparent',
-    borderBottomColor: primaryBlue,
+    borderRightWidth: 10,
+    borderStyle: 'solid',
+    height: 0,
     transform: [
       {rotate: '180deg'}
-    ]
+    ],
+    width: 0,
   },
   greenTriangle: {
-    width: 0,
-    height: 0,
     backgroundColor: 'transparent',
-    borderStyle: 'solid',
-    borderLeftWidth: 10,
-    borderRightWidth: 10,
+    borderBottomColor: 'green',
     borderBottomWidth: 20,
     borderLeftColor: 'transparent',
+    borderLeftWidth: 10,
     borderRightColor: 'transparent',
-    borderBottomColor: 'green',
+    borderRightWidth: 10,
+    borderStyle: 'solid',
+    height: 0,
     transform: [
       {rotate: '180deg'}
-    ]
+    ],
+    width: 0,
   },
 });
  

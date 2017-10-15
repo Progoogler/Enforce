@@ -34,7 +34,7 @@ export default class Result extends Component {
     }
   }
 
-  render() {
+  render() { console.log('search result')
     return (
       <View style={styles.outerContainer} >
 
@@ -117,6 +117,13 @@ export default class Result extends Component {
 
       </View>
     );
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.modalVisible !== nextState.modalVisible) return true;
+    if (this.state.showMaximizedImage !== nextState.showMaximizedImage) return true;
+    if (this.state.uri !== nextState.uri) return true;
+    return false;
   }
 
   _getTimeLimitDesc = (timeLimit: number): string => {

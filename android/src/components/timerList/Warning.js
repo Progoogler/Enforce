@@ -24,8 +24,8 @@ export default class Warning extends Component {
     return (
       <Modal 
         animationType={"fade"}
-        transparent={true}
         onRequestClose={() => this.props.clearWarning('clearWarning', 'only')}
+        transparent={true}
         visible={this.props.visibility} 
       >
         <View style={styles.container}>
@@ -36,16 +36,16 @@ export default class Warning extends Component {
             <Text style={styles.message}> you want to ticket now? </Text>
             <View style={styles.buttons}>
               <TouchableOpacity
-                style={styles.no}
                 activeOpacity={.8}
                 onPress={() => this.props.clearWarning('clearWarning', 'only')}
+                style={styles.no}
               >
                 <Text style={styles.noButtonText}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.yes}
                 activeOpacity={.6}
                 onPress={() => this.props.uponTicketed([], 'force')}
+                style={styles.yes}
               >
                 <Text style={styles.yesButtonText}>Confirm</Text>
               </TouchableOpacity>
@@ -66,20 +66,20 @@ export default class Warning extends Component {
 
 Warning.propTypes = {
   clearWarning: PropTypes.func.isRequired,
-  visibility: PropTypes.bool.isRequired,
   timeElapsed: PropTypes.string.isRequired,
   uponTicketed: PropTypes.func.isRequired,
+  visibility: PropTypes.bool.isRequired,
 };
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: warningContainerMarginTop,
     backgroundColor: primaryBlue,
+    marginTop: warningContainerMarginTop,
     padding: '5%',
   },
   containerBorder: {
-    backgroundColor: 'white',
     alignItems: 'center',
+    backgroundColor: 'white',
     borderRadius: 5,
     padding: '6%',
   },
@@ -93,8 +93,8 @@ const styles = StyleSheet.create({
     fontSize: mediumFontSize,
   },
   buttons: {
-    flexDirection: 'row',
     alignItems: 'center',
+    flexDirection: 'row',
     marginTop: '6%',
   },
   noButtonText: {
@@ -102,16 +102,16 @@ const styles = StyleSheet.create({
     padding: '8%',
   },
   no: {
-    marginRight: '20%',
-		justifyContent: 'center',
 		alignItems: 'center',
+		justifyContent: 'center',
+    marginRight: '20%',
   },
   yesButtonText: {
     color: 'white',
   },
   yes: {
-    borderRadius: 5,
     backgroundColor: primaryBlue,
+    borderRadius: 5,
     padding: '5%',
   },
 });

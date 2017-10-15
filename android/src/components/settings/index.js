@@ -39,21 +39,24 @@ export default class Settings extends Component {
     )
   };
 
-  render() {
+  render() { console.log('settings')
     return (
       <View style={styles.container}>
-        <Navigation navigation={this.props.navigation} title={'Settings'} />
+        <Navigation 
+          navigation={this.props.navigation} 
+          title={'Settings'}
+        />
         <Text style={styles.title}>Control System</Text>
 
         <View style={styles.row}>
           <Text style={styles.settingDesc}>Show notifications when timers expire</Text>
           <View style={styles.slider}>
             <Switch
-              onValueChange={(value) => this.setState({notifications: value})}
               onTintColor="green"
+              onValueChange={(value) => this.setState({notifications: value})}
               style={{marginBottom: 10}}
-              thumbTintColor={primaryBlue}
               tintColor="#808080"
+              thumbTintColor={primaryBlue}
               value={this.state.notifications} />
           </View>
         </View>
@@ -62,11 +65,11 @@ export default class Settings extends Component {
           <Text style={styles.settingDesc}>Reminder to turn on GPS</Text>
           <View style={styles.slider}>
             <Switch
-              onValueChange={(value) => this._toggleLocationReminder(value)}
               onTintColor="green"
+              onValueChange={(value) => this._toggleLocationReminder(value)}
               style={{marginBottom: 10}}
-              thumbTintColor={primaryBlue}
               tintColor="#808080"
+              thumbTintColor={primaryBlue}
               value={this.state.location} />
           </View>
         </View>
@@ -75,11 +78,11 @@ export default class Settings extends Component {
           <Text style={styles.settingDesc}>Use license recognition with camera</Text>
           <View style={styles.slider}>
             <Switch
-              onValueChange={(value) => this._toggleImageRecognition(value)}
               onTintColor="green"
+              onValueChange={(value) => this._toggleImageRecognition(value)}
               style={{marginBottom: 10}}
-              thumbTintColor={primaryBlue}
               tintColor="#808080"
+              thumbTintColor={primaryBlue}
               value={this.state.imageRecognition} />
           </View>
         </View>
@@ -88,11 +91,11 @@ export default class Settings extends Component {
           <Text style={styles.settingDesc}>Backup images to the cloud database</Text>
           <View style={styles.slider}>
             <Switch
-              onValueChange={(value) => this._imageUploadCondition(value)}
               onTintColor="green"
+              onValueChange={(value) => this._imageUploadCondition(value)}
               style={{marginBottom: 10}}
-              thumbTintColor={primaryBlue}
               tintColor="#808080"
+              thumbTintColor={primaryBlue}
               value={this.state.imageUpload} />
           </View>
         </View>
@@ -101,11 +104,11 @@ export default class Settings extends Component {
           <Text style={styles.settingDesc}>Upload ticket information to cloud {'\n'} (Accessible for up to 45 days)</Text>
           <View style={styles.slider}>
             <Switch
-              onValueChange={(value) => this._toggleUploadCondition(value)}
               onTintColor="green"
+              onValueChange={(value) => this._toggleUploadCondition(value)}
               style={{marginBottom: 10}}
-              thumbTintColor={primaryBlue}
               tintColor="#808080"
+              thumbTintColor={primaryBlue}
               value={this.state.dataUpload} />
           </View>
         </View>
@@ -118,11 +121,11 @@ export default class Settings extends Component {
     this.settings = await AsyncStorage.getItem('@Enforce:settings');
     this.settings = JSON.parse(this.settings);
     this.setState({
-      notifications: this.settings.notifications,
-      location: this.settings.location,
-      imageUpload: this.settings.imageUpload,
       dataUpload: this.settings.dataUpload,
       imageRecognition: this.settings.imageRecognition,
+      imageUpload: this.settings.imageUpload,
+      location: this.settings.location,
+      notifications: this.settings.notifications,
     });
   }
 
@@ -175,20 +178,20 @@ Settings.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: 'white',
+    flex: 1,
   },
   title: {
-    textAlign: 'center',
     color: primaryBlue,
+    textAlign: 'center',
     fontSize: xxlargeFontSize,
-    marginTop: '8%',
-    marginBottom: '10%',
     fontWeight: 'bold',
+    marginBottom: '10%',
+    marginTop: '8%',
     textShadowColor: titleTextShadow,
     textShadowOffset: {
-      width: 1,
-      height: 1
+      height: 1,
+      width: 1
     },
   },
   row: {
@@ -197,8 +200,8 @@ const styles = StyleSheet.create({
     marginBottom: '8%',
   },
   settingDesc: {
-    marginLeft: '6%',
     fontSize: smallFontSize + 2,
+    marginLeft: '6%',
   },
   slider: {
     marginRight: '6%',

@@ -65,6 +65,8 @@ export default class Search extends Component {
       animating: false,
       license: '',
       result: null,
+      verifyLicense: '',
+      verifyVisibility: false,
     }
   }
 
@@ -232,9 +234,10 @@ export default class Search extends Component {
           <VerifyModal 
             handleTextInput={this.handleTextInput}
             handleVINSearch={this.handleVINSearch}
-            license={this.state.license}
+            verifyLicense={this.state.verifyLicense}
             minimizeVerifyContainer={this.minimizeVerifyContainer}
-            minimizeVerifyContainerForMenu={this.props.toggleVerifyContainer}
+            minimizeVerifyContainerForMenu={this.props.toggleVerifyContainerForMenu}
+            verifyVisibility={this.state.verifyVisibility}
           /> 
         </Animated.View>
 
@@ -272,12 +275,15 @@ export default class Search extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.license !== nextState.license) return true;
+    if (this.state.verifyLicense !== nextState.verifyLicense) return true;
+    if (this.state.verifyVisibility !== nextState.verifyVisibility) return true;
+    if (this.state.animating !== nextState.animating) return true;
+    if (this.state.result !== nextState.result) return true;
     if (this.props.licenseParam) {
       if (this.props.licenseParam.license !== nextProps.licenseParam.license) return true;
     }
-    if (this.state.license !== nextState.license) return true;
-    if (this.state.animating !== nextState.animating) return true;
-    if (this.state.result !== nextState.result) return true;
+    if (this.props.timerList !== nextProps.timerList) return true;
     return false;
   }
 
@@ -456,7 +462,18 @@ export default class Search extends Component {
 
     // TODO Delegate this to error callback of API
     // Remove automatic opening of Verify after Autocheck API is implemented
-    if (this.props.toggleVerifyContainer) this.props.toggleVerifyContainer('open');
+    if (this.props.toggleVerifyContainerForMenu) {
+      this.setState({
+        verifyVisibility: true,
+        verifyLicense: this.state.license,
+      });
+      this.props.toggleVerifyContainerForMenu('open');
+    } else {
+      this.setState({
+        verifyVisibility: true,
+        verifyLicense: this.state.license,
+      });
+    }
     this._extendVerifyContainer();
 
     if (verified) {
@@ -732,7 +749,7 @@ Search.propTypes = {
   shouldResetLicense: PropTypes.func,
   showNoResultNotificationForMenu: PropTypes.func,
   timerList: PropTypes.bool,
-  toggleVerifyContainer: PropTypes.func,
+  toggleVerifyContainerForMenu: PropTypes.func,
 };
 
 const styles = StyleSheet.create({

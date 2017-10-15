@@ -22,7 +22,7 @@ export default class StaticNavigation extends Component {
     super();
   }
 
-  render() {
+  render() { console.log('static navigation')
     return (
       <View style={styles.container} >
         <TouchableWithoutFeedback style={styles.back} onPress={() => this._handleArrow()} >
@@ -32,19 +32,26 @@ export default class StaticNavigation extends Component {
         </TouchableWithoutFeedback>
         <Text style={styles.title}>{ this.props.title ? this.props.title : 'Enforce' }</Text>
 
-        { this.props.navigation ?
-        <TouchableHighlight
-          underlayColor={primaryBlue}
-          onPress={ () => {
-            this.props.navigation.navigate('DrawerOpen');
-          }}
-          style={styles.headerNavigation} >
-          <Image source={require('../../../../shared/images/menu-icon.jpg')} />
-        </TouchableHighlight>
-        : null }
+        { 
+          this.props.navigation ?
+          <TouchableHighlight
+            underlayColor={primaryBlue}
+            onPress={ () => {
+              this.props.navigation.navigate('DrawerOpen');
+            }}
+            style={styles.headerNavigation} >
+            <Image source={require('../../../../shared/images/menu-icon.jpg')} />
+          </TouchableHighlight>
+          : null 
+        }
 
       </View>
     );
+  }
+
+  shouldComponentUpdate(nextProps) {
+    if (this.props.title !== nextProps.title) return true;
+    return false;
   }
 
   _handleArrow() {
@@ -70,20 +77,20 @@ StaticNavigation.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    zIndex: 10,
-    flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: primaryBlue,
+    flexDirection: 'row',
     height: navBarContainerHeight,
+    zIndex: 10,
   },
   searchIcon: {
     marginLeft: '2%',
   },
   title: {
+    color: 'white',
     flex: .70,
     fontSize: titleFontSize,
     marginLeft: '2%',
-    color: 'white',
     textAlignVertical: 'center',
     textShadowColor: blueTextShadow,
     textShadowOffset: {

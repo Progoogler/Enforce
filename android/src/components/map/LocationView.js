@@ -14,14 +14,13 @@ export default class LocationView extends Component {
     super();
     this.state = {
       description: '',
-      fadeDescription: false,
     };
     this.displayErrorAutoOnce = 0;
     this.timeout = null;
     this.top = new Animated.Value(-navBarContainerHeight);
   }
 
-  render() {
+  render() { console.log('location view renders')
     return (
       <Animated.View
         style={{
@@ -60,6 +59,12 @@ export default class LocationView extends Component {
     }
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.description !== nextState.description) return true;
+    if (this.props.fadeDescription !== nextProps.fadeDescription) return true;
+    return false;
+  }
+
   componentWillUnmount() {
     if (this.timeout) clearTimeout(this.timeout);
   }
@@ -88,20 +93,20 @@ LocationView.propTypes = {
 
 const styles = StyleSheet.create({
   textContainer: {
-    zIndex: 9,
-    height: navBarContainerHeight,
-    backgroundColor: 'white',
-    justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white',
     borderBottomWidth: 2,
     borderColor: primaryBlue,
+    height: navBarContainerHeight,
+    justifyContent: 'center',
     paddingLeft: '3%',
     paddingRight: '3%',
+    zIndex: 9,
   },
   description: {
-    textAlign: 'center',
-    fontSize: mediumFontSize,
     color: primaryBlue,
+    fontSize: mediumFontSize,
+    textAlign: 'center',
   },
   touchable: {
     height: navBarContainerHeight + 10,
@@ -109,14 +114,14 @@ const styles = StyleSheet.create({
   },
   circle: {
     alignSelf: 'center',
-    zIndex: 8,
-    marginTop: -20,
-    width: 30,
-    height: 30,
-    borderRadius: 15,
     backgroundColor: primaryBlue,
+    borderRadius: 15,
+    height: 30,
+    marginTop: -20,
     transform: [
       {scaleX: 2}
     ],
+    width: 30,
+    zIndex: 8,
   }
 });

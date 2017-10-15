@@ -29,7 +29,7 @@ export default class Row extends Component {
     }
   }
 
-  render() {
+  render() { console.log('history row renders')
     return (
       <View style={styles.container}>
         <View style={styles.rowContainer}>
@@ -107,10 +107,21 @@ export default class Row extends Component {
     this.mounted = true;
   }
 
-  componentWillUpdate() {
-    if (this.props.dateTransition) {
+  componentWillReceiveProps(nextProps) {
+    if (this.props.dateTransition !== nextProps.dateTransition) {
       this.mounted && this.setState({image: []});
     }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.animating !== nextState.animating) return true;
+    if (this.state.getImageText !== nextState.getImageText) return true;
+    if (this.state.image.length !== nextState.image.length) return true;
+    if (this.state.modalVisible !== nextState.modalVisible) return true;
+    // if (this.props.dateTransition !== nextState.dateTransition) return true;
+    if (this.props.selected !== nextProps.selected) return true;
+    if (this.props.data !== nextProps.data) return true;
+    return false;
   }
 
   componentWillUnmount() {

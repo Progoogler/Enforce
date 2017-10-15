@@ -40,7 +40,7 @@ export default class VerifyModal extends Component {
 		this.mounted = false;
 	}
 
-	render() {
+	render() { console.log('search verify')
 		return (
 
 				<View 
@@ -110,15 +110,32 @@ export default class VerifyModal extends Component {
 		);
 	}
 
-	componentWillReceiveProps(nextProps) {
-		if (nextProps.license !== this.state.license) this.setState({license: nextProps.license});
-	}
-
 	componentDidMount() {
 		this.mounted = true;
 		this._animateContainer();
-		this._buildPicker();
-		this._getAndSetState();
+	}
+	
+	componentWillReceiveProps(nextProps) {
+		if (this.props.verifyLicense !== nextProps.verifyLicense) {
+			this._getAndSetState();
+			this._buildPicker();
+			this.setState({license: nextProps.verifyLicense});
+			return;
+		} else if (nextProps.verifyLicense === '') {
+			this._getAndSetState();
+			this._buildPicker();	
+		}
+	}
+
+	shouldComponentUpdate(nextProps, nextState) { console.log(this.props.verifyLicense, nextProps.verifyLicense)
+		if (this.state.license !== nextState.license) return true;
+		if (this.props.verifyVisibility !== nextProps.verifyVisibility) return true;
+		if (this.props.verifyLicense !== nextProps.verifyLicense) return true;
+		if (this.state.licenseBackground !== nextState.licenseBackground) return true;
+		if (this.state.licenseText !== nextState.licenseText) return true;
+		if (this.state.state !== nextState.state) return true;
+		if (this.state.states.length !== nextState.states.length) return true;
+		return false; 
 	}
 
 	componentWillUnmount() {
@@ -197,16 +214,17 @@ export default class VerifyModal extends Component {
 VerifyModal.propTypes = {
 	handleTextInput: PropTypes.func.isRequired,
 	handleVINSearch: PropTypes.func.isRequired,
-	license: PropTypes.string, 
 	minimizeVerifyContainer: PropTypes.func.isRequired,
 	minimizeVerifyContainerForMenu: PropTypes.func,
+	verifyLicense: PropTypes.string.isRequired,
+	verifyVisibility: PropTypes.bool.isRequired,
 	state: PropTypes.string,
 }
 
 const styles = StyleSheet.create({
   containerBorder: {
-		backgroundColor: 'white',
 		alignItems: 'center',
+		backgroundColor: 'white',
 		borderRadius: 5,
 		padding: '6%',
 	},
@@ -217,9 +235,9 @@ const styles = StyleSheet.create({
 		marginBottom: '2%',
 	},
 	title: {
+		marginBottom: '4%',
 		fontSize: largeFontSize,
 		fontWeight: 'bold',
-		marginBottom: '4%',
 	},
 	inputLabel: {
 		fontSize: mediumFontSize,
@@ -231,8 +249,8 @@ const styles = StyleSheet.create({
 		width: verifyPickerInputWidth, 
 	},
 	picker: {
-		marginTop: '2%',
 		color: primaryBlue,
+		marginTop: '2%',
 		width: 150,
 	},
 	buttonsContainer: {
@@ -242,9 +260,9 @@ const styles = StyleSheet.create({
 		marginTop: '3%',
 	},
 	cancelButton: {
-		marginRight: '20%',
-		justifyContent: 'center',
 		alignItems: 'center',
+		justifyContent: 'center',
+		marginRight: '20%',
 	},
 	cancelText: {
 		color: primaryBlue,

@@ -67,26 +67,26 @@ export default class Profile extends Component {
     )
   };
 
-  render() {
+  render() { console.log('profile')
     return (
       <View style={styles.container} behavior={'padding'}>
         <Navigation navigation={this.props.navigation} title={'Profile'} />
         <Text style={styles.title}>Account Settings</Text>
 
           <View style={styles.row}>
-
             <TextInput
-              style={{ backgroundColor: this.state.emailBackground, borderColor: this.state.emailBorder, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
-              autoCorrect={false}
               autoCapitalize={'words'}
+              autoCorrect={false}
               keyboardType={'email-address'}
-              placeholder={'Email'}
               fontSize={mediumFontSize}
-              underlineColorAndroid={'transparent'}
-              onFocus={() => this._onEmailFocus()}
               onBlur={() => this._onEmailBlur()}
               onChangeText={(text) => { this.setState({ email: text })}}
-              value={this.state.email} />
+              onFocus={() => this._onEmailFocus()}
+              placeholder={'Email'}
+              style={{ backgroundColor: this.state.emailBackground, borderColor: this.state.emailBorder, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
+              underlineColorAndroid={'transparent'}
+              value={this.state.email} 
+            />
           </View>
 
           { this.state.emailWarning ? <Warning warning={'Enter valid email address'} /> : null }
@@ -94,15 +94,15 @@ export default class Profile extends Component {
           <View style={styles.row}>
 
             <TextInput
-              style={{ backgroundColor: this.state.passwordBackground, borderColor: this.state.passwordBorder, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
               autoCorrect={false}
-              secureTextEntry={true}
               fontSize={mediumFontSize}
               placeholder={'Password'}
-              underlineColorAndroid={'transparent'}
-              onFocus={() => this._onPasswordFocus()}
               onBlur={() => this._onPasswordBlur()}
               onChangeText={(text) => this._onPasswordChangeText(text)}
+              onFocus={() => this._onPasswordFocus()}
+              secureTextEntry={true}
+              style={{ backgroundColor: this.state.passwordBackground, borderColor: this.state.passwordBorder, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}
+              underlineColorAndroid={'transparent'}
               value={this.state.password} />
           </View>
 
@@ -111,9 +111,9 @@ export default class Profile extends Component {
           <View style={styles.row}>
             <View style={{ borderColor: this.state.stateBorder, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}>  
               <Picker
-                style={styles.picker}
-                selectedValue={this.state.selectedState}
                 onValueChange={(val) => this._onStateChange(val)} 
+                selectedValue={this.state.selectedState}
+                style={styles.picker}
               >
 
                 { this.state.states }
@@ -125,10 +125,10 @@ export default class Profile extends Component {
           <View style={styles.row}>
             <View style={{ borderColor: this.state.countyBorder, borderWidth: 1, width: textInputWidth, paddingLeft: 15 }}>
               <Picker
-                style={styles.picker}
-                selectedValue={this.state.selectedCounty}
-                onValueChange={(val) => this._onCountyChange(val)} 
                 enabled={this.state.selectedState === 'Select your state' ? false: true}
+                onValueChange={(val) => this._onCountyChange(val)} 
+                selectedValue={this.state.selectedCounty}
+                style={styles.picker}
               >
 
                 { this.state.counties }
@@ -139,14 +139,14 @@ export default class Profile extends Component {
 
         <TouchableOpacity
           style={{ 
-            backgroundColor: this.state.buttonColor,
-            width: '50%',
-            justifyContent: 'flex-end',
             alignItems: 'center',
             alignSelf: 'center',
+            backgroundColor: this.state.buttonColor,
+            borderRadius: 10, 
+            justifyContent: 'flex-end',
             marginTop: '15%',
             padding: '4%',
-            borderRadius: 10, 
+            width: '50%',
           }}
           activeOpacity={.9}
           onPress={() => this._setNewProfile()}
@@ -159,8 +159,9 @@ export default class Profile extends Component {
         { this.state.isConnected ? null : <ThrowConnectionMessage /> }
         <ActivityIndicator
           animating={this.state.animating}
+          size='large' 
           style={styles.activity}
-          size='large' />
+        />
       </View>
     );
   }
@@ -411,37 +412,37 @@ Profile.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: 'white',
     alignItems: 'center',
+    backgroundColor: 'white',
+    flex: 1,
   },
   title: {
-    textAlign: 'center',
     color: primaryBlue,
     fontSize: xxlargeFontSize,
-    marginTop: '8%',
-    marginBottom: '10%',
     fontWeight: 'bold',
+    marginBottom: '10%',
+    marginTop: '8%',
+    textAlign: 'center',
     textShadowColor: titleTextShadow,
     textShadowOffset: {
-      width: 1,
-      height: 1
+      height: 1,
+      width: 1
     },
   },
   row: {
     margin: '4%',
   },
   buttonText: {
-    fontSize: largeFontSize,
     color: 'white',
+    fontSize: largeFontSize,
   },
   picker: {
     color: primaryBlue,
     width: textInputWidth,
   },
   activity: {
-    position: 'absolute',
-    bottom: '2%',
     alignSelf: 'center',
+    bottom: '2%',
+    position: 'absolute',
   },
 });

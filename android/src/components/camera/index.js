@@ -57,7 +57,7 @@ export default class CameraApp extends Component {
     )
   };
 
-  render() {
+  render() { console.log('camera render')
     return (
       <View style={styles.container}>
         <LocationInput 
@@ -65,8 +65,8 @@ export default class CameraApp extends Component {
           visibility={this.state.modalVisible} 
         />
         <Navigation 
-          title={'Enforce'}
           navigation={this.props.navigation} 
+          title={'Enforce'}
         />
         <SetTimeLimit 
           newTimer={this.state.newTimer} 
@@ -112,7 +112,7 @@ export default class CameraApp extends Component {
 }
 
 
-  async componentDidMount() {
+  componentDidMount() {
     this.mounted = true;
 
     this._setCameraTime();
@@ -134,6 +134,12 @@ export default class CameraApp extends Component {
       this.longitude = 0;
       navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
     }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.modalVisible !== nextState.modalVisible) return true;
+    if (this.state.newTimer !== nextState.newTimer) return true;
+    return false;
   }
 
   componentWillUnmount() {
@@ -359,15 +365,15 @@ CameraApp.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  cameraContainer: {
-    flex: .8,
-  },
   camera: {
     alignItems: 'center',
     flex: 1,
     justifyContent: 'flex-end',
+  },
+  cameraContainer: {
+    flex: .8,
+  },
+  container: {
+    flex: 1,
   },
 });

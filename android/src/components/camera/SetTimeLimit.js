@@ -28,49 +28,54 @@ export default class SetTimeLimit extends Component {
     }
   }
 
-  render() {
+  render() { console.log('set limit renders')
     return (
       <View>
       {
         this.props.newTimer ?
+
         <View style={styles.notification}>
           <Notification />
           <TouchableOpacity
-            style={styles.notificationButton}
             activeOpacity={.8}
-            onPress={this._updateTimeLimit.bind(this)} >
+            onPress={this._updateTimeLimit.bind(this)}
+            style={styles.button}
+          >
             <Text style={styles.buttonText}>Set Limit</Text>
           </TouchableOpacity>
         </View>
 
         :
 
-      <View style={styles.container}>
-        <View style={styles.timeInputsContainer}>
-          <TextInput
-            style={styles.hourInput}
-            keyboardType={'numeric'}
-            maxLength={1}
-            onChangeText={(hour) => this._onChangeHour(hour)}
-            value={this.state.hour} />
-          <Text style={styles.timeDesc}>Hr</Text>
-          <TextInput
-            style={styles.minutesInput}
-            keyboardType={'numeric'}
-            maxLength={2}
-            onChangeText={(minutes) => this._onChangeMinutes(minutes)}
-            value={this.state.minutes} />
-          <Text style={styles.timeDesc}>Min</Text>
-        </View>
+        <View style={styles.container}>
+          <View style={styles.timeInputsContainer}>
+            <TextInput
+              keyboardType={'numeric'}
+              maxLength={1}
+              onChangeText={(hour) => this._onChangeHour(hour)}
+              style={styles.hourInput}
+              value={this.state.hour} 
+            />
+            <Text style={styles.timeDesc}>Hr</Text>
+            <TextInput
+              keyboardType={'numeric'}
+              maxLength={2}
+              onChangeText={(minutes) => this._onChangeMinutes(minutes)}
+              style={styles.minutesInput}
+              value={this.state.minutes} 
+            />
+            <Text style={styles.timeDesc}>Min</Text>
+          </View>
 
-        <TouchableOpacity
-          style={styles.setButton}
-          activeOpacity={.8}
-          onPress={this._updateTimeLimit.bind(this)} >
-          <Text style={styles.buttonText}>Set Limit</Text>
-        </TouchableOpacity>
-      </View>
-    }
+          <TouchableOpacity
+            activeOpacity={.8}
+            onPress={this._updateTimeLimit.bind(this)} 
+            style={styles.button}
+          >
+            <Text style={styles.buttonText}>Set Limit</Text>
+          </TouchableOpacity>
+        </View>
+      }
     </View>
     );
   }
@@ -83,6 +88,13 @@ export default class SetTimeLimit extends Component {
         minutes: history.minutes ? history.minutes.length === 1 ? '0' + history.minutes : history.minutes : '00',
       });
     }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.newTimer !== nextProps.newTimer) return true;
+    if (this.state.hour !== nextState.hour) return true;
+    if (this.state.minutes !== nextState.minutes) return true;
+    return false;
   }
 
   _onChangeHour(hour: string) {
@@ -152,62 +164,55 @@ SetTimeLimit.propTypes = {
 }
 
 const styles = StyleSheet.create({
+  button: {
+    backgroundColor: 'green',
+    borderColor: 'white',
+    borderRadius: 8,
+    borderWidth: 2,
+    elevation: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: extraLargeFontSize,
+    padding: '1.5%',
+  },
   container: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    height: timeLimitContainerHeight,
     backgroundColor: 'grey',
+    flexDirection: 'row',
+    height: timeLimitContainerHeight,
+    justifyContent: 'space-between',
     paddingLeft: '6%',
     paddingRight: '6%',
   },
-  timeInputsContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   hourInput: {
-    width: '12%',
-    fontSize: largeFontSize,
     color: 'white',
+    fontSize: largeFontSize,
+    width: '12%',
   },
   minutesInput: {
-    width: '18%',
-    fontSize: largeFontSize,
     color: 'white',
+    fontSize: largeFontSize,
+    width: '18%',
+  },
+  notification: {
+    alignItems: 'center',
+    backgroundColor: 'grey',
+    borderBottomWidth: 4,
+    borderColor: 'green',
+    flexDirection: 'row',
+    height: timeLimitContainerHeight + 4,
+    justifyContent: 'space-between',
+    paddingLeft: '6%',
+    paddingRight: '6%',
   },
   timeDesc: {
     fontSize: mediumFontSize,
     marginRight: '8%',
   },
-  setButton: {
-    backgroundColor: 'green',
-    borderWidth: 2,
-    borderRadius: 8,
-    borderColor: 'white',
-    elevation: 5,
-  },
-  buttonText: {
-    fontSize: extraLargeFontSize,
-    color: 'white',
-    padding: '1.5%',
-  },
-  notification: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  timeInputsContainer: {
     alignItems: 'center',
-    borderBottomWidth: 4,
-    borderColor: 'green',
-    height: timeLimitContainerHeight + 4,
-    backgroundColor: 'grey',
-    paddingLeft: '6%',
-    paddingRight: '6%',
+    flexDirection: 'row',
   },
-  notificationButton: {
-    backgroundColor: 'green',
-    borderWidth: 2,
-    borderRadius: 8,
-    borderColor: 'white',
-    elevation: 5,
-  }
 });
  

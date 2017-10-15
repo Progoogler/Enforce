@@ -14,21 +14,30 @@ export default class ImageModal extends Component {
     super();
   }
  
-  render() {
+  render() { console.log('image modal renders')
     return (
       <Modal animationType={"fade"}
-        transparent={false}
         onRequestClose={() => this.props.maximizeOrMinimizeImage()}
-        visible={this.props.visibility} >
+        transparent={false}
+        visible={this.props.visibility} 
+      >
         <View style={styles.container}>
-          <Navigation title={'Enforce'} closeModal={this.props.maximizeOrMinimizeImage} />
+          <Navigation 
+            closeModal={this.props.maximizeOrMinimizeImage}
+            title={'Enforce'} 
+          />
           <PhotoView style={styles.image}
-            source={{uri: this.props.uri}}
             androidScaleType="fitXY"
-            />
+            source={{uri: this.props.uri}}
+          />
         </View>
       </Modal>
     );
+  }
+
+  shouldComponentUpdate(nextProps) {
+    if (this.props.visibility !== nextProps.visibility) return true;
+    return false;
   }
 }
 

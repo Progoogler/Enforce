@@ -14,12 +14,12 @@ class ErrorMessage extends Component {
     super();
     this.messageBottom = new Animated.Value(-navBarContainerHeight);
   }
-  render() {
+  render() { console.log('error message renders')
     return (
       <Animated.View
         style={{
-          position: 'absolute',
           bottom: this.messageBottom,
+          position: 'absolute',
         }}
       >
         <TouchableWithoutFeedback onPress={() => this.props.checkLocationAndRender()}>
@@ -31,10 +31,10 @@ class ErrorMessage extends Component {
     );
   }
 
-  componentWillUpdate(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.showError === false) {
       this.hideErrorMessage();
-    } else {
+    } else if (nextProps.showError) {
       Animated.timing(
         this.messageBottom, { 
           toValue: 0,
@@ -42,6 +42,11 @@ class ErrorMessage extends Component {
         }
       ).start();
     }
+  }
+
+  shouldComponentUpdate(nextProps) {
+    if (this.props.showError !== nextProps.showError) return true;
+    return false;
   }
 
   hideErrorMessage() {
@@ -56,6 +61,7 @@ class ErrorMessage extends Component {
 
 ErrorMessage.propTypes = {
   checkLocationAndRender: PropTypes.func.isRequired,
+  showError: PropTypes.bool.isRequired,
 }
 
 const styles = StyleSheet.create({

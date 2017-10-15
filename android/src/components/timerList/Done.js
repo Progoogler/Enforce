@@ -22,8 +22,8 @@ export default class Done extends Component {
     return (
       <TouchableOpacity
         activeOpacity={.5}
-        style={styles.container}
         onPress={() => this._handlePress()}
+        style={styles.container}
       >
         {
           this.props.text === 'Send' ?
@@ -37,6 +37,11 @@ export default class Done extends Component {
         <Text style={[styles.text, this.props.text === 'Must be connected to the Internet' ? styles.smallText : null]}>{this.props.text ? this.props.text : 'Done'}</Text>
       </TouchableOpacity>
     );
+  }
+
+  shouldComponentUpdate(nextProps) {
+    if (this.props.text !== nextProps.text) return true;
+    return false;
   }
 
   _handlePress() {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -8,15 +8,29 @@ import {
 import PropTypes from 'prop-types';
 import { ticketCountFontSize, ticketDescFontSize } from '../../styles/common';
 
-const TicketCounter = (props) => (
-  <TouchableWithoutFeedback
-    onLongPress={ () => props.navigation.navigate('History') }>
-    <View style={styles.ticketCountContainer}>
-      <Text style={styles.ticketCountNumber}>{ props.reset ? 0 : props.ticketCount }</Text>
-      <Text style={styles.ticketCountDescription}>{ props.ticketCount === 1 ? 'ticket' : 'tickets'} today</Text>
-    </View>
-  </TouchableWithoutFeedback>
-);
+export default class TicketCounter extends Component {
+  constructor() {
+    super();
+  }
+
+  render() { console.log('ticket counter')
+    return (
+      <TouchableWithoutFeedback
+        onLongPress={ () => this.props.navigation.navigate('History') }>
+        <View style={styles.ticketCountContainer}>
+          <Text style={styles.ticketCountNumber}>{ this.props.reset ? 0 : this.props.ticketCount }</Text>
+          <Text style={styles.ticketCountDescription}>{ this.props.ticketCount === 1 ? 'ticket' : 'tickets'} today</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  }
+
+  shouldComponentUpdate(nextProps) {
+    if (this.props.reset !== nextProps.reset) return true;
+    if (this.props.ticketCount !== nextProps.ticketCount) return true;
+    return false;
+  }
+}
 
 TicketCounter.propTypes = {
   navigation: PropTypes.object.isRequired,
@@ -31,15 +45,12 @@ const styles = StyleSheet.create({
     marginBottom: '10%',
   },
   ticketCountNumber: {
+    color: 'green',
     fontSize: ticketCountFontSize,
     fontWeight: 'bold',
-    color: 'green',
   },
   ticketCountDescription: {
     color: 'green',
     fontSize: ticketDescFontSize,
   },
 });
-
-export default TicketCounter;
- 

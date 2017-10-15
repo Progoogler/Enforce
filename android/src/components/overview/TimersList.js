@@ -36,16 +36,16 @@ export default class TimersList extends Component {
     };
   }
 
-  render() {
+  render() { console.log('overview timerslist')
     return (
       <FlatList
-        style={styles.flatlist}
         data={this.state.dataSource}
         ItemSeparatorComponent={this._renderSeparator}
+        keyExtractor={this.keyExtractor} 
         onRefresh={this.onRefresh}
         refreshing={this.state.refreshing}
         renderItem={this.renderItem}
-        keyExtractor={this.keyExtractor} 
+        style={styles.flatlist}
         updatedLocation={this.state.updatedLocation}
       />
     );
@@ -387,8 +387,8 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   separator: {
+    backgroundColor: '#8E8E8E',
     flex: 1,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: '#8E8E8E',
   },
 });

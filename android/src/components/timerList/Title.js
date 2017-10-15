@@ -48,20 +48,20 @@ Title.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    height: timeLimitTitleContainerHeight,  //40,
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: primaryBlue,
+    height: timeLimitTitleContainerHeight,  //40,
+    justifyContent: 'center',
     marginTop: '-1%',
   },
   text: {
+    color: 'white',
     fontSize: mediumFontSize,
     fontWeight: 'bold',
-    color: 'white',
     textShadowColor: 'grey',
     textShadowOffset: {
-      width: 1,
-      height: 1
+      height: 1,
+      width: 1
     },
   },
 });
