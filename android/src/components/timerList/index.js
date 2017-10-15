@@ -1,22 +1,19 @@
 import React, { Component } from 'react';
 import {
   Image,
-  NetInfo,
   StyleSheet,
   View,
 } from 'react-native';
-import FlatList from 'react-native/Libraries/Lists/FlatList';
 import PropTypes from 'prop-types';
 import Realm from 'realm';
 
 import coordinatesBound from './coordinatesBound';
 import { setUserTicket, setTicketImage } from '../../../../includes/firebase/database';
+import TimersImageList from './TimerImageList';
 import Done from './Done';
-import Row from './Row';
 import Search from '../search';
 import Title from './Title';
 import Warning from './Warning';
-import { timerFlatListHeight } from '../../styles/common';
 
 import RNFetchBlob from 'react-native-fetch-blob';
 const Blob = RNFetchBlob.polyfill.Blob; // Initialize Blob for converting images into binary
@@ -45,15 +42,13 @@ export default class TimerList extends Component {
       warning: false,
     };
     this.addLicenseToQueue = this.addLicenseToQueue.bind(this);
-    this.currentLicense = 0;
-    this.decipherUploadSetting = this.decipherUploadSetting.bind(this);
+    this.enterLicenseInSearchField = this.enterLicenseInSearchField.bind(this);
+    this.expiredFunc = this.expiredFunc.bind(this);
     this.getDirectionBound = this.getDirectionBound.bind(this);
-    this.handleScroll = this.handleScroll.bind(this);
     this.imageUploads = {};
     this.license = '';
     this.mounted = false;
     this.onRefresh = this.onRefresh.bind(this);
-    this.renderItem = this.renderItem.bind(this);
     this.reset = false;
     this.shouldResetLicense = this.shouldResetLicense.bind(this);
     this.ticketCount = undefined;
@@ -64,10 +59,6 @@ export default class TimerList extends Component {
     this.uploadImage = this.uploadImage.bind(this);
     this.uponTicketed = this.uponTicketed.bind(this);
     this.VIN = '';
-
-    // These variables are used to calculate the index of the Timer currently in the scroll view
-    this.flatListHeight = Math.ceil(timerFlatListHeight);
-    this.halvedFlatListHeight = Math.ceil(timerFlatListHeight / 2);
   }
 
   static navigationOptions = {
@@ -103,17 +94,17 @@ export default class TimerList extends Component {
           limit={this.list[0] ? this.list[0].timeLength ? this.list[0].timeLength : 0 : 0} 
         />
 
-        <FlatList
+        <TimersImageList
           data={this.state.dataSource}
-          getItemLayout={this._itemLayout}
-          ItemSeparatorComponent={this._renderSeparator}
-          initialNumToRender={3}
-          keyExtractor={this._keyExtractor}
+          dataUpload={this.props.screenProps.dataUpload}
+          enterLicenseInSearchField={this.enterLicenseInSearchField}
+          expiredFunc={this.expiredFunc}
+          imageRecognition={this.props.screenProps.imageRecognition}
+          navigation={this.props.navigation}
           onRefresh={this.onRefresh}
-          onScroll={this.handleScroll}
+          uploadImage={this.uploadImage}
+          uponTicketed={this.uponTicketed}
           refreshing={this.state.refreshing}
-          removeClippedSubviews={true}
-          renderItem={this.renderItem}
           reset={this.state.reset}
         />
         
@@ -134,7 +125,6 @@ export default class TimerList extends Component {
       });
     }
     if (this.list[0].latitude) this.getDirectionBound();
-    this.decipherUploadSetting();
     this._setTimeoutRefresh();
     this.ticketCount = this.realm.objects('Ticketed')[0]['list'].length;
   }
@@ -382,71 +372,6 @@ export default class TimerList extends Component {
     this.VIN = '';
   }
 
-  renderItem(data: object): object {
-    return (
-      <Row
-        data={data.item}
-        decipherUploadSetting={this.decipherUploadSetting}
-        expiredFunc={this.expiredFunc.bind(this)}
-        uponTicketed={this.uponTicketed.bind(this)}
-        enterLicenseInSearchField={this.enterLicenseInSearchField.bind(this)}
-        navigation={this.props.navigation}
-        upload={this.state.upload}
-        uploadImage={this.uploadImage}
-      />
-    );
-  }
-
-  _renderSeparator() {
-    return <View style={styles.separator} />;
-  }
-
-  _keyExtractor(item: object = {'createdAt': 0}): number {
-    return item.createdAt;
-  }
-
-  _itemLayout(data, index) {
-    return {offset: timerFlatListHeight + StyleSheet.hairlineWidth * index, length: timerFlatListHeight + StyleSheet.hairlineWidth, index};
-  }
-
-  handleScroll(event) {
-    // Update the license value of the current timer on the FlatList view to the search input field as user scrolls
-    if (this.props.screenProps.imageRecognition) {
-      if (event.nativeEvent.contentOffset.y > this.halvedFlatListHeight) {
-        let idx = Math.ceil(event.nativeEvent.contentOffset.y / this.flatListHeight);
-        if (idx !== this.currentLicense) {
-          if (this.list[idx] === undefined) return;
-          this.currentLicense = idx;
-          this.enterLicenseInSearchField({
-            license: this.list[idx].license,
-            listIndex: this.list[idx].index,
-          });
-        }
-      } else {
-        this.currentLicense = 0;
-        this.enterLicenseInSearchField({
-          license: this.list[0].license,
-          listIndex: this.list[0].index,
-        });
-      }
-    }
-  }
-
-  decipherUploadSetting() {
-    if (this.props.screenProps.dataUpload) {
-      NetInfo.isConnected.fetch().then(isConnected => {
-        if (isConnected) {
-          if (!this.state.upload) {
-            this.setState({upload: true});
-            setTimeout(() => this.onRefresh(), 1000);
-          }
-        } else {
-          this.setState({upload: false});
-        }
-      });
-    }
-  }
-
   uploadImage(createdAt: number, bool: boolean) {
     this.imageUploads[createdAt] = bool;
   }
@@ -462,10 +387,5 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
     flex: 1,
-  },
-  separator: {
-    backgroundColor: '#8E8E8E',
-    flex: 1,
-    height: StyleSheet.hairlineWidth,
   },
 });
