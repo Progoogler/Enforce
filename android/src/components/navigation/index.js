@@ -27,7 +27,7 @@ export default class Navigation extends Component {
     this.titleOpacity = new Animated.Value(0);
   }
 
-  render() { console.log('navigation index')
+  render() {
     return (
 
       <View style={styles.container}>
