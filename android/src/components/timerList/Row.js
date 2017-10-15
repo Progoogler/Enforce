@@ -32,7 +32,7 @@ export default class Row extends Component {
     };
   }
 
-  render() {
+  render() { console.log('row renders')
     if (this.props.data.createdAt === 0 || this.state.hidden) return <View/>
     return (
       <View style={styles.container}>
@@ -122,6 +122,7 @@ export default class Row extends Component {
     if (this.state.cloud !== nextState.cloud) return true;
     if (this.props.upload !== nextProps.upload) return true;
     if (this.state.hidden !== nextState.hidden) return true;
+    console.log('do not rerender row')
     return false;
   }
 
@@ -203,54 +204,54 @@ const styles = StyleSheet.create({
     width: undefined,
   },
   licenseContainer: {
-    position: 'absolute',
-    // Position the License Container above both the Description Container and the Buttons Container minus the border width
-    bottom: timerRowDescContainerHeight + timerRowButtonsContainerHeight - 2,
     alignSelf: 'center',
     backgroundColor: 'white',
-    borderWidth: 1,
+    borderBottomColor: 'white',
     borderBottomWidth: 1,
-    borderTopColor: primaryBlue,
+    borderWidth: 1,
     borderLeftColor: primaryBlue,
     borderRightColor: primaryBlue,
-    borderBottomColor: 'white',
+    borderTopColor: primaryBlue,
+    // Position the License Container above both the Description Container and the Buttons Container minus the border width
+    bottom: timerRowDescContainerHeight + timerRowButtonsContainerHeight - 2,
+    position: 'absolute',
   },
   license: {
     fontSize: mediumFontSize,
     fontWeight: 'bold',
     textAlign: 'center',
-    paddingTop: '1%',
     paddingLeft: '3%',
     paddingRight: '3%',
+    paddingTop: '1%',
   },
   timeUp: {
+    color:'green',
     fontSize: largeFontSize,
     fontWeight: 'bold',
-    color:'green',
   },
   timeUpFar: {
     fontSize: smallFontSize,
     fontWeight: 'bold',
   },
   timeUpNear: {
+    color: primaryBlue,
     fontSize: mediumFontSize,
     fontWeight: 'bold',
-    color: primaryBlue,
   },
   buttonsContainer: {
     alignSelf: 'stretch',
   },
   rowButtonsContainers: {
-    flex: 1,
-    flexDirection: 'row',
     borderBottomWidth: 2,
     borderColor: 'white',
+    flex: 1,
+    flexDirection: 'row',
     height: timerRowButtonsContainerHeight,
   },
   rowButton: {
-    flex: .5,
-    backgroundColor: primaryBlue,
     alignItems: 'center',
+    backgroundColor: primaryBlue,
+    flex: .5,
     justifyContent: 'center',
   },
   separator: {
@@ -258,17 +259,17 @@ const styles = StyleSheet.create({
     borderWidth: .5,
   },
   buttonText: {
-    fontSize: largeFontSize,
     color: 'white',
+    fontSize: largeFontSize,
   },
   descriptionContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    height: timerRowDescContainerHeight,
-    padding: '4%',
-    borderTopWidth: 2,
     borderTopColor: primaryBlue,
+    borderTopWidth: 2,
+    flexDirection: 'row',
+    height: timerRowDescContainerHeight,
+    justifyContent: 'space-between',
+    padding: '4%',
   },
   timeContainer: {
     flexDirection: 'column',
@@ -278,18 +279,18 @@ const styles = StyleSheet.create({
     fontSize: extraLargeFontSize,
   },
   locationContainer: {
-    position: 'absolute',
     alignSelf: 'center',
     backgroundColor: 'white',
+    position: 'absolute',
     width: '100%',
   },
   location: {
-    textAlign: 'center',
     color: primaryBlue,
     fontSize: mediumFontSize,
+    paddingBottom: '1%',
     paddingLeft: '4%',
     paddingRight: '4%',
-    paddingBottom: '1%',
     paddingTop: '1%',
+    textAlign: 'center',
   },
 });
