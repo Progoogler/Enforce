@@ -35,7 +35,7 @@ export default class Overview extends Component {
     ),
   };
 
-  render() {
+  render() { console.log('overview')
     return (
       <View style={styles.container}>
         <Menu 
@@ -58,6 +58,13 @@ export default class Overview extends Component {
 
   componentDidMount() {
     this._checkToSetPushNotifications();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.zero !== nextState.zero) return true;
+    if (this.props.screenProps.currentDay !== nextProps.screenProps.currentDay) return true;
+    if (this.props.screenProps.refPath !== nextProps.screenProps.refPath) return true;
+    return false;
   }
 
   async _checkToSetPushNotifications() {
@@ -144,8 +151,8 @@ Overview.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: 'white',
     alignItems: 'center',
+    backgroundColor: 'white',
+    flex: 1,
   },
 });

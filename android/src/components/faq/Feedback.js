@@ -26,7 +26,7 @@ export default class Feedback extends Component {
 		}
 	}
 
-	render() {
+	render() { console.log('feedback renders')
 		return (
 			<Animated.View
 				style={{
@@ -116,6 +116,11 @@ export default class Feedback extends Component {
 				).start();
 			}, 3500);
 		}
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		if (this.state.message !== nextState.message) return true;
+		return false;
 	}
 }
 

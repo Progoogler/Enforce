@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,11 +7,24 @@ import {
 import PropTypes from 'prop-types';
 import { smallFontSize, textInputWidth } from '../../styles/common';
 
-const Warning = (props) => (
-  <View style={styles.container}>
-    <Text style={styles.text}>{props.warning}</Text>
-  </View>
-);
+
+export default class Warning extends Component {
+  constructor() {
+    super();
+  }
+  render() { console.log('profile warning')
+    return (
+      <View style={styles.container}>
+        <Text style={styles.text}>{this.props.warning}</Text>
+      </View>
+    );
+  }
+
+  shouldComponentUpdate(nextProps) {
+    if (this.props.warning !== nextProps.warning) return true;
+    return false;
+  }
+}
  
 Warning.propTypes = { warning: PropTypes.string.isRequired }
 
@@ -26,5 +39,3 @@ const styles = StyleSheet.create({
     fontSize: smallFontSize,
   },
 });
-
-export default Warning;

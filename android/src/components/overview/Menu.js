@@ -34,13 +34,13 @@ export default class Menu extends Component {
     this.resizeMenuContainer = this.resizeMenuContainer.bind(this);
     this.showNoResultNotificationForMenu = this.showNoResultNotificationForMenu.bind(this);
     this.titleOpacity = new Animated.Value(0);
-    this.toggleVerifyContainer = this.toggleVerifyContainer.bind(this);
+    this.toggleVerifyContainerForMenu = this.toggleVerifyContainerForMenu.bind(this);
     this.state = {
       search: false,
     };
   }
 
-  render() {
+  render() {console.log('menu')
     return (
 
       <Animated.View 
@@ -60,7 +60,7 @@ export default class Menu extends Component {
           navigation={this.props.navigation} 
           resizeMenuContainer={this.resizeMenuContainer} 
           showNoResultNotificationForMenu={this.showNoResultNotificationForMenu} 
-          toggleVerifyContainer={this.toggleVerifyContainer}
+          toggleVerifyContainerForMenu={this.toggleVerifyContainerForMenu}
           refPath={this.props.refPath}
         /> 
         
@@ -119,7 +119,12 @@ export default class Menu extends Component {
               <Image source={require('../../../../shared/images/menu-icon.jpg')}/>
             </TouchableHighlight>
           </View>
-          <Animated.View style={{ opacity: this.buttonOpacity, marginTop: '2%', }}>
+          <Animated.View 
+            style={{ 
+              opacity: this.buttonOpacity, 
+              marginTop: '2%', 
+            }}
+          >
             <MainButtons navigation={this.props.navigation} searching={this.state.search}/>
           </Animated.View>
         </View>
@@ -136,6 +141,13 @@ export default class Menu extends Component {
         duration: 500
       }
     ).start();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.search !== nextState.search) return true;
+    if (this.props.title !== nextProps.title) return true;
+    if (this.props.refPath !== nextProps.refPath) return true;
+    return false;
   }
 
   componentWillUnmount() {
@@ -178,7 +190,7 @@ export default class Menu extends Component {
     ).start();
   }
 
-  toggleVerifyContainer(open) {
+  toggleVerifyContainerForMenu(open?: string) {
     if (open) {
       Animated.timing(
         this.containerHeight, {

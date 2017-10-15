@@ -17,7 +17,7 @@ import {
 var buttonSize = captureContainerHeight - 10;
 
 export default class Capture extends Component {
-  render() {
+  render() { console.log('capture renders')
     return (
       <View style={styles.footer}>
         <View style={styles.pinContainer}>
@@ -26,8 +26,8 @@ export default class Capture extends Component {
             onPress={() => this.props.setModalVisible()} 
           >
             <Image
-              style={styles.pinIcon}
               source={require('../../../../shared/images/pin.png')}
+              style={styles.pinIcon}
             />
           </TouchableOpacity>
         </View>
@@ -35,8 +35,8 @@ export default class Capture extends Component {
         <View style={styles.captureContainer}>
           <TouchableOpacity
             activeOpacity={.6}
-            style={styles.capture}
             onPress={() => this.props.takePicture()} 
+            style={styles.capture}
           >
             <View></View>
           </TouchableOpacity>
@@ -58,6 +58,10 @@ export default class Capture extends Component {
       </View>
     );
   }
+
+  shouldComponentUpdate() {
+    return false;
+  }
 }
 
 Capture.propTypes = {
@@ -67,37 +71,37 @@ Capture.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 1)',
-    paddingLeft: '2%',
-    paddingRight: '2%',
-    height: captureContainerHeight,
-  },
-  pinContainer: {
-    flex: 1,
+  capture: {
+    alignSelf: 'center',
+    borderColor: 'white',
+    borderRadius: buttonSize / 2,
+    borderWidth: 1,
+    height: buttonSize,
+    width: buttonSize,
   },
   captureContainer: {
     flex: 1,
   },
-  capture: {
-    alignSelf: 'center',
-    borderWidth: 1,
-    borderColor: 'white',
-    height: buttonSize,
-    width: buttonSize,
-    borderRadius: buttonSize / 2,
+  footer: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 1)',
+    flexDirection: 'row',
+    height: captureContainerHeight,
+    justifyContent: 'center',
+    paddingLeft: '2%',
+    paddingRight: '2%',
   },
-  undoContainer: {
+  pinContainer: {
     flex: 1,
-  },
-  undoButton: {
-    alignSelf: 'flex-end',
   },
   undo: {
     color: primaryBlue,
     fontSize: mediumFontSize,
+  },
+  undoButton: {
+    alignSelf: 'flex-end',
+  },
+  undoContainer: {
+    flex: 1,
   },
 });

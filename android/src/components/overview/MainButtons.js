@@ -19,7 +19,7 @@ export default class MainButtons extends Component {
     }
   }
 
-  render() {
+  render() { console.log('main buttons')
     return (
       <View style={styles.mainButtonsContainer}>
 
@@ -65,6 +65,12 @@ export default class MainButtons extends Component {
 
       </View>
     );
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.cameraBorder !== nextState.cameraBorder) return true;
+    if (this.state.mapBorder !== nextState.mapBorder) return true;
+    return false;
   }
 
   _onShowUnderlay(button: string) {

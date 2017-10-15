@@ -12,7 +12,7 @@ export default class Notification extends Component {
     this.fadeAnim = new Animated.Value(0);
   }
 
-  render() {
+  render() { console.log('notification renders')
     return (
       <Animated.View 
         style={{
@@ -38,6 +38,10 @@ export default class Notification extends Component {
         },
       ).start();
     }, 1000);
+  }
+
+  shouldComponentUpdate() {
+    return false;
   }
 }
 

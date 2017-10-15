@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import {
   Image,
   StyleSheet,
@@ -7,12 +7,20 @@ import {
 } from 'react-native';
 import { primaryBlue, smallFontSize } from '../../styles/common';
 
-const ThrowConnectionMessage = () => (
-  <View style={styles.container}>
-    <Image source={require('../../../../shared/images/internet-icon.png')}/>
-    <Text style={styles.message}>Must be connected to the Internet</Text>
-  </View>
-);
+export default class ThrowConnectionMessage extends Component {
+  render() { console.log('throwconnectionmsg')
+    return (
+      <View style={styles.container}>
+        <Image source={require('../../../../shared/images/internet-icon.png')}/>
+        <Text style={styles.message}>Must be connected to the Internet</Text>
+      </View>
+    );
+  }
+
+  shouldComponentUpdate() {
+    return false;
+  }
+}
  
 const styles = StyleSheet.create({
   container: {
@@ -32,5 +40,3 @@ const styles = StyleSheet.create({
     padding: '5%',
   },
 });
-
-export default ThrowConnectionMessage;

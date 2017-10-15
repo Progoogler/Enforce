@@ -12,13 +12,9 @@ import { mediumFontSize, primaryBlue } from '../../styles/common';
 export default class Result extends Component {
   constructor() {
     super();
-    this.state = {
-      showMaximizedImage: false,
-      uri: '',
-    }
   }
 
-  render() {
+  render() { console.log('search unfound')
 
     var vinCheck;
     if (this.props.license.length === 4) {
@@ -40,7 +36,6 @@ export default class Result extends Component {
             <TouchableOpacity
               activeOpacity={.9}
               onPress={() => this.props.deepSearch()}
-              style={styles.searchTouch}
             >
               <Text style={styles.searchText}>Deep Search</Text>
             </TouchableOpacity>
@@ -49,20 +44,26 @@ export default class Result extends Component {
       </View>
     );
   }
+
+  shouldComponentUpdate(nextProps) {
+    if (this.props.type !== nextProps.type) return true;
+    return false;
+  }
 }
 
 Result.propTypes = { 
   deepSearch: PropTypes.func.isRequired,
   license: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: 'white',
-    justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'stretch',
+    backgroundColor: 'white',
+    flex: 1,
+    justifyContent: 'center',
     paddingBottom: '8%',
   },
   text: {
@@ -74,9 +75,6 @@ const styles = StyleSheet.create({
   searchText: {
     color: primaryBlue,
     textAlign: 'center',
-  },
-  searchTouch: {
-    // alignSelf: 'flex-end',
   },
 });
  

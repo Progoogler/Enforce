@@ -57,7 +57,7 @@ export default class History extends Component {
     )
   };
 
-  render() {
+  render() { console.log('history renders')
     return (
       <View style={styles.container}>
 
@@ -82,12 +82,12 @@ export default class History extends Component {
           }}
         >
           <Picker
+            onValueChange={(val) => this._onValueChange(val)} 
+            selectedValue={this.state.selected}
             style={{
               color: primaryBlue,
               width: this.state.pickerWidth,
             }}
-            onValueChange={(val) => this._onValueChange(val)} 
-            selectedValue={this.state.selected}
           >
 
             { this.state.items }

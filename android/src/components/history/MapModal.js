@@ -24,47 +24,56 @@ export default class MapModal extends Component {
     };
   }
 
-  render() {
+  render() { console.log('map modal renders')
     return (
       <Modal
         animationType={"fade"}
-        transparent={false}
         onRequestClose={() => this.props.closeModal()}
-        visible={this.props.visibility} >
+        transparent={false}
+        visible={this.props.visibility} 
+      >
 
-        <Navigation title={'History'} closeModal={this.props.closeModal} />
+        <Navigation 
+         closeModal={this.props.closeModal} 
+         title={'History'} 
+        />
 
         <LocationView description={this.state.description}/>
 
         <ActivityIndicator
           animating={this.state.animating}
           style={styles.activity}
-          size='large' />
+          size='large' 
+        />
 
         <View style={styles.mapContainer}>
 
           <AnimatedMap
-            ref={ref => { this.animatedMap = ref; }}
-            style={styles.map}
-            mapType="hybrid"
-            showsUserLocation={true}
             initialRegion={{
               latitude: this.props.latitude !== 0 ? this.props.latitude : 37.78926,
               longitude: this.props.longitude !== 0 ? this.props.longitude : -122.43159,
               latitudeDelta: 0.0108,
               longitudeDelta: 0.0060,
-            }} >
+            }} 
+            mapType="hybrid"
+            ref={ref => {this.animatedMap = ref;}}
+            showsUserLocation={true}
+            style={styles.map}
+          >
 
-            { this.state.marker.length ? this.state.marker :
-
+            { 
+              this.state.marker.length ? 
+              this.state.marker 
+              :
               <Marker
-                mapModalAnimating={this.mapModalAnimating.bind(this)}
                 coordinate={{
                   latitude: this.props.latitude,
-                  longitude: this.props.longitude}} >
-                <Image source={require('../../../../shared/images/blue-pin.png')} />
+                  longitude: this.props.longitude
+                }} 
+                mapModalAnimating={this.mapModalAnimating.bind(this)}
+              >
+                <Image source={require('../../../../shared/images/blue-pin.png')}/>
               </Marker>
-
             }
 
           </AnimatedMap>
@@ -89,10 +98,18 @@ export default class MapModal extends Component {
             longitude: this.props.longitude}} 
             key={1}
           >
-          <Image source={require('../../../../shared/images/blue-pin.png')} />
+          <Image source={require('../../../../shared/images/blue-pin.png')}/>
         </Marker>
       ]});
     }
+  }
+
+  componentShouldUpdate(nextProps, nextState) {
+    if (this.props.visibility !== nextProps.visibility) return true;
+    if (this.state.animating !== nextState.animating) return true;
+    if (this.state.marker.length !== nextState.marker.length) return true;
+    if (this.props.description !== nextProps.description) return true;
+    return false;
   }
 
   mapModalAnimating() {
@@ -102,29 +119,29 @@ export default class MapModal extends Component {
 }
 
 MapModal.propTypes = {
-  visibility: PropTypes.bool.isRequired,
   closeModal: PropTypes.func.isRequired,
+  description: PropTypes.string,
   latitude: PropTypes.number,
   longitude: PropTypes.number,
-  description: PropTypes.string,
+  visibility: PropTypes.bool.isRequired,
 }
 
 const styles = StyleSheet.create({
   mapContainer: {
-    position: 'absolute',
-    top: navBarContainerHeight,
-    left: 0,
-    right: 0,
+    alignItems: 'center',
     bottom: 0,
     justifyContent: 'flex-end',
-    alignItems: 'center',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: navBarContainerHeight,
   },
   map: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
     bottom: 0,
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
     zIndex: 8,
   },
   activity: {

@@ -25,7 +25,7 @@ export default class MapApp extends Component {
     this.accessedLocation = false;
     this.animatedToMarker = false;
     this.animatedMap = null;
-    this.checkLocationAndRender = this.checkLocatio;
+    this.checkLocationAndRender = this.checkLocationAndRender.bind(this);
     this.description = '';
     this.markers = [];
     this.mounted = false;
@@ -50,15 +50,16 @@ export default class MapApp extends Component {
     )
   };
 
-  render() {
+  render() { console.log('map renders')
     return (
       <View style={styles.container}>
 
-        { this.props.navigation.state.params && this.props.navigation.state.params.timerCreatedAt ?
+        { 
+          this.props.navigation.state.params && this.props.navigation.state.params.timerCreatedAt ?
           <StaticNavigation
             navigation={this.props.navigation}
-            title={'Map View'}
             timerList={true}
+            title={'Map View'}
           />
           :
           <Navigation
@@ -71,33 +72,33 @@ export default class MapApp extends Component {
         <LocationView description={this.state.description} fadeDescription={this.state.fadeDescription}/>
 
         <AnimatedMap
-          ref={ref => { this.animatedMap = ref; }}
-          style={{
-            bottom: this.state.mapPositionBottom,
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            top: 0,
-          }}
-          mapType="hybrid"
-          showsUserLocation={true}
           initialRegion={{
             latitude: this.realm.objects('Coordinates')[0].latitude ? this.realm.objects('Coordinates')[0].latitude : 37.78926,
             longitude: this.realm.objects('Coordinates')[0].longitude ? this.realm.objects('Coordinates')[0].longitude : -122.43159,
             latitudeDelta: 0.0108,
             longitudeDelta: 0.0060,
           }}
+          mapType="hybrid"
+          ref={ref => { this.animatedMap = ref; }}
+          showsUserLocation={true}
+          style={{
+            bottom: this.state.mapPositionBottom,
+            left: 0,
+            position: 'absolute',
+            right: 0,
+            top: 0,
+          }}
         >
 
-            { this.markers.length ? this.markers : this._getMarkers() }
-            { this.state.polyline[0] }
+          { this.markers.length ? this.markers : this._getMarkers() }
+          { this.state.polyline[0] }
 
         </AnimatedMap>
 
         <ActivityIndicator
           animating={this.state.animating}
-          style={styles.activity}
           size='large' 
+          style={styles.activity}
         />
 
         <ErrorMessage checkLocationAndRender={this.checkLocationAndRender} showError={this.state.showError}/>
@@ -359,12 +360,12 @@ MapApp.propTypes = {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
     bottom: 0,
+    justifyContent: 'flex-end',
+    left: 0,
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
   activity: {
     flex: 1,

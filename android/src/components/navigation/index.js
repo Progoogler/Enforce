@@ -27,7 +27,7 @@ export default class Navigation extends Component {
     this.titleOpacity = new Animated.Value(0);
   }
 
-  render() {
+  render() { console.log('navigation index')
     return (
 
       <View style={styles.container}>
@@ -95,16 +95,19 @@ export default class Navigation extends Component {
     );
   }
 
-  componentWillMount() {
-    this.props.search && this.setState({ search: true });
-  }
-
   componentDidMount() {
+    this.props.search && this.setState({ search: true });
     Animated.timing(
       this.titleOpacity,
       { toValue: 1,
         duration: 500, },
     ).start();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.search !== nextState.search) return true;
+    if (this.props.title !== nextProps.title) return true;
+    return false;
   }
 
   closeSearch() {
@@ -129,8 +132,8 @@ Navigation.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    alignSelf: 'stretch',
     alignItems: 'center',
+    alignSelf: 'stretch',
     backgroundColor: primaryBlue,
     zIndex: 11,
   },

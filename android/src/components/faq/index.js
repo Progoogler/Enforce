@@ -40,7 +40,7 @@ export default class FAQs extends Component {
     };
   }
 
-  render() {
+  render() { console.log('faq renders')
     return (
       <View style={styles.container}>
         <Messenger
@@ -118,9 +118,17 @@ export default class FAQs extends Component {
 FAQs.propTypes = { navigation: PropTypes.object.isRequired }
 
 const styles = StyleSheet.create({
+  answer: {
+    fontSize: smallFontSize,
+    paddingLeft: '7%',
+    paddingRight: '7%',
+  },
   container: {
     flex: 1,
   },
+  spacing: {
+    marginBottom: '10%',
+  },  
   title: {
     alignSelf: 'center',
     color: primaryBlue,
@@ -133,12 +141,4 @@ const styles = StyleSheet.create({
     margin: '5%',
     fontSize: mediumFontSize,
   },
-  answer: {
-    fontSize: smallFontSize,
-    paddingLeft: '7%',
-    paddingRight: '7%',
-  },
-  spacing: {
-    marginBottom: '10%',
-  },  
 });

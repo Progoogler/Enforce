@@ -30,7 +30,7 @@ export default class Messenger extends Component {
 		}
 	}
 
-	render() {
+	render() { console.log('messenger renders')
 		return (
 			<Modal
 				animationType={'fade'}
@@ -67,6 +67,12 @@ export default class Messenger extends Component {
 
 	componentDidMount() {
 		this._getUserInfo();
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		if (this.props.visibility !== nextProps.visibility) return true;
+		if (this.state.submitText !== nextState.submitText) return true;
+		return false;
 	}
 
 	async _getUserInfo() {
@@ -128,16 +134,16 @@ Messenger.propTypes = {
 }
 
 const styles = StyleSheet.create({
-	scrollView: {
-		alignSelf: 'stretch',
-		backgroundColor: primaryBlue,
-		paddingTop: '5%',
-	},	
 	inputContainer: {		
 		height: messageContainerHeight,
 		marginLeft: '5%',
 		marginRight: '10%',
 	},
+	scrollView: {
+		alignSelf: 'stretch',
+		backgroundColor: primaryBlue,
+		paddingTop: '5%',
+	},	
 	textInput: {
 		color: 'white',
 	}
