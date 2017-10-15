@@ -13,7 +13,7 @@ export default class TicketCounter extends Component {
     super();
   }
 
-  render() { console.log('ticket counter')
+  render() {
     return (
       <TouchableWithoutFeedback
         onLongPress={ () => this.props.navigation.navigate('History') }>

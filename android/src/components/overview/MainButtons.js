@@ -19,7 +19,7 @@ export default class MainButtons extends Component {
     }
   }
 
-  render() { console.log('main buttons')
+  render() {
     return (
       <View style={styles.mainButtonsContainer}>
 

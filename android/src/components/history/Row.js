@@ -29,7 +29,7 @@ export default class Row extends Component {
     }
   }
 
-  render() { console.log('history row renders')
+  render() {
     return (
       <View style={styles.container}>
         <View style={styles.rowContainer}>

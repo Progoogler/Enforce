@@ -28,7 +28,7 @@ export default class SetTimeLimit extends Component {
     }
   }
 
-  render() { console.log('set limit renders')
+  render() {
     return (
       <View>
       {

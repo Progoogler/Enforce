@@ -34,7 +34,7 @@ export default class Result extends Component {
     }
   }
 
-  render() { console.log('search result')
+  render() {
     return (
       <View style={styles.outerContainer} >
 

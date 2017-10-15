@@ -25,7 +25,7 @@ export default class LocationInput extends Component {
     }
   }
 
-  render() { console.log('location renders')
+  render() {
     return (
       <Modal animationType={'slide'}
         onRequestClose={() => this.props.setModalVisible(this.state.text)} 

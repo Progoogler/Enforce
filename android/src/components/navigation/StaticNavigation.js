@@ -22,7 +22,7 @@ export default class StaticNavigation extends Component {
     super();
   }
 
-  render() { console.log('static navigation')
+  render() {
     return (
       <View style={styles.container} >
         <TouchableWithoutFeedback style={styles.back} onPress={() => this._handleArrow()} >

@@ -26,7 +26,7 @@ export default class TimerImageList extends Component {
     };
   }
 
-  render() { console.log('image list renders')
+  render() {
     return (
       <FlatList
         data={this.props.data}

@@ -70,7 +70,7 @@ export default class Search extends Component {
     }
   }
 
-  render() { console.log('search renders')
+  render() {
     return (
       <Animated.View 
         style={{

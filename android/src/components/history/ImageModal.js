@@ -14,7 +14,7 @@ export default class ImageModal extends Component {
     super();
   }
  
-  render() { console.log('image modal renders')
+  render() {
     return (
       <Modal animationType={"fade"}
         onRequestClose={() => this.props.maximizeOrMinimizeImage()}

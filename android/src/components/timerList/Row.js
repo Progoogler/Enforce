@@ -32,7 +32,7 @@ export default class Row extends Component {
     };
   }
 
-  render() { console.log('row renders')
+  render() {
     if (this.props.data.createdAt === 0 || this.state.hidden) return <View/>
     return (
       <View style={styles.container}>
@@ -122,7 +122,6 @@ export default class Row extends Component {
     if (this.state.cloud !== nextState.cloud) return true;
     if (this.props.upload !== nextProps.upload) return true;
     if (this.state.hidden !== nextState.hidden) return true;
-    console.log('do not rerender row')
     return false;
   }
 

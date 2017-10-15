@@ -40,7 +40,7 @@ export default class VerifyModal extends Component {
 		this.mounted = false;
 	}
 
-	render() { console.log('search verify')
+	render() {
 		return (
 
 				<View 
@@ -127,7 +127,7 @@ export default class VerifyModal extends Component {
 		}
 	}
 
-	shouldComponentUpdate(nextProps, nextState) { console.log(this.props.verifyLicense, nextProps.verifyLicense)
+	shouldComponentUpdate(nextProps, nextState) {
 		if (this.state.license !== nextState.license) return true;
 		if (this.props.verifyVisibility !== nextProps.verifyVisibility) return true;
 		if (this.props.verifyLicense !== nextProps.verifyLicense) return true;

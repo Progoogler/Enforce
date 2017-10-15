@@ -24,7 +24,7 @@ export default class MapModal extends Component {
     };
   }
 
-  render() { console.log('map modal renders')
+  render() {
     return (
       <Modal
         animationType={"fade"}
@@ -104,7 +104,7 @@ export default class MapModal extends Component {
     }
   }
 
-  componentShouldUpdate(nextProps, nextState) {
+  shouldComponentUpdate(nextProps, nextState) {
     if (this.props.visibility !== nextProps.visibility) return true;
     if (this.state.animating !== nextState.animating) return true;
     if (this.state.marker.length !== nextState.marker.length) return true;

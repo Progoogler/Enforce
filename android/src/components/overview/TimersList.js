@@ -36,7 +36,7 @@ export default class TimersList extends Component {
     };
   }
 
-  render() { console.log('overview timerslist')
+  render() {
     return (
       <FlatList
         data={this.state.dataSource}
@@ -260,12 +260,10 @@ export default class TimersList extends Component {
   }
 
   _getAndSaveCoords() { 
-    var date = Date.now();
-    console.log('time', date - this.realm.objects('Coordinates')[0].time);  
+    var date = Date.now(); 
     if (date - this.realm.objects('Coordinates')[0].time > 300000) {
       navigator.geolocation.getCurrentPosition(
         position => {
-          console.log('getting coords')
           this.latitude = parseFloat(position.coords.latitude);
           this.longitude = parseFloat(position.coords.longitude);
           this.realm.write(() => {

@@ -40,7 +40,7 @@ export default class Menu extends Component {
     };
   }
 
-  render() {console.log('menu')
+  render() {
     return (
 
       <Animated.View 

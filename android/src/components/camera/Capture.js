@@ -17,7 +17,7 @@ import {
 var buttonSize = captureContainerHeight - 10;
 
 export default class Capture extends Component {
-  render() { console.log('capture renders')
+  render() {
     return (
       <View style={styles.footer}>
         <View style={styles.pinContainer}>

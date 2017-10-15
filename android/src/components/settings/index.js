@@ -39,7 +39,7 @@ export default class Settings extends Component {
     )
   };
 
-  render() { console.log('settings')
+  render() {
     return (
       <View style={styles.container}>
         <Navigation 

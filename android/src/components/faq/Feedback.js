@@ -26,7 +26,7 @@ export default class Feedback extends Component {
 		}
 	}
 
-	render() { console.log('feedback renders')
+	render() {
 		return (
 			<Animated.View
 				style={{

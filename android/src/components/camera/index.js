@@ -57,7 +57,7 @@ export default class CameraApp extends Component {
     )
   };
 
-  render() { console.log('camera render')
+  render() {
     return (
       <View style={styles.container}>
         <LocationInput 

@@ -14,7 +14,7 @@ export default class Result extends Component {
     super();
   }
 
-  render() { console.log('search unfound')
+  render() {
 
     var vinCheck;
     if (this.props.license.length === 4) {

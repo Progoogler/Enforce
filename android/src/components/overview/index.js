@@ -35,7 +35,7 @@ export default class Overview extends Component {
     ),
   };
 
-  render() { console.log('overview')
+  render() {
     return (
       <View style={styles.container}>
         <Menu 

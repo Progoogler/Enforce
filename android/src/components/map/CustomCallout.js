@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { primaryBlue, smallFontSize } from '../../styles/common';
 
 export default class CustomCallout extends Component {
-  render() { console.log('custom callout renders')
+  render() {
     return (
       <View style={styles.container}>
         <View style={ this.props.title ? (this._checkTimedUp(this.props.timer) ? styles.green : styles.blue) : null }>

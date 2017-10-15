@@ -40,7 +40,7 @@ export default class FAQs extends Component {
     };
   }
 
-  render() { console.log('faq renders')
+  render() {
     return (
       <View style={styles.container}>
         <Messenger

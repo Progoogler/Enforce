@@ -20,7 +20,7 @@ export default class LocationView extends Component {
     this.top = new Animated.Value(-navBarContainerHeight);
   }
 
-  render() { console.log('location view renders')
+  render() {
     return (
       <Animated.View
         style={{

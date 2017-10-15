@@ -67,7 +67,7 @@ export default class Profile extends Component {
     )
   };
 
-  render() { console.log('profile')
+  render() {
     return (
       <View style={styles.container} behavior={'padding'}>
         <Navigation navigation={this.props.navigation} title={'Profile'} />

@@ -57,7 +57,7 @@ export default class History extends Component {
     )
   };
 
-  render() { console.log('history renders')
+  render() {
     return (
       <View style={styles.container}>
 

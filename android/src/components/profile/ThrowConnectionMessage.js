@@ -8,7 +8,7 @@ import {
 import { primaryBlue, smallFontSize } from '../../styles/common';
 
 export default class ThrowConnectionMessage extends Component {
-  render() { console.log('throwconnectionmsg')
+  render() {
     return (
       <View style={styles.container}>
         <Image source={require('../../../../shared/images/internet-icon.png')}/>

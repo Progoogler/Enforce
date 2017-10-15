@@ -31,7 +31,7 @@ export default class Row extends Component {
     };
   }
 
-  render() {console.log('overview row')
+  render() {
     if (this.props.data.list.length <= 1 && (!Object.keys(this.props.data.list).length || this.props.data.list[0].createdAt === 0)) return (<View style={{flex: 1, flexDirection: 'row'}}></View>);
     return (
           <ScrollView
@@ -109,7 +109,6 @@ export default class Row extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(this.state.distance !== nextState.distance,this.props.updatedLocation !== nextProps.updatedLocation)
     if (this.state.distance !== nextState.distance) return true;
     if (this.props.updatedLocation !== nextProps.updatedLocation) return true;
     return false;

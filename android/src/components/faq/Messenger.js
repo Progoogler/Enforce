@@ -30,7 +30,7 @@ export default class Messenger extends Component {
 		}
 	}
 
-	render() { console.log('messenger renders')
+	render() {
 		return (
 			<Modal
 				animationType={'fade'}

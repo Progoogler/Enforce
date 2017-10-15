@@ -14,7 +14,7 @@ class ErrorMessage extends Component {
     super();
     this.messageBottom = new Animated.Value(-navBarContainerHeight);
   }
-  render() { console.log('error message renders')
+  render() {
     return (
       <Animated.View
         style={{

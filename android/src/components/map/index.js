@@ -50,7 +50,7 @@ export default class MapApp extends Component {
     )
   };
 
-  render() { console.log('map renders')
+  render() {
     return (
       <View style={styles.container}>
 

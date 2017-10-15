@@ -12,7 +12,7 @@ export default class Warning extends Component {
   constructor() {
     super();
   }
-  render() { console.log('profile warning')
+  render() {
     return (
       <View style={styles.container}>
         <Text style={styles.text}>{this.props.warning}</Text>
