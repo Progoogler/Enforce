@@ -194,12 +194,12 @@ export default class History extends Component {
     cb(prettyDate.length);
   }
 
-  async _getHistoryData(date: string): undefined {
+  _getHistoryData(date: string): undefined {
     var month = date.slice(0, date.indexOf('-'));
     var day = date.slice(date.indexOf('-') + 1, date.length);
     var prettyDate = this._getPrettyDate(month, day);
     if (this.profileId && this.profileSettings) {
-      await getHistoryData(this.profileSettings.state, this.profileSettings.county, this.profileId, date, (data) => {
+      getHistoryData(this.profileSettings.state, this.profileSettings.county, this.profileId, date, (data) => {
         this.updating = true;
         if (data === null) {
           this._updateRows([], prettyDate.length);
