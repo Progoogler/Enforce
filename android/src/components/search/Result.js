@@ -36,7 +36,7 @@ export default class Result extends Component {
 
   render() {
     return (
-      <View style={styles.outerContainer} >
+      <View style={styles.outerContainer}>
 
         { 
           this.state.showMaximizedImage ?
@@ -98,6 +98,7 @@ export default class Result extends Component {
             <Unfound 
               deepSearch={this.props.deepSearch}
               license={this.props.license} 
+              searching={this.props.searching}
               type={this.props.data}
             />
         }
@@ -120,6 +121,7 @@ export default class Result extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.searching !== nextProps.searching) return true;
     if (this.state.modalVisible !== nextState.modalVisible) return true;
     if (this.state.showMaximizedImage !== nextState.showMaximizedImage) return true;
     if (this.state.uri !== nextState.uri) return true;
@@ -175,6 +177,7 @@ Result.propTypes = {
   license: PropTypes.string,
   minimizeResultContainer: PropTypes.func.isRequired,
   resizeMenuContainer: PropTypes.func,
+  searching: PropTypes.bool.isRequired,
 };
 
 const styles = StyleSheet.create({

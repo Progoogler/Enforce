@@ -56,7 +56,6 @@ export default class Search extends Component {
     this.mounted = false;
     this.realm = new Realm();
     this.resultHeight = new Animated.Value(0);
-    this.searching = false;
     this.separatorHeight = new Animated.Value(0);
     this.textFade = new Animated.Value(0);
     this.underline = new Animated.Value(0);
@@ -66,6 +65,7 @@ export default class Search extends Component {
       animating: false,
       license: '',
       result: null,
+      searching: false,
       verifyLicense: '',
       verifyVisibility: false,
     }
@@ -158,7 +158,10 @@ export default class Search extends Component {
           <TouchableOpacity
             style={styles.button}
             activeOpacity={.6}
-            onPress={ () => { this._handleHistorySearch(this.state.license) }} >
+            onPress={ () => {
+              this._handleHistorySearch(this.state.license);
+            }} 
+          >
             <Animated.Text 
               style={{
                 color: 'white',
@@ -204,6 +207,7 @@ export default class Search extends Component {
                 minimizeResultContainer={this.minimizeResultContainer}
                 navigation={this.props.navigation}
                 resizeMenuContainer={this.props.resizeMenuContainer ? this.props.resizeMenuContainer : null}
+                searching={this.state.searching}
               /> 
 
               :
@@ -277,6 +281,7 @@ export default class Search extends Component {
 
   shouldComponentUpdate(nextProps, nextState) {
     if (this.state.license !== nextState.license) return true;
+    if (this.state.searching !== nextState.searching) return true;
     if (this.state.verifyLicense !== nextState.verifyLicense) return true;
     if (this.state.verifyVisibility !== nextState.verifyVisibility) return true;
     if (this.state.animating !== nextState.animating) return true;
@@ -359,7 +364,9 @@ export default class Search extends Component {
       return;
     }
 
-    this.searching = true;
+    if (this.state.searching) return;
+
+    this.setState({searching: true});
 
     if (license.length === 4) {
       var vinCheck = parseInt(license) + '';
@@ -463,7 +470,7 @@ export default class Search extends Component {
 
   handleVINSearch(license: string, state: string, verified: boolean) {
 
-    if (this.searching) return // Prevent VIN search while history result/search is in progress.
+    if (this.state.searching) return // Prevent VIN search while history result/search is in progress.
 
     // TODO Delegate this to error callback of API
     // Remove automatic opening of Verify after Autocheck API is implemented
@@ -531,7 +538,6 @@ export default class Search extends Component {
         },
       ),
     ]).start();
-    this.searching = true;
   }
 
   _hideNoResultNotification() {
@@ -556,7 +562,7 @@ export default class Search extends Component {
         },
       ),
     ]).start();
-    setTimeout(() => this.searching = false, 600);
+    setTimeout(() => this.mounted && this.setState({searching: false}), 600);
   }
 
   _extendVerifyContainer() {
@@ -631,7 +637,7 @@ export default class Search extends Component {
         },
       ),
     ]).start();
-    this.searching = true;
+    this.mounted && this.setState({searching: true});
   }
 
   minimizeResultContainer() {
@@ -658,7 +664,7 @@ export default class Search extends Component {
     ]).start();
     this.setState({license: '', result: null});
     Keyboard.dismiss();
-    setTimeout(() => this.searching = false, 1000);
+    setTimeout(() => this.mounted && this.setState({searching: false}), 1000);
     this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
     this.marginValue = windowCenterPoint;
   }
