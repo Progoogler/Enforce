@@ -24,23 +24,6 @@ window.Blob = Blob;
 export default class TimerList extends Component {
   constructor(props) {
     super(props);
-    this.realm = new Realm();
-    if (!this.props.navigation.state.params) {
-      this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
-      this.list = this.list.length > 0 ? this.list[0].list : [{'createdAt': 0}];
-    } else {
-      this.list = this.props.navigation.state.params.timers !== undefined ? this.realm.objects('Timers')[this.props.navigation.state.params.timers].list : [{'createdAt': 0}];
-    }
-    this.state = {
-      bound: undefined,
-      dataSource: this.list,
-      done: false,
-      license: '',
-      refreshing: false,
-      reset: 0,
-      upload: true,
-      warning: false,
-    };
     this.addLicenseToQueue = this.addLicenseToQueue.bind(this);
     this.enterLicenseInSearchField = this.enterLicenseInSearchField.bind(this);
     this.expiredFunc = this.expiredFunc.bind(this);
@@ -59,6 +42,24 @@ export default class TimerList extends Component {
     this.uploadImage = this.uploadImage.bind(this);
     this.uponTicketed = this.uponTicketed.bind(this);
     this.VIN = '';
+
+    this.realm = new Realm();
+    if (!this.props.navigation.state.params) {
+      this.list = this.realm.objects('Timers').filtered('list.createdAt >= 0');
+      this.list = this.list.length > 0 ? this.list[0].list : [{'createdAt': 0}];
+    } else {
+      this.list = this.props.navigation.state.params.timers !== undefined ? this.realm.objects('Timers')[this.props.navigation.state.params.timers].list : [{'createdAt': 0}];
+    }
+    this.state = {
+      bound: undefined,
+      dataSource: this.list,
+      done: false,
+      license: '',
+      refreshing: false,
+      reset: 0,
+      upload: true,
+      warning: false,
+    };
   }
 
   static navigationOptions = {
@@ -130,13 +131,7 @@ export default class TimerList extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    // if (this.state.refreshing !== nextState.refreshing) return true;
-    // if (this.state.bound !== nextState.bound) return true;
-    // if (this.state.upload !== nextState.upload) return true;
-    // if (this.state.warning !== nextState.warning) return true;
-    // if (this.state.dataSource !== nextState.dataSource) return true;
-    // if (this.state.done !== nextState.done) return true;
-    if (this.state.license.license !== nextState.license.license) return false; // Check whether this updates Search..
+    if (this.state.license.license !== nextState.license.license) return false; // TODO Check whether this updates Search..
     return true;
   }
 
@@ -209,7 +204,6 @@ export default class TimerList extends Component {
   updateRows(clearWarning: string, only?: string): undefined {
     if (this.list.length === 0 && clearWarning) {
       this.mounted && this.setState({
-        dataSource: this.list,
         done: true, // Show the "Done" button to indicate end of list.
         reset: this.state.reset + 1,
         warning: false,
@@ -282,7 +276,12 @@ export default class TimerList extends Component {
           setTicketImage(`${this.props.screenProps.refPath}/${month}-${day}`, `${timer.createdAt}`, blob);
         });
       }
-      this.state.warning && this.updateRows('clearWarning');
+      if (this.state.warning) {
+        this.updateRows('clearWarning');
+      } else {
+        this.updateRows();
+      }
+
       this._setTimeoutRefresh();
     } else {
       this.timer = timer;
