@@ -56,6 +56,7 @@ export default class Search extends Component {
     this.mounted = false;
     this.realm = new Realm();
     this.resultHeight = new Animated.Value(0);
+    this.searching = false;
     this.separatorHeight = new Animated.Value(0);
     this.textFade = new Animated.Value(0);
     this.underline = new Animated.Value(0);
@@ -358,6 +359,8 @@ export default class Search extends Component {
       return;
     }
 
+    this.searching = true;
+
     if (license.length === 4) {
       var vinCheck = parseInt(license) + '';
       vinCheck = vinCheck.length === 4 ? true : false;
@@ -460,6 +463,8 @@ export default class Search extends Component {
 
   handleVINSearch(license: string, state: string, verified: boolean) {
 
+    if (this.searching) return // Prevent VIN search while history result/search is in progress.
+
     // TODO Delegate this to error callback of API
     // Remove automatic opening of Verify after Autocheck API is implemented
     if (this.props.toggleVerifyContainerForMenu) {
@@ -526,6 +531,7 @@ export default class Search extends Component {
         },
       ),
     ]).start();
+    this.searching = true;
   }
 
   _hideNoResultNotification() {
@@ -550,6 +556,7 @@ export default class Search extends Component {
         },
       ),
     ]).start();
+    setTimeout(() => this.searching = false, 600);
   }
 
   _extendVerifyContainer() {
@@ -577,6 +584,10 @@ export default class Search extends Component {
   }
 
   minimizeVerifyContainer(updatedLicense) {
+    // TODO Make sure TimerImageList gets this updated license
+    // Save current state of license when opening verify container to this.license~
+    // When close container, check for equality
+    // If not equal, update realm
     Animated.parallel([
       Animated.timing(
         this.containerHeight, {
@@ -620,7 +631,7 @@ export default class Search extends Component {
         },
       ),
     ]).start();
-
+    this.searching = true;
   }
 
   minimizeResultContainer() {
@@ -647,6 +658,7 @@ export default class Search extends Component {
     ]).start();
     this.setState({license: '', result: null});
     Keyboard.dismiss();
+    setTimeout(() => this.searching = false, 1000);
     this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
     this.marginValue = windowCenterPoint;
   }
