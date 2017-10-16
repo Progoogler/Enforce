@@ -125,7 +125,7 @@ export default class Menu extends Component {
               marginTop: '2%', 
             }}
           >
-            <MainButtons navigation={this.props.navigation} searching={this.state.search}/>
+            <MainButtons navigation={this.props.navigation}/>
           </Animated.View>
         </View>
       }
