@@ -56,24 +56,28 @@ export default class Row extends Component {
           <View>
             {
               this.props.data.license && this.props.data.VIN ?
-
               <Text><Text style={styles.label}>License:</Text> {this.props.data.license + '         '}
               <Text style={styles.label}>VIN:</Text> {this.props.data.VIN}</Text> :
-
               this.props.data.license ?
-
               <Text><Text style={styles.label}>License:</Text> {this.props.data.license}</Text> 
-              
-              : null
+              : 
+              null
             }
+
             <Text><Text style={styles.label}>Photo taken:</Text> {this._getPrettyTimeFormat(this.props.data.createdAt)}</Text>
 
-            { this.props.data.ticketedAt !== 0 ? <Text><Text style={styles.label}>Ticketed:</Text> {this._getPrettyTimeFormat(this.props.data.ticketedAt)}</Text> : null }
+            { 
+              this.props.data.ticketedAt !== 0 ? 
+              <Text><Text style={styles.label}>Ticketed:</Text> {this._getPrettyTimeFormat(this.props.data.ticketedAt)}</Text> 
+              : 
+              null 
+            }
 
             <Text><Text style={styles.label}>Time limit:</Text> {this._getTimeLimitDesc(this.props.data.timeLength)}</Text>
           </View>
 
-          { this.props.data.latitude || this.props.data.description ?
+          { 
+            this.props.data.latitude || this.props.data.description ?
             <TouchableOpacity
               style={styles.button}
               activeOpacity={.9}
@@ -82,7 +86,9 @@ export default class Row extends Component {
                 <Text style={styles.buttonText}>Show Map</Text>
               </View>
             </TouchableOpacity>
-            : null }
+            : 
+            null 
+          }
 
         </View>
 
@@ -118,7 +124,6 @@ export default class Row extends Component {
     if (this.state.getImageText !== nextState.getImageText) return true;
     if (this.state.image.length !== nextState.image.length) return true;
     if (this.state.modalVisible !== nextState.modalVisible) return true;
-    // if (this.props.dateTransition !== nextState.dateTransition) return true;
     if (this.props.selected !== nextProps.selected) return true;
     if (this.props.data !== nextProps.data) return true;
     return false;
@@ -128,7 +133,7 @@ export default class Row extends Component {
     this.mounted = false;
   }
 
-  _getTimeLimitDesc = (timeLimit) => {
+  _getTimeLimitDesc(timeLimit) {
     var limit;
     if (timeLimit < 1) {
       limit = Math.floor(timeLimit * 60);
@@ -140,7 +145,7 @@ export default class Row extends Component {
     }
   }
 
-  _getPrettyTimeFormat = (createdAt: number): string => {
+  _getPrettyTimeFormat(createdAt: number): string {
     let date = new Date(createdAt);
     let hour = date.getHours();
     let minutes = date.getMinutes() + '';
@@ -202,26 +207,6 @@ Row.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    padding: '3%',
-  },
-  rowContainer: {
-    flexDirection: 'row',
-  },
-  imageContainer: {
-    height: imageSize,
-    marginRight: '4%',
-    width: imageSize,
-  },
-  image: {
-    alignSelf: 'center', 
-    height: imageSize, 
-    width: imageSize,
-  },
-  label: {
-    fontSize: smallFontSize,
-    fontWeight: 'bold',
-  },
   activity: {
     alignSelf: 'center',
     left: '10%',
@@ -245,6 +230,9 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
   },
+  container: {
+    padding: '3%',
+  },
   getImageButton: {
     backgroundColor: 'grey',
     borderWidth: 1,
@@ -257,6 +245,23 @@ const styles = StyleSheet.create({
   getImageText: {
     color: 'white',
     textAlign: 'center',
-  }
+  },
+  image: {
+    alignSelf: 'center', 
+    height: imageSize, 
+    width: imageSize,
+  },
+  imageContainer: {
+    height: imageSize,
+    marginRight: '4%',
+    width: imageSize,
+  },
+  label: {
+    fontSize: smallFontSize,
+    fontWeight: 'bold',
+  },
+  rowContainer: {
+    flexDirection: 'row',
+  },
 });
  
