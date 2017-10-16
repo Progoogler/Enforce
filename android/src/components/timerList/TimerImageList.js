@@ -121,7 +121,10 @@ export default class TimerImageList extends Component {
 }
 
 TimerImageList.propTypes = {
-  data: PropTypes.object.isRequired,
+  data: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object
+  ]),
   dataUpload: PropTypes.bool.isRequired,
   enterLicenseInSearchField: PropTypes.func.isRequired,
   expiredFunc: PropTypes.func.isRequired,
