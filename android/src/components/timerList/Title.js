@@ -17,7 +17,7 @@ class Title extends Component {
     return (
       <TouchableWithoutFeedback onPress={this.props.getDirectionBound}>
         <View style={styles.container}>
-          <Text style={styles.text}>{this._getTimeLimitResponse(this.props.limit)} Queue {this.props.bound ? ` [ ${this.props.bound} ]` : ''}</Text>
+          <Text style={styles.text}>{this._getTimeLimitResponse(this.props.limit)} Limit {this.props.bound ? ` [ ${this.props.bound} ]` : ''}</Text>
         </View>
       </TouchableWithoutFeedback>
     );
