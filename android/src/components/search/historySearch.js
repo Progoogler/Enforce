@@ -1,7 +1,7 @@
 import Realm from 'realm';
 var realm = new Realm();
 
-const historySearch(license: string, type: string, cb?: func): object {
+const historySearch = (license: string, type: string, cb?: func): object => {
   if (typeof license !== 'string') return;
   if (license.length > 7) return;
 
