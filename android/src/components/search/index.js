@@ -5,12 +5,14 @@ import {
   AsyncStorage,
   Image,
   Keyboard,
+  NativeModules,
   StyleSheet,
   TextInput,
   TouchableHighlight,
   TouchableOpacity,
   View,
 } from 'react-native';
+import ImageResizer from 'react-native-image-resizer';
 import PropTypes from 'prop-types';
 import Realm from 'realm';
 
@@ -43,6 +45,7 @@ export default class Search extends Component {
     this.buttonOpacity = new Animated.Value(1);
     this.containerHeight = new Animated.Value(searchContainerHeight);
     this.containerOpacity = new Animated.Value(0);
+    this.currentTimer = null;
     this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
     this.deepSearch = this.deepSearch.bind(this);
     this.handleTextInput = this.handleTextInput.bind(this);
@@ -279,30 +282,6 @@ export default class Search extends Component {
     this._getAsyncData();
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.state.license !== nextState.license) return true;
-    if (this.state.searching !== nextState.searching) return true;
-    if (this.state.verifyLicense !== nextState.verifyLicense) return true;
-    if (this.state.verifyVisibility !== nextState.verifyVisibility) return true;
-    if (this.state.animating !== nextState.animating) return true;
-    if (this.state.result !== nextState.result) return true;
-    if (this.props.licenseParam) {
-      if (this.props.licenseParam.license !== nextProps.licenseParam.license) return true;
-    }
-    if (this.props.timerList !== nextProps.timerList) return true;
-    return false;
-  }
-
-  _keyboardDidHide() {
-    this.myTextInput.blur();
-  }
-
-  componentWillUnmount() {
-    this.mounted = false;
-    this.props.timerList && this.keyboardDidHideForTimerListListener.remove();
-    this.keyboardDidHideListener.remove();
-  }
-
   componentWillReceiveProps(nextProps) {
     if (this.props.timerList) {
       if (this.props.shouldResetLicense()) {
@@ -322,6 +301,40 @@ export default class Search extends Component {
         ).start();
       }
     }
+  }
+    
+  shouldComponentUpdate(nextProps, nextState) { 
+    if (this.state.license !== nextState.license) return true;
+    if (this.state.searching !== nextState.searching) return true;
+    if (this.state.verifyLicense !== nextState.verifyLicense) return true;
+    if (this.state.verifyVisibility !== nextState.verifyVisibility) return true;
+    if (this.state.animating !== nextState.animating) return true;
+    if (this.state.result !== nextState.result) return true;
+    if (this.props.licenseParam) {
+      if (nextProps.licenseParam.search) return true;
+      if (this.props.licenseParam.license !== nextProps.licenseParam.license) return true;
+    }
+    // if (this.props.timerList !== nextProps.timerList) return true;
+    return false;
+  }
+
+  componentDidUpdate() { 
+    if (this.props.licenseParam) {
+      if (this.props.licenseParam.timerIndex !== this.currentTimer && this.props.licenseParam.search) {
+        this._googleImage();
+        this.currentTimer = this.props.licenseParam.timerIndex;
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
+    this.props.timerList && this.keyboardDidHideForTimerListListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  _keyboardDidHide() {
+    this.myTextInput.blur();
   }
 
   async _getAsyncData() {
@@ -468,8 +481,79 @@ export default class Search extends Component {
     }
   }
 
-  handleVINSearch(license: string, state: string, verified: boolean) {
+  _enterLicenseInSearchField(license) {
+    this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
+    this.marginValue = windowCenterPoint;
+    var input = '';
+    for (let i = 0; i < license.length; i++) {
+      input += license[i];
+      this.handleTextInput(input);
+    }
+  }
 
+  _googleImage() {
+    var mediaPath = this.realm.objects('Timers')[this.props.listIndex]['list'][this.props.licenseParam.timerIndex].mediaPath;
+
+    this._resizeImage(mediaPath, (resizedMedia) => {
+      NativeModules.RNImageToBase64.getBase64String(resizedMedia, async (err, base64) => {
+        if (err) {
+          console.error('error', err);
+        }
+
+        let result = await this._doFetch(base64);
+        result = JSON.parse(result['_bodyInit']);
+
+        let filteredResult = this._filterLabelsList(result.responses);
+        this._enterLicenseInSearchField(filteredResult);
+      });
+    });
+
+  }
+
+  async _doFetch(base64) {
+    return await fetch('https://vision.googleapis.com/v1/images:annotate?key=' + 'AIzaSyDp_hTHqAiQvbpAQ6A3Y3KcdNIvhwGk7eQ', {
+      "method": "POST",
+      "body" : JSON.stringify({
+        "requests": [
+          {
+            "image": {
+              "content": base64
+            },
+            "features": [
+              {
+                "type": "TEXT_DETECTION"
+              }
+            ]
+          }
+        ]
+      })
+    });
+  }
+
+  // According to https://cloud.google.com/vision/docs/supported-files, recommended image size for labels detection is 640x480.
+  _resizeImage(path, callback, width = 640, height = 480) {
+    ImageResizer.createResizedImage(path, width, height, 'JPEG', 80)
+    .then(({uri}) => {
+      callback(uri);
+    }).catch((err) => {
+      console.error(err)
+    });
+  }
+
+  // Run filter for retrieving the most likely license text from the response.
+  _filterLabelsList(responses) {
+    var resultArr = [];
+    responses[0].textAnnotations.forEach((annotation) => {
+      resultArr.push(annotation.description);
+    });
+    var regex = /([A-Z](?=[0-9])|[0-9](?=[A-Z]))/;
+    for (let i = 1; i < resultArr.length; i++) {
+      if (regex.test(resultArr[i])) return resultArr[i];
+    }
+    return '';
+  }
+
+  async handleVINSearch(license: string, state: string, verified: boolean) {
     if (this.state.searching) return // Prevent VIN search while history result/search is in progress.
 
     // TODO Delegate this to error callback of API
@@ -758,6 +842,7 @@ Search.propTypes = {
     PropTypes.object,
     PropTypes.string
   ]),
+  listIndex: PropTypes.number,
   minimizeMenuContainer: PropTypes.func,
   minimizeResultContainer: PropTypes.func,
   navigation: PropTypes.object.isRequired,
