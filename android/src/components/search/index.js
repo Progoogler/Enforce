@@ -356,7 +356,7 @@ export default class Search extends Component {
     this.marginValue = windowCenterPoint;
   }
 
-  // Look through the history of Realm ( TODO: and Firebase??) for a record
+  // Look through the history of Realm for a record
   _handleHistorySearch(license: string) {
     
     if (license.length === 0) {
@@ -429,7 +429,7 @@ export default class Search extends Component {
 
   _databaseResult(results) {
     if (results.length) {
-      if (this.props.historyScreen) {
+      if (this.props.historyScreen) { // If the screen is History: display the multiple results in a row layout.
         if (results.length > 1) {
           setTimeout(() => {
             this.setState({animating: false});
