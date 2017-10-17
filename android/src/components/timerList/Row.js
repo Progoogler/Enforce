@@ -76,17 +76,22 @@ export default class Row extends Component {
             </TouchableOpacity>
           </View>
           : null }
-        { this.props.data.license ?
+
+        
           <TouchableOpacity 
             activeOpacity={1} 
             style={styles.licenseContainer} 
             onPress={() => {
-              this.props.enterLicenseInSearchField({license: this.props.data.license, listIndex: this.props.data.index});
+              this.props.enterLicenseInSearchField({
+                license: this.props.data.license, 
+                createdAt: this.props.data.createdAt,
+              }, 'search');
             }}
           >
-            <Text style={styles.license}>{this.props.data.license}</Text>
+            <Text style={styles.license}>{this.props.data.license ? this.props.data.license : 'License'}</Text>
           </TouchableOpacity>
-          : null }
+          
+
         <View style={styles.buttonsContainer} >
           <View style={styles.rowButtonsContainers} >
             <TouchableOpacity
