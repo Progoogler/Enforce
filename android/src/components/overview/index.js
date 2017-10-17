@@ -50,6 +50,7 @@ export default class Overview extends Component {
         <TimersList 
           currentDay={this.props.screenProps.currentDay}
           navigation={this.props.navigation}
+          reset={this.props.navigation.state.params ? this.props.navigation.state.params.reset : false}
           resetTicketCounter={this.resetTicketCounter} 
         />
       </View>
@@ -64,6 +65,7 @@ export default class Overview extends Component {
     if (this.state.zero !== nextState.zero) return true;
     if (this.props.screenProps.currentDay !== nextProps.screenProps.currentDay) return true;
     if (this.props.screenProps.refPath !== nextProps.screenProps.refPath) return true;
+    if (nextProps.navigation.state.params && nextProps.navigation.state.params.reset) return true;
     return false;
   }
 
