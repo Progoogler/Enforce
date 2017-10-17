@@ -7,7 +7,7 @@ import {
 import FlatList from 'react-native/Libraries/Lists/FlatList';
 import PropTypes from 'prop-types';
 
-import Row from './Row';
+import Row from './Row';  
 import { timerFlatListHeight } from '../../styles/common';
 
 
@@ -83,7 +83,7 @@ export default class TimerImageList extends Component {
 
   handleScroll(event) {
     // Update the license value of the current timer on the FlatList view to the search input field as user scrolls
-    if (this.props.imageRecognition) {
+    if (this.state.upload) {
       if (event.nativeEvent.contentOffset.y > this.halvedFlatListHeight) {
         let idx = Math.ceil(event.nativeEvent.contentOffset.y / this.flatListHeight);
         if (idx !== this.currentLicense) {
@@ -91,14 +91,14 @@ export default class TimerImageList extends Component {
           this.currentLicense = idx;
           this.props.enterLicenseInSearchField({
             license: this.props.data[idx].license,
-            listIndex: this.props.data[idx].index,
+            timerIndex: idx,
           });
         }
-      } else {
+      } else if (this.currentLicense !== 0) {
         this.currentLicense = 0;
         this.props.enterLicenseInSearchField({
           license: this.props.data[0].license,
-          listIndex: this.props.data[0].index,
+          timerIndex: 0,
         });
       }
     }
@@ -128,7 +128,6 @@ TimerImageList.propTypes = {
   dataUpload: PropTypes.bool.isRequired,
   enterLicenseInSearchField: PropTypes.func.isRequired,
   expiredFunc: PropTypes.func.isRequired,
-  imageRecognition: PropTypes.bool.isRequired,
   navigation: PropTypes.object.isRequired,
   onRefresh: PropTypes.func.isRequired,
   uploadImage: PropTypes.func.isRequired,
