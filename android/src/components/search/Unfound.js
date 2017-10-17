@@ -46,9 +46,10 @@ export default class Unfound extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (this.props.searching !== nextProps.searching) return true;
     if (this.props.type !== nextProps.type) return true;
     if (this.props.license !== nextProps.license) return true;
+    if (nextProps.searching === false) return false;
+    if (this.props.searching !== nextProps.searching) return true;
     return false;
   }
 }
