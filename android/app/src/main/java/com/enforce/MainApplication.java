@@ -3,6 +3,8 @@ package com.enforce;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import fr.bamlab.rnimageresizer.ImageResizerPackage;
+import com.github.xfumihiro.react_native_image_to_base64.ImageToBase64Package;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
@@ -33,6 +35,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new ImageResizerPackage(),
+            new ImageToBase64Package(),
             new ReactNativePushNotificationPackage(),
             new RNFetchBlobPackage(),
             new LocationServicesDialogBoxPackage(),
