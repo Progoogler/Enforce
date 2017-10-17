@@ -58,17 +58,14 @@ export default class TimersList extends Component {
     this._setTimeoutRefresh();
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.state.updatedLocation !== nextState.updatedLocation) return true;
-    return false;
+  componentWillReceiveProps(nextProps) {
+    if (this.props.reset === false && nextProps.reset === true) this._hardReset();
   }
 
-  componentDidUpdate(prevProps) { // In case reset is pushed while in Overview screen
-    if (prevProps.navigation.state !== this.props.navigation.state) {
-      if (this.props.navigation.state.params && this.props.navigation.state.params.reset) {
-        this._hardReset();
-      }
-    }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.updatedLocation !== nextState.updatedLocation) return true;
+    if (this.props.reset !== nextProps.reset) return true;
+    return false;
   }
 
   componentWillUnmount() {
@@ -146,14 +143,14 @@ export default class TimersList extends Component {
       this._deleteTimers()
       .then(() => {
         setTimeout(() => {
-          Realm.clearTestState();
-          this.realm = new Realm({schema: Schema});
           this.realm.write(() => {
+            this.realm.deleteAll();
             this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
             this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
             this.realm.create('Coordinates', {latitude: 0, longitude: 0, time: 0});
             this.realm.create('Ticketed', {list: []});
             this.realm.create('Expired', {list: []});
+            this.realm.create('Timers', {list: []});
           });
         }, 3000);
       });
@@ -186,18 +183,19 @@ export default class TimersList extends Component {
   _loopDeletion(timerLists: object, once?: boolean) {
     var deleted = 0;
     if (once) { // Single loop for linear list
-      timerLists[0].list.forEach((timer) => {
+      timerLists[0].list.forEach((timer, idx) => {
+        if (!timer.mediaPath) return;
         unlink(timer.mediaPath)
         .then(() => {
-            this.realm.write(() => {
-              this.realm.delete(timer);
-            });
-            deleted++;
+          this.realm.write(() => {
+            this.realm.delete(timer);
           });
+          deleted++;
         });
+      });
     } else {
-      timerLists.forEach((timerList) => {
-        timerList.list.forEach((timer) => {
+      timerLists.forEach((timerList, idx) => {
+        timerList.list.forEach((timer, index) => {
           unlink(timer.mediaPath)
           .then(() => {
             this.realm.write(() => {
@@ -213,25 +211,22 @@ export default class TimersList extends Component {
 
   _hardReset() { // Only removes current pictures and resets Realm state
     if (this.realm.objects('Timers').length >= 1) { // Initializing Timers automatically gives it a length of 1 with an empty list object.
-
+      this.mounted && this.setState({dataSource: [{list: [{'createdAt': 0}]}]}); // Supply a default object to render empty ScrollView
       // Delete corresponding images in the DCIM directory
       this._deleteTimers()
       .then(() => {
         setTimeout(() => {
-          Realm.clearTestState();
-          this.realm = new Realm({schema: Schema});
           this.realm.write(() => {
+            this.realm.deleteAll();
             this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1, count: 0});
             this.realm.create('TimeLimit', {float: 1, hour: '1', minutes: "00"});
             this.realm.create('Coordinates', {latitude: 0, longitude: 0, time: 0});
             this.realm.create('Ticketed', {list: []});
             this.realm.create('Expired', {list: []});
+            this.realm.create('Timers', {list: []});
           });
         }, 3000);
       });
-
-      var dataSource = [{list: [{'createdAt': 0}]}]; // Supply a default object to render empty ScrollView
-      this.mounted && this.setState({dataSource});
       this.props.resetTicketCounter();
       this.props.navigation.state.params = undefined;
       clearTimeout(this.timeoutRefresh);
@@ -376,6 +371,7 @@ export default class TimersList extends Component {
 
 TimersList.propTypes = {
   currentDay: PropTypes.number.isRequired,
+  reset: PropTypes.bool.isRequired,
   resetTicketCounter: PropTypes.func.isRequired,
   navigation: PropTypes.object.isRequired,
 };
