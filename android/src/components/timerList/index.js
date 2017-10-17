@@ -54,7 +54,7 @@ export default class TimerList extends Component {
       bound: undefined,
       dataSource: this.list,
       done: false,
-      license: '',
+      licenseParam: {},
       refreshing: false,
       reset: 0,
       upload: true,
@@ -81,7 +81,8 @@ export default class TimerList extends Component {
 
         <Search
           addLicenseToQueue={this.addLicenseToQueue}
-          licenseParam={this.state.license}
+          licenseParam={this.state.licenseParam}
+          listIndex={this.list[0].index}
           navigation={this.props.navigation}
           refPath={this.props.screenProps.refPath}
           refreshTimerList={this.onRefresh}
@@ -100,7 +101,6 @@ export default class TimerList extends Component {
           dataUpload={this.props.screenProps.dataUpload}
           enterLicenseInSearchField={this.enterLicenseInSearchField}
           expiredFunc={this.expiredFunc}
-          imageRecognition={this.props.screenProps.imageRecognition}
           navigation={this.props.navigation}
           onRefresh={this.onRefresh}
           uploadImage={this.uploadImage}
@@ -122,7 +122,7 @@ export default class TimerList extends Component {
     } else {
       this.enterLicenseInSearchField({
         license: this.list[0].license,
-        listIndex: 0,
+        timerIndex: 0,
       });
     }
     if (this.list[0].latitude) this.getDirectionBound();
@@ -131,8 +131,16 @@ export default class TimerList extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.state.license.license !== nextState.license.license) return false; // TODO Check whether this updates Search..
-    return true;
+    if (this.state.upload !== nextState.upload) return true;
+    if (this.state.warning !== nextState.warning) return true;
+    if (this.state.reset !== nextState.reset) return true;
+    if (this.state.refreshing !== nextState.refreshing) return true;
+    if (this.state.done !== nextState.done) return true;
+    if (this.state.dataSource !== nextState.dataSource) return true;
+    if (this.state.bound !== nextState.bound) return true;
+    if (nextState.licenseParam.search) return true;
+    if (this.state.licenseParam.license !== nextState.licenseParam.license) return true; // TODO Decide whether you want to keep this format of imageRecognition or only Google OCR..
+    return false;
   }
 
   componentWillUnmount() {
@@ -292,8 +300,8 @@ export default class TimerList extends Component {
     if (indexOfTimer !== undefined && this.list[indexOfTimer] !== undefined) {
       // Handles updating license input field for the last timer that is not also the first
       this.enterLicenseInSearchField({
-        license: this.list[indexOfTimer].license, // The current indexOfTimer here has replaced the previous one
-        listIndex: this.list[indexOfTimer].index,
+        license: this.list[indexOfTimer - 1].license, // The current indexOfTimer here has replaced the previous one
+        timerIndex: indexOfTimer - 1,
       });
     }
   }
@@ -333,15 +341,36 @@ export default class TimerList extends Component {
     if (this.license) this.resetLicenseAndVIN();
     if (indexOfTimer !== undefined && this.list[indexOfTimer] !== undefined) {
       this.enterLicenseInSearchField({
-        license: this.list[indexOfTimer].license, // The current indexOfTimer here has replaced the previous one
-        listIndex: this.list[indexOfTimer].index,
+        license: this.list[indexOfTimer - 1].license, // The current indexOfTimer here has replaced the previous one
+        timerIndex: indexOfTimer - 1,
       });
     }
     this._setTimeoutRefresh();
   }
 
-  enterLicenseInSearchField(license: object) {
-    this.setState({license});
+  enterLicenseInSearchField(licenseParam: object, search?: 'string') {
+    if (search) {
+      if (this.list[this.state.licenseParam.timerIndex].createdAt === licenseParam.createdAt) {
+        this.setState({licenseParam: {...this.state.licenseParam, search}});
+      } else {
+        var timerIndex = null;
+        for (let i = 0; i < this.list.length; i++) {
+          if (this.list[i].createdAt === licenseParam.createdAt) {
+            timerIndex = i;
+            break;
+          }
+        }
+        this.setState({
+          licenseParam: {
+            license: licenseParam.license,
+            timerIndex,
+            search,
+          }
+        });
+      }
+    } else {
+      this.setState({licenseParam});
+    }
     if (this.license) this.license = ''; // Reset value when user scrolls to another picture
   }
 
