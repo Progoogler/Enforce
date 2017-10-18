@@ -262,7 +262,7 @@ export default class CameraApp extends Component {
       navigator.geolocation.getCurrentPosition(this.success, this.error, this.options);
     }
 
-    this.camera.capture()
+    this.camera.capture({jpegQuality: 100})
     .then((data) => {
       if (this.firstCapture) { 
         // Delay the first capture in case savePicture attempts before 
