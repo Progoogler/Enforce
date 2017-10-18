@@ -191,7 +191,7 @@ export default class VerifyModal extends Component {
 	}
 
 	_handleConfirm() {
-		this.props.handleVINSearch(this.state.license, this.state.state);
+		this.props.handleVINSearch(this.state.license, this.state.state, true);
 		if (this.props.minimizeVerifyContainerForMenu) this.props.minimizeVerifyContainerForMenu();
 		this.props.minimizeVerifyContainer(this.state.license);
 		Keyboard.dismiss();
