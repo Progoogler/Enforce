@@ -31,6 +31,9 @@ export default class Unfound extends Component {
           this.props.type === 'searched' ?
           <Text style={styles.text}>No result for license #  <Text style={styles.license}>{ this.props.license }</Text></Text>
           :
+          this.props.type === 'connectionError' ?
+          <Text style={styles.connection}>Must be connected to the Internet</Text>
+          :
           <View>
             <Text style={styles.text}>No result for license #  <Text style={styles.license}>{ this.props.license }</Text></Text>
             <TouchableOpacity
@@ -62,6 +65,10 @@ Unfound.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  connection: {
+    color: primaryBlue,
+    fontSize: mediumFontSize,
+  },  
   container: {
     alignItems: 'center',
     alignSelf: 'stretch',
