@@ -83,7 +83,7 @@ export default class TimerImageList extends Component {
 
   handleScroll(event) {
     // Update the license value of the current timer on the FlatList view to the search input field as user scrolls
-    if (this.state.upload) {
+    if (this.props.imageRecognition) {
       if (event.nativeEvent.contentOffset.y > this.halvedFlatListHeight) {
         let idx = Math.ceil(event.nativeEvent.contentOffset.y / this.flatListHeight);
         if (idx !== this.currentLicense) {
@@ -128,6 +128,7 @@ TimerImageList.propTypes = {
   dataUpload: PropTypes.bool.isRequired,
   enterLicenseInSearchField: PropTypes.func.isRequired,
   expiredFunc: PropTypes.func.isRequired,
+  imageRecognition: PropTypes.bool.isRequired,
   navigation: PropTypes.object.isRequired,
   onRefresh: PropTypes.func.isRequired,
   uploadImage: PropTypes.func.isRequired,
