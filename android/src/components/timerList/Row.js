@@ -80,12 +80,13 @@ export default class Row extends Component {
         
           <TouchableOpacity 
             activeOpacity={1} 
+            hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
             style={styles.licenseContainer} 
             onPress={() => {
               this.props.enterLicenseInSearchField({
                 license: this.props.data.license, 
                 createdAt: this.props.data.createdAt,
-              }, 'search');
+              }, true);
             }}
           >
             <Text style={styles.license}>{this.props.data.license ? this.props.data.license : 'License'}</Text>
