@@ -6,6 +6,7 @@ import {
   Image,
   Keyboard,
   NativeModules,
+  NetInfo,
   StyleSheet,
   TextInput,
   TouchableHighlight,
@@ -43,9 +44,10 @@ export default class Search extends Component {
   constructor() {
     super();
     this.buttonOpacity = new Animated.Value(1);
+    this.connected = true;
     this.containerHeight = new Animated.Value(searchContainerHeight);
     this.containerOpacity = new Animated.Value(0);
-    this.currentTimer = null;
+    this.currentTimer;
     this.cursorMarginLeft = new Animated.Value(windowCenterPoint);
     this.deepSearch = this.deepSearch.bind(this);
     this.handleTextInput = this.handleTextInput.bind(this);
@@ -74,7 +76,7 @@ export default class Search extends Component {
     }
   }
 
-  render() {
+  render() { 
     return (
       <Animated.View 
         style={{
@@ -280,6 +282,7 @@ export default class Search extends Component {
     this.mounted = true;
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
     this._getAsyncData();
+    this._checkConnection();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -311,16 +314,16 @@ export default class Search extends Component {
     if (this.state.animating !== nextState.animating) return true;
     if (this.state.result !== nextState.result) return true;
     if (this.props.licenseParam) {
-      if (nextProps.licenseParam.search) return true;
+      if (this.props.resetSearch !== nextProps.resetSearch) return true;
+      if (nextProps.licenseParam.search === true) return true;
       if (this.props.licenseParam.license !== nextProps.licenseParam.license) return true;
     }
-    // if (this.props.timerList !== nextProps.timerList) return true;
     return false;
   }
 
-  componentDidUpdate() { 
+  componentDidUpdate() {
     if (this.props.licenseParam) {
-      if (this.props.licenseParam.timerIndex !== this.currentTimer && this.props.licenseParam.search) {
+      if (this.props.licenseParam.timerIndex !== this.currentTimer && this.props.licenseParam.search === true) {
         this._googleImage();
         this.currentTimer = this.props.licenseParam.timerIndex;
       }
@@ -331,6 +334,20 @@ export default class Search extends Component {
     this.mounted = false;
     this.props.timerList && this.keyboardDidHideForTimerListListener.remove();
     this.keyboardDidHideListener.remove();
+  }
+
+  _checkConnection() {
+    return new Promise((resolve, reject) => {
+      NetInfo.isConnected.fetch().then(isConnected => {
+        if (isConnected) {
+          this.connected = true;
+          resolve(true);
+        } else {
+          this.connected = false;
+          resolve(false);
+        }
+      });
+    });
   }
 
   _keyboardDidHide() {
@@ -360,6 +377,7 @@ export default class Search extends Component {
 
       return;
     }
+
     this.myTextInput.isFocused() && Keyboard.dismiss();
     this._fadeContainer();
     setTimeout(() => this.mounted && this.props.closeSearch(), 500);
@@ -492,22 +510,86 @@ export default class Search extends Component {
   }
 
   _googleImage() {
-    var mediaPath = this.realm.objects('Timers')[this.props.listIndex]['list'][this.props.licenseParam.timerIndex].mediaPath;
+    clearTimeout(this.hideNotification);
+    this._showNoResultNotification();
+    this.setState({result: '', searching: true, animating: true});
 
-    this._resizeImage(mediaPath, (resizedMedia) => {
-      NativeModules.RNImageToBase64.getBase64String(resizedMedia, async (err, base64) => {
-        if (err) {
-          console.error('error', err);
-        }
+    if (this.connected) {
 
-        let result = await this._doFetch(base64);
-        result = JSON.parse(result['_bodyInit']);
+      var mediaPath = this.realm.objects('Timers')[this.props.listIndex]['list'][this.props.licenseParam.timerIndex].mediaPath;
+      
+      this._resizeImage(mediaPath, (resizedMedia) => {
+        NativeModules.RNImageToBase64.getBase64String(resizedMedia, async (err, base64) => {
+          if (err) {
+            console.error('error', err);
+          }
 
-        let filteredResult = this._filterLabelsList(result.responses);
-        this._enterLicenseInSearchField(filteredResult);
+          var result;
+          try {
+            result = await this._doFetch(base64);
+            result = JSON.parse(result['_bodyInit']);
+          } catch (err) {
+            setTimeout(() => this.setState({animating: false}), 1200);
+            setTimeout(() => {
+              this.setState({animating: false});
+              this._hideNoResultNotification();
+              this.props.resetLicenseParam(this.props.licenseParam.timerIndex);
+              this.currentTimer = null;
+              setTimeout(() => this._throwConnectionMessage(), 600);
+            }, 1500);
+            return;
+          }
+          
+          var filteredResult;
+          if (!result || !result.responses[0].textAnnotations) {
+            filteredResult = null;
+          } else {
+            filteredResult = this._filterTextList(result.responses);
+          }
+
+          if (filteredResult) {
+            this._enterLicenseInSearchField(filteredResult);
+            this.handleVINSearch(filteredResult, '', false, true);
+
+          } else {
+            this.setState({searching: false, animating: false});
+            setTimeout(() => {
+              this.setState({result: 'searched'}); // Display "not found" message w/o the Deep Search option. TODO Create different reply.
+              this._showNoResultNotification();
+              setTimeout(() => {
+                this._hideNoResultNotification();
+              }, 2000);
+            }, 600);
+            // Display no result ... Unable to read license from image.
+          }
+        });
       });
-    });
 
+    } else {
+      this._checkConnection()
+      .then((connected) => {
+        if (connected) {
+          this._googleImage();
+        } else {
+          setTimeout(() => {
+            this.setState({animating: false});
+            this._hideNoResultNotification();
+            this.props.resetLicenseParam(this.props.licenseParam.timerIndex);
+            this.currentTimer = null;
+            setTimeout(() => this._throwConnectionMessage(), 600);
+          }, 1500);
+        }
+      })
+    }
+  }
+
+  _throwConnectionMessage() {
+    this.setState({result: 'connectionError'});
+    this._showNoResultNotification();
+    setTimeout(() => {
+      this._hideNoResultNotification();
+      setTimeout(() => this.setState({result: ''}), 600);
+    }, 2000);
   }
 
   async _doFetch(base64) {
@@ -531,7 +613,7 @@ export default class Search extends Component {
   }
 
   // According to https://cloud.google.com/vision/docs/supported-files, recommended image size for labels detection is 640x480.
-  _resizeImage(path, callback, width = 640, height = 480) {
+  _resizeImage(path, callback, width = 1024, height = 768) {
     ImageResizer.createResizedImage(path, width, height, 'JPEG', 80)
     .then(({uri}) => {
       callback(uri);
@@ -541,36 +623,67 @@ export default class Search extends Component {
   }
 
   // Run filter for retrieving the most likely license text from the response.
-  _filterLabelsList(responses) {
+  _filterTextList(responses) {
     var resultArr = [];
     responses[0].textAnnotations.forEach((annotation) => {
-      resultArr.push(annotation.description);
+      resultArr.push(annotation.description); // TODO Check whether it contains the correct seq here first?
     });
-    var regex = /([A-Z](?=[0-9])|[0-9](?=[A-Z]))/;
+    var rex = /([A-Z](?=[0-9])|[0-9](?=[A-Z]))/;
     for (let i = 1; i < resultArr.length; i++) {
-      if (regex.test(resultArr[i])) return resultArr[i];
+      if (rex.test(resultArr[i])) return resultArr[i];
+    }
+
+    var numRex = /^[0-9]*$/,
+        charRex = /^[A-Z]*$/,
+        license = '',
+        checked;
+    for (let i = 1; i < resultArr.length; i++) {
+      if (numRex.test(resultArr[i])) {
+        if (i !== 1) checked = charRex.test(resultArr[i-1]);
+        if (checked && resultArr[i-1].length === 2) {
+          if (charRex.test(resultArr[i+1])) {
+            license = resultArr[i] + resultArr[i+1];
+            if (license.length <= 7) return license;
+          }
+        } else if (checked) {
+          license = resultArr[i-1] + resultArr[i];
+          if (license.length <= 7) return license;
+        }
+        if (!checked) {
+          if (numRex.test(resultArr[i+1])) {
+            license = resultArr[i] + resultArr[i+1];
+            if (license.length <= 7) return license;
+          }
+        }
+      }
     }
     return '';
   }
 
-  async handleVINSearch(license: string, state: string, verified: boolean) {
-    if (this.state.searching) return // Prevent VIN search while history result/search is in progress.
+  async handleVINSearch(license: string, state: string, verified?: boolean, override?: boolean) {
+    if (this.state.searching && !override) return // Prevent VIN search while history result/search is in progress.
+
+    this._hideNoResultNotification();
+    if (this.state.searching) this.setState({searching: false, animating: false}); // Re-move this..purely display purpose right now.
 
     // TODO Delegate this to error callback of API
     // Remove automatic opening of Verify after Autocheck API is implemented
-    if (this.props.toggleVerifyContainerForMenu) {
-      this.setState({
-        verifyVisibility: true,
-        verifyLicense: this.state.license,
-      });
-      this.props.toggleVerifyContainerForMenu('open');
-    } else {
-      this.setState({
-        verifyVisibility: true,
-        verifyLicense: this.state.license,
-      });
-    }
-    this._extendVerifyContainer();
+
+    setTimeout(() => {
+      if (this.props.toggleVerifyContainerForMenu) {
+        this.setState({
+          verifyVisibility: true,
+          verifyLicense: this.state.license,
+        });
+        this.props.toggleVerifyContainerForMenu('open');
+      } else {
+        this.setState({
+          verifyVisibility: true,
+          verifyLicense: this.state.license,
+        });
+      }
+      this._extendVerifyContainer();
+    }, 750);
 
     if (verified) {
       if (license && license.length === 0) return;
@@ -848,6 +961,8 @@ Search.propTypes = {
   navigation: PropTypes.object.isRequired,
   refPath: PropTypes.string.isRequired,
   refreshTimerList: PropTypes.func,
+  resetLicenseParam: PropTypes.func,
+  resetSearch: PropTypes.number,
   resizeMenuContainer: PropTypes.func,
   shouldResetLicense: PropTypes.func,
   showNoResultNotificationForMenu: PropTypes.func,
