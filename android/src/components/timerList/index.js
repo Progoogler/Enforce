@@ -33,6 +33,7 @@ export default class TimerList extends Component {
     this.mounted = false;
     this.onRefresh = this.onRefresh.bind(this);
     this.reset = false;
+    this.resetLicenseParam = this.resetLicenseParam.bind(this);
     this.shouldResetLicense = this.shouldResetLicense.bind(this);
     this.ticketCount = undefined;
     this.timeElapsed = '';
@@ -54,7 +55,7 @@ export default class TimerList extends Component {
       bound: undefined,
       dataSource: this.list,
       done: false,
-      licenseParam: {},
+      licenseParam: {license: ''},
       refreshing: false,
       reset: 0,
       upload: true,
@@ -82,10 +83,11 @@ export default class TimerList extends Component {
         <Search
           addLicenseToQueue={this.addLicenseToQueue}
           licenseParam={this.state.licenseParam}
-          listIndex={this.list[0].index}
+          listIndex={this.list[0].createdAt ? this.list[0].index : 0}
           navigation={this.props.navigation}
           refPath={this.props.screenProps.refPath}
           refreshTimerList={this.onRefresh}
+          resetLicenseParam={this.resetLicenseParam}
           shouldResetLicense={this.shouldResetLicense}
           timerList={true}
         />
@@ -101,6 +103,7 @@ export default class TimerList extends Component {
           dataUpload={this.props.screenProps.dataUpload}
           enterLicenseInSearchField={this.enterLicenseInSearchField}
           expiredFunc={this.expiredFunc}
+          imageRecognition={this.props.screenProps.imageRecognition}
           navigation={this.props.navigation}
           onRefresh={this.onRefresh}
           uploadImage={this.uploadImage}
@@ -138,7 +141,7 @@ export default class TimerList extends Component {
     if (this.state.done !== nextState.done) return true;
     if (this.state.dataSource !== nextState.dataSource) return true;
     if (this.state.bound !== nextState.bound) return true;
-    if (nextState.licenseParam.search) return true;
+    if (nextState.licenseParam.search ===  true || nextState.licenseParam.search === 'reset') return true;
     if (this.state.licenseParam.license !== nextState.licenseParam.license) return true; // TODO Decide whether you want to keep this format of imageRecognition or only Google OCR..
     return false;
   }
@@ -348,12 +351,16 @@ export default class TimerList extends Component {
     this._setTimeoutRefresh();
   }
 
-  enterLicenseInSearchField(licenseParam: object, search?: 'string') {
+  resetLicenseParam(timerIndex: number) {
+    this.setState({licenseParam: {license: '', timerIndex, search: 'reset'}});
+  }
+
+  enterLicenseInSearchField(licenseParam: object, search?: boolean) {
     if (search) {
       if (this.list[this.state.licenseParam.timerIndex].createdAt === licenseParam.createdAt) {
         this.setState({licenseParam: {...this.state.licenseParam, search}});
       } else {
-        var timerIndex = null;
+        var timerIndex;
         for (let i = 0; i < this.list.length; i++) {
           if (this.list[i].createdAt === licenseParam.createdAt) {
             timerIndex = i;
