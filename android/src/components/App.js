@@ -180,7 +180,7 @@ export default class App extends Component {
 
   _resetRealmState() { 
     // Realm.clearTestState();
-    // this.realm = new Realm({schema: Schema}); // Only necessary if replacing Schema.
+    this.realm = new Realm({schema: Schema});
     this.realm.write(() => {
       this.realm.deleteAll();
       this.realm.create('TimerSequence', {timeAccessedAt: new Date() / 1000, count: 0});
