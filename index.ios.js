@@ -5,6 +5,6 @@
  */
 
 import { AppRegistry } from 'react-native';
-import Root from './ios/src'
+import Root from './src'
 
 AppRegistry.registerComponent('Enforce', () => Root);

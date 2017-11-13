@@ -1,4 +1,4 @@
 import { AppRegistry } from 'react-native';
-import Root from './android/src';
+import Root from './src';
 
 AppRegistry.registerComponent('enforce', () => Root);

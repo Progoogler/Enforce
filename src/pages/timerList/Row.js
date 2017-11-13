@@ -1,0 +1,301 @@
+import React, { Component } from 'react';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { NavigationActions } from'react-navigation';
+import PhotoView from 'react-native-photo-view';
+import PropTypes from 'prop-types';
+
+import {
+  extraLargeFontSize,
+  largeFontSize,
+  mediumFontSize,
+  primaryBlue,
+  smallFontSize,
+  timerRowButtonsContainerHeight,
+  timerRowDescContainerHeight,
+  timerRowImageHeight,
+} from '../../styles/common';
+
+
+export default class Row extends Component {
+  constructor() {
+    super();
+    this.licenseButtonPressed = 0;
+    this.state = {
+      cloud: false,
+      hidden: false,
+    };
+  }
+
+  render() {
+    if (this.props.data.createdAt === 0 || this.state.hidden) return <View/>
+    return (
+      <View style={styles.container}>
+        <View style={{height: timerRowImageHeight, backgroundColor: 'black'}}>
+          <PhotoView
+            style={styles.image}
+            source={{uri: this.props.data.mediaUri}}
+            androidScaleType="fitCenter"
+          />
+        </View>
+        <TouchableOpacity
+          activeOpacity={1}
+          hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+          onPress={() => this._cloudPressed()}
+          style={styles.cloud}
+        >
+          {
+            !this.props.upload ?
+            <Image source={require('../../images/cloud-internet.png')}/>
+            :
+            this.state.cloud ?
+            <Image source={require('../../images/cloud-checkmark.png')}/>
+            :
+            <Image source={require('../../images/cloud-camera.png')}/>
+          }
+        </TouchableOpacity>
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.timeLeft}>{this._getTimeLeft(this.props.data)}</Text>
+          <View style={styles.timeContainer}>
+            <Text style={styles.description}>Recorded at</Text>
+            <Text style={styles.timeCreatedAt}>{this._getPrettyTimeFormat(this.props.data.createdAt)}</Text>
+          </View>
+        </View>
+        { this.props.data.description ?
+          <View style={styles.locationContainer}>
+            <TouchableOpacity 
+              activeOpacity={.9}
+              onPress={() => this._openMapPage(this.props.data.index)}
+            >
+              <Text style={styles.location}>{ `${this.props.data.description}` }</Text>
+            </TouchableOpacity>
+          </View>
+          : null }
+
+        
+          <TouchableOpacity 
+            activeOpacity={1} 
+            hitSlop={{top: 10, bottom: 10, left: 10, right: 10}}
+            style={styles.licenseContainer} 
+            onPress={() => {
+              this.props.enterLicenseInSearchField({
+                license: this.props.data.license, 
+                createdAt: this.props.data.createdAt,
+              }, true);
+            }}
+          >
+            <Text style={styles.license}>{this.props.data.license ? this.props.data.license : 'License'}</Text>
+          </TouchableOpacity>
+          
+
+        <View style={styles.buttonsContainer} >
+          <View style={styles.rowButtonsContainers} >
+            <TouchableOpacity
+              style={styles.rowButton}
+              activeOpacity={.9}
+              onPress={() => {
+                this.props.expiredFunc(this.props.data);
+                this.setState({hidden: true});
+              }} 
+            >
+              <Text style={styles.buttonText}> Expired </Text>
+            </TouchableOpacity>
+            <View style={styles.separator} />
+            <TouchableOpacity
+              style={styles.rowButton}
+              activeOpacity={.9}
+              onPress={() => {
+                var context = this;
+                this.props.uponTicketed(this.props.data, null, function() {
+                  context.setState({hidden: true});
+                });
+              }}
+            >
+              <Text style={styles.buttonText}> Ticketed </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.state.cloud !== nextState.cloud) return true;
+    if (this.props.upload !== nextProps.upload) return true;
+    if (this.state.hidden !== nextState.hidden) return true;
+    return false;
+  }
+
+  _getPrettyTimeFormat(createdAt: number): string {
+    let date = new Date(createdAt);
+    let hour = date.getHours();
+    let minutes = date.getMinutes() + '';
+    minutes = minutes.length === 1 ? '0' + minutes : minutes;
+    let period = (hour < 12) ? 'AM' : 'PM';
+    hour = (hour <= 12) ? hour : hour - 12;
+    return `${hour}:${minutes} ${period}`;
+  }
+
+  _getTimeLeft(timer: object): object {
+    if (!timer) return;
+    let timeLength = timer.timeLength * 60 * 60 * 1000;
+    let timeSince = new Date() - timer.createdAt;
+    let timeLeft = (timeLength - timeSince) / 1000;
+      if (timeLeft < 0) {
+      return <Text style={styles.timeUp}>Time is up!</Text>;
+    } else if (timeLeft < 60) {
+      return<Text style={styles.timeUp}>less than a minute {'\n'}remaining</Text>;
+    } else if (timeLeft < 3600) {
+      if (timeLeft < 300 ) return <Text style={styles.timeUp}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
+      if (timeLeft < 3600 / 4) return <Text style={styles.timeUp}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
+      return <Text style={styles.timeUpNear}> {Math.floor(timeLeft / 60) === 1 ? '1 minute remaining' : Math.floor(timeLeft / 60) + ' minutes remaining'}</Text>;
+    } else if (timeLeft > 3600) {
+      return <Text style={styles.timeUpFar}>{Math.floor(timeLeft / 60 / 60)} hour {Math.floor((timeLeft % 3600) / 60)} minutes remaining</Text>;
+    } else {
+      return '';
+    }
+  }
+
+  _openMapPage(timersIndex: number): undefined {
+    const navigateAction = NavigationActions.navigate({
+      routeName: 'Map',
+      params: {
+        timersIndex, 
+        navigation: this.props.navigation,
+        timerCreatedAt: this.props.data.createdAt,
+      },
+    });
+    this.props.navigation.dispatch(navigateAction);
+  }
+
+  _cloudPressed() {
+    if (this.props.upload) {
+      this.props.uploadImage(this.props.data.createdAt, !this.state.cloud);
+      this.setState({cloud: !this.state.cloud});
+    } else {
+      this.props.decipherUploadSetting();
+    }
+  }
+}
+
+Row.propTypes = {
+  data: PropTypes.object.isRequired,
+  decipherUploadSetting: PropTypes.func.isRequired,
+  enterLicenseInSearchField: PropTypes.func.isRequired,
+  expiredFunc: PropTypes.func.isRequired,
+  navigation: PropTypes.object.isRequired,
+  upload: PropTypes.bool.isRequired,
+  uploadImage: PropTypes.func.isRequired,
+  uponTicketed: PropTypes.func.isRequired,
+}
+
+const styles = StyleSheet.create({
+  cloud: {
+    bottom: timerRowButtonsContainerHeight + timerRowDescContainerHeight + 10,
+    position: 'absolute',
+    right: 10,
+  },
+  container: {
+    flex: 1,
+  },
+  image: {
+    flex:1,
+    height: undefined,
+    width: undefined,
+  },
+  licenseContainer: {
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    borderBottomColor: 'white',
+    borderBottomWidth: 1,
+    borderWidth: 1,
+    borderLeftColor: primaryBlue,
+    borderRightColor: primaryBlue,
+    borderTopColor: primaryBlue,
+    // Position the License Container above both the Description Container and the Buttons Container minus the border width
+    bottom: timerRowDescContainerHeight + timerRowButtonsContainerHeight - 2,
+    position: 'absolute',
+  },
+  license: {
+    fontSize: mediumFontSize,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingLeft: '3%',
+    paddingRight: '3%',
+    paddingTop: '1%',
+  },
+  timeUp: {
+    color:'green',
+    fontSize: largeFontSize,
+    fontWeight: 'bold',
+  },
+  timeUpFar: {
+    fontSize: smallFontSize,
+    fontWeight: 'bold',
+  },
+  timeUpNear: {
+    color: primaryBlue,
+    fontSize: mediumFontSize,
+    fontWeight: 'bold',
+  },
+  buttonsContainer: {
+    alignSelf: 'stretch',
+  },
+  rowButtonsContainers: {
+    borderBottomWidth: 2,
+    borderColor: 'white',
+    flex: 1,
+    flexDirection: 'row',
+    height: timerRowButtonsContainerHeight,
+  },
+  rowButton: {
+    alignItems: 'center',
+    backgroundColor: primaryBlue,
+    flex: .5,
+    justifyContent: 'center',
+  },
+  separator: {
+    borderColor: 'white',
+    borderWidth: .5,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: largeFontSize,
+  },
+  descriptionContainer: {
+    alignItems: 'center',
+    borderTopColor: primaryBlue,
+    borderTopWidth: 2,
+    flexDirection: 'row',
+    height: timerRowDescContainerHeight,
+    justifyContent: 'space-between',
+    padding: '4%',
+  },
+  timeContainer: {
+    flexDirection: 'column',
+  },
+  timeCreatedAt: {
+    color: primaryBlue,
+    fontSize: extraLargeFontSize,
+  },
+  locationContainer: {
+    alignSelf: 'center',
+    backgroundColor: 'white',
+    position: 'absolute',
+    width: '100%',
+  },
+  location: {
+    color: primaryBlue,
+    fontSize: mediumFontSize,
+    paddingBottom: '1%',
+    paddingLeft: '4%',
+    paddingRight: '4%',
+    paddingTop: '1%',
+    textAlign: 'center',
+  },
+});
