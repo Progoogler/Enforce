@@ -79,4 +79,4 @@ export var imageSize = responsiveWidth(20);
 
 /* FAQs */
 // Messenger
-export var messageContainerHeight = screenHeight - navBarContainerHeight - doneHeight - responsiveHeight(10);
+export var messageContainerHeight = screenHeight - navBarContainerHeight - messageButtonHeight - responsiveHeight(10);
