@@ -11,7 +11,7 @@ import {
   largeFontSize, 
   primaryBlue, 
   mediumFontSize,
-} from '../../styles/common';
+} from '../styles/common';
 
 export default class MessageButton extends Component {
   constructor() {
@@ -27,12 +27,12 @@ export default class MessageButton extends Component {
       >
         {
           this.props.text === 'Send' ?
-          <Image source={require('../../images/envelope.png')}/> 
+          <Image source={require('../images/envelope.png')}/> 
           :
           this.props.text ?
-          <Image source={require('../../images/internet-icon.png')}/> 
+          <Image source={require('../images/internet-icon.png')}/> 
           :
-          <Image source={require('../../images/checkmark.jpg')}/>
+          <Image source={require('../images/checkmark.jpg')}/>
         }
         <Text style={[styles.text, this.props.text === 'Must be connected to the Internet' ? styles.smallText : null]}>{this.props.text ? this.props.text : 'Done'}</Text>
       </TouchableOpacity>
