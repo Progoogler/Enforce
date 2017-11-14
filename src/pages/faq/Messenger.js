@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 
 import { sendFeedback } from '../../api/database';
 import StaticNavigation from '../../components/StaticNavigation'
-import Send from '../timerList/Done';
+import Send from '../../components/MessageButton';
 import {
 	messageContainerHeight,
 	primaryBlue,

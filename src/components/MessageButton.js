@@ -7,13 +7,13 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import { 
-  doneHeight,
+  messageButtonHeight,
   largeFontSize, 
   primaryBlue, 
   mediumFontSize,
 } from '../../styles/common';
 
-export default class Done extends Component {
+export default class MessageButton extends Component {
   constructor() {
     super();
   }
@@ -47,14 +47,14 @@ export default class Done extends Component {
   _handlePress() {
     if (this.props.closeModal) {
       this.props.closeModal();
-    } else {
+    } else if (!this.props.text) { // Text defaults to Done for TimerList
       this.props.navigation.navigate('Overview');
     }
   }
 
 }
 
-Done.propTypes = { 
+MessageButton.propTypes = { 
   closeModal: PropTypes.func,
   navigation: PropTypes.object,
   text: PropTypes.string,
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     bottom: 0,
     flexDirection: 'row',
-    height: doneHeight,
+    height: messageButtonHeight,
     justifyContent: 'center',
     width: '100%',
     zIndex: 10,

@@ -18,7 +18,7 @@ import { getHistoryData, getTicketImage } from '../../api/database';
 import ImageModal from './ImageModal';
 import Navigation from '../../components/SearchNavigation';
 import Row from './Row';
-import ThrowConnectionMessage from '../profile/ThrowConnectionMessage';
+import ThrowConnectionMessage from '../../components/MessageButton';
 import {
   primaryBlue,
   titleTextShadow,
@@ -102,7 +102,7 @@ export default class History extends Component {
           style={styles.activity}
         />
 
-        { this.state.connected ? <View/> : <ThrowConnectionMessage/> }
+        { this.state.connected ? <View/> : <ThrowConnectionMessage text={'Must be connected to the Internet'} /> }
 
         <FlatList
            data={this.state.dataSource}

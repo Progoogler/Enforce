@@ -18,7 +18,7 @@ import Database from '../../api/database';
 import Firebase from '../../api/firebase';
 import Navigation from '../../components/StaticNavigation';
 import States from '../../utils/statesList';
-import ThrowConnectionMessage from './ThrowConnectionMessage';
+import ThrowConnectionMessage from '../../components/MessageButton';
 import Warning from './Warning';
 
 import {
@@ -156,7 +156,7 @@ export default class Profile extends Component {
           </View>
         </TouchableOpacity>
 
-        { this.state.isConnected ? null : <ThrowConnectionMessage /> }
+        { this.state.isConnected ? null : <ThrowConnectionMessage text={'Must be connected to the Internet'} /> }
         <ActivityIndicator
           animating={this.state.animating}
           size='large' 
