@@ -1,6 +1,6 @@
 // This schema is imported twice. Once from App.js and ListView-ResetControl.js
 
-class TimerSchema {};
+class TimerSchema {}
 TimerSchema.schema = {
   name: 'Timer',
   properties: {
@@ -19,7 +19,7 @@ TimerSchema.schema = {
   }
 }
 
-class TimerListSchema {};
+class TimerListSchema {}
 TimerListSchema.schema = {
   name: 'Timers',
   properties: {
@@ -27,7 +27,7 @@ TimerListSchema.schema = {
   }
 }
 
-class TimerSequenceSchema {};
+class TimerSequenceSchema {}
 TimerSequenceSchema.schema = {
   name: 'TimerSequence',
   properties: {
@@ -36,7 +36,7 @@ TimerSequenceSchema.schema = {
   }
 }
 
-class TimeLimitSchema {};
+class TimeLimitSchema {}
 TimeLimitSchema.schema = {
   name: 'TimeLimit',
   properties: {
@@ -46,7 +46,7 @@ TimeLimitSchema.schema = {
   }
 }
 
-class TicketedSchema {};
+class TicketedSchema {}
 TicketedSchema.schema = {
   name: 'Ticketed',
   properties: {
@@ -54,7 +54,7 @@ TicketedSchema.schema = {
   }
 }
 
-class ExpiredSchema {};
+class ExpiredSchema {}
 ExpiredSchema.schema = {
   name: 'Expired',
   properties: {
@@ -62,7 +62,7 @@ ExpiredSchema.schema = {
   }
 }
 
-class CoordinatesSchema {};
+class CoordinatesSchema {}
 CoordinatesSchema.schema = {
   name: 'Coordinates',
   properties: {
