@@ -4,7 +4,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import Navigation from '../../components/StaticNavigation';
+import Navigation from './StaticNavigation';
 import PhotoView from 'react-native-photo-view';
 import PropTypes from 'prop-types';
 

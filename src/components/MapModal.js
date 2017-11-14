@@ -7,11 +7,11 @@ import {
   View,
 } from 'react-native';
 import { Animated as AnimatedMap, Marker } from 'react-native-maps';
-import Navigation from '../../components/StaticNavigation';
+import Navigation from './StaticNavigation';
 import PropTypes from 'prop-types';
 
-import LocationView from '../map/LocationView';
-import { navBarContainerHeight } from '../../styles/common';
+import LocationView from './LocationView';
+import { navBarContainerHeight } from '../styles/common';
 
 /*global require*/
 export default class MapModal extends Component {
@@ -72,7 +72,7 @@ export default class MapModal extends Component {
                 }} 
                 mapModalAnimating={this.mapModalAnimating.bind(this)}
               >
-                <Image source={require('../../images/blue-pin.png')}/>
+                <Image source={require('../images/blue-pin.png')}/>
               </Marker>
             }
 
@@ -98,7 +98,7 @@ export default class MapModal extends Component {
             longitude: this.props.longitude}} 
             key={1}
           >
-          <Image source={require('../../images/blue-pin.png')}/>
+          <Image source={require('../images/blue-pin.png')}/>
         </Marker>
       ]});
     }

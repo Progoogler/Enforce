@@ -12,7 +12,7 @@ import Realm from 'realm';
 
 import CustomCallout from './CustomCallout';
 import ErrorMessage from './ErrorMessage';
-import LocationView from './LocationView';
+import LocationView from '../../components/LocationView';
 import SearchNavigation from '../../components/SearchNavigation';
 import StaticNavigation from '../../components/StaticNavigation';
 

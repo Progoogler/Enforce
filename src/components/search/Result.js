@@ -8,8 +8,8 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import ImageModal from '../history/ImageModal';
-import MapModal from '../history/MapModal';
+import ImageModal from '../ImageModal';
+import MapModal from '../MapModal';
 import Unfound from './Unfound';
 import {
   closeButtonSize,

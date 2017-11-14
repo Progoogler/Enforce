@@ -15,7 +15,7 @@ import Realm from 'realm';
 
 import { getHistoryData, getTicketImage } from '../../api/database';
 
-import ImageModal from './ImageModal';
+import ImageModal from '../../components/ImageModal';
 import Navigation from '../../components/SearchNavigation';
 import Row from './Row';
 import ThrowConnectionMessage from '../../components/MessageButton';

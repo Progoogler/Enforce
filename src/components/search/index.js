@@ -5,7 +5,7 @@ import {
   AsyncStorage,
   Image,
   Keyboard,
-  NativeModules,
+  // NativeModules,
   NetInfo,
   StyleSheet,
   TextInput,
@@ -509,79 +509,79 @@ export default class Search extends Component {
     }
   }
 
-  _googleImage() {
-    clearTimeout(this.hideNotification);
-    this._showNoResultNotification();
-    this.setState({result: '', searching: true, animating: true});
+  // _googleImage() {
+  //   clearTimeout(this.hideNotification);
+  //   this._showNoResultNotification();
+  //   this.setState({result: '', searching: true, animating: true});
 
-    if (this.connected) {
+  //   if (this.connected) {
 
-      var mediaPath = this.realm.objects('Timers')[this.props.listIndex]['list'][this.props.licenseParam.timerIndex].mediaPath;
+  //     var mediaPath = this.realm.objects('Timers')[this.props.listIndex]['list'][this.props.licenseParam.timerIndex].mediaPath;
       
-      this._resizeImage(mediaPath, (resizedMedia) => {
-        NativeModules.RNImageToBase64.getBase64String(resizedMedia, async (err, base64) => {
-          if (err) {
-            console.error('error', err);
-          }
+  //     this._resizeImage(mediaPath, (resizedMedia) => {
+  //       NativeModules.RNImageToBase64.getBase64String(resizedMedia, async (err, base64) => {
+  //         if (err) {
+  //           console.error('error', err);
+  //         }
 
-          var result;
-          try {
-            result = await this._doFetch(base64);
-            result = JSON.parse(result['_bodyInit']);
-          } catch (err) {
-            setTimeout(() => this.setState({animating: false}), 1200);
-            setTimeout(() => {
-              this.setState({animating: false});
-              this._hideNoResultNotification();
-              this.props.resetLicenseParam(this.props.licenseParam.timerIndex);
-              this.currentTimer = null;
-              setTimeout(() => this._throwConnectionMessage(), 600);
-            }, 1500);
-            return;
-          }
+  //         var result;
+  //         try {
+  //           result = await this._doFetch(base64);
+  //           result = JSON.parse(result['_bodyInit']);
+  //         } catch (err) {
+  //           setTimeout(() => this.setState({animating: false}), 1200);
+  //           setTimeout(() => {
+  //             this.setState({animating: false});
+  //             this._hideNoResultNotification();
+  //             this.props.resetLicenseParam(this.props.licenseParam.timerIndex);
+  //             this.currentTimer = null;
+  //             setTimeout(() => this._throwConnectionMessage(), 600);
+  //           }, 1500);
+  //           return;
+  //         }
           
-          var filteredResult;
-          if (!result || !result.responses[0].textAnnotations) {
-            filteredResult = null;
-          } else {
-            filteredResult = this._filterTextList(result.responses);
-          }
+  //         var filteredResult;
+  //         if (!result || !result.responses[0].textAnnotations) {
+  //           filteredResult = null;
+  //         } else {
+  //           filteredResult = this._filterTextList(result.responses);
+  //         }
 
-          if (filteredResult) {
-            this._enterLicenseInSearchField(filteredResult);
-            this.handleVINSearch(filteredResult, '', false, true);
+  //         if (filteredResult) {
+  //           this._enterLicenseInSearchField(filteredResult);
+  //           this.handleVINSearch(filteredResult, '', false, true);
 
-          } else {
-            this.setState({searching: false, animating: false});
-            setTimeout(() => {
-              this.setState({result: 'searched'}); // Display "not found" message w/o the Deep Search option. TODO Create different reply.
-              this._showNoResultNotification();
-              setTimeout(() => {
-                this._hideNoResultNotification();
-              }, 2000);
-            }, 600);
-            // Display no result ... Unable to read license from image.
-          }
-        });
-      });
+  //         } else {
+  //           this.setState({searching: false, animating: false});
+  //           setTimeout(() => {
+  //             this.setState({result: 'searched'}); // Display "not found" message w/o the Deep Search option. TODO Create different reply.
+  //             this._showNoResultNotification();
+  //             setTimeout(() => {
+  //               this._hideNoResultNotification();
+  //             }, 2000);
+  //           }, 600);
+  //           // Display no result ... Unable to read license from image.
+  //         }
+  //       });
+  //     });
 
-    } else {
-      this._checkConnection()
-      .then((connected) => {
-        if (connected) {
-          this._googleImage();
-        } else {
-          setTimeout(() => {
-            this.setState({animating: false});
-            this._hideNoResultNotification();
-            this.props.resetLicenseParam(this.props.licenseParam.timerIndex);
-            this.currentTimer = null;
-            setTimeout(() => this._throwConnectionMessage(), 600);
-          }, 1500);
-        }
-      })
-    }
-  }
+  //   } else {
+  //     this._checkConnection()
+  //     .then((connected) => {
+  //       if (connected) {
+  //         this._googleImage();
+  //       } else {
+  //         setTimeout(() => {
+  //           this.setState({animating: false});
+  //           this._hideNoResultNotification();
+  //           this.props.resetLicenseParam(this.props.licenseParam.timerIndex);
+  //           this.currentTimer = null;
+  //           setTimeout(() => this._throwConnectionMessage(), 600);
+  //         }, 1500);
+  //       }
+  //     })
+  //   }
+  // }
 
   _throwConnectionMessage() {
     this.setState({result: 'connectionError'});
@@ -592,25 +592,25 @@ export default class Search extends Component {
     }, 2000);
   }
 
-  async _doFetch(base64) {
-    return await fetch('https://vision.googleapis.com/v1/images:annotate?key=' + 'AIzaSyDp_hTHqAiQvbpAQ6A3Y3KcdNIvhwGk7eQ', {
-      "method": "POST",
-      "body" : JSON.stringify({
-        "requests": [
-          {
-            "image": {
-              "content": base64
-            },
-            "features": [
-              {
-                "type": "TEXT_DETECTION"
-              }
-            ]
-          }
-        ]
-      })
-    });
-  }
+  // async _doFetch(base64) {
+  //   return await fetch('https://vision.googleapis.com/v1/images:annotate?key=' + 'AIzaSyDp_hTHqAiQvbpAQ6A3Y3KcdNIvhwGk7eQ', {
+  //     "method": "POST",
+  //     "body" : JSON.stringify({
+  //       "requests": [
+  //         {
+  //           "image": {
+  //             "content": base64
+  //           },
+  //           "features": [
+  //             {
+  //               "type": "TEXT_DETECTION"
+  //             }
+  //           ]
+  //         }
+  //       ]
+  //     })
+  //   });
+  // }
 
   // According to https://cloud.google.com/vision/docs/supported-files, recommended image size for labels detection is 640x480.
   // _resizeImage(path, callback, width = 1024, height = 768) {
@@ -623,42 +623,42 @@ export default class Search extends Component {
   // }
 
   // Run filter for retrieving the most likely license text from the response.
-  _filterTextList(responses) {
-    var resultArr = [];
-    responses[0].textAnnotations.forEach((annotation) => {
-      resultArr.push(annotation.description); // TODO Check whether it contains the correct seq here first?
-    });
-    var rex = /([A-Z](?=[0-9])|[0-9](?=[A-Z]))/;
-    for (let i = 1; i < resultArr.length; i++) {
-      if (rex.test(resultArr[i])) return resultArr[i];
-    }
+  // _filterTextList(responses) {
+  //   var resultArr = [];
+  //   responses[0].textAnnotations.forEach((annotation) => {
+  //     resultArr.push(annotation.description); // TODO Check whether it contains the correct seq here first?
+  //   });
+  //   var rex = /([A-Z](?=[0-9])|[0-9](?=[A-Z]))/;
+  //   for (let i = 1; i < resultArr.length; i++) {
+  //     if (rex.test(resultArr[i])) return resultArr[i];
+  //   }
 
-    var numRex = /^[0-9]*$/,
-        charRex = /^[A-Z]*$/,
-        license = '',
-        checked;
-    for (let i = 1; i < resultArr.length; i++) {
-      if (numRex.test(resultArr[i])) {
-        if (i !== 1) checked = charRex.test(resultArr[i-1]);
-        if (checked && resultArr[i-1].length === 2) {
-          if (charRex.test(resultArr[i+1])) {
-            license = resultArr[i] + resultArr[i+1];
-            if (license.length <= 7) return license;
-          }
-        } else if (checked) {
-          license = resultArr[i-1] + resultArr[i];
-          if (license.length <= 7) return license;
-        }
-        if (!checked) {
-          if (numRex.test(resultArr[i+1])) {
-            license = resultArr[i] + resultArr[i+1];
-            if (license.length <= 7) return license;
-          }
-        }
-      }
-    }
-    return '';
-  }
+  //   var numRex = /^[0-9]*$/,
+  //       charRex = /^[A-Z]*$/,
+  //       license = '',
+  //       checked;
+  //   for (let i = 1; i < resultArr.length; i++) {
+  //     if (numRex.test(resultArr[i])) {
+  //       if (i !== 1) checked = charRex.test(resultArr[i-1]);
+  //       if (checked && resultArr[i-1].length === 2) {
+  //         if (charRex.test(resultArr[i+1])) {
+  //           license = resultArr[i] + resultArr[i+1];
+  //           if (license.length <= 7) return license;
+  //         }
+  //       } else if (checked) {
+  //         license = resultArr[i-1] + resultArr[i];
+  //         if (license.length <= 7) return license;
+  //       }
+  //       if (!checked) {
+  //         if (numRex.test(resultArr[i+1])) {
+  //           license = resultArr[i] + resultArr[i+1];
+  //           if (license.length <= 7) return license;
+  //         }
+  //       }
+  //     }
+  //   }
+  //   return '';
+  // }
 
   async handleVINSearch(license: string, state: string, verified?: boolean, override?: boolean) {
     if (this.state.searching && !override) return // Prevent VIN search while history result/search is in progress.

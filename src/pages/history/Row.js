@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import MapModal from './MapModal';
+import MapModal from '../../components/MapModal';
 import {
   imageSize,
   primaryBlue,
