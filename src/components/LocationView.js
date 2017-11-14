@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { mediumFontSize, navBarContainerHeight, primaryBlue } from '../../styles/common';
+import { mediumFontSize, navBarContainerHeight, primaryBlue } from '../styles/common';
 
 export default class LocationView extends Component {
   constructor() {
