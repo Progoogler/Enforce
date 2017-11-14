@@ -7,11 +7,11 @@ import {
 import PropTypes from 'prop-types';
 import Realm from 'realm';
 
-import coordinatesBound from './coordinatesBound';
+import coordinatesBound from '../../utils/coordinatesBound';
 import { setUserTicket, setTicketImage } from '../../api/database';
 import TimersImageList from './TimerImageList';
-import Done from './Done';
-import Search from '../search';
+import Done from '../../components/MessageButton';
+import Search from '../../components/search';
 import Title from './Title';
 import Warning from './Warning';
 

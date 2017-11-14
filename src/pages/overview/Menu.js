@@ -10,7 +10,7 @@ import {
 import PropTypes from 'prop-types';
 
 import MainButtons from './MainButtons';
-import Search from '../search';
+import Search from '../../components/search';
 import {
   blueTextShadow,
   noResultContainerHeight,
