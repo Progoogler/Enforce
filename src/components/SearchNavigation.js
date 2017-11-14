@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 
-import Search from '../search';
+import Search from './search';
 import {
   blueTextShadow,
   navBarContainerHeight,
@@ -60,7 +60,7 @@ export default class Navigation extends Component {
             style={styles.searchIcon}
             underlayColor={primaryBlue}
           >
-            <Image source={require('../../images/search-icon.png')}/>
+            <Image source={require('../images/search-icon.png')}/>
           </TouchableHighlight>
           <Animated.Text 
             style={{
@@ -87,7 +87,7 @@ export default class Navigation extends Component {
             style={styles.headerNavigation}
             underlayColor={primaryBlue}
           >
-            <Image source={require('../../images/menu-icon.jpg')}/>
+            <Image source={require('../images/menu-icon.jpg')}/>
           </TouchableHighlight>
         </View>
       }

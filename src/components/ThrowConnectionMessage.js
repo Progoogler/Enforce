@@ -5,13 +5,13 @@ import {
   Text,
   View,
 } from 'react-native';
-import { primaryBlue, smallFontSize } from '../../styles/common';
+import { primaryBlue, smallFontSize } from '../styles/common';
 
 export default class ThrowConnectionMessage extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Image source={require('../../images/internet-icon.png')}/>
+        <Image source={require('../images/internet-icon.png')}/>
         <Text style={styles.message}>Must be connected to the Internet</Text>
       </View>
     );

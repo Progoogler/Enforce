@@ -28,7 +28,7 @@ export default class StaticNavigation extends Component {
         <TouchableWithoutFeedback style={styles.back} onPress={() => this._handleArrow()} >
           <Image
             style={styles.searchIcon}
-            source={require('../../images/backarrow.jpg')} />
+            source={require('../images/backarrow.jpg')} />
         </TouchableWithoutFeedback>
         <Text style={styles.title}>{ this.props.title ? this.props.title : 'Enforce' }</Text>
 
@@ -40,7 +40,7 @@ export default class StaticNavigation extends Component {
               this.props.navigation.navigate('DrawerOpen');
             }}
             style={styles.headerNavigation} >
-            <Image source={require('../../images/menu-icon.jpg')} />
+            <Image source={require('../images/menu-icon.jpg')} />
           </TouchableHighlight>
           : null 
         }
